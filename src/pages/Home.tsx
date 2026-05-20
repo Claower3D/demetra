@@ -6,11 +6,19 @@ import { useLang, InlineEdit } from '../LangContext';
 import { productsData } from '../i18n';
 import { BuilderWrapper } from '../components/BuilderWrapper';
 import { useBuilderLayout } from '../hooks/useBuilderLayout';
+import CustomBlock, { getCustomBlocks } from '../components/CustomBlock';
 
 export default function Home() {
   const { lang } = useLang();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [yParallax, setYParallax] = useState(0);
+  const [customBlocks, setCustomBlocks] = useState<Record<string, any>>(() => getCustomBlocks());
+
+  useEffect(() => {
+    const sync = () => setCustomBlocks(getCustomBlocks());
+    window.addEventListener('storage', sync);
+    return () => window.removeEventListener('storage', sync);
+  }, []);
 
   const { layout, isBuilder } = useBuilderLayout('home', {
     order: ['hero', 'marquee', 'catalog', 'partnership', 'services', 'cta'],
@@ -231,7 +239,24 @@ export default function Home() {
         );
         break;
       default:
-        if (isBuilder) {
+        // Render custom blocks (new_block_* added via admin +)
+        if (id.startsWith('new_block_')) {
+          const blockData = customBlocks[id];
+          if (blockData) {
+            content = (
+              <div className="container" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
+                <CustomBlock id={id} data={blockData} />
+              </div>
+            );
+          } else if (isBuilder) {
+            content = (
+              <div className="builder-empty-state">
+                ✦ НОВЫЙ БЛОК<br/>
+                <span style={{ fontSize: '0.8rem', color: 'var(--primary)' }}>Нажмите ПКМ → Редактировать для добавления контента</span>
+              </div>
+            );
+          }
+        } else if (isBuilder) {
           content = (
             <div className="builder-empty-state">
               NEW AREA: {id} <br/>

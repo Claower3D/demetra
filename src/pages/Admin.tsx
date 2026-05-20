@@ -45,11 +45,18 @@ import {
   MousePointer2,
   Settings2,
   Copy,
-  Trash
+  Trash,
+  Type,
+  AlignLeft,
+  Columns,
+  CreditCard,
+  Megaphone,
+  Minus
 } from 'lucide-react';
 import { useLang } from '../LangContext';
 import { useTheme } from '../ThemeContext';
 import { translations as defaultTranslations, productsData as defaultProducts, categories as defaultCategories } from '../i18n';
+import { setCustomBlock, getCustomBlocks } from '../components/CustomBlock';
 
 // Full site preview components (simplified for admin context)
 import HomeContent from './Home';
@@ -358,167 +365,19 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
         {editingKey && (
           <motion.div 
             initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
-            style={{ position: 'fixed', top: 0, right: 0, width: '450px', height: '100vh', background: '#0a0a0a', borderLeft: '1px solid #333', zIndex: 6000, padding: '3rem', boxShadow: '-20px 0 50px rgba(0,0,0,0.5)' }}
+            style={{ position: 'fixed', top: 0, right: 0, width: '480px', height: '100vh', background: '#0a0a0a', borderLeft: '1px solid #333', zIndex: 6000, padding: '2.5rem', boxShadow: '-20px 0 50px rgba(0,0,0,0.5)', overflowY: 'auto' }}
           >
-             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
-                <h3 style={{ fontSize: '0.7rem', color: '#00ff41', fontWeight: '900', letterSpacing: '0.2em' }}>BLOCK SETTINGS: {editingKey.toUpperCase()}</h3>
+             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
+                <h3 style={{ fontSize: '0.7rem', color: '#00ff41', fontWeight: '900', letterSpacing: '0.2em' }}>BLOCK: {editingKey.toUpperCase()}</h3>
                 <button onClick={() => setEditingKey(null)} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer' }}><X size={24} /></button>
              </div>
              
-             <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                <div style={{ display: 'grid', gap: '0.75rem' }}>
-                   <label style={{ fontSize: '0.7rem', color: '#888', fontWeight: '900' }}>VERTICAL PADDING</label>
-                   <input 
-                      type="text" 
-                      placeholder="e.g. 6rem 0, 100px 0, auto"
-                      value={currentLayout.styles?.[editingKey]?.padding || ''}
-                      onChange={(e) => {
-                         const v = e.target.value;
-                         updateLayout({ ...currentLayout, styles: { ...(currentLayout.styles || {}), [editingKey]: { ...(currentLayout.styles?.[editingKey] || {}), padding: v } } });
-                      }}
-                      style={{ background: '#111', border: '1px solid #333', padding: '1rem', color: '#fff', fontSize: '0.9rem', borderRadius: '8px', outline: 'none' }}
-                   />
-                </div>
-                
-                <div style={{ display: 'grid', gap: '0.75rem' }}>
-                   <label style={{ fontSize: '0.7rem', color: '#888', fontWeight: '900' }}>TRANSFORM SCALE (0.1 - 2.0)</label>
-                   <input 
-                      type="number" 
-                      step="0.1"
-                      placeholder="1"
-                      value={currentLayout.styles?.[editingKey]?.transform ? currentLayout.styles[editingKey].transform.replace('scale(', '').replace(')', '') : '1'}
-                      onChange={(e) => {
-                         const v = `scale(${e.target.value})`;
-                         updateLayout({ ...currentLayout, styles: { ...(currentLayout.styles || {}), [editingKey]: { ...(currentLayout.styles?.[editingKey] || {}), transform: v } } });
-                      }}
-                      style={{ background: '#111', border: '1px solid #333', padding: '1rem', color: '#fff', fontSize: '0.9rem', borderRadius: '8px', outline: 'none' }}
-                   />
-                </div>
+             {editingKey.startsWith('new_block_')
+               ? <CustomBlockEditor blockId={editingKey} />
+               : <StyleEditor editingKey={editingKey} currentLayout={currentLayout} updateLayout={updateLayout} />
+             }
 
-                <div style={{ display: 'grid', gap: '0.75rem' }}>
-                   <label style={{ fontSize: '0.7rem', color: '#888', fontWeight: '900' }}>FONT SIZE SCALING</label>
-                   <input 
-                      type="text" 
-                      placeholder="e.g. 1.2rem, 150%, 20px"
-                      value={currentLayout.styles?.[editingKey]?.fontSize || ''}
-                      onChange={(e) => {
-                         const v = e.target.value;
-                         updateLayout({ ...currentLayout, styles: { ...(currentLayout.styles || {}), [editingKey]: { ...(currentLayout.styles?.[editingKey] || {}), fontSize: v } } });
-                      }}
-                      style={{ background: '#111', border: '1px solid #333', padding: '1rem', color: '#fff', fontSize: '0.9rem', borderRadius: '8px', outline: 'none' }}
-                   />
-                </div>
-
-                <div style={{ display: 'grid', gap: '0.75rem' }}>
-                   <label style={{ fontSize: '0.7rem', color: '#888', fontWeight: '900' }}>BORDER RADIUS</label>
-                   <input 
-                      type="text" 
-                      placeholder="e.g. 16px, 50%"
-                      value={currentLayout.styles?.[editingKey]?.borderRadius || ''}
-                      onChange={(e) => {
-                         const v = e.target.value;
-                         updateLayout({ ...currentLayout, styles: { ...(currentLayout.styles || {}), [editingKey]: { ...(currentLayout.styles?.[editingKey] || {}), borderRadius: v } } });
-                      }}
-                      style={{ background: '#111', border: '1px solid #333', padding: '1rem', color: '#fff', fontSize: '0.9rem', borderRadius: '8px', outline: 'none' }}
-                   />
-                </div>
-
-                <div style={{ display: 'grid', gap: '0.75rem' }}>
-                   <label style={{ fontSize: '0.7rem', color: '#888', fontWeight: '900' }}>OPACITY (0.0 - 1.0)</label>
-                   <input 
-                      type="number" 
-                      step="0.1"
-                      min="0"
-                      max="1"
-                      placeholder="1"
-                      value={currentLayout.styles?.[editingKey]?.opacity || ''}
-                      onChange={(e) => {
-                         const v = e.target.value;
-                         updateLayout({ ...currentLayout, styles: { ...(currentLayout.styles || {}), [editingKey]: { ...(currentLayout.styles?.[editingKey] || {}), opacity: v } } });
-                      }}
-                      style={{ background: '#111', border: '1px solid #333', padding: '1rem', color: '#fff', fontSize: '0.9rem', borderRadius: '8px', outline: 'none' }}
-                   />
-                </div>
-
-                <div style={{ display: 'grid', gap: '0.75rem' }}>
-                   <label style={{ fontSize: '0.7rem', color: '#888', fontWeight: '900' }}>BACKGROUND COLOR / CSS</label>
-                   <input 
-                      type="text" 
-                      placeholder="e.g. #ff0000, rgba(0,0,0,0.5), transparent"
-                      value={currentLayout.styles?.[editingKey]?.background || ''}
-                      onChange={(e) => {
-                         const v = e.target.value;
-                         updateLayout({ ...currentLayout, styles: { ...(currentLayout.styles || {}), [editingKey]: { ...(currentLayout.styles?.[editingKey] || {}), background: v } } });
-                      }}
-                      style={{ background: '#111', border: '1px solid #333', padding: '1rem', color: '#fff', fontSize: '0.9rem', borderRadius: '8px', outline: 'none' }}
-                   />
-                </div>
-
-                <div style={{ display: 'grid', gap: '0.75rem', marginTop: '1rem', paddingTop: '2rem', borderTop: '1px solid #222' }}>
-                   <label style={{ fontSize: '0.7rem', color: '#00ff41', fontWeight: '900' }}>BACKGROUND / FOREGROUND IMAGE URL</label>
-                   <input 
-                      type="text" 
-                      placeholder="/corporate_about.png"
-                      value={currentLayout.images?.[`${editingKey}_img`] || ''}
-                      onChange={(e) => {
-                         const v = e.target.value;
-                         updateLayout({ ...currentLayout, images: { ...(currentLayout.images || {}), [`${editingKey}_img`]: v } });
-                      }}
-                      style={{ background: '#111', border: '1px solid #333', padding: '1rem', color: '#fff', fontSize: '0.9rem', borderRadius: '8px', outline: 'none' }}
-                   />
-                </div>
-                
-                {/* Advanced Sizing for Sub-Blocks */}
-                {(editingKey.startsWith('srv_') || editingKey.startsWith('cat_')) && (
-                   <div style={{ display: 'grid', gap: '0.75rem', marginTop: '1rem', paddingTop: '2rem', borderTop: '1px solid #222' }}>
-                      <label style={{ fontSize: '0.7rem', color: '#00ff41', fontWeight: '900' }}>GRID SIZE (WIDTH)</label>
-                      <select 
-                         value={currentLayout.styles?.[editingKey]?.gridColumn || 'span 1'}
-                         onChange={(e) => {
-                            const v = e.target.value;
-                            updateLayout({ ...currentLayout, styles: { ...(currentLayout.styles || {}), [editingKey]: { ...(currentLayout.styles?.[editingKey] || {}), gridColumn: v } } });
-                         }}
-                         style={{ background: '#111', border: '1px solid #333', padding: '1rem', color: '#fff', fontSize: '0.9rem', borderRadius: '8px', outline: 'none', appearance: 'none' }}
-                      >
-                         <option value="span 1">Standard (1 Column)</option>
-                         <option value="span 2">Wide (2 Columns)</option>
-                         <option value="span 3">Full Width (3 Columns)</option>
-                      </select>
-                      
-                      <label style={{ fontSize: '0.7rem', color: '#00ff41', fontWeight: '900', marginTop: '1rem' }}>GRID ROW (HEIGHT)</label>
-                      <select 
-                         value={currentLayout.styles?.[editingKey]?.gridRow || 'span 1'}
-                         onChange={(e) => {
-                            const v = e.target.value;
-                            updateLayout({ ...currentLayout, styles: { ...(currentLayout.styles || {}), [editingKey]: { ...(currentLayout.styles?.[editingKey] || {}), gridRow: v } } });
-                         }}
-                         style={{ background: '#111', border: '1px solid #333', padding: '1rem', color: '#fff', fontSize: '0.9rem', borderRadius: '8px', outline: 'none', appearance: 'none' }}
-                      >
-                         <option value="span 1">Standard Height</option>
-                         <option value="span 2">Tall (2 Rows)</option>
-                      </select>
-                   </div>
-                )}
-
-                {/* Button Links */}
-                {editingKey.startsWith('btn_') && (
-                   <div style={{ display: 'grid', gap: '0.75rem', marginTop: '1rem', paddingTop: '2rem', borderTop: '1px solid #222' }}>
-                      <label style={{ fontSize: '0.7rem', color: '#00ff41', fontWeight: '900' }}>LINK URL / PATH</label>
-                      <input 
-                         type="text" 
-                         placeholder="/catalog"
-                         value={currentLayout.links?.[editingKey] || ''}
-                         onChange={(e) => {
-                            const v = e.target.value;
-                            updateLayout({ ...currentLayout, links: { ...(currentLayout.links || {}), [editingKey]: v } });
-                         }}
-                         style={{ background: '#111', border: '1px solid #333', padding: '1rem', color: '#fff', fontSize: '0.9rem', borderRadius: '8px', outline: 'none' }}
-                      />
-                   </div>
-                )}
-             </div>
-
-             <button onClick={() => setEditingKey(null)} style={{ width: '100%', marginTop: '3rem', padding: '1.25rem', background: '#00ff41', color: '#000', border: 'none', borderRadius: '12px', fontWeight: '900', cursor: 'pointer' }}>
+             <button onClick={() => setEditingKey(null)} style={{ width: '100%', marginTop: '2rem', padding: '1.25rem', background: '#00ff41', color: '#000', border: 'none', borderRadius: '12px', fontWeight: '900', cursor: 'pointer' }}>
                 APPLY SETTINGS
              </button>
           </motion.div>
@@ -603,3 +462,196 @@ function SettingField({ label, val, onChange }: any) {
     <div style={{ display: 'grid', gap: '0.75rem' }}><label style={{ fontSize: '0.7rem', color: '#888', fontWeight: '900' }}>{label}</label><input value={val || ''} onChange={(e) => onChange(e.target.value)} style={{ background: '#111', border: '1px solid #222', padding: '1.25rem', borderRadius: '12px', color: '#fff', fontSize: '1rem', outline: 'none' }} /></div>
   );
 }
+
+// ─── Content Block Editor ────────────────────────────────────────────────────
+const BLOCK_TYPES = [
+  { id: 'heading',    label: 'Заголовок',       icon: '𝐇' },
+  { id: 'text',       label: 'Текст',            icon: '¶' },
+  { id: 'divider',    label: 'Разделитель',      icon: '—' },
+  { id: 'button',     label: 'Кнопка',           icon: '↗' },
+  { id: 'card',       label: 'Карточка',         icon: '▭' },
+  { id: 'two_col',    label: '2 Колонки',        icon: '⫿' },
+  { id: 'image_text', label: 'Фото + Текст',     icon: '⊡' },
+  { id: 'cta_banner', label: 'CTA Баннер',       icon: '★' },
+];
+
+function CustomBlockEditor({ blockId }: { blockId: string }) {
+  const [data, setData] = useState<any>(() => {
+    try {
+      const all = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+      return all[blockId] || { type: 'heading' };
+    } catch { return { type: 'heading' }; }
+  });
+
+  const update = (key: string, val: string) => {
+    const next = { ...data, [key]: val };
+    setData(next);
+    setCustomBlock(blockId, next);
+  };
+
+  const selectType = (type: string) => {
+    const next = { ...data, type };
+    setData(next);
+    setCustomBlock(blockId, next);
+  };
+
+  const inp = (style?: any): React.CSSProperties => ({
+    background: '#111', border: '1px solid #333', padding: '0.75rem 1rem',
+    color: '#fff', fontSize: '0.9rem', borderRadius: '8px', outline: 'none',
+    width: '100%', boxSizing: 'border-box', ...style
+  });
+
+  const lbl = (text: string) => (
+    <label style={{ fontSize: '0.65rem', color: '#888', fontWeight: '900', letterSpacing: '0.1em' }}>{text}</label>
+  );
+
+  const field = (label: string, key: string, placeholder = '', multiline = false) => (
+    <div style={{ display: 'grid', gap: '0.4rem' }}>
+      {lbl(label)}
+      {multiline
+        ? <textarea value={data[key] || ''} onChange={e => update(key, e.target.value)} placeholder={placeholder}
+            style={{ ...inp(), minHeight: '90px', resize: 'vertical' }} />
+        : <input value={data[key] || ''} onChange={e => update(key, e.target.value)} placeholder={placeholder}
+            style={inp()} />
+      }
+    </div>
+  );
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      {/* Type picker */}
+      <div>
+        {lbl('ТИП БЛОКА')}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginTop: '0.5rem' }}>
+          {BLOCK_TYPES.map(bt => (
+            <button key={bt.id} onClick={() => selectType(bt.id)} style={{
+              padding: '0.75rem', borderRadius: '8px', border: '1px solid',
+              borderColor: data.type === bt.id ? '#00ff41' : '#333',
+              background: data.type === bt.id ? 'rgba(0,255,65,0.08)' : '#111',
+              color: data.type === bt.id ? '#00ff41' : '#888',
+              fontWeight: '800', fontSize: '0.75rem', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: '0.5rem'
+            }}>
+              <span style={{ fontSize: '1rem' }}>{bt.icon}</span> {bt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ height: '1px', background: '#222' }} />
+
+      {/* Alignment */}
+      <div>
+        {lbl('ВЫРАВНИВАНИЕ')}
+        <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+          {(['left','center','right'] as const).map(a => (
+            <button key={a} onClick={() => update('align', a)} style={{
+              flex: 1, padding: '0.6rem', borderRadius: '6px', border: '1px solid',
+              borderColor: data.align === a ? '#00ff41' : '#333',
+              background: data.align === a ? 'rgba(0,255,65,0.08)' : '#111',
+              color: data.align === a ? '#00ff41' : '#666',
+              fontSize: '0.75rem', fontWeight: '800', cursor: 'pointer'
+            }}>{a === 'left' ? '⬅ Лево' : a === 'center' ? '⬛ Центр' : 'Право ➡'}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Fields per type */}
+      {(data.type === 'heading' || data.type === 'cta_banner' || data.type === 'image_text') && field('НАДПИСЬ НАД ЗАГОЛОВКОМ', 'subheading', 'НАШИ УСЛУГИ')}
+      {(data.type !== 'text' && data.type !== 'divider' && data.type !== 'button') && field('ЗАГОЛОВОК', 'heading', 'Заголовок блока')}
+      {(data.type !== 'divider' && data.type !== 'button') && field('ОПИСАНИЕ / ТЕКСТ', 'body', 'Введите текст...', true)}
+      {data.type === 'two_col' && field('ЛЕВАЯ КОЛОНКА', 'col1', 'Текст слева...', true)}
+      {data.type === 'two_col' && field('ПРАВАЯ КОЛОНКА', 'col2', 'Текст справа...', true)}
+      {(data.type === 'card' || data.type === 'image_text') && field('URL ИЗОБРАЖЕНИЯ', 'src', 'https:// или /image.png')}
+      {(data.type === 'button' || data.type === 'card' || data.type === 'cta_banner' || data.type === 'image_text') && field('ТЕКСТ КНОПКИ / ССЫЛКИ', 'label', 'Узнать больше')}
+      {(data.type === 'button' || data.type === 'card' || data.type === 'cta_banner' || data.type === 'image_text') && field('URL ССЫЛКИ', 'href', '/catalog')}
+
+      {/* Accent / bg */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+        <div style={{ display: 'grid', gap: '0.4rem' }}>
+          {lbl('ЦВЕТ АКЦЕНТА')}
+          <input type="color" value={data.accent || '#008f24'} onChange={e => update('accent', e.target.value)}
+            style={{ ...inp(), padding: '0.3rem', height: '42px', cursor: 'pointer' }} />
+        </div>
+        <div style={{ display: 'grid', gap: '0.4rem' }}>
+          {lbl('ЦВЕТ ФОНА (CSS)')}
+          <input value={data.bg || ''} onChange={e => update('bg', e.target.value)} placeholder="transparent"
+            style={inp()} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Style Editor (existing blocks) ─────────────────────────────────────────
+function StyleEditor({ editingKey, currentLayout, updateLayout }: any) {
+  const setStyle = (key: string, val: string) => {
+    updateLayout({
+      ...currentLayout,
+      styles: {
+        ...(currentLayout.styles || {}),
+        [editingKey]: { ...(currentLayout.styles?.[editingKey] || {}), [key]: val }
+      }
+    });
+  };
+
+  const s = currentLayout.styles?.[editingKey] || {};
+  const inp: React.CSSProperties = { background: '#111', border: '1px solid #333', padding: '1rem', color: '#fff', fontSize: '0.9rem', borderRadius: '8px', outline: 'none', width: '100%', boxSizing: 'border-box' };
+  const lbl = (t: string) => <label style={{ fontSize: '0.7rem', color: '#888', fontWeight: '900' }}>{t}</label>;
+  const row = (label: string, key: string, ph = '') => (
+    <div style={{ display: 'grid', gap: '0.5rem' }}>
+      {lbl(label)}
+      <input value={s[key] || ''} onChange={e => setStyle(key, e.target.value)} placeholder={ph} style={inp} />
+    </div>
+  );
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      {row('ВЕРТИКАЛЬНЫЕ ОТСТУПЫ', 'padding', '6rem 0')}
+      {row('ФОНОВЫЙ ЦВЕТ / CSS', 'background', 'rgba(0,0,0,0)')}
+      {row('СКРУГЛЕНИЕ УГЛОВ', 'borderRadius', '16px')}
+      {row('ПРОЗРАЧНОСТЬ (0-1)', 'opacity', '1')}
+      {row('МАСШТАБ', 'transform', 'scale(1)')}
+      {row('РАЗМЕР ШРИФТА', 'fontSize', '1rem')}
+
+      <div style={{ paddingTop: '1.5rem', borderTop: '1px solid #222', display: 'grid', gap: '0.5rem' }}>
+        {lbl('URL ИЗОБРАЖЕНИЯ ФОНА')}
+        <input
+          value={currentLayout.images?.[`${editingKey}_img`] || ''}
+          onChange={e => updateLayout({ ...currentLayout, images: { ...(currentLayout.images || {}), [`${editingKey}_img`]: e.target.value } })}
+          placeholder="/image.png"
+          style={inp}
+        />
+      </div>
+
+      {(editingKey.startsWith('srv_') || editingKey.startsWith('cat_')) && (
+        <div style={{ paddingTop: '1.5rem', borderTop: '1px solid #222', display: 'grid', gap: '1rem' }}>
+          {lbl('ШИРИНА (GRID SPAN)')}
+          <select value={s.gridColumn || 'span 1'} onChange={e => setStyle('gridColumn', e.target.value)} style={{ ...inp, appearance: 'none' as any }}>
+            <option value="span 1">Стандарт (1 кол.)</option>
+            <option value="span 2">Широкий (2 кол.)</option>
+            <option value="span 3">Полная ширина</option>
+          </select>
+          {lbl('ВЫСОТА (GRID ROW)')}
+          <select value={s.gridRow || 'span 1'} onChange={e => setStyle('gridRow', e.target.value)} style={{ ...inp, appearance: 'none' as any }}>
+            <option value="span 1">Стандартная</option>
+            <option value="span 2">Высокая (2 ряда)</option>
+          </select>
+        </div>
+      )}
+
+      {editingKey.startsWith('btn_') && (
+        <div style={{ paddingTop: '1.5rem', borderTop: '1px solid #222', display: 'grid', gap: '0.5rem' }}>
+          {lbl('URL ССЫЛКИ')}
+          <input
+            value={currentLayout.links?.[editingKey] || ''}
+            onChange={e => updateLayout({ ...currentLayout, links: { ...(currentLayout.links || {}), [editingKey]: e.target.value } })}
+            placeholder="/catalog"
+            style={inp}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
