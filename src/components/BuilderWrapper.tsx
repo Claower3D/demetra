@@ -76,6 +76,7 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
   };
 
   const handleDragStart = (e: React.DragEvent) => {
+    e.stopPropagation();
     e.dataTransfer.setData("text/plain", id);
     e.dataTransfer.effectAllowed = "move";
     if (containerRef.current) {
@@ -91,15 +92,18 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDraggingOver(true);
   };
 
-  const handleDragLeave = () => {
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.stopPropagation();
     setIsDraggingOver(false);
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDraggingOver(false);
     const draggedId = e.dataTransfer.getData("text/plain");
     if (draggedId) {
