@@ -127,6 +127,159 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
     // Capture initial rect BEFORE any movement
     const initialRect = containerRef.current?.getBoundingClientRect();
 
+    const drawGuides = (ghostRect: any) => {
+      const container = document.getElementById('drag-guides-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const parentEl = containerRef.current?.parentElement;
+      const parentRect = parentEl?.getBoundingClientRect() || {
+        top: 0,
+        bottom: window.innerHeight,
+        left: 0,
+        right: window.innerWidth,
+        width: window.innerWidth,
+        height: window.innerHeight
+      };
+
+      const wrappers = Array.from(document.querySelectorAll('.builder-wrapper'))
+        .filter(el => el !== containerRef.current && el !== ghostRef.current)
+        .map(el => ({ el, rect: el.getBoundingClientRect() }));
+
+      let closestAbove: any = null;
+      let closestBelow: any = null;
+      let closestLeft: any = null;
+      let closestRight: any = null;
+
+      wrappers.forEach(item => {
+        const r = item.rect;
+        const xOverlap = Math.max(0, Math.min(ghostRect.right, r.right) - Math.max(ghostRect.left, r.left)) > 0;
+        const yOverlap = Math.max(0, Math.min(ghostRect.bottom, r.bottom) - Math.max(ghostRect.top, r.top)) > 0;
+
+        if (xOverlap) {
+          if (r.bottom <= ghostRect.top) {
+            if (!closestAbove || r.bottom > closestAbove.rect.bottom) {
+              closestAbove = item;
+            }
+          }
+          if (r.top >= ghostRect.bottom) {
+            if (!closestBelow || r.top < closestBelow.rect.top) {
+              closestBelow = item;
+            }
+          }
+        }
+
+        if (yOverlap) {
+          if (r.right <= ghostRect.left) {
+            if (!closestLeft || r.right > closestLeft.rect.right) {
+              closestLeft = item;
+            }
+          }
+          if (r.left >= ghostRect.right) {
+            if (!closestRight || r.left < closestRight.rect.left) {
+              closestRight = item;
+            }
+          }
+        }
+      });
+
+      const addLine = (x1: number, y1: number, x2: number, y2: number, value: number, direction: 'v' | 'h') => {
+        if (value <= 0) return;
+
+        const line = document.createElement('div');
+        line.style.position = 'fixed';
+        line.style.backgroundColor = 'rgba(255, 75, 75, 0.85)';
+        line.style.pointerEvents = 'none';
+        if (direction === 'v') {
+          line.style.left = `${x1}px`;
+          line.style.top = `${Math.min(y1, y2)}px`;
+          line.style.width = '1.5px';
+          line.style.height = `${Math.abs(y2 - y1)}px`;
+        } else {
+          line.style.left = `${Math.min(x1, x2)}px`;
+          line.style.top = `${y1}px`;
+          line.style.width = `${Math.abs(x2 - x1)}px`;
+          line.style.height = '1.5px';
+        }
+        container.appendChild(line);
+
+        const badge = document.createElement('div');
+        badge.innerText = `${value}px`;
+        badge.style.cssText = `
+          position: fixed;
+          background: rgba(255, 75, 75, 0.95);
+          color: #ffffff;
+          font-family: monospace;
+          font-size: 10px;
+          font-weight: 800;
+          padding: 2px 5px;
+          border-radius: 4px;
+          transform: translate(-50%, -50%);
+          white-space: nowrap;
+          pointer-events: none;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+          z-index: 999999;
+          left: ${direction === 'v' ? x1 : (x1 + x2) / 2}px;
+          top: ${direction === 'v' ? (y1 + y2) / 2 : y1}px;
+        `;
+        container.appendChild(badge);
+      };
+
+      const highlightElement = (rect: DOMRect) => {
+        const highlight = document.createElement('div');
+        highlight.style.cssText = `
+          position: fixed;
+          left: ${rect.left}px;
+          top: ${rect.top}px;
+          width: ${rect.width}px;
+          height: ${rect.height}px;
+          border: 1px dashed rgba(255, 75, 75, 0.4);
+          pointer-events: none;
+          box-sizing: border-box;
+        `;
+        container.appendChild(highlight);
+      };
+
+      const midX = ghostRect.left + ghostRect.width / 2;
+      const midY = ghostRect.top + ghostRect.height / 2;
+
+      if (closestAbove) {
+        highlightElement(closestAbove.rect);
+        const val = Math.round(ghostRect.top - closestAbove.rect.bottom);
+        addLine(midX, closestAbove.rect.bottom, midX, ghostRect.top, val, 'v');
+      } else {
+        const val = Math.round(ghostRect.top - parentRect.top);
+        addLine(midX, parentRect.top, midX, ghostRect.top, val, 'v');
+      }
+
+      if (closestBelow) {
+        highlightElement(closestBelow.rect);
+        const val = Math.round(closestBelow.rect.top - ghostRect.bottom);
+        addLine(midX, ghostRect.bottom, midX, closestBelow.rect.top, val, 'v');
+      } else {
+        const val = Math.round(parentRect.bottom - ghostRect.bottom);
+        addLine(midX, ghostRect.bottom, midX, parentRect.bottom, val, 'v');
+      }
+
+      if (closestLeft) {
+        highlightElement(closestLeft.rect);
+        const val = Math.round(ghostRect.left - closestLeft.rect.right);
+        addLine(closestLeft.rect.right, midY, ghostRect.left, midY, val, 'h');
+      } else {
+        const val = Math.round(ghostRect.left - parentRect.left);
+        addLine(parentRect.left, midY, ghostRect.left, midY, val, 'h');
+      }
+
+      if (closestRight) {
+        highlightElement(closestRight.rect);
+        const val = Math.round(closestRight.rect.left - ghostRect.right);
+        addLine(ghostRect.right, midY, closestRight.rect.left, midY, val, 'h');
+      } else {
+        const val = Math.round(parentRect.right - ghostRect.right);
+        addLine(ghostRect.right, midY, parentRect.right, midY, val, 'h');
+      }
+    };
+
     const onMouseMove = (me: MouseEvent) => {
       const dx = me.clientX - startX;
       const dy = me.clientY - startY;
@@ -163,12 +316,41 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
         });
         document.body.appendChild(clone);
         ghostRef.current = clone;
+
+        // Create guides container
+        let guidesContainer = document.getElementById('drag-guides-container');
+        if (!guidesContainer) {
+          guidesContainer = document.createElement('div');
+          guidesContainer.id = 'drag-guides-container';
+          guidesContainer.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 999998;
+          `;
+          document.body.appendChild(guidesContainer);
+        }
       }
 
       if (isDraggingRef.current && ghostRef.current && initialRect) {
         // Move ghost by the same delta from its original position
-        ghostRef.current.style.left = `${initialRect.left + dx}px`;
-        ghostRef.current.style.top = `${initialRect.top + dy}px`;
+        const newLeft = initialRect.left + dx;
+        const newTop = initialRect.top + dy;
+        ghostRef.current.style.left = `${newLeft}px`;
+        ghostRef.current.style.top = `${newTop}px`;
+
+        const ghostRect = {
+          left: newLeft,
+          top: newTop,
+          right: newLeft + initialRect.width,
+          bottom: newTop + initialRect.height,
+          width: initialRect.width,
+          height: initialRect.height
+        };
+        drawGuides(ghostRect);
       }
     };
 
@@ -176,10 +358,14 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
 
-      // Remove ghost
+      // Remove ghost and guides container
       if (ghostRef.current) {
         ghostRef.current.remove();
         ghostRef.current = null;
+      }
+      const guidesContainer = document.getElementById('drag-guides-container');
+      if (guidesContainer) {
+        guidesContainer.remove();
       }
 
       setIsDraggingThis(false);
