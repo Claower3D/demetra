@@ -286,6 +286,9 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
   const [modalActiveTab, setModalActiveTab] = useState<'content' | 'media' | 'scaling'>('content');
   const [addingNestedForBlockId, setAddingNestedForBlockId] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  // Refs so message handlers always read fresh values (avoid stale closures)
+  const pageLayoutsRef = useRef<any>({});
+  const layoutKeyRef   = useRef<string>('home');
 
   const getBlockHelp = (id: string) => {
     const helpData: Record<string, { title: string; desc: string; steps: string[] }> = {
@@ -442,10 +445,15 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
   const layoutKey = routeToKey(previewRoute);
   const currentLayout = pageLayouts[layoutKey];
 
-  const updateLayout = (newLayout: any) => {
+  // Keep refs in sync on every render so message handlers never capture stale values
+  pageLayoutsRef.current = pageLayouts;
+  layoutKeyRef.current   = layoutKey;
+
+  const updateLayout = (newLayout: any, overrideKey?: string) => {
+    const lk = overrideKey ?? layoutKeyRef.current;
     setPageLayouts((prev: any) => {
-      const updated = { ...prev, [layoutKey]: newLayout };
-      localStorage.setItem(`demetra_${layoutKey}_layout`, JSON.stringify(newLayout));
+      const updated = { ...prev, [lk]: newLayout };
+      localStorage.setItem(`demetra_${lk}_layout`, JSON.stringify(newLayout));
       window.dispatchEvent(new Event('storage'));
       // Immediately push updated layout to iframe so it re-renders with new order
       if (iframeRef.current?.contentWindow) {
@@ -848,49 +856,47 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
                console.error("Move nested error", err);
              }
            } else {
+             // ─── Read FRESH layout via ref – no stale closure! ───
+             const lk = layoutKeyRef.current;
+             const freshLayout = pageLayoutsRef.current[lk] || {};
              const k = arrKey || 'order';
              
-             // normalize IDs: strip any prefix to get raw ID
-             const cleanId = (str: any): string => String(str)
-               .replace('cat_item_', '')
-               .replace('cat_', '')
-               .replace('srv_', '')
-               .trim();
+             const cleanId = (str: any): string =>
+               String(str).replace('cat_item_', '').replace('cat_', '').replace('srv_', '').trim();
              
-             // Build the current order array; use sensible defaults if empty
-             let rawOrder: any[] = currentLayout[k] || [];
+             let rawOrder: any[] = freshLayout[k] || [];
              if (rawOrder.length === 0) {
-               if (k === 'order_catalog') {
-                 // Use real product IDs from stored layout or default 1-5 as strings
-                 rawOrder = ['1', '2', '3', '4', '5'];
-               } else if (k === 'order_services') {
-                 rawOrder = ['service-1', 'service-2', 'service-3', 'service-4'];
-               } else if (k === 'order_gallery') {
-                 rawOrder = ['gallery_1', 'gallery_2', 'gallery_3', 'gallery_4', 'gallery_5', 'gallery_6'];
-               }
+               if (k === 'order_catalog')       rawOrder = ['1','2','3','4','5'];
+               else if (k === 'order_services') rawOrder = ['service-1','service-2','service-3','service-4'];
+               else if (k === 'order_gallery')  rawOrder = ['gallery_1','gallery_2','gallery_3','gallery_4','gallery_5','gallery_6'];
              }
              
-             // Convert all IDs to strings for uniform comparison
              const newOrder = rawOrder.map((x: any) => String(x));
-             
              const cleanDragId = cleanId(draggedId);
-             const cleanTgtId = cleanId(targetId);
+             const cleanTgtId  = cleanId(targetId);
              
-             console.log('[MOVE_BLOCK_TO]', { k, newOrder, cleanDragId, cleanTgtId });
+             console.log('[MOVE_BLOCK_TO]', { k, lk, newOrder, cleanDragId, cleanTgtId });
              
-             const draggedIndex = newOrder.findIndex(x => cleanId(x) === cleanDragId);
-             const targetIndex = newOrder.findIndex(x => cleanId(x) === cleanTgtId);
+             const di = newOrder.findIndex(x => cleanId(x) === cleanDragId);
+             const ti = newOrder.findIndex(x => cleanId(x) === cleanTgtId);
              
-             console.log('[MOVE_BLOCK_TO] indices', { draggedIndex, targetIndex });
+             console.log('[MOVE_BLOCK_TO] indices', { di, ti });
              
-             if (draggedIndex !== -1 && targetIndex !== -1) {
-               const [movedItem] = newOrder.splice(draggedIndex, 1);
-               newOrder.splice(targetIndex, 0, movedItem);
-               const updatedLayout = { ...currentLayout, [k]: newOrder };
-               updateLayout(updatedLayout);
-               console.log('[MOVE_BLOCK_TO] saved new order', newOrder);
+             if (di !== -1 && ti !== -1) {
+               const [movedItem] = newOrder.splice(di, 1);
+               newOrder.splice(ti, 0, movedItem);
+               const updatedLayout = { ...freshLayout, [k]: newOrder };
+               // Save directly – bypass React state closure
+               localStorage.setItem(`demetra_${lk}_layout`, JSON.stringify(updatedLayout));
+               window.dispatchEvent(new Event('storage'));
+               if (iframeRef.current?.contentWindow) {
+                 iframeRef.current.contentWindow.postMessage({ type: 'DEMETRA_UPDATE_LAYOUT', layout: updatedLayout }, '*');
+               }
+               // Also update React state for UI consistency
+               setPageLayouts((prev: any) => ({ ...prev, [lk]: updatedLayout }));
+               console.log('[MOVE_BLOCK_TO] saved', newOrder);
              } else {
-               console.warn('[MOVE_BLOCK_TO] Could not find indices - drag/target IDs mismatch', { cleanDragId, cleanTgtId, newOrder });
+               console.warn('[MOVE_BLOCK_TO] IDs not found', { cleanDragId, cleanTgtId, newOrder });
              }
            }
         }
@@ -910,7 +916,8 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
     };
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [currentLayout, currentLang, updateTranslation, previewRoute, editingKey]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty deps: refs keep values fresh
 
   useEffect(() => {
     if (iframeRef.current?.contentWindow) {
