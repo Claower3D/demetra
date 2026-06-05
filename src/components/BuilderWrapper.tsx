@@ -220,7 +220,7 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
          )}
        </AnimatePresence>
        
-       <div 
+       <div className={isBuilder ? "builder-content-no-drag" : ""}
          onClickCapture={isBuilder ? (e) => {
            if ((e.target as HTMLElement).isContentEditable) return;
            e.preventDefault();

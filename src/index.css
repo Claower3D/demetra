@@ -738,6 +738,11 @@ body.builder-mode grab-handle:active {
   cursor: grabbing;
 }
 
+.builder-content-no-drag * {
+  -webkit-user-drag: none !important;
+  user-drag: none !important;
+}
+
 /* ==========================================
    PREMIUM LIGHT THEME POLISH OVERRIDES
    ========================================== */
