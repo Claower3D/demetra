@@ -23,11 +23,32 @@ export default function Layout() {
   const location = useLocation();
 
   const [pages, setPages] = useState(() => getPagesList());
+  const [showDesignerGrid, setShowDesignerGrid] = useState(() => {
+    return localStorage.getItem('demetra_show_designer_grid') === 'true';
+  });
 
   useEffect(() => {
     const sync = () => setPages(getPagesList());
     window.addEventListener('storage', sync);
     return () => window.removeEventListener('storage', sync);
+  }, []);
+
+  useEffect(() => {
+    const syncGrid = () => {
+      setShowDesignerGrid(localStorage.getItem('demetra_show_designer_grid') === 'true');
+    };
+    window.addEventListener('storage', syncGrid);
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data && e.data.type === 'DEMETRA_TOGGLE_GRID') {
+        setShowDesignerGrid(e.data.enabled);
+        localStorage.setItem('demetra_show_designer_grid', String(e.data.enabled));
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => {
+      window.removeEventListener('storage', syncGrid);
+      window.removeEventListener('message', handleMessage);
+    };
   }, []);
 
   useEffect(() => {
@@ -316,6 +337,47 @@ export default function Layout() {
         </div>
       </footer>
       </BuilderWrapper>
+      {isBuilder && showDesignerGrid && (
+        <div 
+          style={{ 
+            position: 'fixed', 
+            top: 0, 
+            left: 0, 
+            right: 0, 
+            bottom: 0, 
+            pointerEvents: 'none', 
+            zIndex: 9999, 
+            display: 'flex', 
+            justifyContent: 'center',
+            background: 'repeating-linear-gradient(to bottom, transparent, transparent 19px, rgba(255, 0, 0, 0.02) 19px, rgba(255, 0, 0, 0.02) 20px)'
+          }}
+        >
+          <div 
+            style={{ 
+              width: '100%', 
+              maxWidth: '1280px', 
+              height: '100%', 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(12, 1fr)', 
+              gap: '2rem', 
+              padding: '0 2rem', 
+              boxSizing: 'border-box' 
+            }}
+          >
+            {Array.from({ length: 12 }).map((_, i) => (
+              <div 
+                key={i} 
+                style={{ 
+                  height: '100%', 
+                  background: 'rgba(255, 0, 0, 0.015)', 
+                  borderLeft: '1px dashed rgba(255, 0, 0, 0.06)', 
+                  borderRight: '1px dashed rgba(255, 0, 0, 0.06)' 
+                }} 
+              />
+            ))}
+          </div>
+        </div>
+      )}
       <FloatingAssistant />
     </div>
   );

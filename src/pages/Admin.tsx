@@ -26,6 +26,7 @@ import {
   Menu,
   X,
   PlusCircle,
+  Grid,
   ExternalLink,
   Phone,
   Mail,
@@ -277,6 +278,9 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [previewRoute, setPreviewRoute] = useState<string>('/');
   const [isLibraryOpen, setIsLibraryOpen] = useState<boolean>(true);
+  const [showDesignerGrid, setShowDesignerGrid] = useState<boolean>(() => {
+    return localStorage.getItem('demetra_show_designer_grid') === 'true';
+  });
   const [libSearch, setLibSearch] = useState<string>('');
   const [hoveredBlockId, setHoveredBlockId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -882,8 +886,16 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
     if (iframeRef.current?.contentWindow) {
       iframeRef.current.contentWindow.postMessage({ type: 'DEMETRA_UPDATE_LAYOUT', layout: currentLayout }, '*');
       iframeRef.current.contentWindow.postMessage({ type: 'DEMETRA_UPDATE_TRANSLATIONS', translations: allTranslations }, '*');
+      iframeRef.current.contentWindow.postMessage({ type: 'DEMETRA_TOGGLE_GRID', enabled: showDesignerGrid }, '*');
     }
-  }, [currentLayout, allTranslations, previewRoute]);
+  }, [currentLayout, allTranslations, previewRoute, showDesignerGrid]);
+
+  useEffect(() => {
+    localStorage.setItem('demetra_show_designer_grid', String(showDesignerGrid));
+    if (iframeRef.current?.contentWindow) {
+      iframeRef.current.contentWindow.postMessage({ type: 'DEMETRA_TOGGLE_GRID', enabled: showDesignerGrid }, '*');
+    }
+  }, [showDesignerGrid]);
 
   return (
     <div className="tilda-editor" style={{ position: 'relative', height: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -912,6 +924,28 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
             >
               <PlusCircle size={14} />
               Библиотека блоков
+            </button>
+
+            {/* Designer grid toggle button */}
+            <button
+              onClick={() => setShowDesignerGrid(!showDesignerGrid)}
+              style={{
+                background: showDesignerGrid ? 'rgba(0, 255, 65, 0.1)' : '#222',
+                color: showDesignerGrid ? '#00ff41' : '#aaa',
+                border: showDesignerGrid ? '1px solid #00ff41' : '1px solid #444',
+                padding: '0.5rem 1rem',
+                borderRadius: '8px',
+                fontSize: '0.8rem',
+                fontWeight: '800',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              <Grid size={14} />
+              Сетка
             </button>
 
             <select 
