@@ -258,6 +258,8 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
   const [isLibraryOpen, setIsLibraryOpen] = useState<boolean>(true);
   const [libSearch, setLibSearch] = useState<string>('');
   const [hoveredBlockId, setHoveredBlockId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [modalActiveTab, setModalActiveTab] = useState<'content' | 'media' | 'scaling'>('content');
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const getBlockHelp = (id: string) => {
@@ -513,6 +515,11 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
         if (action === 'EDIT_BLOCK') {
           setEditingKey(id);
           setIsSettingsOpen(true);
+        }
+        if (action === 'OPEN_MODAL') {
+          setEditingKey(id);
+          setIsModalOpen(true);
+          setModalActiveTab(e.data.tab || 'content');
         }
         if (action === 'MOVE_UP') moveSection(arrayKey, index, 'up');
         if (action === 'MOVE_DOWN') moveSection(arrayKey, index, 'down');
@@ -1072,8 +1079,848 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Figma-Style Block Editor Modal */}
+      <AnimatePresence>
+        {isModalOpen && editingKey && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100vw',
+              height: '100vh',
+              background: 'rgba(0, 0, 0, 0.85)',
+              backdropFilter: 'blur(16px)',
+              zIndex: 8000,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onClick={() => setIsModalOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 15 }}
+              style={{
+                width: '850px',
+                maxWidth: '95vw',
+                height: '650px',
+                maxHeight: '90vh',
+                background: '#0d0d0e',
+                border: '1px solid #2a2b2f',
+                borderRadius: '24px',
+                display: 'flex',
+                flexDirection: 'column',
+                boxShadow: '0 25px 70px rgba(0, 255, 65, 0.12)',
+                overflow: 'hidden',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div style={{
+                padding: '1.5rem 2rem',
+                borderBottom: '1px solid #1a1b1e',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                background: '#070708'
+              }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <span style={{ fontSize: '0.65rem', background: 'rgba(0,255,65,0.08)', color: '#00ff41', border: '1px solid rgba(0,255,65,0.2)', padding: '0.25rem 0.5rem', borderRadius: '4px', fontWeight: '900', letterSpacing: '0.05em' }}>
+                      {editingKey.startsWith('new_block_') ? 'ПОЛЬЗОВАТЕЛЬСКИЙ БЛОК' : 'СИСТЕМНЫЙ БЛОК'}
+                    </span>
+                    <h2 style={{ fontSize: '1.1rem', fontWeight: '900', color: '#fff', margin: 0 }}>
+                      Настройки элемента: <span style={{ color: '#aaa' }}>{editingKey}</span>
+                    </h2>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  style={{
+                    background: '#1a1b1e',
+                    border: '1px solid #333',
+                    color: '#888',
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    transition: '0.2s',
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = '#fff'; e.currentTarget.style.borderColor = '#555'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = '#888'; e.currentTarget.style.borderColor = '#333'; }}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Modal Tabs */}
+              <div style={{
+                display: 'flex',
+                background: '#09090a',
+                borderBottom: '1px solid #1a1b1e',
+                padding: '0 1rem',
+              }}>
+                {[
+                  { id: 'content', label: '📝 Текст & Информация' },
+                  { id: 'media', label: '🖼️ Изображения & Видео' },
+                  { id: 'scaling', label: '📐 Размеры & Масштабирование' },
+                ].map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setModalActiveTab(tab.id as any)}
+                    style={{
+                      padding: '1.25rem 1.5rem',
+                      background: 'none',
+                      border: 'none',
+                      borderBottom: modalActiveTab === tab.id ? '2px solid #00ff41' : '2px solid transparent',
+                      color: modalActiveTab === tab.id ? '#fff' : '#6c6f75',
+                      fontWeight: '800',
+                      fontSize: '0.85rem',
+                      cursor: 'pointer',
+                      transition: '0.2s',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}
+                    onMouseEnter={(e) => { if (modalActiveTab !== tab.id) e.currentTarget.style.color = '#aaa'; }}
+                    onMouseLeave={(e) => { if (modalActiveTab !== tab.id) e.currentTarget.style.color = '#6c6f75'; }}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Modal Body */}
+              <div style={{
+                flex: 1,
+                padding: '2rem 2.5rem',
+                overflowY: 'auto',
+                background: '#0d0d0e'
+              }}>
+                <ModalBodyContent 
+                  editingKey={editingKey}
+                  modalActiveTab={modalActiveTab}
+                  currentLayout={currentLayout}
+                  updateLayout={updateLayout}
+                  allTranslations={allTranslations}
+                  updateTranslation={updateTranslation}
+                />
+              </div>
+
+              {/* Modal Footer */}
+              <div style={{
+                padding: '1.5rem 2.5rem',
+                borderTop: '1px solid #1a1b1e',
+                background: '#070708',
+                display: 'flex',
+                justifyContent: 'flex-end',
+                gap: '1rem'
+              }}>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  style={{
+                    background: '#141416',
+                    border: '1px solid #2a2b2f',
+                    color: '#fff',
+                    padding: '0.85rem 2rem',
+                    borderRadius: '12px',
+                    fontWeight: '800',
+                    fontSize: '0.9rem',
+                    cursor: 'pointer',
+                    transition: '0.2s'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = '#1a1b1e'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = '#141416'}
+                >
+                  Закрыть
+                </button>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  style={{
+                    background: '#00ff41',
+                    border: 'none',
+                    color: '#000',
+                    padding: '0.85rem 2.5rem',
+                    borderRadius: '12px',
+                    fontWeight: '900',
+                    fontSize: '0.9rem',
+                    cursor: 'pointer',
+                    boxShadow: '0 0 30px rgba(0, 255, 65, 0.25)',
+                    transition: '0.2s'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 0 40px rgba(0, 255, 65, 0.4)'}
+                  onMouseLeave={(e) => e.currentTarget.style.boxShadow = '0 0 30px rgba(0, 255, 65, 0.25)'}
+                >
+                  Применить изменения
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
+}
+
+// ─── Modal Body Content Component ──────────────────────────────────────────
+function ModalBodyContent({ 
+  editingKey, 
+  modalActiveTab, 
+  currentLayout, 
+  updateLayout, 
+  allTranslations, 
+  updateTranslation 
+}: { 
+  editingKey: string; 
+  modalActiveTab: 'content' | 'media' | 'scaling'; 
+  currentLayout: any; 
+  updateLayout: any; 
+  allTranslations: any; 
+  updateTranslation: any; 
+}) {
+  const [activeLang, setActiveLang] = useState<'ru' | 'kk' | 'en'>('ru');
+  const isCustomBlock = editingKey.startsWith('new_block_');
+  const isGalleryItem = editingKey.startsWith('gallery_');
+  
+  const inputStyle: React.CSSProperties = {
+    background: '#111',
+    border: '1px solid #333',
+    padding: '0.75rem 1rem',
+    color: '#fff',
+    fontSize: '0.9rem',
+    borderRadius: '10px',
+    outline: 'none',
+    width: '100%',
+    boxSizing: 'border-box'
+  };
+
+  const labelStyle = (text: string) => (
+    <label style={{ fontSize: '0.7rem', color: '#00ff41', fontWeight: '800', letterSpacing: '0.05em', marginBottom: '0.4rem', display: 'block' }}>
+      {text.toUpperCase()}
+    </label>
+  );
+
+  // 1. SCALING & DIMENSIONS TAB
+  if (modalActiveTab === 'scaling') {
+    const s = currentLayout.styles?.[editingKey] || {};
+    const setStyleVal = (key: string, val: any) => {
+      updateLayout({
+        ...currentLayout,
+        styles: {
+          ...(currentLayout.styles || {}),
+          [editingKey]: { ...(currentLayout.styles?.[editingKey] || {}), [key]: val }
+        }
+      });
+    };
+
+    const getNumVal = (cssVal: string | number | undefined, fallback: number) => {
+      if (cssVal === undefined) return fallback;
+      if (typeof cssVal === 'number') return cssVal;
+      const num = parseInt(cssVal, 10);
+      return isNaN(num) ? fallback : num;
+    };
+
+    const padTop = getNumVal(s.paddingTop, 48);
+    const padBottom = getNumVal(s.paddingBottom, 48);
+    const padLeft = getNumVal(s.paddingLeft, 0);
+    const padRight = getNumVal(s.paddingRight, 0);
+    const margTop = getNumVal(s.marginTop, 0);
+    const margBottom = getNumVal(s.marginBottom, 0);
+    const borderRadius = getNumVal(s.borderRadius, 12);
+    const opacity = getNumVal(s.opacity === undefined ? 1 : s.opacity, 1) * 100;
+    
+    let scaleVal = 1;
+    if (s.transform && s.transform.includes('scale')) {
+      const match = s.transform.match(/scale\(([^)]+)\)/);
+      if (match && match[1]) scaleVal = parseFloat(match[1]) || 1;
+    }
+
+    return (
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <div>
+            {labelStyle(`Масштаб элемента (${scaleVal.toFixed(2)}x)`)}
+            <input 
+              type="range" min="0.5" max="1.5" step="0.05" 
+              value={scaleVal} 
+              onChange={e => setStyleVal('transform', `scale(${e.target.value})`)} 
+              style={{ width: '100%', accentColor: '#00ff41', cursor: 'pointer' }}
+            />
+          </div>
+
+          <div>
+            {labelStyle(`Внутренние отступы сверху / снизу (${padTop}px / ${padBottom}px)`)}
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <input 
+                type="range" min="0" max="120" 
+                value={padTop} 
+                onChange={e => setStyleVal('paddingTop', `${e.target.value}px`)} 
+                style={{ flex: 1, accentColor: '#00ff41', cursor: 'pointer' }}
+              />
+              <input 
+                type="range" min="0" max="120" 
+                value={padBottom} 
+                onChange={e => setStyleVal('paddingBottom', `${e.target.value}px`)} 
+                style={{ flex: 1, accentColor: '#00ff41', cursor: 'pointer' }}
+              />
+            </div>
+          </div>
+
+          <div>
+            {labelStyle(`Внутренние отступы слева / справа (${padLeft}px / ${padRight}px)`)}
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <input 
+                type="range" min="0" max="80" 
+                value={padLeft} 
+                onChange={e => setStyleVal('paddingLeft', `${e.target.value}px`)} 
+                style={{ flex: 1, accentColor: '#00ff41', cursor: 'pointer' }}
+              />
+              <input 
+                type="range" min="0" max="80" 
+                value={padRight} 
+                onChange={e => setStyleVal('paddingRight', `${e.target.value}px`)} 
+                style={{ flex: 1, accentColor: '#00ff41', cursor: 'pointer' }}
+              />
+            </div>
+          </div>
+
+          <div>
+            {labelStyle(`Внешние отступы сверху / снизу (${margTop}px / ${margBottom}px)`)}
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <input 
+                type="range" min="0" max="60" 
+                value={margTop} 
+                onChange={e => setStyleVal('marginTop', `${e.target.value}px`)} 
+                style={{ flex: 1, accentColor: '#00ff41', cursor: 'pointer' }}
+              />
+              <input 
+                type="range" min="0" max="60" 
+                value={margBottom} 
+                onChange={e => setStyleVal('marginBottom', `${e.target.value}px`)} 
+                style={{ flex: 1, accentColor: '#00ff41', cursor: 'pointer' }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <div>
+            {labelStyle(`Скругление углов (${borderRadius}px)`)}
+            <input 
+              type="range" min="0" max="50" 
+              value={borderRadius} 
+              onChange={e => setStyleVal('borderRadius', `${e.target.value}px`)} 
+              style={{ width: '100%', accentColor: '#00ff41', cursor: 'pointer' }}
+            />
+          </div>
+
+          <div>
+            {labelStyle(`Прозрачность (${opacity}%)`)}
+            <input 
+              type="range" min="0" max="100" 
+              value={opacity} 
+              onChange={e => setStyleVal('opacity', parseFloat((parseInt(e.target.value) / 100).toFixed(2)))} 
+              style={{ width: '100%', accentColor: '#00ff41', cursor: 'pointer' }}
+            />
+          </div>
+
+          <div>
+            {labelStyle('Ширина в сетке (Grid Column Span)')}
+            <select 
+              value={s.gridColumn || 'span 12'} 
+              onChange={e => setStyleVal('gridColumn', e.target.value)} 
+              style={{ ...inputStyle, cursor: 'pointer' }}
+            >
+              <option value="span 12">100% Ширина (12 колонок)</option>
+              <option value="span 10">83% Ширина (10 колонок)</option>
+              <option value="span 8">66% Ширина (8 колонок)</option>
+              <option value="span 6">50% Ширина (6 колонок)</option>
+              <option value="span 4">33% Ширина (4 колонки)</option>
+              <option value="span 3">25% Ширина (3 колонки)</option>
+            </select>
+          </div>
+
+          <div>
+            {labelStyle('Высота в сетке (Grid Row Span)')}
+            <select 
+              value={s.gridRow || 'span 1'} 
+              onChange={e => setStyleVal('gridRow', e.target.value)} 
+              style={{ ...inputStyle, cursor: 'pointer' }}
+            >
+              <option value="span 1">1 Ряд (Стандартная)</option>
+              <option value="span 2">2 Ряда (Высокая)</option>
+              <option value="span 3">3 Ряда</option>
+              <option value="span 4">4 Ряда</option>
+            </select>
+          </div>
+
+          <div>
+            {labelStyle('Цвет фона / Заливка (CSS)')}
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
+              <input 
+                type="color" 
+                value={s.backgroundColor || '#0d0d0e'} 
+                onChange={e => setStyleVal('backgroundColor', e.target.value)} 
+                style={{ width: '42px', height: '42px', border: '1px solid #333', borderRadius: '8px', cursor: 'pointer', background: 'none', padding: 0 }}
+              />
+              <input 
+                type="text" 
+                value={s.background || ''} 
+                onChange={e => setStyleVal('background', e.target.value)} 
+                placeholder="transparent или linear-gradient..." 
+                style={inputStyle}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. MEDIA TAB (PHOTOS & VIDEOS)
+  if (modalActiveTab === 'media') {
+    let currentImg = '';
+    let currentVideo = '';
+    let isVideoType = false;
+
+    const presets = [
+      { url: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80', name: 'Оборудование / Сталь' },
+      { url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80', name: 'Автоматика / Монитор' },
+      { url: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80', name: 'Завод / Конструкция' },
+      { url: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80', name: 'Ленты / Логистика' },
+      { url: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80', name: 'Сварка / Металл' },
+      { url: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80', name: 'Склад труб / Прокат' },
+    ];
+
+    if (isCustomBlock) {
+      try {
+        const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+        const data = customBlocks[editingKey] || {};
+        currentImg = data.src || '';
+        currentVideo = data.videoSrc || '';
+        isVideoType = data.mediaType === 'video';
+      } catch {}
+    } else if (isGalleryItem) {
+      const item = currentLayout.items?.[editingKey] || {};
+      currentImg = item.src || '';
+      currentVideo = item.src || '';
+      isVideoType = item.type === 'video';
+    } else {
+      currentImg = currentLayout.images?.[`${editingKey}_img`] || '';
+      currentVideo = currentLayout.videos?.[`${editingKey}_video`] || '';
+      isVideoType = currentLayout.mediaTypes?.[`${editingKey}_type`] === 'video';
+    }
+
+    const updateMedia = (imgUrl: string, vidUrl: string, isVid: boolean) => {
+      if (isCustomBlock) {
+        try {
+          const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+          const data = customBlocks[editingKey] || {};
+          const next = { ...data, src: imgUrl, videoSrc: vidUrl, mediaType: isVid ? 'video' : 'image' };
+          customBlocks[editingKey] = next;
+          localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
+          window.dispatchEvent(new Event('storage'));
+        } catch {}
+      } else if (isGalleryItem) {
+        const item = currentLayout.items?.[editingKey] || {};
+        updateLayout({
+          ...currentLayout,
+          items: {
+            ...(currentLayout.items || {}),
+            [editingKey]: { ...item, src: isVid ? vidUrl : imgUrl, type: isVid ? 'video' : 'image' }
+          }
+        });
+      } else {
+        updateLayout({
+          ...currentLayout,
+          images: { ...(currentLayout.images || {}), [`${editingKey}_img`]: imgUrl },
+          videos: { ...(currentLayout.videos || {}), [`${editingKey}_video`]: vidUrl },
+          mediaTypes: { ...(currentLayout.mediaTypes || {}), [`${editingKey}_type`]: isVid ? 'video' : 'image' }
+        });
+      }
+    };
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div>
+              {labelStyle('Тип фонового контента')}
+              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.25rem' }}>
+                <button
+                  onClick={() => updateMedia(currentImg, currentVideo, false)}
+                  style={{
+                    flex: 1, padding: '0.75rem', borderRadius: '10px', border: '1px solid',
+                    borderColor: !isVideoType ? '#00ff41' : '#333',
+                    background: !isVideoType ? 'rgba(0,255,65,0.08)' : '#111',
+                    color: !isVideoType ? '#00ff41' : '#888',
+                    fontWeight: '800', cursor: 'pointer'
+                  }}
+                >
+                  🖼️ Фото / Изображение
+                </button>
+                <button
+                  onClick={() => updateMedia(currentImg, currentVideo, true)}
+                  style={{
+                    flex: 1, padding: '0.75rem', borderRadius: '10px', border: '1px solid',
+                    borderColor: isVideoType ? '#00ff41' : '#333',
+                    background: isVideoType ? 'rgba(0,255,65,0.08)' : '#111',
+                    color: isVideoType ? '#00ff41' : '#888',
+                    fontWeight: '800', cursor: 'pointer'
+                  }}
+                >
+                  🎥 Видеоролик (BG)
+                </button>
+              </div>
+            </div>
+
+            {!isVideoType ? (
+              <div>
+                {labelStyle('Ссылка на изображение (Image URL)')}
+                <input 
+                  type="text" value={currentImg} 
+                  onChange={e => updateMedia(e.target.value, currentVideo, false)}
+                  placeholder="https://... или /image.png" 
+                  style={inputStyle}
+                />
+              </div>
+            ) : (
+              <div>
+                {labelStyle('Ссылка на видео (YouTube / Direct mp4)')}
+                <input 
+                  type="text" value={currentVideo} 
+                  onChange={e => updateMedia(currentImg, e.target.value, true)}
+                  placeholder="https://www.youtube.com/watch?v=... или /video.mp4" 
+                  style={inputStyle}
+                />
+              </div>
+            )}
+
+            <div>
+              {labelStyle('Предпросмотр медиафайла')}
+              <div style={{
+                width: '100%', height: '180px', borderRadius: '14px', border: '1px solid #333',
+                background: '#070708', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                overflow: 'hidden', marginTop: '0.4rem', position: 'relative'
+              }}>
+                {isVideoType ? (
+                  currentVideo ? (
+                    <div style={{ color: '#00ff41', fontSize: '0.85rem', fontWeight: 'bold', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                      <span>🎥 Видео готово к фоновому воспроизведению</span>
+                      <span style={{ fontSize: '0.7rem', color: '#666' }}>{currentVideo}</span>
+                    </div>
+                  ) : (
+                    <span style={{ color: '#555', fontSize: '0.8rem' }}>Видео не выбрано</span>
+                  )
+                ) : (
+                  currentImg ? (
+                    <img src={currentImg} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <span style={{ color: '#555', fontSize: '0.8rem' }}>Изображение не выбрано</span>
+                  )
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div>
+            {labelStyle('Быстрый выбор промышленных фото (Галерея)')}
+            <div style={{
+              display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginTop: '0.5rem',
+              maxHeight: '360px', overflowY: 'auto', paddingRight: '0.5rem'
+            }}>
+              {presets.map((p, i) => (
+                <div
+                  key={i}
+                  onClick={() => updateMedia(p.url, currentVideo, isVideoType)}
+                  style={{
+                    borderRadius: '12px', overflow: 'hidden', border: currentImg === p.url ? '2px solid #00ff41' : '1px solid #222',
+                    cursor: 'pointer', position: 'relative', height: '100px', transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.transform = 'scale(0.97)'}
+                  onMouseLeave={e => e.currentTarget.style.transform = 'none'}
+                >
+                  <img src={p.url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.6 }} />
+                  <div style={{
+                    position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.7)',
+                    padding: '0.4rem', fontSize: '0.65rem', color: '#fff', fontWeight: '800', textAlign: 'center'
+                  }}>{p.name}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 3. CONTENT & TRANSLATIONS TAB
+  if (modalActiveTab === 'content') {
+    if (isCustomBlock) {
+      let data: any = {};
+      try {
+        data = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}')[editingKey] || { type: 'heading' };
+      } catch {}
+
+      const updateCustomField = (fieldKey: string, val: string) => {
+        try {
+          const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+          const currentData = customBlocks[editingKey] || {};
+          const next = { ...currentData, [fieldKey]: val };
+          customBlocks[editingKey] = next;
+          localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
+          window.dispatchEvent(new Event('storage'));
+        } catch {}
+      };
+
+      const selectType = (t: string) => {
+        try {
+          const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+          const currentData = customBlocks[editingKey] || {};
+          const next = { ...currentData, type: t };
+          customBlocks[editingKey] = next;
+          localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
+          window.dispatchEvent(new Event('storage'));
+        } catch {}
+      };
+
+      const customInp = (label: string, fieldName: string, multiline = false) => {
+        const keyWithLang = `${fieldName}_${activeLang}`;
+        const val = data[keyWithLang] || data[fieldName] || '';
+        return (
+          <div style={{ display: 'grid', gap: '0.4rem' }}>
+            {labelStyle(`${label} (${activeLang.toUpperCase()})`)}
+            {multiline ? (
+              <textarea 
+                value={val} 
+                onChange={e => updateCustomField(keyWithLang, e.target.value)} 
+                style={{ ...inputStyle, minHeight: '90px', resize: 'vertical' }}
+              />
+            ) : (
+              <input 
+                type="text" 
+                value={val} 
+                onChange={e => updateCustomField(keyWithLang, e.target.value)} 
+                style={inputStyle}
+              />
+            )}
+          </div>
+        );
+      };
+
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: '0.5rem', background: '#111', padding: '0.25rem', borderRadius: '8px', border: '1px solid #222' }}>
+              {(['ru', 'kk', 'en'] as const).map(l => (
+                <button
+                  key={l}
+                  onClick={() => setActiveLang(l)}
+                  style={{
+                    padding: '0.4rem 1rem', borderRadius: '6px', border: 'none',
+                    background: activeLang === l ? '#00ff41' : 'transparent',
+                    color: activeLang === l ? '#000' : '#888',
+                    fontWeight: '900', fontSize: '0.75rem', cursor: 'pointer', transition: '0.2s'
+                  }}
+                >
+                  {l.toUpperCase()}
+                </button>
+              ))}
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <span style={{ fontSize: '0.75rem', color: '#666', fontWeight: 'bold' }}>ТИП БЛОКА:</span>
+              <select
+                value={data.type || 'heading'}
+                onChange={e => selectType(e.target.value)}
+                style={{ ...inputStyle, width: '200px', padding: '0.5rem 1rem' }}
+              >
+                <option value="heading">Заголовок страницы</option>
+                <option value="text">Текст (Простой)</option>
+                <option value="card">Карточка с картинкой</option>
+                <option value="two_col">Две колонки</option>
+                <option value="image_text">Фото + Текст</option>
+                <option value="cta_banner">Промо-баннер (CTA)</option>
+                <option value="divider">Разделитель</option>
+              </select>
+            </div>
+          </div>
+
+          <div style={{ height: '1px', background: '#222' }} />
+
+          {(data.type === 'heading' || data.type === 'cta_banner' || data.type === 'image_text') && customInp('Надпись над заголовком', 'subheading')}
+          {(data.type !== 'text' && data.type !== 'divider' && data.type !== 'button') && customInp('Главный Заголовок', 'heading')}
+          {(data.type !== 'divider' && data.type !== 'button') && customInp('Описание / Основной текст', 'body', true)}
+          
+          {data.type === 'two_col' && (
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+              {customInp('Левая колонка', 'col1', true)}
+              {customInp('Правая колонка', 'col2', true)}
+            </div>
+          )}
+
+          {(data.type === 'button' || data.type === 'card' || data.type === 'cta_banner' || data.type === 'image_text') && (
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+              {customInp('Текст кнопки / ссылки', 'label')}
+              <div style={{ display: 'grid', gap: '0.4rem' }}>
+                {labelStyle('Адрес ссылки / URL')}
+                <input 
+                  type="text" value={data.href || ''} 
+                  onChange={e => updateCustomField('href', e.target.value)} 
+                  placeholder="/catalog"
+                  style={inputStyle}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (isGalleryItem) {
+      const item = currentLayout.items?.[editingKey] || {};
+      const updateItemLang = (l: string, fieldKey: string, val: string) => {
+        updateLayout({
+          ...currentLayout,
+          items: {
+            ...(currentLayout.items || {}),
+            [editingKey]: {
+              ...item,
+              [l]: {
+                ...(item[l] || {}),
+                [fieldKey]: val
+              }
+            }
+          }
+        });
+      };
+
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <div style={{ display: 'flex', gap: '0.5rem', background: '#111', padding: '0.25rem', borderRadius: '8px', border: '1px solid #222', width: 'fit-content' }}>
+            {(['ru', 'kk', 'en'] as const).map(l => (
+              <button
+                key={l}
+                onClick={() => setActiveLang(l)}
+                style={{
+                  padding: '0.4rem 1rem', borderRadius: '6px', border: 'none',
+                  background: activeLang === l ? '#00ff41' : 'transparent',
+                  color: activeLang === l ? '#000' : '#888',
+                  fontWeight: '900', fontSize: '0.75rem', cursor: 'pointer', transition: '0.2s'
+                }}
+              >
+                {l.toUpperCase()}
+              </button>
+            ))}
+          </div>
+
+          <div style={{ display: 'grid', gap: '1.25rem' }}>
+            <div style={{ display: 'grid', gap: '0.4rem' }}>
+              {labelStyle(`Название медиафайла (${activeLang.toUpperCase()})`)}
+              <input 
+                type="text" 
+                value={item[activeLang]?.title || ''} 
+                onChange={e => updateItemLang(activeLang, 'title', e.target.value)} 
+                placeholder="Введите название..."
+                style={inputStyle}
+              />
+            </div>
+            <div style={{ display: 'grid', gap: '0.4rem' }}>
+              {labelStyle(`Описание медиафайла (${activeLang.toUpperCase()})`)}
+              <textarea 
+                value={item[activeLang]?.desc || ''} 
+                onChange={e => updateItemLang(activeLang, 'desc', e.target.value)} 
+                placeholder="Введите подробное описание..."
+                style={{ ...inputStyle, minHeight: '120px', resize: 'vertical' }}
+              />
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const relevantKeys = Object.keys(allTranslations.ru).filter(key => {
+      if (editingKey === 'hero') return key.startsWith('hero_') || key === 'btn_catalog' || key === 'btn_services';
+      if (editingKey === 'catalog') return key.startsWith('cat_') || key === 'btn_details';
+      if (editingKey === 'services') return key.startsWith('srv_');
+      if (editingKey === 'partner') return key.startsWith('partner_');
+      if (editingKey === 'reviews') return key.startsWith('reviews_') || key.startsWith('review_');
+      if (editingKey === 'contact') return key.startsWith('contact_');
+      if (editingKey === 'faq') return key.startsWith('faq_');
+      if (editingKey === 'pay') return key.startsWith('pay_');
+      return key.toLowerCase().includes(editingKey.toLowerCase());
+    });
+
+    const displayKeys = relevantKeys.length > 0 ? relevantKeys : Object.keys(allTranslations.ru).slice(0, 8);
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '0.5rem', background: '#111', padding: '0.25rem', borderRadius: '8px', border: '1px solid #222' }}>
+            {(['ru', 'kk', 'en'] as const).map(l => (
+              <button
+                key={l}
+                onClick={() => setActiveLang(l)}
+                style={{
+                  padding: '0.4rem 1rem', borderRadius: '6px', border: 'none',
+                  background: activeLang === l ? '#00ff41' : 'transparent',
+                  color: activeLang === l ? '#000' : '#888',
+                  fontWeight: '900', fontSize: '0.75rem', cursor: 'pointer', transition: '0.2s'
+                }}
+              >
+                {l.toUpperCase()}
+              </button>
+            ))}
+          </div>
+          <span style={{ fontSize: '0.75rem', color: '#666', fontWeight: 'bold' }}>
+            Найдено полей: {displayKeys.length}
+          </span>
+        </div>
+
+        <div style={{ height: '1px', background: '#222' }} />
+
+        <div style={{ display: 'grid', gap: '1.5rem', maxHeight: '380px', overflowY: 'auto', paddingRight: '0.5rem' }}>
+          {displayKeys.map(k => {
+            const val = allTranslations[activeLang]?.[k] || '';
+            const isMultiline = val.length > 60 || k.includes('desc') || k.includes('subtitle') || k.includes('review_');
+            return (
+              <div key={k} style={{ display: 'grid', gap: '0.4rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  {labelStyle(k.replace(/_/g, ' '))}
+                  <span style={{ fontSize: '0.6rem', color: '#555', fontFamily: 'monospace' }}>KEY: {k}</span>
+                </div>
+                {isMultiline ? (
+                  <textarea
+                    value={val}
+                    onChange={e => updateTranslation(activeLang, k, e.target.value)}
+                    style={{ ...inputStyle, minHeight: '80px', resize: 'vertical' }}
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    value={val}
+                    onChange={e => updateTranslation(activeLang, k, e.target.value)}
+                    style={inputStyle}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  return <div style={{ color: '#888' }}>Нет доступных настроек для этой вкладки.</div>;
 }
 
 // OTHER COMPONENTS (RE-INTEGRATED FROM PREVIOUS V1.8)

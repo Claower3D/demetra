@@ -39,9 +39,18 @@ export function deleteCustomBlock(id: string) {
 
 // ----------------- Renderer -----------------
 export default function CustomBlock({ id, data }: { id: string; data: CustomBlockData }) {
+  const { lang } = useLang();
   const accent = data.accent || 'var(--primary)';
   const bg = data.bg || 'transparent';
   const align = data.align || 'left';
+
+  // Support multilingual fields (e.g. heading_ru, heading_kk, heading_en)
+  const heading = (data as any)[`heading_${lang}`] || data.heading;
+  const subheading = (data as any)[`subheading_${lang}`] || data.subheading;
+  const body = (data as any)[`body_${lang}`] || data.body;
+  const label = (data as any)[`label_${lang}`] || data.label;
+  const col1 = (data as any)[`col1_${lang}`] || data.col1;
+  const col2 = (data as any)[`col2_${lang}`] || data.col2;
 
   const base: React.CSSProperties = {
     background: bg,
@@ -55,17 +64,17 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
     case 'heading':
       return (
         <div style={base}>
-          {data.subheading && (
+          {subheading && (
             <div style={{ color: accent, fontWeight: '800', fontSize: '0.8rem', letterSpacing: '0.3em', marginBottom: '1rem', textTransform: 'uppercase' }}>
-              ◆ {data.subheading}
+              ◆ {subheading}
             </div>
           )}
           <h2 style={{ fontSize: 'clamp(2rem, 5vw, 4rem)', fontWeight: '900', lineHeight: 1.05, margin: 0 }}>
-            {data.heading || 'Заголовок блока'}
+            {heading || 'Заголовок блока'}
           </h2>
-          {data.body && (
+          {body && (
             <p style={{ marginTop: '1.5rem', fontSize: '1.1rem', color: 'var(--text-muted)', maxWidth: '720px', lineHeight: 1.7, margin: '1.5rem auto 0' }}>
-              {data.body}
+              {body}
             </p>
           )}
         </div>
@@ -75,7 +84,7 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
       return (
         <div style={base}>
           <p style={{ fontSize: '1.15rem', lineHeight: 1.8, color: 'var(--text-muted)', maxWidth: '800px', margin: align === 'center' ? '0 auto' : '0', whiteSpace: 'pre-wrap' }}>
-            {data.body || 'Введите текст блока...'}
+            {body || 'Введите текст блока...'}
           </p>
         </div>
       );
@@ -100,7 +109,7 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
               transition: 'all 0.3s', boxShadow: `0 0 25px ${accent}33`
             }}
           >
-            {data.label || 'Нажмите здесь'} →
+            {label || 'Нажмите здесь'} →
           </a>
         </div>
       );
@@ -117,13 +126,13 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
               <img src={data.src} alt="" style={{ width: '100%', height: '260px', objectFit: 'cover', display: 'block' }} />
             )}
             <div style={{ padding: '2.5rem' }}>
-              {data.label && (
+              {label && (
                 <h3 style={{ fontSize: '1.5rem', fontWeight: '900', marginBottom: '1rem', color: 'var(--foreground)' }}>
-                  {data.label}
+                  {label}
                 </h3>
               )}
-              {data.body && (
-                <p style={{ color: 'var(--text-muted)', lineHeight: 1.7, fontSize: '1rem' }}>{data.body}</p>
+              {body && (
+                <p style={{ color: 'var(--text-muted)', lineHeight: 1.7, fontSize: '1rem' }}>{body}</p>
               )}
               {data.href && (
                 <a href={data.href} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: accent, fontWeight: '800', fontSize: '0.85rem', marginTop: '1.5rem', textDecoration: 'none' }}>
@@ -139,10 +148,10 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
       return (
         <div style={{ ...base, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start' }}>
           <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: 'var(--text-muted)', margin: 0, whiteSpace: 'pre-wrap' }}>
-            {data.col1 || 'Левая колонка...'}
+            {col1 || 'Левая колонка...'}
           </p>
           <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: 'var(--text-muted)', margin: 0, whiteSpace: 'pre-wrap' }}>
-            {data.col2 || 'Правая колонка...'}
+            {col2 || 'Правая колонка...'}
           </p>
         </div>
       );
@@ -154,11 +163,11 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
             <img src={data.src} alt="" style={{ width: '100%', borderRadius: 'var(--radius)', display: 'block', aspectRatio: '16/9', objectFit: 'cover' }} />
           )}
           <div>
-            {data.heading && <h3 style={{ fontSize: '2rem', fontWeight: '900', marginBottom: '1.5rem', color: 'var(--foreground)' }}>{data.heading}</h3>}
-            {data.body && <p style={{ color: 'var(--text-muted)', lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>{data.body}</p>}
-            {data.href && data.label && (
+            {heading && <h3 style={{ fontSize: '2rem', fontWeight: '900', marginBottom: '1.5rem', color: 'var(--foreground)' }}>{heading}</h3>}
+            {body && <p style={{ color: 'var(--text-muted)', lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>{body}</p>}
+            {data.href && label && (
               <a href={data.href} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: accent, fontWeight: '800', marginTop: '2rem', textDecoration: 'none' }}>
-                {data.label} →
+                {label} →
               </a>
             )}
           </div>
@@ -175,19 +184,19 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
           padding: '5rem 4rem',
           textAlign: 'center'
         }}>
-          {data.subheading && (
+          {subheading && (
             <div style={{ color: accent, fontWeight: '800', fontSize: '0.8rem', letterSpacing: '0.3em', marginBottom: '1.5rem' }}>
-              ◆ {data.subheading}
+              ◆ {subheading}
             </div>
           )}
-          {data.heading && (
+          {heading && (
             <h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: '900', marginBottom: '1.5rem', color: 'var(--foreground)' }}>
-              {data.heading}
+              {heading}
             </h2>
           )}
-          {data.body && (
+          {body && (
             <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto 2.5rem', lineHeight: 1.7 }}>
-              {data.body}
+              {body}
             </p>
           )}
           {data.href && (
@@ -197,7 +206,7 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
               borderRadius: '12px', fontWeight: '900', textDecoration: 'none',
               boxShadow: `0 0 40px ${accent}40`
             }}>
-              {data.label || 'Узнать больше'} →
+              {label || 'Узнать больше'} →
             </a>
           )}
         </div>
