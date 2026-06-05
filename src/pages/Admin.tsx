@@ -859,11 +859,24 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
              // ─── Read FRESH layout via ref – no stale closure! ───
              const lk = layoutKeyRef.current;
              const freshLayout = pageLayoutsRef.current[lk] || {};
-             const k = arrKey || 'order';
-             
+
              const cleanId = (str: any): string =>
-               String(str).replace('cat_item_', '').replace('cat_', '').replace('srv_', '').trim();
-             
+               String(str).replace('cat_item_', '').replace('cat_', '').replace('srv_', '').replace('service-', 'service-').trim();
+
+             // ─── Determine correct array key from the DRAGGED element's ID prefix ───
+             // arrKey from target is unreliable — if user drops on outer section wrapper
+             // it reports 'order' instead of 'order_catalog'
+             let k: string;
+             if (draggedId && (draggedId.startsWith('cat_') || /^\d+$/.test(String(draggedId)))) {
+               k = 'order_catalog';
+             } else if (draggedId && draggedId.startsWith('gallery_')) {
+               k = 'order_gallery';
+             } else if (draggedId && (draggedId.startsWith('service-') || draggedId.startsWith('srv_'))) {
+               k = 'order_services';
+             } else {
+               k = arrKey || 'order';
+             }
+
              let rawOrder: any[] = freshLayout[k] || [];
              if (rawOrder.length === 0) {
                if (k === 'order_catalog')       rawOrder = ['1','2','3','4','5'];
@@ -872,13 +885,18 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
              }
              
              const newOrder = rawOrder.map((x: any) => String(x));
-             const cleanDragId = cleanId(draggedId);
-             const cleanTgtId  = cleanId(targetId);
+
+             // Strip cat_/srv_/gallery_ prefix from both sides for matching
+             const stripPrefix = (str: string) =>
+               str.replace('cat_item_', '').replace('cat_', '').replace('gallery_', 'gallery_').replace('srv_', '').trim();
+             
+             const cleanDragId = stripPrefix(String(draggedId));
+             const cleanTgtId  = stripPrefix(String(targetId));
              
              console.log('[MOVE_BLOCK_TO]', { k, lk, newOrder, cleanDragId, cleanTgtId });
              
-             const di = newOrder.findIndex(x => cleanId(x) === cleanDragId);
-             const ti = newOrder.findIndex(x => cleanId(x) === cleanTgtId);
+             const di = newOrder.findIndex(x => stripPrefix(x) === cleanDragId);
+             const ti = newOrder.findIndex(x => stripPrefix(x) === cleanTgtId);
              
              console.log('[MOVE_BLOCK_TO] indices', { di, ti });
              
@@ -894,9 +912,9 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
                }
                // Also update React state for UI consistency
                setPageLayouts((prev: any) => ({ ...prev, [lk]: updatedLayout }));
-               console.log('[MOVE_BLOCK_TO] saved', newOrder);
+               console.log('[MOVE_BLOCK_TO] saved', k, newOrder);
              } else {
-               console.warn('[MOVE_BLOCK_TO] IDs not found', { cleanDragId, cleanTgtId, newOrder });
+               console.warn('[MOVE_BLOCK_TO] IDs not found', { cleanDragId, cleanTgtId, newOrder, k });
              }
            }
         }
