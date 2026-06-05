@@ -255,6 +255,8 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
   const [editingKey, setEditingKey] = useState<string | null>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [previewRoute, setPreviewRoute] = useState<string>('/');
+  const [isLibraryOpen, setIsLibraryOpen] = useState<boolean>(true);
+  const [libSearch, setLibSearch] = useState<string>('');
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   // Map route to layout key
@@ -283,6 +285,78 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
 
   const removeSection = (id: string) => {
     updateLayout({ ...currentLayout, hidden: [...(currentLayout.hidden || []), id] });
+  };
+
+  const addMainSection = (sectionId: string) => {
+    let nextOrder = [...(currentLayout.order || [])];
+    let nextHidden = [...(currentLayout.hidden || [])];
+    
+    // If hidden, unhide it
+    if (nextHidden.includes(sectionId)) {
+      nextHidden = nextHidden.filter(x => x !== sectionId);
+    }
+    
+    // If not in order, add it
+    if (!nextOrder.includes(sectionId)) {
+      nextOrder.push(sectionId);
+    }
+    
+    updateLayout({
+      ...currentLayout,
+      order: nextOrder,
+      hidden: nextHidden
+    });
+  };
+
+  const addCustomBlock = (type: string) => {
+    const newId = `new_block_${Date.now()}`;
+    
+    const defaultDataMap: Record<string, any> = {
+      heading: { type: 'heading', heading: 'Новый заголовок', subheading: 'Раздел', body: 'Описание раздела...' },
+      text: { type: 'text', body: 'Текст нового блока. Вы можете изменить этот текст в панели настроек.' },
+      divider: { type: 'divider' },
+      button: { type: 'button', label: 'Нажми меня', href: '#' },
+      card: { type: 'card', label: 'Заголовок карточки', body: 'Описание карточки...', src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=600' },
+      two_col: { type: 'two_col', col1: 'Левая колонка с описанием...', col2: 'Правая колонка с характеристиками...' },
+      image_text: { type: 'image_text', heading: 'Индустриальные решения', body: 'Описание преимуществ нашей компании...', src: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=600' },
+      cta_banner: { type: 'cta_banner', heading: 'Готовы начать проект?', subheading: 'Свяжитесь с нами', body: 'Наши специалисты ответят на все вопросы.', label: 'Оставить заявку', href: '/contacts' }
+    };
+    
+    const allCustomBlocks = { ...getCustomBlocks(), [newId]: defaultDataMap[type] || { type } };
+    localStorage.setItem('demetra_custom_blocks', JSON.stringify(allCustomBlocks));
+    window.dispatchEvent(new Event('storage'));
+    
+    const nextOrder = [...(currentLayout.order || []), newId];
+    updateLayout({
+      ...currentLayout,
+      order: nextOrder
+    });
+    
+    setEditingKey(newId);
+    setIsSettingsOpen(true);
+  };
+
+  const addGalleryItem = () => {
+    const newId = `gallery_${Date.now()}`;
+    const newItem = {
+      id: newId,
+      type: 'image',
+      src: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=1200',
+      category: 'production',
+      ru: { title: 'Новый элемент', desc: 'Описание нового элемента.' },
+      kk: { title: 'Жаңа элемент', desc: 'Жаңа элемент сипаттамасы.' },
+      en: { title: 'New Item', desc: 'Description of the new item.' }
+    };
+    
+    const nextLayout = {
+      ...currentLayout,
+      order: [...(currentLayout.order || []), newId],
+      items: { ...(currentLayout.items || {}), [newId]: newItem }
+    };
+    
+    updateLayout(nextLayout);
+    setEditingKey(newId);
+    setIsSettingsOpen(true);
   };
 
   useEffect(() => {
@@ -360,6 +434,29 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
       <div style={{ background: '#1a1a1a', borderBottom: '1px solid #333', padding: '1.25rem 2rem', paddingLeft: isSidebarOpen ? '2rem' : '5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 5000, flexShrink: 0, transition: 'padding-left 0.2s ease' }}>
          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
             <div style={{ background: '#00ff41', color: '#000', padding: '0.4rem 0.8rem', borderRadius: '4px', fontWeight: '900', fontSize: '0.7rem', letterSpacing: '0.05em' }}>VISUAL MODE</div>
+            
+            {/* Sidebar toggle button inside the visual editor */}
+            <button
+              onClick={() => setIsLibraryOpen(!isLibraryOpen)}
+              style={{
+                background: isLibraryOpen ? 'rgba(0, 255, 65, 0.1)' : '#222',
+                color: isLibraryOpen ? '#00ff41' : '#aaa',
+                border: isLibraryOpen ? '1px solid #00ff41' : '1px solid #444',
+                padding: '0.5rem 1rem',
+                borderRadius: '8px',
+                fontSize: '0.8rem',
+                fontWeight: '800',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              <PlusCircle size={14} />
+              Библиотека блоков
+            </button>
+
             <select 
                value={previewRoute}
                onChange={(e) => setPreviewRoute(e.target.value)}
@@ -421,20 +518,284 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
          </button>
       </div>
 
-      {/* The Page Itself - Now a real Iframe showing the full site including Header and Footer! */}
-      <div style={{ flex: 1, position: 'relative', background: '#000' }}>
-         <iframe 
-            ref={iframeRef}
-            src={previewRoute} 
-            style={{ width: '100%', height: '100%', border: 'none' }}
-            title="Live Preview"
-            onLoad={(e) => {
-               // Resync data when iframe navigates
-               const win = (e.target as HTMLIFrameElement).contentWindow;
-               win?.postMessage({ type: 'DEMETRA_UPDATE_LAYOUT', layout: currentLayout }, '*');
-               win?.postMessage({ type: 'DEMETRA_UPDATE_TRANSLATIONS', translations: allTranslations }, '*');
+      {/* Main Workspace containing left library panel & iframe */}
+      <div style={{ flex: 1, display: 'flex', position: 'relative', background: '#000', overflow: 'hidden' }}>
+        
+        {/* LEFT Library Panel */}
+        <AnimatePresence>
+          {isLibraryOpen && (
+            <motion.div
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: 340, opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              transition={{ duration: 0.25, ease: 'easeInOut' }}
+              style={{
+                background: '#09090b',
+                borderRight: '1px solid #222',
+                display: 'flex',
+                flexDirection: 'column',
+                flexShrink: 0,
+                overflow: 'hidden',
+                zIndex: 4000
+              }}
+            >
+              <div style={{ width: 340, display: 'flex', flexDirection: 'column', height: '100%', padding: '1.5rem', boxSizing: 'border-box' }}>
+                 
+                 {/* Header */}
+                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                   <div>
+                     <h3 style={{ fontSize: '0.8rem', color: '#00ff41', fontWeight: '900', letterSpacing: '0.15em', margin: 0 }}>БИБЛИОТЕКА БЛОКОВ</h3>
+                     <p style={{ color: '#555', fontSize: '0.65rem', margin: '0.2rem 0 0 0' }}>Нажмите элемент для добавления</p>
+                   </div>
+                   <button 
+                     onClick={() => setIsLibraryOpen(false)} 
+                     style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                   >
+                     <X size={18} />
+                   </button>
+                 </div>
+
+                 {/* Search Bar */}
+                 <div style={{ position: 'relative', marginBottom: '1.25rem' }}>
+                   <Search size={14} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#555' }} />
+                   <input
+                     type="text"
+                     placeholder="Поиск блоков и элементов..."
+                     value={libSearch}
+                     onChange={(e) => setLibSearch(e.target.value)}
+                     style={{
+                       width: '100%',
+                       background: '#121214',
+                       border: '1px solid #222',
+                       borderRadius: '8px',
+                       padding: '0.5rem 0.5rem 0.5rem 2.2rem',
+                       color: '#fff',
+                       fontSize: '0.8rem',
+                       outline: 'none',
+                       boxSizing: 'border-box'
+                     }}
+                   />
+                 </div>
+
+                 {/* Scrollable list of items */}
+                 <div className="custom-scrollbar" style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                    
+                    {/* GALLERY MEDIA (shown if layoutKey === 'gallery') */}
+                    {layoutKey === 'gallery' && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                         <div style={{ fontSize: '0.65rem', color: '#555', fontWeight: '900', letterSpacing: '0.15em' }}>ГАЛЕРЕЯ МЕДИА</div>
+                         <button
+                           onClick={addGalleryItem}
+                           style={{
+                             width: '100%',
+                             background: 'rgba(0, 255, 65, 0.05)',
+                             border: '1px dashed #00ff41',
+                             borderRadius: '12px',
+                             padding: '1.25rem',
+                             color: '#00ff41',
+                             fontWeight: '800',
+                             fontSize: '0.8rem',
+                             cursor: 'pointer',
+                             display: 'flex',
+                             flexDirection: 'column',
+                             alignItems: 'center',
+                             gap: '0.5rem',
+                             transition: 'all 0.2s'
+                           }}
+                           onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 255, 65, 0.1)'}
+                           onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0, 255, 65, 0.05)'}
+                         >
+                           <Plus size={24} />
+                           <span>Добавить Фото / Видео</span>
+                         </button>
+                      </div>
+                    )}
+
+                    {/* SECTIONS LIST (Home page only) */}
+                    {layoutKey === 'home' && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                         <div style={{ fontSize: '0.65rem', color: '#555', fontWeight: '900', letterSpacing: '0.15em' }}>СЕКЦИИ СТРАНИЦЫ</div>
+                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            {[
+                              { id: 'hero', title: 'Hero (Обложка)', desc: 'Главный баннер, слайды и кнопки', icon: <Layers size={14} /> },
+                              { id: 'marquee', title: 'Marquee (Инфо-строка)', desc: 'Бегущая строка с показателями', icon: <Zap size={14} /> },
+                              { id: 'catalog', title: 'Catalog (Каталог)', desc: 'Сетка продукции и оборудования', icon: <Package size={14} /> },
+                              { id: 'partnership', title: 'Partnership (Партнеры)', desc: 'Сетка логотипов партнеров', icon: <ExternalLink size={14} /> },
+                              { id: 'services', title: 'Services (Услуги)', desc: 'Блоки преимуществ и услуг', icon: <Settings size={14} /> },
+                              { id: 'cta', title: 'CTA (Обратная связь)', desc: 'Кнопки обратной связи', icon: <Phone size={14} /> }
+                            ].filter(x => x.title.toLowerCase().includes(libSearch.toLowerCase()) || x.desc.toLowerCase().includes(libSearch.toLowerCase())).map(sec => {
+                              const order = currentLayout.order || [];
+                              const hidden = currentLayout.hidden || [];
+                              const isAdded = order.includes(sec.id);
+                              const isHidden = hidden.includes(sec.id);
+                              
+                              let statusText = 'Добавить';
+                              let statusColor = '#00ff41';
+                              let bg = 'rgba(0, 255, 65, 0.03)';
+                              let border = '1px solid #1a1a1e';
+                              
+                              if (isAdded) {
+                                if (isHidden) {
+                                  statusText = 'Скрыт (Показать)';
+                                  statusColor = '#888';
+                                  bg = '#121214';
+                                } else {
+                                  statusText = 'Активен';
+                                  statusColor = '#00ff41';
+                                  bg = 'rgba(0, 255, 65, 0.08)';
+                                  border = '1px solid rgba(0, 255, 65, 0.2)';
+                                }
+                              }
+                              
+                              return (
+                                <div
+                                  key={sec.id}
+                                  onClick={() => addMainSection(sec.id)}
+                                  style={{
+                                    background: bg,
+                                    border: border,
+                                    borderRadius: '10px',
+                                    padding: '0.75rem 0.85rem',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    gap: '1rem'
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.borderColor = '#00ff41';
+                                    e.currentTarget.style.background = 'rgba(0, 255, 65, 0.05)';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.borderColor = isAdded && !isHidden ? 'rgba(0, 255, 65, 0.2)' : '#1a1a1e';
+                                    e.currentTarget.style.background = bg;
+                                  }}
+                                >
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <div style={{ color: statusColor }}>{sec.icon}</div>
+                                    <div style={{ textAlign: 'left' }}>
+                                      <div style={{ fontSize: '0.75rem', color: '#fff', fontWeight: '800' }}>{sec.title}</div>
+                                      <div style={{ fontSize: '0.6rem', color: '#555', marginTop: '0.1rem' }}>{sec.desc}</div>
+                                    </div>
+                                  </div>
+                                  <div style={{ fontSize: '0.6rem', color: statusColor, fontWeight: '900', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>
+                                    {statusText}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                         </div>
+                      </div>
+                    )}
+
+                    {/* CUSTOM BLOCKS LIST */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                       <div style={{ fontSize: '0.65rem', color: '#555', fontWeight: '900', letterSpacing: '0.15em' }}>ДОБАВИТЬ ЭЛЕМЕНТЫ</div>
+                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                          {[
+                            { id: 'heading', title: 'Заголовок', icon: '𝐇', desc: 'Heading' },
+                            { id: 'text', title: 'Текст', icon: '¶', desc: 'Paragraph' },
+                            { id: 'button', title: 'Кнопка', icon: '↗', desc: 'Button' },
+                            { id: 'card', title: 'Карточка', icon: '▭', desc: 'Bento Card' },
+                            { id: 'two_col', title: '2 Колонки', icon: '⫿', desc: '2 Columns' },
+                            { id: 'image_text', title: 'Фото+Текст', icon: '⊡', desc: 'Image & Text' },
+                            { id: 'cta_banner', title: 'Баннер', icon: '★', desc: 'Promo Banner' },
+                            { id: 'divider', title: 'Разделитель', icon: '—', desc: 'Divider Line' }
+                          ].filter(x => x.title.toLowerCase().includes(libSearch.toLowerCase()) || x.desc.toLowerCase().includes(libSearch.toLowerCase())).map(el => (
+                            <button
+                              key={el.id}
+                              onClick={() => addCustomBlock(el.id)}
+                              style={{
+                                background: '#121214',
+                                border: '1px solid #1e1e22',
+                                borderRadius: '10px',
+                                padding: '0.85rem 0.4rem',
+                                color: '#fff',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                gap: '0.3rem'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.borderColor = '#00ff41';
+                                e.currentTarget.style.background = 'rgba(0, 255, 65, 0.04)';
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.borderColor = '#1e1e22';
+                                e.currentTarget.style.background = '#121214';
+                                e.currentTarget.style.transform = 'translateY(0)';
+                              }}
+                            >
+                              <div style={{ fontSize: '1.2rem', color: '#00ff41', fontWeight: '800' }}>{el.icon}</div>
+                              <div style={{ fontSize: '0.75rem', fontWeight: '800' }}>{el.title}</div>
+                              <div style={{ fontSize: '0.6rem', color: '#555' }}>{el.desc}</div>
+                            </button>
+                          ))}
+                       </div>
+                    </div>
+
+                 </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Small Toggle Handle for Sidebar on the left edge */}
+        {!isLibraryOpen && (
+          <button
+            onClick={() => setIsLibraryOpen(true)}
+            style={{
+              position: 'absolute',
+              left: 0,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              background: '#1a1a1a',
+              border: '1px solid #333',
+              borderLeft: 'none',
+              color: '#00ff41',
+              padding: '1.25rem 0.9rem 1.25rem 0.6rem',
+              borderRadius: '0 20px 20px 0',
+              cursor: 'pointer',
+              zIndex: 5500,
+              boxShadow: '10px 0 30px rgba(0,0,0,0.5)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: '0.2s',
             }}
-         />
+            title="Открыть библиотеку блоков"
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = '#222';
+              e.currentTarget.style.boxShadow = '10px 0 30px rgba(0, 255, 65, 0.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = '#1a1a1a';
+              e.currentTarget.style.boxShadow = '10px 0 30px rgba(0,0,0,0.5)';
+            }}
+          >
+            <PlusCircle size={20} />
+          </button>
+        )}
+
+        {/* The Page Itself - Now a real Iframe showing the full site including Header and Footer! */}
+        <div style={{ flex: 1, position: 'relative', background: '#000' }}>
+           <iframe 
+              ref={iframeRef}
+              src={previewRoute} 
+              style={{ width: '100%', height: '100%', border: 'none' }}
+              title="Live Preview"
+              onLoad={(e) => {
+                 // Resync data when iframe navigates
+                 const win = (e.target as HTMLIFrameElement).contentWindow;
+                 win?.postMessage({ type: 'DEMETRA_UPDATE_LAYOUT', layout: currentLayout }, '*');
+                 win?.postMessage({ type: 'DEMETRA_UPDATE_TRANSLATIONS', translations: allTranslations }, '*');
+              }}
+           />
+        </div>
       </div>
 
       {/* Floating Settings Toggle Handle on the right edge */}
