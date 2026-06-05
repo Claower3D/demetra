@@ -841,8 +841,18 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
              }
            } else {
              const k = arrKey || 'order';
-             const newOrder = [...(currentLayout[k] || [])];
+             let newOrder = [...(currentLayout[k] || [])];
              
+             if (newOrder.length === 0) {
+               if (k === 'order_catalog') {
+                 newOrder = [1, 2, 3, 4, 5];
+               } else if (k === 'order_services') {
+                 newOrder = [1, 2, 3, 4, 5, 6, 7];
+               } else if (k === 'order_gallery') {
+                 newOrder = ['gallery_1', 'gallery_2', 'gallery_3', 'gallery_4', 'gallery_5', 'gallery_6'];
+               }
+             }
+
              let cleanDraggedId = draggedId;
              let cleanTargetId = targetId;
              
