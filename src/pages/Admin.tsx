@@ -180,39 +180,15 @@ export default function Admin() {
         )}
       </AnimatePresence>
 
-      {!isSidebarOpen && (
-        <button onClick={() => setIsSidebarOpen(true)} style={{ position: 'fixed', top: '1.25rem', left: '1.25rem', zIndex: 3000, background: '#111', border: '1px solid #333', color: '#00ff41', padding: '0.75rem', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Menu size={24} />
-        </button>
-      )}
+      <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ position: 'fixed', top: '1.25rem', left: '1.25rem', zIndex: 3000, background: '#111', border: '1px solid #333', color: '#00ff41', padding: '0.75rem', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Menu size={24} />
+      </button>
 
       {/* Sidebar */}
-      <motion.div animate={{ width: sidebarWidth }} style={{ background: '#0a0a0a', borderRight: '1px solid #222', padding: isSidebarOpen ? '2rem 1.5rem' : '0', display: 'flex', flexDirection: 'column', gap: '2rem', position: 'fixed', height: '100vh', zIndex: 2500, boxShadow: '10px 0 50px rgba(0,0,0,0.5)', overflow: 'hidden' }}>
-        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-          <Link to="/" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#00ff41', fontWeight: '800', fontSize: '0.8rem', textDecoration: 'none', background: 'rgba(0,255,65,0.05)', padding: '1rem', borderRadius: '8px', border: '1px solid #222', whiteSpace: 'nowrap' }}>
-            <ArrowLeft size={16} /> {t.admin_return || 'RETURN'}
-          </Link>
-          <button 
-            onClick={() => setIsSidebarOpen(false)} 
-            style={{ 
-              background: '#111', 
-              border: '1px solid #222', 
-              color: '#888', 
-              padding: '1rem', 
-              borderRadius: '8px', 
-              cursor: 'pointer', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              transition: '0.2s'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.color = '#ff4b4b'}
-            onMouseLeave={(e) => e.currentTarget.style.color = '#888'}
-            title="Свернуть меню"
-          >
-            <X size={16} />
-          </button>
-        </div>
+      <motion.div animate={{ width: sidebarWidth }} style={{ background: '#0a0a0a', borderRight: '1px solid #222', padding: isSidebarOpen ? '5rem 1.5rem 2rem 1.5rem' : '0', display: 'flex', flexDirection: 'column', gap: '2rem', position: 'fixed', height: '100vh', zIndex: 2500, boxShadow: '10px 0 50px rgba(0,0,0,0.5)', overflow: 'hidden' }}>
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#00ff41', fontWeight: '800', fontSize: '0.8rem', textDecoration: 'none', background: 'rgba(0,255,65,0.05)', padding: '1rem', borderRadius: '8px', border: '1px solid #222' }}>
+          <ArrowLeft size={16} /> {t.admin_return || 'RETURN'}
+        </Link>
         <div style={{ display: 'flex', background: '#1a1a1a', padding: '0.3rem', borderRadius: '8px', border: '1px solid #222' }}>
           {(['ru', 'kk', 'en'] as const).map((l) => (
             <button key={l} onClick={() => setLang(l)} style={{ flex: 1, padding: '0.6rem', borderRadius: '6px', border: 'none', background: lang === l ? '#00ff41' : 'transparent', color: lang === l ? '#000' : '#888', fontSize: '0.7rem', fontWeight: '900', cursor: 'pointer', transition: '0.2s', textTransform: 'uppercase' }}>{l}</button>
