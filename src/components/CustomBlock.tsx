@@ -74,6 +74,7 @@ export function getPagesList(): PageItem[] {
 // ----------------- Renderer -----------------
 export default function CustomBlock({ id, data }: { id: string; data: CustomBlockData }) {
   const { lang } = useLang();
+  const [isOverContainer, setIsOverContainer] = React.useState(false);
   const accent = data.accent || 'var(--primary)';
   const bg = data.bg || 'transparent';
   const align = data.align || 'left';
@@ -289,19 +290,60 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
     case 'container':
       const children = data.childrenBlocks || [];
       const isBuilder = window.self !== window.top;
+
+      const handleContainerDragOver = (e: React.DragEvent) => {
+        if (!isBuilder) return;
+        e.preventDefault();
+        e.stopPropagation();
+        setIsOverContainer(true);
+      };
+
+      const handleContainerDragLeave = () => {
+        if (!isBuilder) return;
+        setIsOverContainer(false);
+      };
+
+      const handleContainerDrop = (e: React.DragEvent) => {
+        if (!isBuilder) return;
+        e.preventDefault();
+        e.stopPropagation();
+        setIsOverContainer(false);
+        const draggedId = e.dataTransfer.getData("text/plain");
+        if (draggedId && draggedId.startsWith("add_block:")) {
+          const type = draggedId.replace("add_block:", "");
+          window.parent.postMessage({
+            type: 'DEMETRA_BUILDER',
+            action: 'ADD_NESTED_AT',
+            id: id,
+            blockType: type
+          }, '*');
+        }
+      };
+
       return (
-        <div style={{
-          ...base,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '2rem',
-          minHeight: isBuilder ? '120px' : 'auto',
-          border: isBuilder ? '1.5px dashed rgba(0, 255, 65, 0.25)' : 'none',
-          padding: isBuilder ? '2.5rem' : '1rem 0',
-          borderRadius: 'var(--radius)',
-          background: isBuilder ? 'rgba(255,255,255,0.01)' : bg,
-          position: 'relative'
-        }}>
+        <div 
+          onDragOver={handleContainerDragOver}
+          onDragLeave={handleContainerDragLeave}
+          onDrop={handleContainerDrop}
+          style={{
+            ...base,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '2rem',
+            minHeight: isBuilder ? '120px' : 'auto',
+            border: isBuilder 
+              ? (isOverContainer ? '2px dashed #00ff41' : '1.5px dashed rgba(0, 255, 65, 0.25)') 
+              : 'none',
+            padding: isBuilder ? '2.5rem' : '1rem 0',
+            borderRadius: 'var(--radius)',
+            background: isBuilder 
+              ? (isOverContainer ? 'rgba(0, 255, 65, 0.05)' : 'rgba(255,255,255,0.01)') 
+              : bg,
+            position: 'relative',
+            boxShadow: (isBuilder && isOverContainer) ? '0 0 25px rgba(0, 255, 65, 0.25)' : 'none',
+            transition: 'all 0.15s ease'
+          }}
+        >
           {isBuilder && children.length === 0 && (
             <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', textAlign: 'center', padding: '2rem 1rem' }}>
               ✦ Пустой контейнер. Добавьте элементы внутри блока.

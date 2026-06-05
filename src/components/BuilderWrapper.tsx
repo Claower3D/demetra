@@ -102,8 +102,13 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
     e.preventDefault();
     setIsDraggingOver(false);
     const draggedId = e.dataTransfer.getData("text/plain");
-    if (draggedId && draggedId !== id) {
-      postMsg('MOVE_BLOCK_TO', { draggedId, targetId: id, arrayKey });
+    if (draggedId) {
+      if (draggedId.startsWith("add_block:")) {
+        const type = draggedId.replace("add_block:", "");
+        postMsg('ADD_BLOCK_AT', { type, targetId: id, arrayKey });
+      } else if (draggedId !== id) {
+        postMsg('MOVE_BLOCK_TO', { draggedId, targetId: id, arrayKey });
+      }
     }
   };
 

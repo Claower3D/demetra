@@ -621,6 +621,80 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
             removeSection(id);
           }
         }
+        if (action === 'ADD_BLOCK_AT') {
+          const { type, targetId, arrayKey: arrKey } = e.data;
+          const k = arrKey || 'order';
+          const newId = `new_block_${Date.now()}`;
+          
+          const defaultDataMap: Record<string, any> = {
+            heading: { type: 'heading', heading: 'Новый заголовок', subheading: 'Раздел', body: 'Описание раздела...' },
+            text: { type: 'text', body: 'Текст нового блока. Вы можете изменить этот текст в панели настроек.' },
+            divider: { type: 'divider' },
+            button: { type: 'button', label: 'Нажми меня', href: '#' },
+            card: { type: 'card', label: 'Заголовок карточки', body: 'Описание карточки...', src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=600' },
+            two_col: { type: 'two_col', col1: 'Левая колонка с описанием...', col2: 'Правая колонка с характеристиками...' },
+            image_text: { type: 'image_text', heading: 'Индустриальные решения', body: 'Описание преимуществ нашей компании...', src: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=600' },
+            cta_banner: { type: 'cta_banner', heading: 'Готовы начать проект?', subheading: 'Свяжитесь с нами', body: 'Наши специалисты ответят на все вопросы.', label: 'Оставить заявку', href: '/contacts' },
+            container: { type: 'container', childrenBlocks: [] }
+          };
+          
+          const allCustomBlocks = { ...getCustomBlocks(), [newId]: defaultDataMap[type] || { type } };
+          localStorage.setItem('demetra_custom_blocks', JSON.stringify(allCustomBlocks));
+          window.dispatchEvent(new Event('storage'));
+          
+          const newOrder = [...(currentLayout[k] || [])];
+          const targetIndex = newOrder.indexOf(targetId);
+          if (targetIndex !== -1) {
+            newOrder.splice(targetIndex, 0, newId);
+          } else {
+            newOrder.push(newId);
+          }
+          
+          updateLayout({
+            ...currentLayout,
+            [k]: newOrder
+          });
+          
+          setEditingKey(newId);
+          setIsSettingsOpen(true);
+        }
+        if (action === 'ADD_NESTED_AT') {
+          const { id: containerBlockId, blockType } = e.data;
+          try {
+            const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+            const parentBlock = customBlocks[containerBlockId] || { type: 'container' };
+            
+            const newNestedId = `nested_${Date.now()}`;
+            const newNestedBlock = {
+              id: newNestedId,
+              type: blockType,
+              heading: 'Новый элемент',
+              body: 'Описание элемента',
+              label: 'Кнопка',
+              src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80',
+              href: '#'
+            };
+            
+            parentBlock.childrenBlocks = [...(parentBlock.childrenBlocks || []), newNestedBlock];
+            customBlocks[containerBlockId] = parentBlock;
+            
+            localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
+            window.dispatchEvent(new Event('storage'));
+            
+            if (iframeRef.current) {
+              iframeRef.current.contentWindow?.postMessage({
+                type: 'DEMETRA_UPDATE_LAYOUT',
+                layout: currentLayout
+              }, '*');
+            }
+            
+            setEditingKey(newNestedId);
+            setIsModalOpen(true);
+            setModalActiveTab('content');
+          } catch (err) {
+            console.error("Add nested drop error", err);
+          }
+        }
         if (action === 'UPDATE_GALLERY_LAYOUT') {
           updateLayout(e.data.layout);
         }
@@ -956,6 +1030,11 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
                             <button
                               key={el.id}
                               onClick={() => addCustomBlock(el.id)}
+                              draggable={true}
+                              onDragStart={(e) => {
+                                e.dataTransfer.setData("text/plain", `add_block:${el.id}`);
+                                e.dataTransfer.effectAllowed = "copy";
+                              }}
                               style={{
                                 background: '#121214',
                                 border: '1px solid #1e1e22',
