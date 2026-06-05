@@ -474,6 +474,7 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
   );
 }
 
