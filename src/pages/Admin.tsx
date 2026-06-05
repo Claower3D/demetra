@@ -447,6 +447,10 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
       const updated = { ...prev, [layoutKey]: newLayout };
       localStorage.setItem(`demetra_${layoutKey}_layout`, JSON.stringify(newLayout));
       window.dispatchEvent(new Event('storage'));
+      // Immediately push updated layout to iframe so it re-renders with new order
+      if (iframeRef.current?.contentWindow) {
+        iframeRef.current.contentWindow.postMessage({ type: 'DEMETRA_UPDATE_LAYOUT', layout: newLayout }, '*');
+      }
       return updated;
     });
   };
@@ -845,30 +849,48 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
              }
            } else {
              const k = arrKey || 'order';
-             let newOrder = [...(currentLayout[k] || [])];
              
-             if (newOrder.length === 0) {
+             // normalize IDs: strip any prefix to get raw ID
+             const cleanId = (str: any): string => String(str)
+               .replace('cat_item_', '')
+               .replace('cat_', '')
+               .replace('srv_', '')
+               .trim();
+             
+             // Build the current order array; use sensible defaults if empty
+             let rawOrder: any[] = currentLayout[k] || [];
+             if (rawOrder.length === 0) {
                if (k === 'order_catalog') {
-                 newOrder = [1, 2, 3, 4, 5];
+                 // Use real product IDs from stored layout or default 1-5 as strings
+                 rawOrder = ['1', '2', '3', '4', '5'];
                } else if (k === 'order_services') {
-                 newOrder = ['service-1', 'service-2', 'service-3', 'service-4'];
+                 rawOrder = ['service-1', 'service-2', 'service-3', 'service-4'];
                } else if (k === 'order_gallery') {
-                 newOrder = ['gallery_1', 'gallery_2', 'gallery_3', 'gallery_4', 'gallery_5', 'gallery_6'];
+                 rawOrder = ['gallery_1', 'gallery_2', 'gallery_3', 'gallery_4', 'gallery_5', 'gallery_6'];
                }
              }
-
-             let cleanDraggedId = draggedId;
-             let cleanTargetId = targetId;
              
-             const cleanId = (str: any) => String(str).replace('cat_item_', '').replace('cat_', '').replace('srv_', '').trim();
+             // Convert all IDs to strings for uniform comparison
+             const newOrder = rawOrder.map((x: any) => String(x));
              
-             const draggedIndex = newOrder.findIndex(x => cleanId(x) === cleanId(cleanDraggedId));
-             const targetIndex = newOrder.findIndex(x => cleanId(x) === cleanId(cleanTargetId));
+             const cleanDragId = cleanId(draggedId);
+             const cleanTgtId = cleanId(targetId);
+             
+             console.log('[MOVE_BLOCK_TO]', { k, newOrder, cleanDragId, cleanTgtId });
+             
+             const draggedIndex = newOrder.findIndex(x => cleanId(x) === cleanDragId);
+             const targetIndex = newOrder.findIndex(x => cleanId(x) === cleanTgtId);
+             
+             console.log('[MOVE_BLOCK_TO] indices', { draggedIndex, targetIndex });
              
              if (draggedIndex !== -1 && targetIndex !== -1) {
-               const [draggedItem] = newOrder.splice(draggedIndex, 1);
-               newOrder.splice(targetIndex, 0, draggedItem);
-               updateLayout({ ...currentLayout, [k]: newOrder });
+               const [movedItem] = newOrder.splice(draggedIndex, 1);
+               newOrder.splice(targetIndex, 0, movedItem);
+               const updatedLayout = { ...currentLayout, [k]: newOrder };
+               updateLayout(updatedLayout);
+               console.log('[MOVE_BLOCK_TO] saved new order', newOrder);
+             } else {
+               console.warn('[MOVE_BLOCK_TO] Could not find indices - drag/target IDs mismatch', { cleanDragId, cleanTgtId, newOrder });
              }
            }
         }

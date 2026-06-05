@@ -25,8 +25,20 @@ export function useBuilderLayout(pageKey: string, defaultLayout: any) {
 
     const handleMessage = (e: MessageEvent) => {
       if (e.data?.type === 'DEMETRA_UPDATE_LAYOUT') {
-        setLayout(e.data.layout);
-        localStorage.setItem(`demetra_${pageKey}_layout`, JSON.stringify(e.data.layout));
+        const incoming = e.data.layout;
+        setLayout((prev: any) => {
+          // Deep merge: incoming takes priority but we keep any extra keys from prev
+          const merged = {
+            ...prev,
+            ...incoming,
+            styles: { ...(prev?.styles || {}), ...(incoming?.styles || {}) },
+            images: { ...(prev?.images || {}), ...(incoming?.images || {}) },
+            links: { ...(prev?.links || {}), ...(incoming?.links || {}) },
+            items: { ...(prev?.items || {}), ...(incoming?.items || {}) },
+          };
+          localStorage.setItem(`demetra_${pageKey}_layout`, JSON.stringify(merged));
+          return merged;
+        });
       }
     };
     window.addEventListener('message', handleMessage);
