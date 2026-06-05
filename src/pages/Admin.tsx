@@ -605,8 +605,68 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
             console.error("Delete nested error", err);
           }
         }
-        if (action === 'MOVE_UP') moveSection(arrayKey, index, 'up');
-        if (action === 'MOVE_DOWN') moveSection(arrayKey, index, 'down');
+        if (action === 'MOVE_UP') {
+          if (arrayKey && arrayKey.startsWith('nested:')) {
+            const parentId = arrayKey.replace('nested:', '');
+            try {
+              const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+              const parentBlock = customBlocks[parentId];
+              if (parentBlock && parentBlock.childrenBlocks) {
+                const newChildren = [...parentBlock.childrenBlocks];
+                if (index > 0 && index < newChildren.length) {
+                  const temp = newChildren[index];
+                  newChildren[index] = newChildren[index - 1];
+                  newChildren[index - 1] = temp;
+                  parentBlock.childrenBlocks = newChildren;
+                  customBlocks[parentId] = parentBlock;
+                  localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
+                  window.dispatchEvent(new Event('storage'));
+                  if (iframeRef.current) {
+                    iframeRef.current.contentWindow?.postMessage({
+                      type: 'DEMETRA_UPDATE_LAYOUT',
+                      layout: currentLayout
+                    }, '*');
+                  }
+                }
+              }
+            } catch (err) {
+              console.error("Move up nested error", err);
+            }
+          } else {
+            moveSection(arrayKey, index, 'up');
+          }
+        }
+        if (action === 'MOVE_DOWN') {
+          if (arrayKey && arrayKey.startsWith('nested:')) {
+            const parentId = arrayKey.replace('nested:', '');
+            try {
+              const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+              const parentBlock = customBlocks[parentId];
+              if (parentBlock && parentBlock.childrenBlocks) {
+                const newChildren = [...parentBlock.childrenBlocks];
+                if (index >= 0 && index < newChildren.length - 1) {
+                  const temp = newChildren[index];
+                  newChildren[index] = newChildren[index + 1];
+                  newChildren[index + 1] = temp;
+                  parentBlock.childrenBlocks = newChildren;
+                  customBlocks[parentId] = parentBlock;
+                  localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
+                  window.dispatchEvent(new Event('storage'));
+                  if (iframeRef.current) {
+                    iframeRef.current.contentWindow?.postMessage({
+                      type: 'DEMETRA_UPDATE_LAYOUT',
+                      layout: currentLayout
+                    }, '*');
+                  }
+                }
+              }
+            } catch (err) {
+              console.error("Move down nested error", err);
+            }
+          } else {
+            moveSection(arrayKey, index, 'down');
+          }
+        }
         if (action === 'REMOVE_BLOCK') {
           if (id?.startsWith('gallery_')) {
             const newOrder = (currentLayout.order || []).filter((x: string) => x !== id);
@@ -616,6 +676,32 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
             if (editingKey === id) {
               setEditingKey(null);
               setIsSettingsOpen(false);
+            }
+          } else if (id?.startsWith('nested_')) {
+            const parentId = findParentBlockOfNested(id);
+            if (parentId) {
+              try {
+                const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+                const parentBlock = customBlocks[parentId] || {};
+                parentBlock.childrenBlocks = (parentBlock.childrenBlocks || []).filter((c: any) => c.id !== id);
+                customBlocks[parentId] = parentBlock;
+                localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
+                window.dispatchEvent(new Event('storage'));
+                
+                if (iframeRef.current) {
+                  iframeRef.current.contentWindow?.postMessage({
+                    type: 'DEMETRA_UPDATE_LAYOUT',
+                    layout: currentLayout
+                  }, '*');
+                }
+                
+                if (editingKey === id) {
+                  setEditingKey(null);
+                  setIsSettingsOpen(false);
+                }
+              } catch (err) {
+                console.error("Remove nested block error", err);
+              }
             }
           } else {
             removeSection(id);
@@ -705,14 +791,44 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
         }
         if (action === 'MOVE_BLOCK_TO') {
            const { draggedId, targetId, arrayKey: arrKey } = e.data;
-           const k = arrKey || 'order';
-           const newOrder = [...(currentLayout[k] || [])];
-           const draggedIndex = newOrder.indexOf(draggedId);
-           const targetIndex = newOrder.indexOf(targetId);
-           if (draggedIndex !== -1 && targetIndex !== -1) {
-             newOrder.splice(draggedIndex, 1);
-             newOrder.splice(targetIndex, 0, draggedId);
-             updateLayout({ ...currentLayout, [k]: newOrder });
+           if (arrKey && arrKey.startsWith('nested:')) {
+             const parentId = arrKey.replace('nested:', '');
+             try {
+               const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+               const parentBlock = customBlocks[parentId];
+               if (parentBlock && parentBlock.childrenBlocks) {
+                 const newChildren = [...parentBlock.childrenBlocks];
+                 const draggedIndex = newChildren.findIndex((c: any) => c.id === draggedId);
+                 const targetIndex = newChildren.findIndex((c: any) => c.id === targetId);
+                 if (draggedIndex !== -1 && targetIndex !== -1) {
+                   const [draggedItem] = newChildren.splice(draggedIndex, 1);
+                   newChildren.splice(targetIndex, 0, draggedItem);
+                   parentBlock.childrenBlocks = newChildren;
+                   customBlocks[parentId] = parentBlock;
+                   localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
+                   window.dispatchEvent(new Event('storage'));
+                   
+                   if (iframeRef.current) {
+                     iframeRef.current.contentWindow?.postMessage({
+                       type: 'DEMETRA_UPDATE_LAYOUT',
+                       layout: currentLayout
+                     }, '*');
+                   }
+                 }
+               }
+             } catch (err) {
+               console.error("Move nested error", err);
+             }
+           } else {
+             const k = arrKey || 'order';
+             const newOrder = [...(currentLayout[k] || [])];
+             const draggedIndex = newOrder.indexOf(draggedId);
+             const targetIndex = newOrder.indexOf(targetId);
+             if (draggedIndex !== -1 && targetIndex !== -1) {
+               newOrder.splice(draggedIndex, 1);
+               newOrder.splice(targetIndex, 0, draggedId);
+               updateLayout({ ...currentLayout, [k]: newOrder });
+             }
            }
         }
         if (action === 'UPDATE_TEXT') {

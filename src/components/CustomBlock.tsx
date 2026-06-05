@@ -364,7 +364,14 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
                       Удалить элемент
                     </button>
                   </div>
-                  <BuilderWrapper id={child.id || ''} index={index} isFirst={index === 0} isLast={index === children.length - 1} isBuilder={isBuilder}>
+                  <BuilderWrapper 
+                    id={child.id || ''} 
+                    index={index} 
+                    isFirst={index === 0} 
+                    isLast={index === children.length - 1} 
+                    isBuilder={isBuilder}
+                    arrayKey={"nested:" + id}
+                  >
                     <CustomBlock id={child.id || ''} data={child} />
                   </BuilderWrapper>
                 </div>
