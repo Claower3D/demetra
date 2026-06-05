@@ -860,16 +860,10 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
              let cleanDraggedId = draggedId;
              let cleanTargetId = targetId;
              
-             if (k === 'order_catalog') {
-               cleanDraggedId = cleanDraggedId.replace('cat_', '');
-               cleanTargetId = cleanTargetId.replace('cat_', '');
-             } else if (k === 'order_services') {
-               cleanDraggedId = cleanDraggedId.replace('srv_', '');
-               cleanTargetId = cleanTargetId.replace('srv_', '');
-             }
+             const cleanId = (str: any) => String(str).replace('cat_item_', '').replace('cat_', '').replace('srv_', '').trim();
              
-             const draggedIndex = newOrder.findIndex(x => String(x) === String(cleanDraggedId));
-             const targetIndex = newOrder.findIndex(x => String(x) === String(cleanTargetId));
+             const draggedIndex = newOrder.findIndex(x => cleanId(x) === cleanId(cleanDraggedId));
+             const targetIndex = newOrder.findIndex(x => cleanId(x) === cleanId(cleanTargetId));
              
              if (draggedIndex !== -1 && targetIndex !== -1) {
                const [draggedItem] = newOrder.splice(draggedIndex, 1);
