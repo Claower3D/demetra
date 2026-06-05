@@ -257,7 +257,154 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
   const [previewRoute, setPreviewRoute] = useState<string>('/');
   const [isLibraryOpen, setIsLibraryOpen] = useState<boolean>(true);
   const [libSearch, setLibSearch] = useState<string>('');
+  const [hoveredBlockId, setHoveredBlockId] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  const getBlockHelp = (id: string) => {
+    const helpData: Record<string, { title: string; desc: string; steps: string[] }> = {
+      hero: {
+        title: 'Hero (Обложка)',
+        desc: 'Главный баннер с полноэкранным слайдером картинок, крупными заголовками и кнопками перехода.',
+        steps: [
+          'Нажмите «Добавить» или перетащите блок на странице.',
+          'Кликните на текст прямо в окне предпросмотра, чтобы изменить его.',
+          'Нажмите шестеренку на блоке, чтобы заменить изображения слайдов, настроить отступы или цвет наложения.'
+        ]
+      },
+      marquee: {
+        title: 'Marquee (Инфо-строка)',
+        desc: 'Динамическая бегущая строка с ключевыми показателями и преимуществами вашей компании.',
+        steps: [
+          'Используется для демонстрации преимуществ, слоганов или брендов.',
+          'В панели настроек (StyleEditor) можно изменить фоновый цвет и скорость анимации.',
+          'Текст локализуется на трех языках.'
+        ]
+      },
+      catalog: {
+        title: 'Catalog (Сетка каталога)',
+        desc: 'Интерактивная bento-сетка продукции с кнопками быстрого просмотра и фильтрацией по категориям.',
+        steps: [
+          'Выводит список товаров из базы данных.',
+          'Позволяет покупателям мгновенно искать и фильтровать оборудование.',
+          'Для изменения товаров перейдите во вкладку «Продукты» в левом меню админки.'
+        ]
+      },
+      partnership: {
+        title: 'Partnership (Партнеры)',
+        desc: 'Сетка логотипов ключевых партнеров и дистрибьюторов компании.',
+        steps: [
+          'Повышает доверие к вашему бренду.',
+          'Нажмите на настройки блока для изменения логотипов или добавления новых ссылок.'
+        ]
+      },
+      services: {
+        title: 'Services (Сетка услуг)',
+        desc: 'Сетка интерактивных карточек предоставляемых услуг с иконками.',
+        steps: [
+          'Подходит для детального описания направлений деятельности.',
+          'Вы можете перетаскивать карточки услуг, меняя их порядок.',
+          'Тексты и иконки настраиваются через контекстное меню блока.'
+        ]
+      },
+      cta: {
+        title: 'CTA (Обратная связь)',
+        desc: 'Финальный блок с призывом к действию, кнопкой контактов и быстрым переходом.',
+        steps: [
+          'Увеличивает конверсию заявок.',
+          'Вы можете привязать кнопки к форме обратной связи или Telegram.',
+          'Настройте фоновые градиенты в панели стилей.'
+        ]
+      },
+      heading: {
+        title: 'Кастомный заголовок',
+        desc: 'Информационный блок с надзаголовком, крупным шрифтом и кратким описанием.',
+        steps: [
+          'Кликните на заголовок для открытия параметров.',
+          'Выберите выравнивание (слева, центр, справа) и цвет акцента.',
+          'Переведите тексты во вкладках RU, KK, EN.'
+        ]
+      },
+      text: {
+        title: 'Текст',
+        desc: 'Простой текстовый блок для размещения статей, описаний или списков.',
+        steps: [
+          'Поддерживает абзацы и переносы строк.',
+          'Вы можете настроить цвет текста и фона.',
+          'Идеален для размещения юридической информации или инструкций.'
+        ]
+      },
+      button: {
+        title: 'Акцентная кнопка',
+        desc: 'Кнопка действия с ярким неоновым свечением при наведении.',
+        steps: [
+          'Введите текст кнопки в поле «Надпись».',
+          'В поле «Ссылка» укажите адрес перехода (например, /contacts).',
+          'Выберите цвет свечения.'
+        ]
+      },
+      card: {
+        title: 'Bento Карточка',
+        desc: 'Информационный блок с превью-картинкой, описанием и кнопкой подробностей.',
+        steps: [
+          'Укажите ссылку на изображение.',
+          'Заполните заголовок и текст карточки.',
+          'Кнопка может вести на любую страницу сайта.'
+        ]
+      },
+      two_col: {
+        title: '2 Колонки',
+        desc: 'Текстовый блок, разделенный на две независимые колонки.',
+        steps: [
+          'Удобно для сравнения характеристик или преимуществ.',
+          'Заполняйте левую и правую колонки в панели настроек.'
+        ]
+      },
+      image_text: {
+        title: 'Фото + Текст',
+        desc: 'Сбалансированный блок, содержащий изображение с одной стороны и описание с кнопкой с другой.',
+        steps: [
+          'Укажите ссылку на фото.',
+          'Настройте заголовок, описание и ссылку.',
+          'Автоматически адаптируется под мобильные устройства.'
+        ]
+      },
+      cta_banner: {
+        title: 'Промо-баннер',
+        desc: 'Акцентный блок во всю ширину с градиентной заливкой и встроенной кнопкой.',
+        steps: [
+          'Используйте для горячих акций или лид-магнитов.',
+          'Задайте фоновый градиент (цвет) для привлечения внимания.',
+          'Настройте ссылку на форму заказа.'
+        ]
+      },
+      divider: {
+        title: 'Разделитель',
+        desc: 'Тонкая декоративная градиентная линия для визуального разделения контента.',
+        steps: [
+          'Создает пространство и улучшает восприятие страницы.',
+          'В настройках можно переопределить цвет линии.'
+        ]
+      },
+      gallery_add: {
+        title: 'Медиа-файл в Галерею',
+        desc: 'Добавление нового фото или видео в Bento-сетку галереи.',
+        steps: [
+          'Выберите тип медиа (Изображение или Видео).',
+          'Укажите ссылку на файл или YouTube видео.',
+          'Задайте категорию фильтрации и подписи на трех языках.'
+        ]
+      }
+    };
+    return helpData[id] || {
+      title: 'Элемент',
+      desc: 'Позволяет гибко кастомизировать структуру страницы.',
+      steps: [
+        'Нажмите для добавления.',
+        'Редактируйте параметры в панели настроек.'
+      ]
+    };
+  };
+
 
   // Map route to layout key
   const routeToKey = (route: string) => {
@@ -583,9 +730,11 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
                     {/* GALLERY MEDIA (shown if layoutKey === 'gallery') */}
                     {layoutKey === 'gallery' && (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                         <div style={{ fontSize: '0.65rem', color: '#555', fontWeight: '900', letterSpacing: '0.15em' }}>ГАЛЕРЕЯ МЕДИА</div>
+                         <div style={{ fontSize: '0.75rem', color: '#8e9196', fontWeight: '900', letterSpacing: '0.15em' }}>ГАЛЕРЕЯ МЕДИА</div>
                          <button
                            onClick={addGalleryItem}
+
+
                            style={{
                              width: '100%',
                              background: 'rgba(0, 255, 65, 0.05)',
@@ -594,7 +743,7 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
                              padding: '1.25rem',
                              color: '#00ff41',
                              fontWeight: '800',
-                             fontSize: '0.8rem',
+                             fontSize: '0.85rem',
                              cursor: 'pointer',
                              display: 'flex',
                              flexDirection: 'column',
@@ -602,8 +751,14 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
                              gap: '0.5rem',
                              transition: 'all 0.2s'
                            }}
-                           onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0, 255, 65, 0.1)'}
-                           onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0, 255, 65, 0.05)'}
+                           onMouseEnter={(e) => {
+                             setHoveredBlockId('gallery_add');
+                             e.currentTarget.style.background = 'rgba(0, 255, 65, 0.1)';
+                           }}
+                           onMouseLeave={(e) => {
+                             setHoveredBlockId(null);
+                             e.currentTarget.style.background = 'rgba(0, 255, 65, 0.05)';
+                           }}
                          >
                            <Plus size={24} />
                            <span>Добавить Фото / Видео</span>
@@ -614,15 +769,15 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
                     {/* SECTIONS LIST (Home page only) */}
                     {layoutKey === 'home' && (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                         <div style={{ fontSize: '0.65rem', color: '#555', fontWeight: '900', letterSpacing: '0.15em' }}>СЕКЦИИ СТРАНИЦЫ</div>
+                         <div style={{ fontSize: '0.75rem', color: '#8e9196', fontWeight: '900', letterSpacing: '0.15em' }}>СЕКЦИИ СТРАНИЦЫ</div>
                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                             {[
-                              { id: 'hero', title: 'Hero (Обложка)', desc: 'Главный баннер, слайды и кнопки', icon: <Layers size={14} /> },
-                              { id: 'marquee', title: 'Marquee (Инфо-строка)', desc: 'Бегущая строка с показателями', icon: <Zap size={14} /> },
-                              { id: 'catalog', title: 'Catalog (Каталог)', desc: 'Сетка продукции и оборудования', icon: <Package size={14} /> },
-                              { id: 'partnership', title: 'Partnership (Партнеры)', desc: 'Сетка логотипов партнеров', icon: <ExternalLink size={14} /> },
-                              { id: 'services', title: 'Services (Услуги)', desc: 'Блоки преимуществ и услуг', icon: <Settings size={14} /> },
-                              { id: 'cta', title: 'CTA (Обратная связь)', desc: 'Кнопки обратной связи', icon: <Phone size={14} /> }
+                              { id: 'hero', title: 'Hero (Обложка)', desc: 'Главный баннер, слайды и кнопки', icon: <Layers size={16} /> },
+                              { id: 'marquee', title: 'Marquee (Инфо-строка)', desc: 'Бегущая строка с показателями', icon: <Zap size={16} /> },
+                              { id: 'catalog', title: 'Catalog (Каталог)', desc: 'Сетка продукции и оборудования', icon: <Package size={16} /> },
+                              { id: 'partnership', title: 'Partnership (Партнеры)', desc: 'Сетка логотипов партнеров', icon: <ExternalLink size={16} /> },
+                              { id: 'services', title: 'Services (Услуги)', desc: 'Блоки преимуществ и услуг', icon: <Settings size={16} /> },
+                              { id: 'cta', title: 'CTA (Обратная связь)', desc: 'Кнопки обратной связи', icon: <Phone size={16} /> }
                             ].filter(x => x.title.toLowerCase().includes(libSearch.toLowerCase()) || x.desc.toLowerCase().includes(libSearch.toLowerCase())).map(sec => {
                               const order = currentLayout.order || [];
                               const hidden = currentLayout.hidden || [];
@@ -637,7 +792,7 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
                               if (isAdded) {
                                 if (isHidden) {
                                   statusText = 'Скрыт (Показать)';
-                                  statusColor = '#888';
+                                  statusColor = '#8e9196';
                                   bg = '#121214';
                                 } else {
                                   statusText = 'Активен';
@@ -655,7 +810,7 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
                                     background: bg,
                                     border: border,
                                     borderRadius: '10px',
-                                    padding: '0.75rem 0.85rem',
+                                    padding: '0.85rem 1rem',
                                     cursor: 'pointer',
                                     transition: 'all 0.2s',
                                     display: 'flex',
@@ -664,22 +819,24 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
                                     gap: '1rem'
                                   }}
                                   onMouseEnter={(e) => {
+                                    setHoveredBlockId(sec.id);
                                     e.currentTarget.style.borderColor = '#00ff41';
                                     e.currentTarget.style.background = 'rgba(0, 255, 65, 0.05)';
                                   }}
                                   onMouseLeave={(e) => {
+                                    setHoveredBlockId(null);
                                     e.currentTarget.style.borderColor = isAdded && !isHidden ? 'rgba(0, 255, 65, 0.2)' : '#1a1a1e';
                                     e.currentTarget.style.background = bg;
                                   }}
                                 >
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    <div style={{ color: statusColor }}>{sec.icon}</div>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                    <div style={{ color: statusColor, display: 'flex', alignItems: 'center' }}>{sec.icon}</div>
                                     <div style={{ textAlign: 'left' }}>
-                                      <div style={{ fontSize: '0.75rem', color: '#fff', fontWeight: '800' }}>{sec.title}</div>
-                                      <div style={{ fontSize: '0.6rem', color: '#555', marginTop: '0.1rem' }}>{sec.desc}</div>
+                                      <div style={{ fontSize: '0.85rem', color: '#fff', fontWeight: '800' }}>{sec.title}</div>
+                                      <div style={{ fontSize: '0.7rem', color: '#a1a1aa', marginTop: '0.2rem' }}>{sec.desc}</div>
                                     </div>
                                   </div>
-                                  <div style={{ fontSize: '0.6rem', color: statusColor, fontWeight: '900', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>
+                                  <div style={{ fontSize: '0.7rem', color: statusColor, fontWeight: '900', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>
                                     {statusText}
                                   </div>
                                 </div>
@@ -691,7 +848,7 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
 
                     {/* CUSTOM BLOCKS LIST */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                       <div style={{ fontSize: '0.65rem', color: '#555', fontWeight: '900', letterSpacing: '0.15em' }}>ДОБАВИТЬ ЭЛЕМЕНТЫ</div>
+                       <div style={{ fontSize: '0.75rem', color: '#8e9196', fontWeight: '900', letterSpacing: '0.15em' }}>ДОБАВИТЬ ЭЛЕМЕНТЫ</div>
                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
                           {[
                             { id: 'heading', title: 'Заголовок', icon: '𝐇', desc: 'Heading' },
@@ -710,29 +867,31 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
                                 background: '#121214',
                                 border: '1px solid #1e1e22',
                                 borderRadius: '10px',
-                                padding: '0.85rem 0.4rem',
+                                padding: '1rem 0.5rem',
                                 color: '#fff',
                                 cursor: 'pointer',
                                 transition: 'all 0.2s',
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
-                                gap: '0.3rem'
+                                gap: '0.4rem'
                               }}
                               onMouseEnter={(e) => {
+                                setHoveredBlockId(el.id);
                                 e.currentTarget.style.borderColor = '#00ff41';
                                 e.currentTarget.style.background = 'rgba(0, 255, 65, 0.04)';
                                 e.currentTarget.style.transform = 'translateY(-2px)';
                               }}
                               onMouseLeave={(e) => {
+                                setHoveredBlockId(null);
                                 e.currentTarget.style.borderColor = '#1e1e22';
                                 e.currentTarget.style.background = '#121214';
                                 e.currentTarget.style.transform = 'translateY(0)';
                               }}
                             >
-                              <div style={{ fontSize: '1.2rem', color: '#00ff41', fontWeight: '800' }}>{el.icon}</div>
-                              <div style={{ fontSize: '0.75rem', fontWeight: '800' }}>{el.title}</div>
-                              <div style={{ fontSize: '0.6rem', color: '#555' }}>{el.desc}</div>
+                              <div style={{ fontSize: '1.4rem', color: '#00ff41', fontWeight: '800' }}>{el.icon}</div>
+                              <div style={{ fontSize: '0.85rem', fontWeight: '800' }}>{el.title}</div>
+                              <div style={{ fontSize: '0.65rem', color: '#a1a1aa' }}>{el.desc}</div>
                             </button>
                           ))}
                        </div>
@@ -740,6 +899,52 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
 
                  </div>
               </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Floating Instruction / Help Guide */}
+        <AnimatePresence>
+          {hoveredBlockId && (
+            <motion.div
+              initial={{ opacity: 0, x: -10, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -10, scale: 0.95 }}
+              transition={{ duration: 0.15 }}
+              style={{
+                position: 'absolute',
+                left: isLibraryOpen ? '355px' : '65px',
+                top: '120px',
+                width: '320px',
+                background: 'rgba(10, 10, 12, 0.96)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid #00ff41',
+                borderRadius: '16px',
+                padding: '1.5rem',
+                color: '#fff',
+                zIndex: 4500,
+                boxShadow: '0 10px 40px rgba(0, 255, 65, 0.15), 0 0 100px rgba(0,0,0,0.8)',
+                pointerEvents: 'none'
+              }}
+            >
+               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#00ff41', marginBottom: '0.75rem' }}>
+                  <Info size={16} />
+                  <span style={{ fontSize: '0.7rem', fontWeight: '900', letterSpacing: '0.15em', textTransform: 'uppercase' }}>ИНСТРУКЦИЯ</span>
+               </div>
+               <h4 style={{ fontSize: '1.1rem', fontWeight: '900', margin: '0 0 0.5rem 0', color: '#fff' }}>
+                  {getBlockHelp(hoveredBlockId).title}
+               </h4>
+               <p style={{ fontSize: '0.8rem', color: '#a1a1aa', margin: '0 0 1rem 0', lineHeight: '1.5' }}>
+                  {getBlockHelp(hoveredBlockId).desc}
+               </p>
+               <div style={{ borderTop: '1px solid #222', paddingTop: '1rem' }}>
+                  <div style={{ fontSize: '0.65rem', color: '#00ff41', fontWeight: '800', marginBottom: '0.5rem' }}>КАК НАСТРОИТЬ:</div>
+                  <ul style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.75rem', color: '#d1d1d6', display: 'flex', flexDirection: 'column', gap: '0.4rem', lineHeight: '1.4' }}>
+                     {getBlockHelp(hoveredBlockId).steps.map((step: string, i: number) => (
+                        <li key={i}>{step}</li>
+                     ))}
+                  </ul>
+               </div>
             </motion.div>
           )}
         </AnimatePresence>
