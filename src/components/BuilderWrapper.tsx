@@ -9,6 +9,51 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
   const containerRef = useRef<HTMLDivElement>(null);
   const [dragSize, setDragSize] = useState<{gridColumn?: string, gridRow?: string, width?: string, height?: string} | null>(null);
   
+  const getPageKey = () => {
+    const path = window.location.pathname;
+    if (path.includes('/about')) return 'about';
+    if (path.includes('/services')) return 'services';
+    if (path.includes('/catalog')) return 'catalog';
+    if (path.includes('/contacts')) return 'contacts';
+    if (path.includes('/faq')) return 'faq';
+    if (path.includes('/gallery')) return 'gallery';
+    if (path.includes('/pay')) return 'pay';
+    if (path.includes('/partner')) return 'partner';
+    return 'home';
+  };
+
+  const [localStyle, setLocalStyle] = useState(style);
+
+  useEffect(() => {
+    setLocalStyle(style);
+  }, [style]);
+
+  useEffect(() => {
+    const syncStyle = () => {
+      try {
+        const pageKey = getPageKey();
+        const saved = localStorage.getItem(`demetra_${pageKey}_layout`);
+        if (saved) {
+          const layout = JSON.parse(saved);
+          const blockStyle = layout?.styles?.[id];
+          if (blockStyle) {
+            setLocalStyle(blockStyle);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to sync style in BuilderWrapper", e);
+      }
+    };
+
+    syncStyle();
+    window.addEventListener('storage', syncStyle);
+    window.addEventListener('message', syncStyle);
+    return () => {
+      window.removeEventListener('storage', syncStyle);
+      window.removeEventListener('message', syncStyle);
+    };
+  }, [id, style]);
+
   useEffect(() => {
     const handleClickOutside = () => setContextMenu(null);
     window.addEventListener('click', handleClickOutside);
@@ -18,8 +63,6 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
        window.removeEventListener('scroll', handleClickOutside);
     };
   }, []);
-
-  if (!isBuilder) return <>{children}</>;
 
   const postMsg = (action: string, payload?: any) => {
     window.parent.postMessage({ type: 'DEMETRA_BUILDER', action, id, index, arrayKey, ...payload }, '*');
@@ -123,42 +166,51 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
     window.addEventListener('mouseup', onMouseUp);
   };
 
+  const mergedStyle = { ...(localStyle || {}), ...(style || {}) };
+
   return (
     <div 
       ref={containerRef}
-      onMouseEnter={() => setIsHovered(true)} 
-      onMouseLeave={() => setIsHovered(false)}
-      onContextMenu={handleContextMenu}
+      onMouseEnter={isBuilder ? () => setIsHovered(true) : undefined} 
+      onMouseLeave={isBuilder ? () => setIsHovered(false) : undefined}
+      onContextMenu={isBuilder ? handleContextMenu : undefined}
       draggable={isBuilder}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
+      onDragStart={isBuilder ? handleDragStart : undefined}
+      onDragEnd={isBuilder ? handleDragEnd : undefined}
+      onDragOver={isBuilder ? handleDragOver : undefined}
+      onDragLeave={isBuilder ? handleDragLeave : undefined}
+      onDrop={isBuilder ? handleDrop : undefined}
       style={{ 
         position: 'relative', 
-        border: isDraggingOver 
-          ? '2px dashed #00ff41' 
-          : (isHovered ? '2px solid #00ff41' : '2px solid transparent'),
-        boxShadow: isDraggingOver ? '0 0 25px rgba(0, 255, 65, 0.4)' : 'none',
+        border: isBuilder 
+          ? (isDraggingOver 
+              ? '2px dashed #00ff41' 
+              : (isHovered ? '2px solid #00ff41' : '2px solid transparent'))
+          : 'none',
+        boxShadow: (isBuilder && isDraggingOver) ? '0 0 25px rgba(0, 255, 65, 0.4)' : 'none',
         transition: dragSize ? 'none' : 'all 0.15s ease', 
-        gridColumn: dragSize?.gridColumn || style?.gridColumn || 'span 12',
-        gridRow: dragSize?.gridRow || style?.gridRow || 'auto',
-        width: '100%', 
-        height: '100%', 
+        gridColumn: dragSize?.gridColumn || mergedStyle?.gridColumn || 'span 12',
+        gridRow: dragSize?.gridRow || mergedStyle?.gridRow || 'auto',
+        width: dragSize?.width || mergedStyle?.width || (id?.startsWith('btn_') ? 'fit-content' : '100%'), 
+        height: dragSize?.height || mergedStyle?.height || (id?.startsWith('btn_') ? 'auto' : '100%'), 
         boxSizing: 'border-box',
         cursor: isBuilder ? 'grab' : 'default',
-        background: isBuilder 
-          ? (isDraggingOver ? 'rgba(0, 255, 65, 0.08)' : (style?.background || 'rgba(255,255,255,0.02)')) 
-          : (style?.background || 'transparent'),
-        padding: style?.padding || '0px',
-        borderRadius: style?.borderRadius || '0px',
-        opacity: style?.opacity !== undefined ? style.opacity : 1,
-        transform: style?.transform || 'none'
+        background: mergedStyle?.background || 'transparent',
+        padding: mergedStyle?.padding || '0px',
+        borderRadius: mergedStyle?.borderRadius || '0px',
+        opacity: mergedStyle?.opacity !== undefined ? mergedStyle.opacity : 1,
+        transform: mergedStyle?.transform || 'none',
+        marginTop: mergedStyle?.marginTop || undefined,
+        marginBottom: mergedStyle?.marginBottom || undefined,
+        paddingTop: mergedStyle?.paddingTop || undefined,
+        paddingBottom: mergedStyle?.paddingBottom || undefined,
+        paddingLeft: mergedStyle?.paddingLeft || undefined,
+        paddingRight: mergedStyle?.paddingRight || undefined,
+        backgroundColor: mergedStyle?.backgroundColor || undefined,
       }}
     >
        <AnimatePresence>
-         {isHovered && !dragSize && !contextMenu && (
+         {isBuilder && isHovered && !dragSize && !contextMenu && (
            <motion.div 
              initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
              style={{ position: 'absolute', top: '0.5rem', left: '0.5rem', background: '#00ff41', color: '#000', padding: '0.4rem 1rem', borderRadius: '4px', fontSize: '0.7rem', fontWeight: '900', zIndex: 100, textTransform: 'uppercase' }}
@@ -169,19 +221,17 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
        </AnimatePresence>
        
        <div 
-         onClickCapture={(e) => {
-           if (isBuilder) {
-             if ((e.target as HTMLElement).isContentEditable) return;
-             e.preventDefault();
-           }
-         }}
-         style={{ opacity: isHovered && !dragSize && !contextMenu ? 0.7 : 1, transition: '0.2s', width: '100%', height: '100%' }}
+         onClickCapture={isBuilder ? (e) => {
+           if ((e.target as HTMLElement).isContentEditable) return;
+           e.preventDefault();
+         } : undefined}
+         style={{ opacity: isBuilder && isHovered && !dragSize && !contextMenu ? 0.7 : 1, transition: '0.2s', width: '100%', height: '100%' }}
        >
          {children}
        </div>
 
        {/* Visual Drag Handle */}
-       {isHovered && !contextMenu && (
+       {isBuilder && isHovered && !contextMenu && (
          <div 
            onMouseDown={handleResizeStart}
            style={{
@@ -201,7 +251,7 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
        )}
 
        {/* Add Block Button (Floating below) */}
-       {isHovered && !contextMenu && (
+       {isBuilder && isHovered && !contextMenu && (
          <button
            onClick={() => postMsg('ADD_BLOCK_AFTER')}
            style={{
@@ -228,7 +278,7 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
        )}
 
        {/* Right-Click Context Menu */}
-       {contextMenu && (
+       {isBuilder && contextMenu && (
          <div style={{
            position: 'fixed', left: Math.min(contextMenu.x, window.innerWidth - 200), top: Math.min(contextMenu.y, window.innerHeight - 250),
            background: '#111', border: '1px solid #333', padding: '0.5rem', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '0.25rem', zIndex: 99999, boxShadow: '0 10px 40px rgba(0,0,0,0.8)', minWidth: '180px'

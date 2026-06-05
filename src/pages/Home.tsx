@@ -76,8 +76,35 @@ export default function Home() {
         content = (
           <section key="hero" style={{ height: '100vh', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', ...blockStyle }}>
             <AnimatePresence mode="wait">
-              <motion.div key={currentSlide} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.5 }} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
-                <motion.img style={{ width: '100%', height: '120%', objectFit: 'cover', filter: 'brightness(0.35)', y: yParallax }} src={slides[currentSlide].img} />
+              <motion.div key={currentSlide} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.5 }} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', overflow: 'hidden' }}>
+                {layout?.mediaTypes?.hero_type === 'video' && layout?.videos?.hero_video ? (
+                  layout.videos.hero_video.includes('youtube.com') || layout.videos.hero_video.includes('youtu.be') ? (
+                    (() => {
+                      let embedId = '';
+                      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                      const match = layout.videos.hero_video.match(regExp);
+                      if (match && match[2].length === 11) embedId = match[2];
+                      return embedId ? (
+                        <iframe
+                          src={`https://www.youtube.com/embed/${embedId}?autoplay=1&mute=1&loop=1&playlist=${embedId}&controls=0&showinfo=0&rel=0&enablejsapi=1`}
+                          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none', pointerEvents: 'none', transform: 'scale(1.35)', filter: 'brightness(0.35)' }}
+                          title="Background Video"
+                        />
+                      ) : null;
+                    })()
+                  ) : (
+                    <video
+                      src={layout.videos.hero_video}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.35)' }}
+                    />
+                  )
+                ) : (
+                  <motion.img style={{ width: '100%', height: '120%', objectFit: 'cover', filter: 'brightness(0.35)', y: yParallax }} src={slides[currentSlide].img} />
+                )}
               </motion.div>
             </AnimatePresence>
             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'linear-gradient(to top, var(--background) 10%, transparent 50%)', zIndex: 2 }} />

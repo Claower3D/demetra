@@ -15,6 +15,8 @@ export interface CustomBlockData {
   align?: 'left' | 'center' | 'right';
   accent?: string;    // accent color override
   bg?: string;        // background override
+  mediaType?: 'image' | 'video';
+  videoSrc?: string;
 }
 
 // Get all custom blocks from localStorage
@@ -84,7 +86,7 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
       return (
         <div style={base}>
           <p style={{ fontSize: '1.15rem', lineHeight: 1.8, color: 'var(--text-muted)', maxWidth: '800px', margin: align === 'center' ? '0 auto' : '0', whiteSpace: 'pre-wrap' }}>
-            {body || 'Введите текст блока...'}
+            {body || 'Введите text блока...'}
           </p>
         </div>
       );
@@ -122,8 +124,28 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
             borderRadius: 'var(--radius)', overflow: 'hidden',
             transition: 'all 0.4s'
           }}>
-            {data.src && (
-              <img src={data.src} alt="" style={{ width: '100%', height: '260px', objectFit: 'cover', display: 'block' }} />
+            {data.mediaType === 'video' && data.videoSrc ? (
+              <div style={{ width: '100%', height: '260px', position: 'relative', overflow: 'hidden' }}>
+                {data.videoSrc.includes('youtube.com') || data.videoSrc.includes('youtu.be') ? (
+                  (() => {
+                    let embedId = '';
+                    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                    const match = data.videoSrc.match(regExp);
+                    if (match && match[2].length === 11) embedId = match[2];
+                    return embedId ? (
+                      <iframe
+                        src={`https://www.youtube.com/embed/${embedId}?autoplay=1&mute=1&loop=1&playlist=${embedId}&controls=0`}
+                        style={{ width: '100%', height: '100%', border: 'none' }}
+                        title="Card Video"
+                      />
+                    ) : null;
+                  })()
+                ) : (
+                  <video src={data.videoSrc} autoPlay loop muted playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                )}
+              </div>
+            ) : (
+              data.src && <img src={data.src} alt="" style={{ width: '100%', height: '260px', objectFit: 'cover', display: 'block' }} />
             )}
             <div style={{ padding: '2.5rem' }}>
               {label && (
@@ -159,8 +181,28 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
     case 'image_text':
       return (
         <div style={{ ...base, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
-          {data.src && (
-            <img src={data.src} alt="" style={{ width: '100%', borderRadius: 'var(--radius)', display: 'block', aspectRatio: '16/9', objectFit: 'cover' }} />
+          {data.mediaType === 'video' && data.videoSrc ? (
+            <div style={{ width: '100%', borderRadius: 'var(--radius)', aspectRatio: '16/9', overflow: 'hidden', position: 'relative' }}>
+              {data.videoSrc.includes('youtube.com') || data.videoSrc.includes('youtu.be') ? (
+                (() => {
+                  let embedId = '';
+                  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                  const match = data.videoSrc.match(regExp);
+                  if (match && match[2].length === 11) embedId = match[2];
+                  return embedId ? (
+                    <iframe
+                      src={`https://www.youtube.com/embed/${embedId}?autoplay=1&mute=1&loop=1&playlist=${embedId}&controls=0`}
+                      style={{ width: '100%', height: '100%', border: 'none' }}
+                      title="Block Video"
+                    />
+                  ) : null;
+                })()
+              ) : (
+                <video src={data.videoSrc} autoPlay loop muted playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              )}
+            </div>
+          ) : (
+            data.src && <img src={data.src} alt="" style={{ width: '100%', borderRadius: 'var(--radius)', display: 'block', aspectRatio: '16/9', objectFit: 'cover' }} />
           )}
           <div>
             {heading && <h3 style={{ fontSize: '2rem', fontWeight: '900', marginBottom: '1.5rem', color: 'var(--foreground)' }}>{heading}</h3>}
