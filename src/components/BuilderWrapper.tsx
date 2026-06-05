@@ -2,12 +2,20 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MoveUp, MoveDown, Trash, Settings, Layers, Plus, Edit3, Image as ImageIcon } from 'lucide-react';
 
+// Global drag state – only one element can be dragged at a time
+const dragState = {
+  draggingId: null as string | null,
+  startX: 0,
+  startY: 0,
+};
+
 export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder, arrayKey = 'order', style = {} }: any) {
   const [isHovered, setIsHovered] = useState(false);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [contextMenu, setContextMenu] = useState<{x: number, y: number} | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dragSize, setDragSize] = useState<{gridColumn?: string, gridRow?: string, width?: string, height?: string} | null>(null);
+  const [isDraggingThis, setIsDraggingThis] = useState(false);
   
   const getPageKey = () => {
     const path = window.location.pathname;
@@ -75,48 +83,159 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
     setContextMenu({ x: e.clientX, y: e.clientY });
   };
 
-  const handleDragStart = (e: React.DragEvent) => {
+  // ─── MOUSE-BASED DRAG (instead of HTML5 drag) ──────────────────────────────
+  // This approach gives us full control: only the element where mousedown fires
+  // will be dragged, parent wrappers are completely unaffected.
+  const ghostRef = useRef<HTMLElement | null>(null);
+  const isDraggingRef = useRef(false);
+  const dragMoved = useRef(false);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!isBuilder) return;
+
     const target = e.target as HTMLElement;
+    // Don't intercept clicks on interactive controls or contentEditable
     if (
       target.closest('input') ||
       target.closest('button') ||
       target.closest('select') ||
       target.closest('textarea') ||
-      target.isContentEditable
+      target.isContentEditable ||
+      target.closest('.floating-assistant-container')
     ) {
-      e.preventDefault();
+      return;
+    }
+
+    // Only allow dragging from the green label/toolbar area (top-left corner)
+    // or from empty space directly on this wrapper (not a deeper nested .builder-wrapper)
+    const deepestWrapper = (e.target as HTMLElement).closest('.builder-wrapper');
+    if (deepestWrapper !== containerRef.current) {
+      // Mouse is over a CHILD builder-wrapper – let that child handle it
       return;
     }
 
     e.stopPropagation();
-    e.dataTransfer.setData("text/plain", id);
-    e.dataTransfer.effectAllowed = "move";
-    
-    // Set a clean drag image using the inner content element (without green outlines and edit buttons)
-    const innerContent = containerRef.current?.querySelector('.builder-content-no-drag');
-    if (innerContent && e.dataTransfer.setDragImage) {
-      // Find the mouse offset relative to the innerContent bounding box to center it under cursor
-      const rect = innerContent.getBoundingClientRect();
-      const offsetX = e.clientX - rect.left;
-      const offsetY = e.clientY - rect.top;
-      e.dataTransfer.setDragImage(innerContent, offsetX > 0 ? offsetX : 20, offsetY > 0 ? offsetY : 20);
-    }
-    
-    if (containerRef.current) {
-      containerRef.current.style.opacity = '0.5';
-    }
-  };
 
-  const handleDragEnd = () => {
-    if (containerRef.current) {
-      containerRef.current.style.opacity = '1';
-    }
+    const startX = e.clientX;
+    const startY = e.clientY;
+    dragMoved.current = false;
+    isDraggingRef.current = false;
+    dragState.draggingId = null;
+    dragState.startX = startX;
+    dragState.startY = startY;
+
+    const onMouseMove = (me: MouseEvent) => {
+      const dx = me.clientX - startX;
+      const dy = me.clientY - startY;
+
+      if (!isDraggingRef.current && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
+        // Threshold exceeded – start dragging
+        isDraggingRef.current = true;
+        dragMoved.current = true;
+        dragState.draggingId = id;
+        setIsDraggingThis(true);
+
+        // Create a semi-transparent ghost clone positioned under the cursor
+        const el = containerRef.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const clone = el.cloneNode(true) as HTMLElement;
+        clone.style.cssText = `
+          position: fixed;
+          left: ${rect.left}px;
+          top: ${rect.top}px;
+          width: ${rect.width}px;
+          height: ${rect.height}px;
+          opacity: 0.6;
+          pointer-events: none;
+          z-index: 999999;
+          border: 2px dashed #00ff41;
+          border-radius: 8px;
+          transform: scale(1.02);
+          transition: transform 0.1s;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+        `;
+        // Remove inner edit overlays from ghost
+        clone.querySelectorAll('.builder-wrapper-toolbar, button, .builder-wrapper').forEach(el => {
+          (el as HTMLElement).style.display = 'none';
+        });
+        document.body.appendChild(clone);
+        ghostRef.current = clone;
+      }
+
+      if (isDraggingRef.current && ghostRef.current) {
+        const rect = containerRef.current!.getBoundingClientRect();
+        ghostRef.current.style.left = `${rect.left + dx}px`;
+        ghostRef.current.style.top = `${rect.top + dy}px`;
+      }
+    };
+
+    const onMouseUp = (ue: MouseEvent) => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+
+      // Remove ghost
+      if (ghostRef.current) {
+        ghostRef.current.remove();
+        ghostRef.current = null;
+      }
+
+      setIsDraggingThis(false);
+
+      if (!isDraggingRef.current) {
+        // It was a click – open modal
+        const clickTarget = ue.target as HTMLElement;
+        if (
+          !clickTarget.isContentEditable &&
+          !clickTarget.closest('input') &&
+          !clickTarget.closest('button') &&
+          !clickTarget.closest('select') &&
+          !clickTarget.closest('textarea') &&
+          !clickTarget.closest('.floating-assistant-container')
+        ) {
+          postMsg('OPEN_MODAL', { tab: 'content' });
+        }
+        dragState.draggingId = null;
+        isDraggingRef.current = false;
+        return;
+      }
+
+      isDraggingRef.current = false;
+
+      // Find which wrapper we dropped onto
+      const el = document.elementFromPoint(ue.clientX, ue.clientY);
+      const dropTarget = el?.closest('[data-builder-id]') as HTMLElement | null;
+      if (dropTarget) {
+        const targetId = dropTarget.getAttribute('data-builder-id');
+        const targetArrayKey = dropTarget.getAttribute('data-array-key') || arrayKey;
+        if (targetId && targetId !== id) {
+          window.parent.postMessage({
+            type: 'DEMETRA_BUILDER',
+            action: 'MOVE_BLOCK_TO',
+            id,
+            index,
+            arrayKey,
+            draggedId: id,
+            targetId,
+            targetArrayKey,
+          }, '*');
+        }
+      }
+
+      dragState.draggingId = null;
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
   };
+  // ─────────────────────────────────────────────────────────────────────────────
 
   const handleDragOver = (e: React.DragEvent) => {
+    // Keep native drag-over for library blocks dragged from the sidebar
     e.preventDefault();
     e.stopPropagation();
-    setIsDraggingOver(true);
+    const data = e.dataTransfer.types.includes('text/plain');
+    if (data) setIsDraggingOver(true);
   };
 
   const handleDragLeave = (e: React.DragEvent) => {
@@ -133,8 +252,6 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
       if (draggedId.startsWith("add_block:")) {
         const type = draggedId.replace("add_block:", "");
         postMsg('ADD_BLOCK_AT', { type, targetId: id, arrayKey });
-      } else if (draggedId !== id) {
-        postMsg('MOVE_BLOCK_TO', { draggedId, targetId: id, arrayKey });
       }
     }
   };
@@ -198,15 +315,16 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
     window.addEventListener('mouseup', onMouseUp);
   };
 
+  // ── Hover: only the DEEPEST wrapper directly under mouse gets highlighted ──
   const handleMouseOver = (e: React.MouseEvent) => {
     if (!isBuilder) return;
     e.stopPropagation();
-    const targetWrapper = (e.target as HTMLElement).closest('.builder-wrapper');
-    if (targetWrapper === containerRef.current) {
+    // The deepest .builder-wrapper the mouse is currently inside
+    const deepestWrapper = (e.target as HTMLElement).closest('.builder-wrapper');
+    if (deepestWrapper === containerRef.current) {
       setIsHovered(true);
-    } else {
-      setIsHovered(false);
     }
+    // Parent wrappers: they receive this event but deepestWrapper !== them, so they skip
   };
 
   const handleMouseOut = (e: React.MouseEvent) => {
@@ -214,6 +332,7 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
     e.stopPropagation();
     setIsHovered(false);
   };
+  // ─────────────────────────────────────────────────────────────────────────────
 
   const mergedStyle = { ...(localStyle || {}), ...(style || {}) };
 
@@ -221,12 +340,13 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
     <div 
       ref={containerRef}
       className="builder-wrapper"
+      data-builder-id={isBuilder ? id : undefined}
+      data-array-key={isBuilder ? arrayKey : undefined}
       onMouseOver={isBuilder ? handleMouseOver : undefined} 
       onMouseOut={isBuilder ? handleMouseOut : undefined}
       onContextMenu={isBuilder ? handleContextMenu : undefined}
-      draggable={isBuilder}
-      onDragStart={isBuilder ? handleDragStart : undefined}
-      onDragEnd={isBuilder ? handleDragEnd : undefined}
+      onMouseDown={isBuilder ? handleMouseDown : undefined}
+      // Keep native drag only for library-sidebar items
       onDragOver={isBuilder ? handleDragOver : undefined}
       onDragLeave={isBuilder ? handleDragLeave : undefined}
       onDrop={isBuilder ? handleDrop : undefined}
@@ -248,7 +368,7 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
         background: mergedStyle?.background || 'transparent',
         padding: mergedStyle?.padding || '0px',
         borderRadius: mergedStyle?.borderRadius || '0px',
-        opacity: mergedStyle?.opacity !== undefined ? mergedStyle.opacity : 1,
+        opacity: (mergedStyle?.opacity !== undefined ? mergedStyle.opacity : 1) * (isDraggingThis ? 0.4 : 1),
         transform: mergedStyle?.transform || 'none',
         marginTop: mergedStyle?.marginTop || undefined,
         marginBottom: mergedStyle?.marginBottom || undefined,
@@ -257,11 +377,14 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
         paddingLeft: mergedStyle?.paddingLeft || undefined,
         paddingRight: mergedStyle?.paddingRight || undefined,
         backgroundColor: mergedStyle?.backgroundColor || undefined,
+        userSelect: 'none',
       }}
     >
+       {/* Hover toolbar */}
        <AnimatePresence>
          {isBuilder && isHovered && !dragSize && !contextMenu && (
            <motion.div 
+             className="builder-wrapper-toolbar"
              initial={{ opacity: 0, y: -10 }} 
              animate={{ opacity: 1, y: 0 }}
              exit={{ opacity: 0, y: -10 }}
@@ -276,36 +399,28 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
                background: '#00ff41', 
                padding: '4px 8px', 
                borderRadius: '6px',
-               boxShadow: '0 2px 10px rgba(0, 0, 0, 0.4)'
+               boxShadow: '0 2px 10px rgba(0, 0, 0, 0.4)',
+               pointerEvents: 'all',
              }}
+             onMouseDown={(e) => e.stopPropagation()}
            >
-             <span style={{ color: '#000', fontSize: '0.65rem', fontWeight: '900', textTransform: 'uppercase', marginRight: '6px' }}>
+             <span style={{ color: '#000', fontSize: '0.65rem', fontWeight: '900', textTransform: 'uppercase', marginRight: '4px', cursor: 'default' }}>
                {id.startsWith('nested_') ? 'Элемент' : id}
              </span>
              
-             {/* Edit button */}
+             {/* Edit */}
              <button 
-               onClick={(e) => {
-                 e.stopPropagation();
-                 postMsg('OPEN_MODAL', { tab: 'content' });
-               }}
+               onMouseDown={(e) => e.stopPropagation()}
+               onClick={(e) => { e.stopPropagation(); postMsg('OPEN_MODAL', { tab: 'content' }); }}
                title="Редактировать"
-               style={{ 
-                 background: 'rgba(0,0,0,0.1)', 
-                 border: 'none', 
-                 color: '#000', 
-                 cursor: 'pointer', 
-                 display: 'flex', 
-                 alignItems: 'center', 
-                 padding: '2px 4px', 
-                 borderRadius: '2px' 
-               }}
+               style={{ background: 'rgba(0,0,0,0.15)', border: 'none', color: '#000', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '3px 5px', borderRadius: '4px' }}
              >
                <Settings size={10} />
              </button>
 
-             {/* Delete button */}
+             {/* Delete */}
              <button 
+               onMouseDown={(e) => e.stopPropagation()}
                onClick={(e) => {
                  e.stopPropagation();
                  if (id.startsWith('nested_')) {
@@ -316,16 +431,7 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
                  }
                }}
                title="Удалить"
-               style={{ 
-                 background: 'rgba(255,0,0,0.1)', 
-                 border: 'none', 
-                 color: '#d00', 
-                 cursor: 'pointer', 
-                 display: 'flex', 
-                 alignItems: 'center', 
-                 padding: '2px 4px', 
-                 borderRadius: '2px' 
-               }}
+               style={{ background: 'rgba(200,0,0,0.15)', border: 'none', color: '#c00', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '3px 5px', borderRadius: '4px' }}
              >
                <Trash size={10} />
              </button>
@@ -333,35 +439,14 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
          )}
        </AnimatePresence>
        
-       <div className={isBuilder ? "builder-content-no-drag" : ""}
-         onClickCapture={isBuilder ? (e) => {
-           if ((e.target as HTMLElement).isContentEditable) return;
-           const target = e.target as HTMLElement;
-           if (target.closest('a')) {
-             e.preventDefault();
-           }
-         } : undefined}
-         onClick={isBuilder ? (e) => {
-           const target = e.target as HTMLElement;
-           if (
-             target.isContentEditable ||
-             target.closest('input') ||
-             target.closest('button') ||
-             target.closest('select') ||
-             target.closest('textarea') ||
-             target.closest('.floating-assistant-container')
-           ) {
-             return;
-           }
-           e.stopPropagation();
-           postMsg('OPEN_MODAL', { tab: 'content' });
-         } : undefined}
-         style={{ opacity: isBuilder && isHovered && !dragSize && !contextMenu ? 0.7 : 1, transition: '0.2s', width: '100%', height: '100%' }}
+       {/* Content */}
+       <div
+         style={{ width: '100%', height: '100%', opacity: isBuilder && isHovered && !dragSize && !contextMenu ? 0.75 : 1, transition: '0.2s' }}
        >
          {children}
        </div>
 
-       {/* Visual Drag Handle */}
+       {/* Resize handle */}
        {isBuilder && isHovered && !contextMenu && (
          <div 
            onMouseDown={handleResizeStart}
@@ -381,9 +466,10 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
          />
        )}
 
-       {/* Add Block Button (Floating below) */}
+       {/* Add block below */}
        {isBuilder && isHovered && !contextMenu && (
          <button
+           onMouseDown={(e) => e.stopPropagation()}
            onClick={() => postMsg('ADD_BLOCK_AFTER')}
            style={{
              position: 'absolute',
@@ -415,14 +501,14 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
            background: '#111', border: '1px solid #333', padding: '0.5rem', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '0.25rem', zIndex: 99999, boxShadow: '0 10px 40px rgba(0,0,0,0.8)', minWidth: '180px'
          }}>
             <div style={{ padding: '0.5rem', fontSize: '0.7rem', color: '#00ff41', fontWeight: '900', borderBottom: '1px solid #222', marginBottom: '0.25rem', letterSpacing: '0.05em' }}>БЛОК: {id.toUpperCase()}</div>
-            <button onClick={() => postMsg('OPEN_MODAL', { tab: 'content' })} style={{ background: 'none', border: 'none', color: '#fff', textAlign: 'left', padding: '0.75rem 1rem', cursor: 'pointer', borderRadius: '4px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} onMouseEnter={(e) => e.currentTarget.style.background = '#222'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}><Edit3 size={14} style={{ color: '#00ff41' }} /> 📝 Редактировать инфо</button>
-             <button onClick={() => postMsg('OPEN_MODAL', { tab: 'media' })} style={{ background: 'none', border: 'none', color: '#fff', textAlign: 'left', padding: '0.75rem 1rem', cursor: 'pointer', borderRadius: '4px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} onMouseEnter={(e) => e.currentTarget.style.background = '#222'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}><ImageIcon size={14} style={{ color: '#00ff41' }} /> 🖼️ Добавить фото/видео</button>
-            <button onClick={() => postMsg('OPEN_MODAL', { tab: 'scaling' })} style={{ background: 'none', border: 'none', color: '#fff', textAlign: 'left', padding: '0.75rem 1rem', cursor: 'pointer', borderRadius: '4px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} onMouseEnter={(e) => e.currentTarget.style.background = '#222'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}><Layers size={14} style={{ color: '#00ff41' }} /> 📐 Масштаб & Размеры</button>
+            <button onMouseDown={(e) => e.stopPropagation()} onClick={() => postMsg('OPEN_MODAL', { tab: 'content' })} style={{ background: 'none', border: 'none', color: '#fff', textAlign: 'left', padding: '0.75rem 1rem', cursor: 'pointer', borderRadius: '4px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} onMouseEnter={(e) => e.currentTarget.style.background = '#222'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}><Edit3 size={14} style={{ color: '#00ff41' }} /> 📝 Редактировать инфо</button>
+             <button onMouseDown={(e) => e.stopPropagation()} onClick={() => postMsg('OPEN_MODAL', { tab: 'media' })} style={{ background: 'none', border: 'none', color: '#fff', textAlign: 'left', padding: '0.75rem 1rem', cursor: 'pointer', borderRadius: '4px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} onMouseEnter={(e) => e.currentTarget.style.background = '#222'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}><ImageIcon size={14} style={{ color: '#00ff41' }} /> 🖼️ Добавить фото/видео</button>
+            <button onMouseDown={(e) => e.stopPropagation()} onClick={() => postMsg('OPEN_MODAL', { tab: 'scaling' })} style={{ background: 'none', border: 'none', color: '#fff', textAlign: 'left', padding: '0.75rem 1rem', cursor: 'pointer', borderRadius: '4px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} onMouseEnter={(e) => e.currentTarget.style.background = '#222'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}><Layers size={14} style={{ color: '#00ff41' }} /> 📐 Масштаб & Размеры</button>
             <div style={{ height: '1px', background: '#333', margin: '0.25rem 0' }}></div>
-            {index !== undefined && <button onClick={() => postMsg('MOVE_UP')} disabled={isFirst} style={{ background: 'none', border: 'none', color: isFirst ? '#444' : '#fff', textAlign: 'left', padding: '0.75rem 1rem', cursor: isFirst ? 'default' : 'pointer', borderRadius: '4px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} onMouseEnter={(e) => { if(!isFirst) e.currentTarget.style.background = '#222'}} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}><MoveUp size={14} /> Переместить выше</button>}
-            {index !== undefined && <button onClick={() => postMsg('MOVE_DOWN')} disabled={isLast} style={{ background: 'none', border: 'none', color: isLast ? '#444' : '#fff', textAlign: 'left', padding: '0.75rem 1rem', cursor: isLast ? 'default' : 'pointer', borderRadius: '4px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} onMouseEnter={(e) => { if(!isLast) e.currentTarget.style.background = '#222'}} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}><MoveDown size={14} /> Переместить ниже</button>}
+            {index !== undefined && <button onMouseDown={(e) => e.stopPropagation()} onClick={() => postMsg('MOVE_UP')} disabled={isFirst} style={{ background: 'none', border: 'none', color: isFirst ? '#444' : '#fff', textAlign: 'left', padding: '0.75rem 1rem', cursor: isFirst ? 'default' : 'pointer', borderRadius: '4px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} onMouseEnter={(e) => { if(!isFirst) e.currentTarget.style.background = '#222'}} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}><MoveUp size={14} /> Переместить выше</button>}
+            {index !== undefined && <button onMouseDown={(e) => e.stopPropagation()} onClick={() => postMsg('MOVE_DOWN')} disabled={isLast} style={{ background: 'none', border: 'none', color: isLast ? '#444' : '#fff', textAlign: 'left', padding: '0.75rem 1rem', cursor: isLast ? 'default' : 'pointer', borderRadius: '4px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} onMouseEnter={(e) => { if(!isLast) e.currentTarget.style.background = '#222'}} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}><MoveDown size={14} /> Переместить ниже</button>}
             <div style={{ height: '1px', background: '#333', margin: '0.25rem 0' }}></div>
-            <button onClick={() => postMsg('REMOVE_BLOCK')} style={{ background: 'none', border: 'none', color: '#ff4b4b', textAlign: 'left', padding: '0.75rem 1rem', cursor: 'pointer', borderRadius: '4px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} onMouseEnter={(e) => e.currentTarget.style.background = '#222'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}><Trash size={14} /> Удалить блок</button>
+            <button onMouseDown={(e) => e.stopPropagation()} onClick={() => postMsg('REMOVE_BLOCK')} style={{ background: 'none', border: 'none', color: '#ff4b4b', textAlign: 'left', padding: '0.75rem 1rem', cursor: 'pointer', borderRadius: '4px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} onMouseEnter={(e) => e.currentTarget.style.background = '#222'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}><Trash size={14} /> Удалить блок</button>
          </div>
        )}
     </div>
