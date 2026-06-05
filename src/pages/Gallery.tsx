@@ -1,68 +1,161 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Image as ImageIcon, Maximize2, X, ChevronLeft, ChevronRight, Sparkles, Cpu, Layers, HardHat, ShieldAlert } from 'lucide-react';
+import { Image as ImageIcon, Maximize2, X, ChevronLeft, ChevronRight, Sparkles, Cpu, Layers, HardHat, ShieldAlert, PlusCircle } from 'lucide-react';
 import { useLang, InlineEdit } from '../LangContext';
+import { BuilderWrapper } from '../components/BuilderWrapper';
+import { useBuilderLayout } from '../hooks/useBuilderLayout';
+
+const defaultGalleryItems = [
+  { 
+    id: "gallery_1",
+    src: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200", 
+    type: 'image',
+    category: 'production',
+    ru: { title: "Конвейерная линия Т-1500", desc: "Установка и пусконаладка новой автоматизированной конвейерной линии с HDPE роликами." },
+    kk: { title: "Т-1500 конвейерлік желісі", desc: "HDPE роликтері бар жаңа автоматтандырылған конвейер желісін орнату және іске қосу." },
+    en: { title: "T-1500 Conveyor Line", desc: "Installation and commissioning of a new automated conveyor line with HDPE rollers." }
+  },
+  { 
+    id: "gallery_2",
+    src: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=1200", 
+    type: 'image',
+    category: 'services',
+    ru: { title: "Ремонт конвейерной ленты", desc: "Срочная стыковка конвейерной ленты методом горячей вулканизации на глубине." },
+    kk: { title: "Конвейер таспасын жөндеу", desc: "Тереңдікте ыстық вулканизация әдісімен конвейер таспасын шұғыл біріктіру." },
+    en: { title: "Conveyor Belt Repair", desc: "Urgent splicing of a conveyor belt using hot vulcanization method at depth." }
+  },
+  { 
+    id: "gallery_3",
+    src: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=1200", 
+    type: 'image',
+    category: 'equipment',
+    ru: { title: "Футеровка приводного барабана", desc: "Применение резинокерамической футеровки германского производства для предотвращения проскальзывания ленты." },
+    kk: { title: "Жетекші барабанды футерлеу", desc: "Таспаның сырғып кетуін болдырмау үшін германдық резеңке-керамикалық футерлеуді қолдану." },
+    en: { title: "Drive Drum Lagging", desc: "Application of German-made rubber-ceramic lagging to prevent belt slippage." }
+  },
+  { 
+    id: "gallery_4",
+    src: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=1200", 
+    type: 'image',
+    category: 'production',
+    ru: { title: "Контроль качества роликов", desc: "Лабораторные испытания биения конвейерных роликов на специализированном стенде перед отгрузкой клиенту." },
+    kk: { title: "Роликтердің сапасын бақылау", desc: "Тапсырыс берушіге жөнелту алдында мамандандырылған стендте конвейер роликтерінің соғуын зертханалық сынау." },
+    en: { title: "Roller Quality Control", desc: "Laboratory testing of conveyor roller runout on a specialized stand before shipping to the client." }
+  },
+  { 
+    id: "gallery_5",
+    src: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&q=80&w=1200", 
+    type: 'image',
+    category: 'materials',
+    ru: { title: "Демпферная станция амортизации", desc: "Успешный монтаж амортизирующей станции в точке загрузки крупнокусковой руды." },
+    kk: { title: "Амортизациялық демпферлік станция", desc: "Ірі кесекті кенді тиеу нүктесінде амортизациялық станцияны сәтті монтаждау." },
+    en: { title: "Shock Absorbing Damper Station", desc: "Successful installation of a damping station at the large-fraction ore loading point." }
+  },
+  { 
+    id: "gallery_6",
+    src: "https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?auto=format&fit=crop&q=80&w=1200", 
+    type: 'image',
+    category: 'services',
+    ru: { title: "Антикоррозийная защита", desc: "Нанесение полимерных защитных составов на стальные конструкции металлургического цеха." },
+    kk: { title: "Коррозияға қарсы қорғаныс", desc: "Металлургиялық цехтың болат конструкцияларына полимерлі қорғаныс құрамдарын жағу." },
+    en: { title: "Anti-Corrosion Protection", desc: "Application of polymer protective coatings to the steel structures of the metallurgical workshop." }
+  }
+];
+
+const defaultGalleryLayout = {
+  order: ['gallery_1', 'gallery_2', 'gallery_3', 'gallery_4', 'gallery_5', 'gallery_6'],
+  items: {
+    gallery_1: defaultGalleryItems[0],
+    gallery_2: defaultGalleryItems[1],
+    gallery_3: defaultGalleryItems[2],
+    gallery_4: defaultGalleryItems[3],
+    gallery_5: defaultGalleryItems[4],
+    gallery_6: defaultGalleryItems[5]
+  }
+};
+
+const getCategoryIcon = (category: string) => {
+  switch (category) {
+    case 'production': return <Cpu size={16} />;
+    case 'services': return <HardHat size={16} />;
+    case 'equipment': return <Layers size={16} />;
+    case 'materials': return <Layers size={16} />;
+    default: return <ImageIcon size={16} />;
+  }
+};
+
+function renderMedia(item: any, lang: string) {
+  if (item.type === 'video') {
+    const src = item.src || '';
+    let isYoutube = false;
+    let embedUrl = src;
+    
+    if (src.includes('youtube.com') || src.includes('youtu.be')) {
+      isYoutube = true;
+      let videoId = '';
+      if (src.includes('youtube.com/watch')) {
+        const urlParams = new URLSearchParams(src.split('?')[1] || '');
+        videoId = urlParams.get('v') || '';
+      } else if (src.includes('youtu.be/')) {
+        videoId = src.split('youtu.be/')[1]?.split('?')[0] || '';
+      } else if (src.includes('youtube.com/embed/')) {
+        videoId = src.split('youtube.com/embed/')[1]?.split('?')[0] || '';
+      }
+      embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&playlist=${videoId}&loop=1&controls=0&showinfo=0&rel=0`;
+    }
+
+    if (isYoutube) {
+      return (
+        <iframe
+          src={embedUrl}
+          title={item[lang]?.title || ''}
+          style={{ width: '100%', height: '100%', border: 'none', objectFit: 'cover', pointerEvents: 'none' }}
+          allow="autoplay; encrypted-media"
+        />
+      );
+    } else {
+      return (
+        <video
+          src={src}
+          muted
+          loop
+          autoPlay
+          playsInline
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+      );
+    }
+  }
+
+  return (
+    <img 
+      src={item.src} 
+      alt={item[lang]?.title || ''} 
+      style={{ 
+        width: '100%', 
+        height: '100%', 
+        objectFit: 'cover' 
+      }} 
+    />
+  );
+}
 
 export default function Gallery() {
   const { lang, t } = useLang();
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
-  // Curated premium industrial stock images with context
-  const galleryItems = [
-    { 
-      src: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200", 
-      category: 'production',
-      icon: <Cpu size={16} />,
-      ru: { title: "Конвейерная линия Т-1500", desc: "Установка и пусконаладка новой автоматизированной конвейерной линии с HDPE роликами." },
-      kk: { title: "Т-1500 конвейерлік желісі", desc: "HDPE роликтері бар жаңа автоматтандырылған конвейер желісін орнату және іске қосу." },
-      en: { title: "T-1500 Conveyor Line", desc: "Installation and commissioning of a new automated conveyor line with HDPE rollers." }
-    },
-    { 
-      src: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=1200", 
-      category: 'services',
-      icon: <HardHat size={16} />,
-      ru: { title: "Ремонт конвейерной ленты", desc: "Срочная стыковка конвейерной ленты методом горячей вулканизации на глубине." },
-      kk: { title: "Конвейер таспасын жөндеу", desc: "Тереңдікте ыстық вулканизация әдісімен конвейер таспасын шұғыл біріктіру." },
-      en: { title: "Conveyor Belt Repair", desc: "Urgent splicing of a conveyor belt using hot vulcanization method at depth." }
-    },
-    { 
-      src: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=1200", 
-      category: 'equipment',
-      icon: <Layers size={16} />,
-      ru: { title: "Футеровка приводного барабана", desc: "Применение резинокерамической футеровки германского производства для предотвращения проскальзывания ленты." },
-      kk: { title: "Жетекші барабанды футерлеу", desc: "Таспаның сырғып кетуін болдырмау үшін германдық резеңке-керамикалық футерлеуді қолдану." },
-      en: { title: "Drive Drum Lagging", desc: "Application of German-made rubber-ceramic lagging to prevent belt slippage." }
-    },
-    { 
-      src: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=1200", 
-      category: 'production',
-      icon: <Cpu size={16} />,
-      ru: { title: "Контроль качества роликов", desc: "Лабораторные испытания биения конвейерных роликов на специализированном стенде перед отгрузкой клиенту." },
-      kk: { title: "Роликтердің сапасын бақылау", desc: "Тапсырыс берушіге жөнелту алдында мамандандырылған стендте конвейер роликтерінің соғуын зертханалық сынау." },
-      en: { title: "Roller Quality Control", desc: "Laboratory testing of conveyor roller runout on a specialized stand before shipping to the client." }
-    },
-    { 
-      src: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&q=80&w=1200", 
-      category: 'materials',
-      icon: <Layers size={16} />,
-      ru: { title: "Демпферная станция амортизации", desc: "Успешный монтаж амортизирующей станции в точке загрузки крупнокусковой руды." },
-      kk: { title: "Амортизациялық демпферлік станция", desc: "Ірі кесекті кенді тиеу нүктесінде амортизациялық станцияны сәтті монтаждау." },
-      en: { title: "Shock Absorbing Damper Station", desc: "Successful installation of a damping station at the large-fraction ore loading point." }
-    },
-    { 
-      src: "https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?auto=format&fit=crop&q=80&w=1200", 
-      category: 'services',
-      icon: <ShieldAlert size={16} />,
-      ru: { title: "Антикоррозийная защита", desc: "Нанесение полимерных защитных составов на стальные конструкции металлургического цеха." },
-      kk: { title: "Коррозияға қарсы қорғаныс", desc: "Металлургиялық цехтың болат конструкцияларына полимерлі қорғаныс құрамдарын жағу." },
-      en: { title: "Anti-Corrosion Protection", desc: "Application of polymer protective coatings to the steel structures of the metallurgical workshop." }
-    }
-  ];
+  const { layout, isBuilder } = useBuilderLayout('gallery', defaultGalleryLayout);
 
-  // Unique categories translated
+  const activeItemsOrder = Array.isArray(layout?.order) ? layout.order : defaultGalleryLayout.order;
+  const activeItemsMap = layout?.items || defaultGalleryLayout.items;
+
+  const galleryItems = activeItemsOrder
+    .map((id: string) => activeItemsMap[id])
+    .filter(Boolean);
+
   const categoriesDict: any = {
-    all: { ru: 'Все фото', kk: 'Барлық фото', en: 'All Photos' },
+    all: { ru: 'Все медиа', kk: 'Барлық медиа', en: 'All Media' },
     production: { ru: 'Производство', kk: 'Өндіріс', en: 'Production' },
     services: { ru: 'Сервис', kk: 'Қызметтер', en: 'Services' },
     equipment: { ru: 'Оборудование', kk: 'Жабдықтар', en: 'Equipment' },
@@ -71,7 +164,7 @@ export default function Gallery() {
 
   const filteredItems = activeCategory === 'all' 
     ? galleryItems 
-    : galleryItems.filter(item => item.category === activeCategory);
+    : galleryItems.filter((item: any) => item.category === activeCategory);
 
   // Keyboard navigation for lightbox
   useEffect(() => {
@@ -83,7 +176,7 @@ export default function Gallery() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedImageIndex]);
+  }, [selectedImageIndex, filteredItems]);
 
   const handlePrev = () => {
     setSelectedImageIndex(prev => 
@@ -150,90 +243,158 @@ export default function Gallery() {
             ))}
           </div>
 
-          {/* Stunning Bento Masonry Grid */}
+          {/* Visual Builder: Add Media Button */}
+          {isBuilder && (
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '3rem' }}>
+              <button 
+                onClick={() => {
+                  const newId = `gallery_${Date.now()}`;
+                  const newItem = {
+                    id: newId,
+                    type: 'image',
+                    src: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=1200',
+                    category: activeCategory === 'all' ? 'production' : activeCategory,
+                    ru: { title: 'Новый элемент', desc: 'Описание нового элемента.' },
+                    kk: { title: 'Жаңа элемент', desc: 'Жаңа элемент сипаттамасы.' },
+                    en: { title: 'New Item', desc: 'Description of the new item.' }
+                  };
+                  
+                  const nextLayout = {
+                    ...layout,
+                    order: [...activeItemsOrder, newId],
+                    items: { ...activeItemsMap, [newId]: newItem }
+                  };
+                  
+                  // Send to parent so it updates layouts state and saves to localStorage
+                  window.parent.postMessage({
+                    type: 'DEMETRA_BUILDER',
+                    action: 'UPDATE_GALLERY_LAYOUT',
+                    layout: nextLayout
+                  }, '*');
+
+                  // Also select it for editing immediately
+                  window.parent.postMessage({
+                    type: 'DEMETRA_BUILDER',
+                    action: 'EDIT_BLOCK',
+                    id: newId
+                  }, '*');
+                }}
+                style={{ 
+                  background: 'rgba(0, 255, 65, 0.1)', 
+                  border: '1px dashed #00ff41', 
+                  color: '#00ff41', 
+                  padding: '1.25rem 3rem', 
+                  borderRadius: '12px', 
+                  fontWeight: '900', 
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  fontSize: '0.85rem',
+                  letterSpacing: '0.15em',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <PlusCircle size={20} />
+                ДОБАВИТЬ ФОТО / ВИДЕО В ГАЛЕРЕЮ
+              </button>
+            </div>
+          )}
+
+          {/* Bento Masonry Grid */}
           <motion.div 
             className="bento-grid" 
             style={{ gridAutoRows: '320px', gap: '2rem', marginBottom: '8rem' }}
             layout
           >
             <AnimatePresence mode="popLayout">
-              {filteredItems.map((item, index) => {
+              {filteredItems.map((item: any, index: number) => {
                 // Alternating sizes for gorgeous asymmetrical masonry layout
                 const gridColumn = index % 3 === 0 ? 'span 7' : 'span 5';
                 const gridRow = index === 0 || index === 3 ? 'span 2' : 'span 1';
                 
                 return (
-                  <motion.div
-                    layout
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    key={item.src}
-                    onClick={() => setSelectedImageIndex(index)}
-                    className="product-card"
+                  <BuilderWrapper
+                    key={item.id}
+                    id={item.id}
+                    index={index}
+                    isFirst={index === 0}
+                    isLast={index === filteredItems.length - 1}
+                    isBuilder={isBuilder}
+                    arrayKey="order"
                     style={{
                       gridColumn: gridColumn,
                       gridRow: gridRow,
-                      cursor: 'pointer'
                     }}
                   >
-                    {/* Visual Card Image */}
-                    <img 
-                      src={item.src} 
-                      alt={item[lang]?.title || ''} 
-                      style={{ 
-                        width: '100%', 
-                        height: '100%', 
-                        objectFit: 'cover' 
-                      }} 
-                    />
-                    
-                    {/* Glowing Overlay Indicator */}
-                    <div style={{ 
-                      position: 'absolute', 
-                      inset: 0, 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'center', 
-                      opacity: 0, 
-                      transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)', 
-                      background: 'rgba(0, 143, 36, 0.15)' 
-                    }} className="gallery-overlay">
-                      <div style={{ 
-                        background: '#ffffff', 
-                        color: '#000000', 
-                        padding: '1.25rem', 
-                        borderRadius: '50%', 
-                        boxShadow: '0 10px 30px rgba(0, 143, 36, 0.4)' 
-                      }}>
-                        <Maximize2 size={24} />
+                    <div 
+                      onClick={() => !isBuilder && setSelectedImageIndex(index)}
+                      className="product-card"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        cursor: 'pointer',
+                        position: 'relative'
+                      }}
+                    >
+                      {/* Media (Image or Video) */}
+                      {renderMedia(item, lang)}
+                      
+                      {/* Glowing Overlay Indicator */}
+                      <div 
+                        style={{ 
+                          position: 'absolute', 
+                          inset: 0, 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center', 
+                          opacity: 0, 
+                          transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)', 
+                          background: 'rgba(0, 143, 36, 0.15)' 
+                        }} 
+                        className="gallery-overlay"
+                        onClick={(e) => {
+                          if (isBuilder) {
+                            e.stopPropagation();
+                            setSelectedImageIndex(index);
+                          }
+                        }}
+                      >
+                        <div style={{ 
+                          background: '#ffffff', 
+                          color: '#000000', 
+                          padding: '1.25rem', 
+                          borderRadius: '50%', 
+                          boxShadow: '0 10px 30px rgba(0, 143, 36, 0.4)' 
+                        }}>
+                          <Maximize2 size={24} />
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Image Context Footer Info Panel inside Card Overlay */}
-                    <div className="product-info" style={{ padding: '2.5rem' }}>
-                      <div style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: '0.5rem', 
-                        color: 'var(--primary)', 
-                        fontSize: '0.8rem', 
-                        fontWeight: '800', 
-                        marginBottom: '0.5rem' 
-                      }}>
-                        {item.icon}
-                        <span>{categoriesDict[item.category][lang].toUpperCase()}</span>
+                      {/* Image Context Footer Info Panel */}
+                      <div className="product-info" style={{ padding: '2.5rem' }}>
+                        <div style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: '0.5rem', 
+                          color: 'var(--primary)', 
+                          fontSize: '0.8rem', 
+                          fontWeight: '800', 
+                          marginBottom: '0.5rem' 
+                        }}>
+                          {getCategoryIcon(item.category)}
+                          <span>{categoriesDict[item.category][lang].toUpperCase()}</span>
+                        </div>
+                        <h3 style={{ 
+                          fontSize: gridRow.includes('2') || gridColumn.includes('7') ? '2.2rem' : '1.4rem', 
+                          fontWeight: '900',
+                          lineHeight: '1.2' 
+                        }}>
+                          {item[lang]?.title}
+                        </h3>
                       </div>
-                      <h3 style={{ 
-                        fontSize: gridRow.includes('2') || gridColumn.includes('7') ? '2.2rem' : '1.4rem', 
-                        fontWeight: '900',
-                        lineHeight: '1.2' 
-                      }}>
-                        {item[lang]?.title}
-                      </h3>
                     </div>
-                  </motion.div>
+                  </BuilderWrapper>
                 );
               })}
             </AnimatePresence>
@@ -243,7 +404,7 @@ export default function Gallery() {
 
       {/* FULLSCREEN LIGHTBOX PORTAL OVERLAY */}
       <AnimatePresence>
-        {selectedImageIndex !== null && (
+        {selectedImageIndex !== null && filteredItems[selectedImageIndex] && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -308,7 +469,7 @@ export default function Gallery() {
               </button>
             </div>
 
-            {/* Main Picture viewport */}
+            {/* Main Media Viewport */}
             <div style={{
               position: 'relative',
               width: '90%',
@@ -351,23 +512,72 @@ export default function Gallery() {
                 <ChevronLeft size={30} />
               </button>
 
-              {/* Dynamic Scaling Image Block */}
-              <motion.img 
-                key={filteredItems[selectedImageIndex].src}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.4, ease: 'easeOut' }}
-                src={filteredItems[selectedImageIndex].src} 
-                alt="" 
-                style={{
-                  maxWidth: '100%',
-                  maxHeight: '100%',
-                  objectFit: 'contain',
-                  borderRadius: '16px',
-                  boxShadow: '0 30px 100px rgba(0,0,0,0.8), 0 0 50px rgba(0, 143, 36, 0.1)'
-                }}
-              />
+              {/* Dynamic Scaling Media Component */}
+              {(() => {
+                const activeItem = filteredItems[selectedImageIndex];
+                if (activeItem.type === 'video') {
+                  const src = activeItem.src || '';
+                  let isYoutube = false;
+                  let videoId = '';
+                  if (src.includes('youtube.com') || src.includes('youtu.be')) {
+                    isYoutube = true;
+                    if (src.includes('youtube.com/watch')) {
+                      const urlParams = new URLSearchParams(src.split('?')[1] || '');
+                      videoId = urlParams.get('v') || '';
+                    } else if (src.includes('youtu.be/')) {
+                      videoId = src.split('youtu.be/')[1]?.split('?')[0] || '';
+                    } else if (src.includes('youtube.com/embed/')) {
+                      videoId = src.split('youtube.com/embed/')[1]?.split('?')[0] || '';
+                    }
+                  }
+                  
+                  if (isYoutube) {
+                    return (
+                      <iframe
+                        src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+                        title={activeItem[lang]?.title || ''}
+                        style={{ width: '100%', height: '100%', border: 'none', borderRadius: '16px' }}
+                        allow="autoplay; encrypted-media; picture-in-picture"
+                        allowFullScreen
+                      />
+                    );
+                  } else {
+                    return (
+                      <video
+                        src={src}
+                        controls
+                        autoPlay
+                        style={{
+                          maxWidth: '100%',
+                          maxHeight: '100%',
+                          objectFit: 'contain',
+                          borderRadius: '16px',
+                          boxShadow: '0 30px 100px rgba(0,0,0,0.8), 0 0 50px rgba(0, 143, 36, 0.1)'
+                        }}
+                      />
+                    );
+                  }
+                }
+                
+                return (
+                  <motion.img 
+                    key={activeItem.src}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.4, ease: 'easeOut' }}
+                    src={activeItem.src} 
+                    alt="" 
+                    style={{
+                      maxWidth: '100%',
+                      maxHeight: '100%',
+                      objectFit: 'contain',
+                      borderRadius: '16px',
+                      boxShadow: '0 30px 100px rgba(0,0,0,0.8), 0 0 50px rgba(0, 143, 36, 0.1)'
+                    }}
+                  />
+                );
+              })()}
 
               {/* Next Button Right */}
               <button

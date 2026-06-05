@@ -87,7 +87,7 @@ export default function Admin() {
   });
 
   const [pageLayouts, setPageLayouts] = useState<any>(() => {
-    const keys = ['home', 'catalog', 'services', 'about', 'contacts', 'partner'];
+    const keys = ['home', 'catalog', 'services', 'about', 'contacts', 'partner', 'gallery'];
     const layouts: any = {};
     keys.forEach(k => {
       const saved = localStorage.getItem(`demetra_${k}_layout`);
@@ -97,7 +97,21 @@ export default function Admin() {
         services: { order: [], hidden: [], styles: {}, images: {} },
         about: { order: [], hidden: [], styles: {}, images: {} },
         contacts: { order: [], hidden: [], styles: {}, images: {} },
-        partner: { order: [], hidden: [], styles: {}, images: {} }
+        partner: { order: [], hidden: [], styles: {}, images: {} },
+        gallery: {
+          order: ['gallery_1', 'gallery_2', 'gallery_3', 'gallery_4', 'gallery_5', 'gallery_6'],
+          hidden: [],
+          styles: {},
+          images: {},
+          items: {
+            gallery_1: { id: "gallery_1", src: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200", type: 'image', category: 'production', ru: { title: "Конвейерная линия Т-1500", desc: "Установка и пусконаладка новой автоматизированной конвейерной линии с HDPE роликами." }, kk: { title: "Т-1500 конвейерлік желісі", desc: "HDPE роликтері бар жаңа автоматтандырылған конвейер желісін орнату және іске қосу." }, en: { title: "T-1500 Conveyor Line", desc: "Installation and commissioning of a new automated conveyor line with HDPE rollers." } },
+            gallery_2: { id: "gallery_2", src: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=1200", type: 'image', category: 'services', ru: { title: "Ремонт конвейерной ленты", desc: "Срочная стыковка конвейерной ленты методом горячей вулканизации на глубине." }, kk: { title: "Конвейер таспасын жөндеу", desc: "Тереңдікте ыстық вулканизация әдісімен конвейер таспасын шұғыл біріктіру." }, en: { title: "Conveyor Belt Repair", desc: "Urgent splicing of a conveyor belt using hot vulcanization method at depth." } },
+            gallery_3: { id: "gallery_3", src: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=1200", type: 'image', category: 'equipment', ru: { title: "Футеровка приводного барабана", desc: "Применение резинокерамической футеровки германского производства для предотвращения проскальзывания ленты." }, kk: { title: "Жетекші барабанды футерлеу", desc: "Таспаның сырғып кетуін болдырмау үшін германдық резеңке-керамикалық футерлеуді қолдану." }, en: { title: "Drive Drum Lagging", desc: "Application of German-made rubber-ceramic lagging to prevent belt slippage." } },
+            gallery_4: { id: "gallery_4", src: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=1200", type: 'image', category: 'production', ru: { title: "Контроль качества роликов", desc: "Лабораторные испытания биения конвейерных роликов на специализированном стенде перед отгрузкой клиенту." }, kk: { title: "Роликтердің сапасын бақылау", desc: "Тапсырыс берушіге жөнелту алдында мамандандырылған стендте конвейер роликтерінің соғуын зертханалық сынау." }, en: { title: "Roller Quality Control", desc: "Laboratory testing of conveyor roller runout on a specialized stand before shipping to the client." } },
+            gallery_5: { id: "gallery_5", src: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&q=80&w=1200", type: 'image', category: 'materials', ru: { title: "Демпферная станция амортизации", desc: "Успешный монтаж амортизирующей станции в точке загрузки крупнокусковой руды." }, kk: { title: "Амортизациялық демпферлік станция", desc: "Ірі кесекті кенді тиеу нүктесінде амортизациялық станцияны сәтті монтаждау." }, en: { title: "Shock Absorbing Damper Station", desc: "Successful installation of a damping station at the large-fraction ore loading point." } },
+            gallery_6: { id: "gallery_6", src: "https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?auto=format&fit=crop&q=80&w=1200", type: 'image', category: 'services', ru: { title: "Антикоррозийная защита", desc: "Нанесение полимерных защитных составов на стальные конструкции металлургического цеха." }, kk: { title: "Коррозияға қарсы қорғаныс", desc: "Металлургиялық цехтың болат конструкцияларына полимерлі қорғаныс құрамдарын жағу." }, en: { title: "Anti-Corrosion Protection", desc: "Application of polymer protective coatings to the steel structures of the metallurgical workshop." } }
+          }
+        }
       };
       
       try {
@@ -109,7 +123,8 @@ export default function Admin() {
             hidden: parsed.hidden || defaults[k].hidden,
             styles: parsed.styles || defaults[k].styles,
             images: parsed.images || defaults[k].images,
-            links: parsed.links || defaults[k].links || {}
+            links: parsed.links || defaults[k].links || {},
+            items: parsed.items || defaults[k].items || {}
           };
         } else {
           layouts[k] = defaults[k];
@@ -157,7 +172,7 @@ export default function Admin() {
     if (window.confirm('Reset all changes?')) {
       localStorage.removeItem('demetra_translations');
       localStorage.removeItem('demetra_products');
-      const keys = ['home', 'catalog', 'services', 'about', 'contacts', 'partner'];
+      const keys = ['home', 'catalog', 'services', 'about', 'contacts', 'partner', 'gallery'];
       keys.forEach(k => localStorage.removeItem(`demetra_${k}_layout`));
       window.location.reload();
     }
@@ -280,7 +295,23 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
         }
         if (action === 'MOVE_UP') moveSection(arrayKey, index, 'up');
         if (action === 'MOVE_DOWN') moveSection(arrayKey, index, 'down');
-        if (action === 'REMOVE_BLOCK') removeSection(id);
+        if (action === 'REMOVE_BLOCK') {
+          if (id?.startsWith('gallery_')) {
+            const newOrder = (currentLayout.order || []).filter((x: string) => x !== id);
+            const newItems = { ...(currentLayout.items || {}) };
+            delete newItems[id];
+            updateLayout({ ...currentLayout, order: newOrder, items: newItems });
+            if (editingKey === id) {
+              setEditingKey(null);
+              setIsSettingsOpen(false);
+            }
+          } else {
+            removeSection(id);
+          }
+        }
+        if (action === 'UPDATE_GALLERY_LAYOUT') {
+          updateLayout(e.data.layout);
+        }
         if (action === 'ADD_BLOCK_AFTER') {
            const newOrder = [...(currentLayout.order || [])];
            newOrder.splice(index + 1, 0, `new_block_${Date.now()}`); // Insert a new dummy block
@@ -314,7 +345,7 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
     };
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [currentLayout, currentLang, updateTranslation, previewRoute]);
+  }, [currentLayout, currentLang, updateTranslation, previewRoute, editingKey]);
 
   useEffect(() => {
     if (iframeRef.current?.contentWindow) {
@@ -340,6 +371,7 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
                <option value="/about">О компании (About)</option>
                <option value="/contacts">Контакты (Contacts)</option>
                <option value="/partner">Партнерам (Partner)</option>
+               <option value="/gallery">Галерея (Gallery)</option>
             </select>
             <div style={{ color: '#888', fontSize: '0.85rem' }}>Switch pages to edit different areas.</div>
 
@@ -463,10 +495,10 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
                 </div>
              </div>
              
-             {editingKey.startsWith('new_block_')
-                ? <CustomBlockEditor blockId={editingKey} />
-                : <StyleEditor editingKey={editingKey} currentLayout={currentLayout} updateLayout={updateLayout} />
-             }
+              {editingKey.startsWith('new_block_')
+                 ? <CustomBlockEditor blockId={editingKey} />
+                 : <StyleEditor editingKey={editingKey} currentLayout={currentLayout} updateLayout={updateLayout} onClose={() => { setEditingKey(null); setIsSettingsOpen(false); }} />
+              }
 
              <button onClick={() => setIsSettingsOpen(false)} style={{ width: '100%', marginTop: '2rem', padding: '1.25rem', background: '#00ff41', color: '#000', border: 'none', borderRadius: '12px', fontWeight: '900', cursor: 'pointer' }}>
                 APPLY SETTINGS
@@ -675,7 +707,7 @@ function CustomBlockEditor({ blockId }: { blockId: string }) {
 }
 
 // ─── Style Editor (existing blocks) ─────────────────────────────────────────
-function StyleEditor({ editingKey, currentLayout, updateLayout }: any) {
+function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) {
   const setStyle = (key: string, val: string) => {
     updateLayout({
       ...currentLayout,
@@ -689,6 +721,128 @@ function StyleEditor({ editingKey, currentLayout, updateLayout }: any) {
   const s = currentLayout.styles?.[editingKey] || {};
   const inp: React.CSSProperties = { background: '#111', border: '1px solid #333', padding: '1rem', color: '#fff', fontSize: '0.9rem', borderRadius: '8px', outline: 'none', width: '100%', boxSizing: 'border-box' };
   const lbl = (t: string) => <label style={{ fontSize: '0.7rem', color: '#888', fontWeight: '900' }}>{t}</label>;
+
+  if (editingKey.startsWith('gallery_')) {
+    const item = currentLayout.items?.[editingKey] || {};
+    const updateItem = (fieldKey: string, val: any) => {
+      updateLayout({
+        ...currentLayout,
+        items: {
+          ...(currentLayout.items || {}),
+          [editingKey]: {
+            ...item,
+            [fieldKey]: val
+          }
+        }
+      });
+    };
+
+    const updateItemLang = (langCode: string, fieldKey: string, val: string) => {
+      updateLayout({
+        ...currentLayout,
+        items: {
+          ...(currentLayout.items || {}),
+          [editingKey]: {
+            ...item,
+            [langCode]: {
+              ...(item[langCode] || {}),
+              [fieldKey]: val
+            }
+          }
+        }
+      });
+    };
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <h4 style={{ fontSize: '0.85rem', color: '#00ff41', fontWeight: '900', letterSpacing: '0.15em' }}>РЕДАКТИРОВАНИЕ МЕДИА ЭЛЕМЕНТА</h4>
+        
+        <div style={{ display: 'grid', gap: '0.5rem' }}>
+          {lbl('ТИП МЕДИАФАЙЛА')}
+          <select 
+            value={item.type || 'image'} 
+            onChange={e => updateItem('type', e.target.value)} 
+            style={{ ...inp, appearance: 'none' as any }}
+          >
+            <option value="image">Изображение (Image)</option>
+            <option value="video">Видео (Video)</option>
+          </select>
+        </div>
+
+        <div style={{ display: 'grid', gap: '0.5rem' }}>
+          {lbl(item.type === 'video' ? 'URL ВИДЕОФАЙЛА (Direct MP4 или YouTube)' : 'URL ИЗОБРАЖЕНИЯ')}
+          <input 
+            value={item.src || ''} 
+            onChange={e => updateItem('src', e.target.value)} 
+            placeholder={item.type === 'video' ? 'https://www.youtube.com/watch?v=... или /video.mp4' : '/image.jpg'} 
+            style={inp} 
+          />
+        </div>
+
+        <div style={{ display: 'grid', gap: '0.5rem' }}>
+          {lbl('КАТЕГОРИЯ')}
+          <select 
+            value={item.category || 'production'} 
+            onChange={e => updateItem('category', e.target.value)} 
+            style={{ ...inp, appearance: 'none' as any }}
+          >
+            <option value="production">Производство</option>
+            <option value="services">Сервис</option>
+            <option value="equipment">Оборудование</option>
+            <option value="materials">Материалы</option>
+          </select>
+        </div>
+
+        <div style={{ height: '1px', background: '#222', margin: '0.5rem 0' }} />
+
+        {/* Translation Fields */}
+        <div style={{ display: 'grid', gap: '0.75rem' }}>
+          <div style={{ color: '#aaa', fontSize: '0.7rem', fontWeight: 'bold' }}>НАЗВАНИЕ (RU)</div>
+          <input value={item.ru?.title || ''} onChange={e => updateItemLang('ru', 'title', e.target.value)} placeholder="Название на русском" style={inp} />
+          
+          <div style={{ color: '#aaa', fontSize: '0.7rem', fontWeight: 'bold' }}>НАЗВАНИЕ (KK)</div>
+          <input value={item.kk?.title || ''} onChange={e => updateItemLang('kk', 'title', e.target.value)} placeholder="Атауы қазақша" style={inp} />
+          
+          <div style={{ color: '#aaa', fontSize: '0.7rem', fontWeight: 'bold' }}>НАЗВАНИЕ (EN)</div>
+          <input value={item.en?.title || ''} onChange={e => updateItemLang('en', 'title', e.target.value)} placeholder="Title in English" style={inp} />
+        </div>
+
+        <div style={{ display: 'grid', gap: '0.75rem', marginTop: '0.5rem' }}>
+          <div style={{ color: '#aaa', fontSize: '0.7rem', fontWeight: 'bold' }}>ОПИСАНИЕ (RU)</div>
+          <textarea value={item.ru?.desc || ''} onChange={e => updateItemLang('ru', 'desc', e.target.value)} placeholder="Описание на русском" style={{ ...inp, minHeight: '60px', resize: 'vertical' }} />
+          
+          <div style={{ color: '#aaa', fontSize: '0.7rem', fontWeight: 'bold' }}>ОПИСАНИЕ (KK)</div>
+          <textarea value={item.kk?.desc || ''} onChange={e => updateItemLang('kk', 'desc', e.target.value)} placeholder="Сипаттамасы қазақша" style={{ ...inp, minHeight: '60px', resize: 'vertical' }} />
+          
+          <div style={{ color: '#aaa', fontSize: '0.7rem', fontWeight: 'bold' }}>ОПИСАНИЕ (EN)</div>
+          <textarea value={item.en?.desc || ''} onChange={e => updateItemLang('en', 'desc', e.target.value)} placeholder="Description in English" style={{ ...inp, minHeight: '60px', resize: 'vertical' }} />
+        </div>
+
+        <button 
+          onClick={() => {
+             const newOrder = (currentLayout.order || []).filter((x: string) => x !== editingKey);
+             const newItems = { ...(currentLayout.items || {}) };
+             delete newItems[editingKey];
+             updateLayout({ ...currentLayout, order: newOrder, items: newItems });
+             if (onClose) onClose();
+          }}
+          style={{ 
+            marginTop: '1.5rem', 
+            padding: '1rem', 
+            background: 'rgba(255, 75, 75, 0.1)', 
+            border: '1px solid rgba(255, 75, 75, 0.2)', 
+            color: '#ff4b4b', 
+            borderRadius: '8px', 
+            fontWeight: '800', 
+            cursor: 'pointer' 
+          }}
+        >
+          УДАЛИТЬ ИЗ ГАЛЕРЕИ
+        </button>
+      </div>
+    );
+  }
+
   const row = (label: string, key: string, ph = '') => (
     <div style={{ display: 'grid', gap: '0.5rem' }}>
       {lbl(label)}
