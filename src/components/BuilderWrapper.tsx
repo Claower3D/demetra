@@ -318,6 +318,11 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
              e.preventDefault();
            }
          } : undefined}
+         onClick={isBuilder ? (e) => {
+           if ((e.target as HTMLElement).isContentEditable) return;
+           e.stopPropagation();
+           postMsg('OPEN_MODAL', { tab: 'content' });
+         } : undefined}
          style={{ opacity: isBuilder && isHovered && !dragSize && !contextMenu ? 0.7 : 1, transition: '0.2s', width: '100%', height: '100%' }}
        >
          {children}
