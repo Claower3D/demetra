@@ -123,6 +123,9 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
     dragState.draggingId = null;
     dragState.startX = startX;
     dragState.startY = startY;
+    
+    // Capture initial rect BEFORE any movement
+    const initialRect = containerRef.current?.getBoundingClientRect();
 
     const onMouseMove = (me: MouseEvent) => {
       const dx = me.clientX - startX;
@@ -135,38 +138,37 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
         dragState.draggingId = id;
         setIsDraggingThis(true);
 
-        // Create a semi-transparent ghost clone positioned under the cursor
+        // Create a semi-transparent ghost clone using the initial rect
         const el = containerRef.current;
-        if (!el) return;
-        const rect = el.getBoundingClientRect();
+        if (!el || !initialRect) return;
         const clone = el.cloneNode(true) as HTMLElement;
         clone.style.cssText = `
           position: fixed;
-          left: ${rect.left}px;
-          top: ${rect.top}px;
-          width: ${rect.width}px;
-          height: ${rect.height}px;
-          opacity: 0.6;
+          left: ${initialRect.left}px;
+          top: ${initialRect.top}px;
+          width: ${initialRect.width}px;
+          height: ${initialRect.height}px;
+          opacity: 0.55;
           pointer-events: none;
           z-index: 999999;
           border: 2px dashed #00ff41;
           border-radius: 8px;
-          transform: scale(1.02);
-          transition: transform 0.1s;
-          box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+          transform: scale(1.03);
+          box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+          transition: none;
         `;
         // Remove inner edit overlays from ghost
-        clone.querySelectorAll('.builder-wrapper-toolbar, button, .builder-wrapper').forEach(el => {
-          (el as HTMLElement).style.display = 'none';
+        clone.querySelectorAll('.builder-wrapper-toolbar, button, .builder-wrapper').forEach(n => {
+          (n as HTMLElement).style.display = 'none';
         });
         document.body.appendChild(clone);
         ghostRef.current = clone;
       }
 
-      if (isDraggingRef.current && ghostRef.current) {
-        const rect = containerRef.current!.getBoundingClientRect();
-        ghostRef.current.style.left = `${rect.left + dx}px`;
-        ghostRef.current.style.top = `${rect.top + dy}px`;
+      if (isDraggingRef.current && ghostRef.current && initialRect) {
+        // Move ghost by the same delta from its original position
+        ghostRef.current.style.left = `${initialRect.left + dx}px`;
+        ghostRef.current.style.top = `${initialRect.top + dy}px`;
       }
     };
 
@@ -202,22 +204,33 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
 
       isDraggingRef.current = false;
 
-      // Find which wrapper we dropped onto
-      const el = document.elementFromPoint(ue.clientX, ue.clientY);
-      const dropTarget = el?.closest('[data-builder-id]') as HTMLElement | null;
-      if (dropTarget) {
-        const targetId = dropTarget.getAttribute('data-builder-id');
-        const targetArrayKey = dropTarget.getAttribute('data-array-key') || arrayKey;
+      // Find the drop target: walk up from the element under cursor
+      // (ghost is already removed, so elementFromPoint returns page content)
+      let el = document.elementFromPoint(ue.clientX, ue.clientY);
+      let dropWrapper: HTMLElement | null = null;
+      while (el && el !== document.body) {
+        if ((el as HTMLElement).hasAttribute?.('data-builder-id')) {
+          dropWrapper = el as HTMLElement;
+          break;
+        }
+        el = (el as HTMLElement).parentElement;
+      }
+
+      if (dropWrapper) {
+        const targetId = dropWrapper.getAttribute('data-builder-id');
+        // Use the TARGET's arrayKey so Admin.tsx looks up the correct list
+        const targetArrKey = dropWrapper.getAttribute('data-array-key') || arrayKey;
         if (targetId && targetId !== id) {
           window.parent.postMessage({
             type: 'DEMETRA_BUILDER',
             action: 'MOVE_BLOCK_TO',
             id,
             index,
-            arrayKey,
+            // Admin reads e.data.arrayKey – send the shared array key
+            // Both dragged and target must be in the same array
+            arrayKey: targetArrKey,
             draggedId: id,
             targetId,
-            targetArrayKey,
           }, '*');
         }
       }
