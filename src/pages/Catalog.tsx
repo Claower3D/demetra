@@ -100,46 +100,68 @@ export default function Catalog() {
                     ))}
                   </div>
 
-                  <motion.div 
-                    className="bento-grid" 
-                    style={{ gridAutoRows: 'minmax(300px, auto)' }}
-                    layout
-                  >
-                    <AnimatePresence mode="popLayout">
-                      {filteredProducts.map((item, i) => {
-                        const cardId = `cat_item_${item.id}`;
-                        const cardStyle = layout.styles?.[cardId] || {};
-                        return (
-                          <motion.div
-                            layout
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.9 }}
-                            transition={{ duration: 0.4 }}
-                            key={item.id}
-                            className="product-card"
-                            style={{
-                              gridColumn: filteredProducts.length > 2 && i % 3 === 0 ? 'span 6' : 'span 3',
-                              ...cardStyle
-                            }}
-                          >
-                            <BuilderWrapper id={cardId} isBuilder={isBuilder}>
-                              <Link to={`/product/${item.id}`} style={{ display: 'block', height: '100%' }}>
-                                <img src={layout.images?.[`${cardId}_img`] || item.image} alt={item[lang]?.title || ''} />
-                                <div className="product-info">
-                                  <div style={{ color: 'var(--primary)', fontSize: '0.9rem', fontWeight: '800', marginBottom: '0.5rem' }}>◆ {item[lang]?.category}</div>
-                                  <h3 style={{ fontSize: '1.8rem', color: 'var(--foreground)' }}>{item[lang]?.title}</h3>
-                                  <div style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)', fontWeight: '700', fontSize: '0.8rem', opacity: 0, transition: 'all 0.3s' }} className="view-details">
-                                    {t.ui_view_specs} <ArrowRight size={16} />
-                                  </div>
-                                </div>
-                              </Link>
-                            </BuilderWrapper>
-                          </motion.div>
-                        );
-                      })}
-                    </AnimatePresence>
-                  </motion.div>
+                  {(() => {
+                    const defaultOrder = productsData.map(p => String(p.id));
+                    const orderList = Array.isArray(layout?.order_catalog) ? layout.order_catalog.map(String) : defaultOrder;
+                    
+                    const sortedProducts = [...filteredProducts].sort((a, b) => {
+                      const idxA = orderList.indexOf(String(a.id));
+                      const idxB = orderList.indexOf(String(b.id));
+                      const posA = idxA === -1 ? 9999 : idxA;
+                      const posB = idxB === -1 ? 9999 : idxB;
+                      return posA - posB;
+                    });
+
+                    return (
+                      <motion.div 
+                        className="bento-grid" 
+                        style={{ gridAutoRows: 'minmax(300px, auto)' }}
+                        layout
+                      >
+                        <AnimatePresence mode="popLayout">
+                          {sortedProducts.map((item, i) => {
+                            const cardId = `cat_item_${item.id}`;
+                            const cardStyle = layout.styles?.[cardId] || {};
+                            return (
+                              <motion.div
+                                layout
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
+                                transition={{ duration: 0.4 }}
+                                key={item.id}
+                                className="product-card"
+                                style={{
+                                  gridColumn: sortedProducts.length > 2 && i % 3 === 0 ? 'span 6' : 'span 3',
+                                  ...cardStyle
+                                }}
+                              >
+                                <BuilderWrapper 
+                                  id={cardId} 
+                                  index={i} 
+                                  isFirst={i === 0} 
+                                  isLast={i === sortedProducts.length - 1} 
+                                  isBuilder={isBuilder}
+                                  arrayKey="order_catalog"
+                                >
+                                  <Link to={`/product/${item.id}`} style={{ display: 'block', height: '100%' }}>
+                                    <img src={layout.images?.[`${cardId}_img`] || item.image} alt={item[lang]?.title || ''} />
+                                    <div className="product-info">
+                                      <div style={{ color: 'var(--primary)', fontSize: '0.9rem', fontWeight: '800', marginBottom: '0.5rem' }}>◆ {item[lang]?.category}</div>
+                                      <h3 style={{ fontSize: '1.8rem', color: 'var(--foreground)' }}>{item[lang]?.title}</h3>
+                                      <div style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)', fontWeight: '700', fontSize: '0.8rem', opacity: 0, transition: 'all 0.3s' }} className="view-details">
+                                        {t.ui_view_specs} <ArrowRight size={16} />
+                                      </div>
+                                    </div>
+                                  </Link>
+                                </BuilderWrapper>
+                              </motion.div>
+                            );
+                          })}
+                        </AnimatePresence>
+                      </motion.div>
+                    );
+                  })()}
 
                   {filteredProducts.length === 0 && (
                     <div style={{ textAlign: 'center', color: 'var(--text-muted)', opacity: 0.5, padding: '8rem 0', fontSize: '1.5rem', fontWeight: '700' }}>

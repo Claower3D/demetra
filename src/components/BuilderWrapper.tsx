@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MoveUp, MoveDown, Trash, Settings, Layers, Plus, Edit3, Image as ImageIcon } from 'lucide-react';
+import { MoveUp, MoveDown, Trash, Settings, Layers, Plus, Edit3, Image as ImageIcon, ArrowLeft, ArrowRight } from 'lucide-react';
 
 // Global drag state – only one element can be dragged at a time
 const dragState = {
@@ -671,6 +671,36 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
                {id.startsWith('nested_') ? 'Элемент' : id}
              </span>
              
+             {/* Move Up/Left */}
+             {!isFirst && index !== undefined && (
+               <button
+                 onMouseDown={(e) => e.stopPropagation()}
+                 onClick={(e) => {
+                   e.stopPropagation();
+                   postMsg('MOVE_UP');
+                 }}
+                 title={arrayKey === 'order' ? "Переместить выше" : "Переместить левее"}
+                 style={{ background: 'rgba(0,0,0,0.15)', border: 'none', color: '#000', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '3px 5px', borderRadius: '4px' }}
+               >
+                 {arrayKey === 'order' ? <MoveUp size={10} /> : <ArrowLeft size={10} />}
+               </button>
+             )}
+
+             {/* Move Down/Right */}
+             {!isLast && index !== undefined && (
+               <button
+                 onMouseDown={(e) => e.stopPropagation()}
+                 onClick={(e) => {
+                   e.stopPropagation();
+                   postMsg('MOVE_DOWN');
+                 }}
+                 title={arrayKey === 'order' ? "Переместить ниже" : "Переместить правее"}
+                 style={{ background: 'rgba(0,0,0,0.15)', border: 'none', color: '#000', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '3px 5px', borderRadius: '4px' }}
+               >
+                 {arrayKey === 'order' ? <MoveDown size={10} /> : <ArrowRight size={10} />}
+               </button>
+             )}
+
              {/* Edit */}
              <button 
                onMouseDown={(e) => e.stopPropagation()}
