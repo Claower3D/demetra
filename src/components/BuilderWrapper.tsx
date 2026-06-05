@@ -127,6 +127,8 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
     // Capture initial rect BEFORE any movement
     const initialRect = containerRef.current?.getBoundingClientRect();
 
+    const SNAP_THRESHOLD = 6; // px tolerance for alignment detection
+
     const drawGuides = (ghostRect: any) => {
       const container = document.getElementById('drag-guides-container');
       if (!container) return;
@@ -134,21 +136,118 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
 
       const parentEl = containerRef.current?.parentElement;
       const parentRect = parentEl?.getBoundingClientRect() || {
-        top: 0,
-        bottom: window.innerHeight,
-        left: 0,
-        right: window.innerWidth,
-        width: window.innerWidth,
-        height: window.innerHeight
+        top: 0, bottom: window.innerHeight,
+        left: 0, right: window.innerWidth,
+        width: window.innerWidth, height: window.innerHeight
       };
 
       const wrappers = Array.from(document.querySelectorAll('.builder-wrapper'))
-        .filter(el => el !== containerRef.current && el !== ghostRef.current)
-        .map(el => ({ el, rect: el.getBoundingClientRect() }));
+        .filter(el => el !== containerRef.current && !(ghostRef.current?.contains(el as Node)))
+        .map(el => ({ el, rect: el.getBoundingClientRect() }))
+        .filter(item => item.rect.width > 0 && item.rect.height > 0);
 
+      // ── Helpers ────────────────────────────────────────────────────
+      const makeLine = (
+        x1: number, y1: number, x2: number, y2: number,
+        color: string, direction: 'v' | 'h'
+      ) => {
+        const line = document.createElement('div');
+        line.style.cssText = [
+          'position:fixed', 'pointer-events:none',
+          `background:${color}`,
+          direction === 'v'
+            ? `left:${x1}px;top:${Math.min(y1, y2)}px;width:1.5px;height:${Math.abs(y2 - y1)}px`
+            : `left:${Math.min(x1, x2)}px;top:${y1}px;width:${Math.abs(x2 - x1)}px;height:1.5px`,
+        ].join(';');
+        container.appendChild(line);
+      };
+
+      const makeBadge = (text: string, x: number, y: number) => {
+        const badge = document.createElement('div');
+        badge.innerText = text;
+        badge.style.cssText = `
+          position:fixed;left:${x}px;top:${y}px;
+          background:rgba(255,75,75,0.95);color:#fff;
+          font-family:monospace;font-size:10px;font-weight:800;
+          padding:2px 5px;border-radius:4px;
+          transform:translate(-50%,-50%);white-space:nowrap;
+          pointer-events:none;box-shadow:0 2px 6px rgba(0,0,0,.4);z-index:1000001;
+        `;
+        container.appendChild(badge);
+      };
+
+      const highlightEl = (rect: DOMRect, color = 'rgba(255,75,75,0.35)') => {
+        const h = document.createElement('div');
+        h.style.cssText = `
+          position:fixed;left:${rect.left}px;top:${rect.top}px;
+          width:${rect.width}px;height:${rect.height}px;
+          border:1.5px solid ${color};border-radius:3px;
+          pointer-events:none;box-sizing:border-box;
+        `;
+        container.appendChild(h);
+      };
+
+      // ── 1. ALIGNMENT SNAP LINES (Figma-style) ──────────────────────
+      // Check if ghost edges/center align with any other element
+      const ghostTop    = ghostRect.top;
+      const ghostBot    = ghostRect.bottom;
+      const ghostMidY   = ghostRect.top + ghostRect.height / 2;
+      const ghostLeft   = ghostRect.left;
+      const ghostRight  = ghostRect.right;
+      const ghostMidX   = ghostRect.left + ghostRect.width / 2;
+
+      const snapColor = 'rgba(0,200,255,0.9)'; // cyan for snap lines
+
+      wrappers.forEach(({ rect }) => {
+        const rTop  = rect.top;
+        const rBot  = rect.bottom;
+        const rMidY = rect.top + rect.height / 2;
+        const rLeft = rect.left;
+        const rRight = rect.right;
+        const rMidX = rect.left + rect.width / 2;
+
+        // Horizontal alignment: same top
+        if (Math.abs(ghostTop - rTop) < SNAP_THRESHOLD) {
+          highlightEl(rect, 'rgba(0,200,255,0.5)');
+          const y = rTop;
+          makeLine(0, y, window.innerWidth, y, snapColor, 'h');
+        }
+        // Horizontal alignment: same bottom
+        if (Math.abs(ghostBot - rBot) < SNAP_THRESHOLD) {
+          highlightEl(rect, 'rgba(0,200,255,0.5)');
+          const y = rBot;
+          makeLine(0, y, window.innerWidth, y, snapColor, 'h');
+        }
+        // Horizontal alignment: same center Y
+        if (Math.abs(ghostMidY - rMidY) < SNAP_THRESHOLD) {
+          highlightEl(rect, 'rgba(0,200,255,0.5)');
+          const y = rMidY;
+          makeLine(0, y, window.innerWidth, y, snapColor, 'h');
+        }
+        // Vertical alignment: same left
+        if (Math.abs(ghostLeft - rLeft) < SNAP_THRESHOLD) {
+          highlightEl(rect, 'rgba(0,200,255,0.5)');
+          const x = rLeft;
+          makeLine(x, 0, x, window.innerHeight, snapColor, 'v');
+        }
+        // Vertical alignment: same right
+        if (Math.abs(ghostRight - rRight) < SNAP_THRESHOLD) {
+          highlightEl(rect, 'rgba(0,200,255,0.5)');
+          const x = rRight;
+          makeLine(x, 0, x, window.innerHeight, snapColor, 'v');
+        }
+        // Vertical alignment: same center X
+        if (Math.abs(ghostMidX - rMidX) < SNAP_THRESHOLD) {
+          highlightEl(rect, 'rgba(0,200,255,0.5)');
+          const x = rMidX;
+          makeLine(x, 0, x, window.innerHeight, snapColor, 'v');
+        }
+      });
+
+      // ── 2. SPACING MEASUREMENT LINES (red, existing logic) ─────────
       let closestAbove: any = null;
       let closestBelow: any = null;
-      let closestLeft: any = null;
+      let closestLeft: any  = null;
       let closestRight: any = null;
 
       wrappers.forEach(item => {
@@ -157,126 +256,65 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
         const yOverlap = Math.max(0, Math.min(ghostRect.bottom, r.bottom) - Math.max(ghostRect.top, r.top)) > 0;
 
         if (xOverlap) {
-          if (r.bottom <= ghostRect.top) {
-            if (!closestAbove || r.bottom > closestAbove.rect.bottom) {
-              closestAbove = item;
-            }
-          }
-          if (r.top >= ghostRect.bottom) {
-            if (!closestBelow || r.top < closestBelow.rect.top) {
-              closestBelow = item;
-            }
-          }
+          if (r.bottom <= ghostRect.top && (!closestAbove || r.bottom > closestAbove.rect.bottom))
+            closestAbove = item;
+          if (r.top >= ghostRect.bottom && (!closestBelow || r.top < closestBelow.rect.top))
+            closestBelow = item;
         }
-
         if (yOverlap) {
-          if (r.right <= ghostRect.left) {
-            if (!closestLeft || r.right > closestLeft.rect.right) {
-              closestLeft = item;
-            }
-          }
-          if (r.left >= ghostRect.right) {
-            if (!closestRight || r.left < closestRight.rect.left) {
-              closestRight = item;
-            }
-          }
+          if (r.right <= ghostRect.left && (!closestLeft || r.right > closestLeft.rect.right))
+            closestLeft = item;
+          if (r.left >= ghostRect.right && (!closestRight || r.left < closestRight.rect.left))
+            closestRight = item;
         }
       });
 
-      const addLine = (x1: number, y1: number, x2: number, y2: number, value: number, direction: 'v' | 'h') => {
-        if (value <= 0) return;
-
-        const line = document.createElement('div');
-        line.style.position = 'fixed';
-        line.style.backgroundColor = 'rgba(255, 75, 75, 0.85)';
-        line.style.pointerEvents = 'none';
-        if (direction === 'v') {
-          line.style.left = `${x1}px`;
-          line.style.top = `${Math.min(y1, y2)}px`;
-          line.style.width = '1.5px';
-          line.style.height = `${Math.abs(y2 - y1)}px`;
-        } else {
-          line.style.left = `${Math.min(x1, x2)}px`;
-          line.style.top = `${y1}px`;
-          line.style.width = `${Math.abs(x2 - x1)}px`;
-          line.style.height = '1.5px';
-        }
-        container.appendChild(line);
-
-        const badge = document.createElement('div');
-        badge.innerText = `${value}px`;
-        badge.style.cssText = `
-          position: fixed;
-          background: rgba(255, 75, 75, 0.95);
-          color: #ffffff;
-          font-family: monospace;
-          font-size: 10px;
-          font-weight: 800;
-          padding: 2px 5px;
-          border-radius: 4px;
-          transform: translate(-50%, -50%);
-          white-space: nowrap;
-          pointer-events: none;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.35);
-          z-index: 999999;
-          left: ${direction === 'v' ? x1 : (x1 + x2) / 2}px;
-          top: ${direction === 'v' ? (y1 + y2) / 2 : y1}px;
-        `;
-        container.appendChild(badge);
-      };
-
-      const highlightElement = (rect: DOMRect) => {
-        const highlight = document.createElement('div');
-        highlight.style.cssText = `
-          position: fixed;
-          left: ${rect.left}px;
-          top: ${rect.top}px;
-          width: ${rect.width}px;
-          height: ${rect.height}px;
-          border: 1px dashed rgba(255, 75, 75, 0.4);
-          pointer-events: none;
-          box-sizing: border-box;
-        `;
-        container.appendChild(highlight);
-      };
-
+      const redLine = 'rgba(255,75,75,0.85)';
       const midX = ghostRect.left + ghostRect.width / 2;
-      const midY = ghostRect.top + ghostRect.height / 2;
+      const midY = ghostRect.top  + ghostRect.height / 2;
+
+      const addMeasure = (x1: number, y1: number, x2: number, y2: number,
+                          val: number, dir: 'v' | 'h') => {
+        if (val <= 0) return;
+        makeLine(x1, y1, x2, y2, redLine, dir);
+        makeBadge(
+          `${val}px`,
+          dir === 'v' ? x1 : (x1 + x2) / 2,
+          dir === 'v' ? (y1 + y2) / 2 : y1
+        );
+      };
 
       if (closestAbove) {
-        highlightElement(closestAbove.rect);
-        const val = Math.round(ghostRect.top - closestAbove.rect.bottom);
-        addLine(midX, closestAbove.rect.bottom, midX, ghostRect.top, val, 'v');
+        highlightEl(closestAbove.rect);
+        addMeasure(midX, closestAbove.rect.bottom, midX, ghostRect.top,
+          Math.round(ghostRect.top - closestAbove.rect.bottom), 'v');
       } else {
-        const val = Math.round(ghostRect.top - parentRect.top);
-        addLine(midX, parentRect.top, midX, ghostRect.top, val, 'v');
+        addMeasure(midX, parentRect.top, midX, ghostRect.top,
+          Math.round(ghostRect.top - parentRect.top), 'v');
       }
-
       if (closestBelow) {
-        highlightElement(closestBelow.rect);
-        const val = Math.round(closestBelow.rect.top - ghostRect.bottom);
-        addLine(midX, ghostRect.bottom, midX, closestBelow.rect.top, val, 'v');
+        highlightEl(closestBelow.rect);
+        addMeasure(midX, ghostRect.bottom, midX, closestBelow.rect.top,
+          Math.round(closestBelow.rect.top - ghostRect.bottom), 'v');
       } else {
-        const val = Math.round(parentRect.bottom - ghostRect.bottom);
-        addLine(midX, ghostRect.bottom, midX, parentRect.bottom, val, 'v');
+        addMeasure(midX, ghostRect.bottom, midX, parentRect.bottom,
+          Math.round(parentRect.bottom - ghostRect.bottom), 'v');
       }
-
       if (closestLeft) {
-        highlightElement(closestLeft.rect);
-        const val = Math.round(ghostRect.left - closestLeft.rect.right);
-        addLine(closestLeft.rect.right, midY, ghostRect.left, midY, val, 'h');
+        highlightEl(closestLeft.rect);
+        addMeasure(closestLeft.rect.right, midY, ghostRect.left, midY,
+          Math.round(ghostRect.left - closestLeft.rect.right), 'h');
       } else {
-        const val = Math.round(ghostRect.left - parentRect.left);
-        addLine(parentRect.left, midY, ghostRect.left, midY, val, 'h');
+        addMeasure(parentRect.left, midY, ghostRect.left, midY,
+          Math.round(ghostRect.left - parentRect.left), 'h');
       }
-
       if (closestRight) {
-        highlightElement(closestRight.rect);
-        const val = Math.round(closestRight.rect.left - ghostRect.right);
-        addLine(ghostRect.right, midY, closestRight.rect.left, midY, val, 'h');
+        highlightEl(closestRight.rect);
+        addMeasure(ghostRect.right, midY, closestRight.rect.left, midY,
+          Math.round(closestRight.rect.left - ghostRect.right), 'h');
       } else {
-        const val = Math.round(parentRect.right - ghostRect.right);
-        addLine(ghostRect.right, midY, parentRect.right, midY, val, 'h');
+        addMeasure(ghostRect.right, midY, parentRect.right, midY,
+          Math.round(parentRect.right - ghostRect.right), 'h');
       }
     };
 
