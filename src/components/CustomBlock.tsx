@@ -20,6 +20,12 @@ export interface CustomBlockData {
   mediaType?: 'image' | 'video';
   videoSrc?: string;
   childrenBlocks?: CustomBlockData[];
+  displayType?: 'grid' | 'flex';
+  cols?: number;
+  gap?: string;
+  flexDirection?: 'row' | 'column';
+  alignItems?: string;
+  justifyContent?: string;
 }
 
 // Get all custom blocks from localStorage
@@ -75,6 +81,31 @@ export function getPagesList(): PageItem[] {
 export default function CustomBlock({ id, data }: { id: string; data: CustomBlockData }) {
   const { lang } = useLang();
   const [isOverContainer, setIsOverContainer] = React.useState(false);
+  const [layoutStyles, setLayoutStyles] = React.useState<Record<string, any>>({});
+
+  React.useEffect(() => {
+    const syncStyles = () => {
+      try {
+        const pageKey = window.location.pathname === '/' ? 'home' : window.location.pathname.replace('/', '');
+        const saved = localStorage.getItem(`demetra_${pageKey}_layout`);
+        if (saved) {
+          const layout = JSON.parse(saved);
+          if (layout && layout.styles) {
+            setLayoutStyles(layout.styles);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to sync layout styles in CustomBlock", e);
+      }
+    };
+    syncStyles();
+    window.addEventListener('storage', syncStyles);
+    window.addEventListener('message', syncStyles);
+    return () => {
+      window.removeEventListener('storage', syncStyles);
+      window.removeEventListener('message', syncStyles);
+    };
+  }, []);
   const accent = data.accent || 'var(--primary)';
   const bg = data.bg || 'transparent';
   const align = data.align || 'left';
@@ -320,6 +351,12 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
         }
       };
 
+      const displayType = data.displayType || 'grid';
+      const cols = data.cols || 12;
+      const gap = data.gap || '2rem';
+      const flexDirection = data.flexDirection || 'column';
+      const alignItems = data.alignItems || 'stretch';
+
       return (
         <div 
           onDragOver={handleContainerDragOver}
@@ -327,9 +364,11 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
           onDrop={handleContainerDrop}
           style={{
             ...base,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '2rem',
+            display: displayType,
+            gridTemplateColumns: displayType === 'grid' ? `repeat(${cols}, 1fr)` : undefined,
+            flexDirection: displayType === 'flex' ? flexDirection : undefined,
+            gap: gap,
+            alignItems: alignItems,
             minHeight: isBuilder ? '120px' : 'auto',
             border: isBuilder 
               ? (isOverContainer ? '2px dashed #00ff41' : '1.5px dashed rgba(0, 255, 65, 0.25)') 
@@ -345,41 +384,56 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
           }}
         >
           {isBuilder && children.length === 0 && (
-            <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', textAlign: 'center', padding: '2rem 1rem' }}>
+            <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', textAlign: 'center', padding: '2rem 1rem', gridColumn: 'span 12' }}>
               ✦ Пустой контейнер. Добавьте элементы внутри блока.
             </div>
           )}
-          {children.map((child, index) => (
-            <div key={child.id} style={{ position: 'relative' }}>
-              {isBuilder ? (
-                <div style={{ position: 'relative', border: '1px dashed rgba(255,255,255,0.1)', padding: '1.5rem', borderRadius: '12px', marginBottom: '0.5rem' }}>
-                  <div style={{ position: 'absolute', top: '5px', right: '5px', zIndex: 10 }}>
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        window.parent.postMessage({ type: 'DEMETRA_BUILDER', action: 'DELETE_NESTED', id: id, nestedId: child.id || '' }, '*');
-                      }}
-                      style={{ background: '#ff4b4b', border: 'none', color: '#fff', fontSize: '0.65rem', padding: '0.25rem 0.5rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
+          {children.map((child, index) => {
+            const childStyle = layoutStyles[child.id || ''] || {};
+            const gridColumn = childStyle.gridColumn || 'span 12';
+            const gridRow = childStyle.gridRow || 'auto';
+
+            return (
+              <div 
+                key={child.id} 
+                style={{ 
+                  position: 'relative',
+                  gridColumn: displayType === 'grid' ? gridColumn : undefined,
+                  gridRow: displayType === 'grid' ? gridRow : undefined,
+                  width: displayType === 'grid' ? '100%' : undefined,
+                  height: displayType === 'grid' ? '100%' : undefined,
+                }}
+              >
+                {isBuilder ? (
+                  <div style={{ position: 'relative', border: '1px dashed rgba(255,255,255,0.1)', padding: '1.5rem', borderRadius: '12px', marginBottom: '0.5rem', height: '100%', boxSizing: 'border-box' }}>
+                    <div style={{ position: 'absolute', top: '5px', right: '5px', zIndex: 10 }}>
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.parent.postMessage({ type: 'DEMETRA_BUILDER', action: 'DELETE_NESTED', id: id, nestedId: child.id || '' }, '*');
+                        }}
+                        style={{ background: '#ff4b4b', border: 'none', color: '#fff', fontSize: '0.65rem', padding: '0.25rem 0.5rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
+                      >
+                        Удалить элемент
+                      </button>
+                    </div>
+                    <BuilderWrapper 
+                      id={child.id || ''} 
+                      index={index} 
+                      isFirst={index === 0} 
+                      isLast={index === children.length - 1} 
+                      isBuilder={isBuilder}
+                      arrayKey={"nested:" + id}
                     >
-                      Удалить элемент
-                    </button>
+                      <CustomBlock id={child.id || ''} data={child} />
+                    </BuilderWrapper>
                   </div>
-                  <BuilderWrapper 
-                    id={child.id || ''} 
-                    index={index} 
-                    isFirst={index === 0} 
-                    isLast={index === children.length - 1} 
-                    isBuilder={isBuilder}
-                    arrayKey={"nested:" + id}
-                  >
-                    <CustomBlock id={child.id || ''} data={child} />
-                  </BuilderWrapper>
-                </div>
-              ) : (
-                <CustomBlock id={child.id || ''} data={child} />
-              )}
-            </div>
-          ))}
+                ) : (
+                  <CustomBlock id={child.id || ''} data={child} />
+                )}
+              </div>
+            );
+          })}
           {isBuilder && (
             <button
               onClick={() => window.parent.postMessage({ type: 'DEMETRA_BUILDER', action: 'ADD_NESTED', id: id }, '*')}

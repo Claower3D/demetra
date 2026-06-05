@@ -2116,7 +2116,7 @@ function ModalBodyContent({
           : parentData;
       } catch {}
 
-      const updateCustomField = (fieldKey: string, val: string) => {
+      const updateCustomField = (fieldKey: string, val: any) => {
         try {
           const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
           const parentData = customBlocks[targetKey] || {};
@@ -2208,6 +2208,7 @@ function ModalBodyContent({
                 <option value="image_text">Фото + Текст</option>
                 <option value="cta_banner">Промо-баннер (CTA)</option>
                 <option value="divider">Разделитель</option>
+                <option value="container">Контейнер (Группировка/Сетка)</option>
               </select>
             </div>
           </div>
@@ -2215,8 +2216,8 @@ function ModalBodyContent({
           <div style={{ height: '1px', background: '#222' }} />
 
           {(data.type === 'heading' || data.type === 'cta_banner' || data.type === 'image_text') && customInp('Надпись над заголовком', 'subheading')}
-          {(data.type !== 'text' && data.type !== 'divider' && data.type !== 'button') && customInp('Главный Заголовок', 'heading')}
-          {(data.type !== 'divider' && data.type !== 'button') && customInp('Описание / Основной текст', 'body', true)}
+          {(data.type !== 'text' && data.type !== 'divider' && data.type !== 'button' && data.type !== 'container') && customInp('Главный Заголовок', 'heading')}
+          {(data.type !== 'divider' && data.type !== 'button' && data.type !== 'container') && customInp('Описание / Основной текст', 'body', true)}
           
           {data.type === 'two_col' && (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
@@ -2236,6 +2237,87 @@ function ModalBodyContent({
                   placeholder="/catalog"
                   style={inputStyle}
                 />
+              </div>
+            </div>
+          )}
+
+          {data.type === 'container' && (
+            <div style={{ display: 'grid', gap: '1.5rem', background: '#141416', padding: '1.5rem', borderRadius: '14px', border: '1px solid #222' }}>
+              <h3 style={{ fontSize: '0.9rem', color: '#00ff41', margin: 0, fontWeight: '900' }}>⚙️ НАСТРОЙКИ КОНТЕЙНЕРА</h3>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                <div>
+                  {labelStyle('Режим отображения (Layout)')}
+                  <select
+                    value={data.displayType || 'grid'}
+                    onChange={e => updateCustomField('displayType', e.target.value)}
+                    style={inputStyle}
+                  >
+                    <option value="grid">Сетка CSS Grid (Свободное расположение)</option>
+                    <option value="flex">Flexbox (В ряд / В колонку)</option>
+                  </select>
+                </div>
+
+                {data.displayType === 'flex' ? (
+                  <div>
+                    {labelStyle('Направление Flexbox')}
+                    <select
+                      value={data.flexDirection || 'column'}
+                      onChange={e => updateCustomField('flexDirection', e.target.value)}
+                      style={inputStyle}
+                    >
+                      <option value="column">В колонку (Вертикально)</option>
+                      <option value="row">В ряд (Горизонтально)</option>
+                    </select>
+                  </div>
+                ) : (
+                  <div>
+                    {labelStyle('Количество колонок сетки')}
+                    <select
+                      value={data.cols || 12}
+                      onChange={e => updateCustomField('cols', parseInt(e.target.value) || 12)}
+                      style={inputStyle}
+                    >
+                      <option value={12}>12 колонок (Гибкая Figma-сетка)</option>
+                      <option value={4}>4 колонки</option>
+                      <option value={3}>3 колонки</option>
+                      <option value={2}>2 колонки (Рядом)</option>
+                      <option value={1}>1 колонка (Вертикально)</option>
+                    </select>
+                  </div>
+                )}
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                <div>
+                  {labelStyle('Расстояние между элементами (Gap)')}
+                  <select
+                    value={data.gap || '2rem'}
+                    onChange={e => updateCustomField('gap', e.target.value)}
+                    style={inputStyle}
+                  >
+                    <option value="0px">Без отступов (0px)</option>
+                    <option value="0.5rem">Очень узкий (8px)</option>
+                    <option value="1rem">Узкий (16px)</option>
+                    <option value="1.5rem">Средний (24px)</option>
+                    <option value="2rem">Стандартный (32px)</option>
+                    <option value="3rem">Широкий (48px)</option>
+                  </select>
+                </div>
+
+                <div>
+                  {labelStyle('Выравнивание по вертикали (Align)')}
+                  <select
+                    value={data.alignItems || 'stretch'}
+                    onChange={e => updateCustomField('alignItems', e.target.value)}
+                    style={inputStyle}
+                  >
+                    <option value="stretch">Растянуть (Stretch)</option>
+                    <option value="center">По центру (Center)</option>
+                    <option value="flex-start">По верху (Start)</option>
+                    <option value="flex-end">По низу (End)</option>
+                  </select>
+                </div>
               </div>
             </div>
           )}
