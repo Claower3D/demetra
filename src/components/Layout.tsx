@@ -9,6 +9,8 @@ import { BuilderWrapper } from './BuilderWrapper';
 
 
 
+import { getPagesList } from './CustomBlock';
+
 export default function Layout() {
   const isBuilder = window.self !== window.top;
   const [isScrolled, setIsScrolled] = useState(false);
@@ -19,6 +21,14 @@ export default function Layout() {
   const { lang, setLang, t } = useLang();
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
+
+  const [pages, setPages] = useState(() => getPagesList());
+
+  useEffect(() => {
+    const sync = () => setPages(getPagesList());
+    window.addEventListener('storage', sync);
+    return () => window.removeEventListener('storage', sync);
+  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -108,7 +118,7 @@ export default function Layout() {
               style={{ position: 'relative' }}
             >
               <Link to="/about" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                {t.nav_about} <ChevronDown size={14} />
+                {pages.find(p => p.id === 'about')?.name[lang as 'ru' | 'kk' | 'en'] || t.nav_about} <ChevronDown size={14} />
               </Link>
               
               <AnimatePresence>
@@ -141,11 +151,14 @@ export default function Layout() {
               </AnimatePresence>
             </div>
 
-            <Link to="/catalog" className="nav-link">{t.nav_catalog}</Link>
-            <Link to="/services" className="nav-link">{t.nav_service}</Link>
-            <Link to="/faq" className="nav-link">{t.nav_faq}</Link>
-            <Link to="/gallery" className="nav-link">{t.nav_gallery}</Link>
-            <Link to="/contacts" className="nav-link">{t.nav_contact}</Link>
+            {pages.filter(p => p.id !== 'home' && p.id !== 'about').map(p => {
+              const label = p.name[lang as 'ru' | 'kk' | 'en'] || p.name.ru;
+              return (
+                <Link key={p.id} to={p.path} className="nav-link">
+                  {label}
+                </Link>
+              );
+            })}
           </nav>
 
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
@@ -184,7 +197,7 @@ export default function Layout() {
               className="mobile-toggle"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              <Menu size={24} />
             </button>
           </div>
         </div>
@@ -202,12 +215,15 @@ export default function Layout() {
               }}
             >
               <div className="container" style={{ padding: '2rem 0', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <Link to="/about" className="nav-link">{t.nav_about}</Link>
-                <Link to="/catalog" className="nav-link">{t.nav_catalog}</Link>
-                <Link to="/services" className="nav-link">{t.nav_service}</Link>
-                <Link to="/faq" className="nav-link">{t.nav_faq}</Link>
-                <Link to="/gallery" className="nav-link">{t.nav_gallery}</Link>
-                <Link to="/contacts" className="nav-link">{t.nav_contact}</Link>
+                <Link to="/about" className="nav-link">{pages.find(p => p.id === 'about')?.name[lang as 'ru' | 'kk' | 'en'] || t.nav_about}</Link>
+                {pages.filter(p => p.id !== 'home' && p.id !== 'about').map(p => {
+                  const label = p.name[lang as 'ru' | 'kk' | 'en'] || p.name.ru;
+                  return (
+                    <Link key={p.id} to={p.path} className="nav-link">
+                      {label}
+                    </Link>
+                  );
+                })}
               </div>
             </motion.div>
           )}
@@ -235,10 +251,15 @@ export default function Layout() {
             <div>
               <h4 style={{ color: 'var(--foreground)', marginBottom: '1.5rem' }}>{t.footer_nav}</h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                <Link to="/about" className="nav-link">{t.nav_about}</Link>
-                <Link to="/catalog" className="nav-link">{t.nav_catalog}</Link>
-                <Link to="/services" className="nav-link">{t.nav_service}</Link>
-                <Link to="/contacts" className="nav-link">{t.nav_contact}</Link>
+                <Link to="/about" className="nav-link">{pages.find(p => p.id === 'about')?.name[lang as 'ru' | 'kk' | 'en'] || t.nav_about}</Link>
+                {pages.filter(p => p.id !== 'home' && p.id !== 'about').map(p => {
+                  const label = p.name[lang as 'ru' | 'kk' | 'en'] || p.name.ru;
+                  return (
+                    <Link key={p.id} to={p.path} className="nav-link">
+                      {label}
+                    </Link>
+                  );
+                })}
               </div>
             </div>
 

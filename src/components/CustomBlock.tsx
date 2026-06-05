@@ -42,6 +42,35 @@ export function deleteCustomBlock(id: string) {
   localStorage.setItem('demetra_custom_blocks', JSON.stringify(all));
 }
 
+export interface PageItem {
+  id: string;
+  path: string;
+  name: {
+    ru: string;
+    kk: string;
+    en: string;
+  };
+  isSystem?: boolean;
+}
+
+export function getPagesList(): PageItem[] {
+  const DEFAULT_PAGES: PageItem[] = [
+    { id: 'home', path: '/', name: { ru: 'Главная', kk: 'Басты бет', en: 'Home' }, isSystem: true },
+    { id: 'about', path: '/about', name: { ru: 'О компании', kk: 'Біз туралы', en: 'About' }, isSystem: true },
+    { id: 'catalog', path: '/catalog', name: { ru: 'Каталог', kk: 'Каталог', en: 'Catalog' }, isSystem: true },
+    { id: 'services', path: '/services', name: { ru: 'Услуги', kk: 'Қызметтер', en: 'Services' }, isSystem: true },
+    { id: 'partner', path: '/partner', name: { ru: 'Партнерам', kk: 'Серіктестерге', en: 'Partners' }, isSystem: true },
+    { id: 'gallery', path: '/gallery', name: { ru: 'Галерея', kk: 'Галерея', en: 'Gallery' }, isSystem: true },
+    { id: 'contacts', path: '/contacts', name: { ru: 'Контакты', kk: 'Байланыс', en: 'Contacts' }, isSystem: true }
+  ];
+  try {
+    const saved = localStorage.getItem('demetra_pages_list');
+    return saved ? JSON.parse(saved) : DEFAULT_PAGES;
+  } catch {
+    return DEFAULT_PAGES;
+  }
+}
+
 // ----------------- Renderer -----------------
 export default function CustomBlock({ id, data }: { id: string; data: CustomBlockData }) {
   const { lang } = useLang();

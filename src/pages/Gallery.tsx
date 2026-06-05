@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Image as ImageIcon, Maximize2, X, ChevronLeft, ChevronRight, Sparkles, Cpu, Layers, HardHat, ShieldAlert, PlusCircle } from 'lucide-react';
+import { Image as ImageIcon, Maximize2, X, ChevronLeft, ChevronRight, Sparkles, Cpu, Layers, HardHat, PlusCircle } from 'lucide-react';
 import { useLang, InlineEdit } from '../LangContext';
 import { BuilderWrapper } from '../components/BuilderWrapper';
 import { useBuilderLayout } from '../hooks/useBuilderLayout';
+import CustomBlock, { getCustomBlocks } from '../components/CustomBlock';
 
 const defaultGalleryItems = [
   { 
@@ -63,7 +64,8 @@ const defaultGalleryItems = [
 ];
 
 const defaultGalleryLayout = {
-  order: ['gallery_1', 'gallery_2', 'gallery_3', 'gallery_4', 'gallery_5', 'gallery_6'],
+  order: ['gallery_main'],
+  order_gallery: ['gallery_1', 'gallery_2', 'gallery_3', 'gallery_4', 'gallery_5', 'gallery_6'],
   items: {
     gallery_1: defaultGalleryItems[0],
     gallery_2: defaultGalleryItems[1],
@@ -144,10 +146,17 @@ export default function Gallery() {
   const { lang, t } = useLang();
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+  const [customBlocks, setCustomBlocks] = useState<Record<string, any>>(() => getCustomBlocks());
+
+  useEffect(() => {
+    const sync = () => setCustomBlocks(getCustomBlocks());
+    window.addEventListener('storage', sync);
+    return () => window.removeEventListener('storage', sync);
+  }, []);
 
   const { layout, isBuilder } = useBuilderLayout('gallery', defaultGalleryLayout);
 
-  const activeItemsOrder = Array.isArray(layout?.order) ? layout.order : defaultGalleryLayout.order;
+  const activeItemsOrder = Array.isArray(layout?.order_gallery) ? layout.order_gallery : defaultGalleryLayout.order_gallery;
   const activeItemsMap = layout?.items || defaultGalleryLayout.items;
 
   const galleryItems = activeItemsOrder
@@ -190,217 +199,254 @@ export default function Gallery() {
     );
   };
 
+  const pageOrder = Array.isArray(layout?.order) && layout.order.length > 0 ? layout.order : ['gallery_main'];
+  const hiddenBlocks = Array.isArray(layout?.hidden) ? layout.hidden : [];
+
   return (
-    <div style={{ paddingTop: '150px', minHeight: '100vh', background: 'var(--background)' }}>
-      <div className="container">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-          
-          {/* Badge & Title */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: 'var(--primary)', fontWeight: '800', fontSize: '0.8rem', letterSpacing: '0.3em', marginBottom: '2rem' }}>
-            <ImageIcon size={16} />
-            <InlineEdit tKey="nav_gallery" />
-          </div>
-          
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '2rem', marginBottom: '4rem' }}>
-            <h1 style={{ fontSize: 'clamp(3rem, 6vw, 6rem)', color: 'var(--foreground)', lineHeight: '0.9', margin: 0 }}>
-              <InlineEdit tKey="gallery_title" />
-            </h1>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: '700' }}>
-              <Sparkles size={16} className="text-primary" style={{ color: 'var(--primary)' }} />
-              <span>DEMETRA DIGITAL WORKSPACE</span>
-            </div>
-          </div>
+    <div style={{ paddingTop: '150px', minHeight: '100vh', background: 'var(--background)', overflow: 'hidden' }}>
+      {pageOrder.map((id: string, index: number) => {
+        if (hiddenBlocks.includes(id)) return null;
 
-          {/* Sleek Category Filter Bar */}
-          <div style={{ 
-            background: 'var(--surface)', 
-            padding: '0.75rem', 
-            borderRadius: 'var(--radius)', 
-            border: '1px solid var(--border)', 
-            marginBottom: '4rem', 
-            display: 'flex', 
-            flexWrap: 'wrap', 
-            gap: '0.5rem', 
-            alignItems: 'center',
-            boxShadow: '0 4px 30px rgba(0, 0, 0, 0.02)'
-          }}>
-            {Object.keys(categoriesDict).map((catId) => (
-              <button
-                key={catId}
-                onClick={() => {
-                  setActiveCategory(catId);
-                  setSelectedImageIndex(null);
-                }}
-                className={`btn-category ${activeCategory === catId ? 'active' : ''}`}
-                style={{
-                  padding: '10px 24px',
-                  fontSize: '0.8rem',
-                  letterSpacing: '0.05em'
-                }}
-              >
-                {categoriesDict[catId][lang]}
-              </button>
-            ))}
-          </div>
+        const blockStyle = layout?.styles?.[id] || {};
 
-          {/* Visual Builder: Add Media Button */}
-          {isBuilder && (
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '3rem' }}>
-              <button 
-                onClick={() => {
-                  const newId = `gallery_${Date.now()}`;
-                  const newItem = {
-                    id: newId,
-                    type: 'image',
-                    src: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=1200',
-                    category: activeCategory === 'all' ? 'production' : activeCategory,
-                    ru: { title: 'Новый элемент', desc: 'Описание нового элемента.' },
-                    kk: { title: 'Жаңа элемент', desc: 'Жаңа элемент сипаттамасы.' },
-                    en: { title: 'New Item', desc: 'Description of the new item.' }
-                  };
+        if (id === 'gallery_main') {
+          return (
+            <BuilderWrapper 
+              key={id} 
+              id="gallery_main" 
+              index={index} 
+              isFirst={index === 0} 
+              isLast={index === pageOrder.length - 1} 
+              isBuilder={isBuilder} 
+              style={blockStyle}
+            >
+              <div className="container">
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
                   
-                  const nextLayout = {
-                    ...layout,
-                    order: [...activeItemsOrder, newId],
-                    items: { ...activeItemsMap, [newId]: newItem }
-                  };
+                  {/* Badge & Title */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: 'var(--primary)', fontWeight: '800', fontSize: '0.8rem', letterSpacing: '0.3em', marginBottom: '2rem' }}>
+                    <ImageIcon size={16} />
+                    <InlineEdit tKey="nav_gallery" />
+                  </div>
                   
-                  // Send to parent so it updates layouts state and saves to localStorage
-                  window.parent.postMessage({
-                    type: 'DEMETRA_BUILDER',
-                    action: 'UPDATE_GALLERY_LAYOUT',
-                    layout: nextLayout
-                  }, '*');
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '2rem', marginBottom: '4rem' }}>
+                    <h1 style={{ fontSize: 'clamp(3rem, 6vw, 6rem)', color: 'var(--foreground)', lineHeight: '0.9', margin: 0 }}>
+                      <InlineEdit tKey="gallery_title" />
+                    </h1>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: '700' }}>
+                      <Sparkles size={16} className="text-primary" style={{ color: 'var(--primary)' }} />
+                      <span>DEMETRA DIGITAL WORKSPACE</span>
+                    </div>
+                  </div>
 
-                  // Also select it for editing immediately
-                  window.parent.postMessage({
-                    type: 'DEMETRA_BUILDER',
-                    action: 'EDIT_BLOCK',
-                    id: newId
-                  }, '*');
-                }}
-                style={{ 
-                  background: 'rgba(0, 255, 65, 0.1)', 
-                  border: '1px dashed #00ff41', 
-                  color: '#00ff41', 
-                  padding: '1.25rem 3rem', 
-                  borderRadius: '12px', 
-                  fontWeight: '900', 
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  fontSize: '0.85rem',
-                  letterSpacing: '0.15em',
-                  transition: 'all 0.2s ease'
-                }}
-              >
-                <PlusCircle size={20} />
-                ДОБАВИТЬ ФОТО / ВИДЕО В ГАЛЕРЕЮ
-              </button>
-            </div>
-          )}
-
-          {/* Bento Masonry Grid */}
-          <motion.div 
-            className="bento-grid" 
-            style={{ gridAutoRows: '320px', gap: '2rem', marginBottom: '8rem' }}
-            layout
-          >
-            <AnimatePresence mode="popLayout">
-              {filteredItems.map((item: any, index: number) => {
-                // Alternating sizes for gorgeous asymmetrical masonry layout
-                const gridColumn = index % 3 === 0 ? 'span 7' : 'span 5';
-                const gridRow = index === 0 || index === 3 ? 'span 2' : 'span 1';
-                
-                return (
-                  <BuilderWrapper
-                    key={item.id}
-                    id={item.id}
-                    index={index}
-                    isFirst={index === 0}
-                    isLast={index === filteredItems.length - 1}
-                    isBuilder={isBuilder}
-                    arrayKey="order"
-                    style={{
-                      gridColumn: gridColumn,
-                      gridRow: gridRow,
-                    }}
-                  >
-                    <div 
-                      onClick={() => !isBuilder && setSelectedImageIndex(index)}
-                      className="product-card"
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        cursor: 'pointer',
-                        position: 'relative'
-                      }}
-                    >
-                      {/* Media (Image or Video) */}
-                      {renderMedia(item, lang)}
-                      
-                      {/* Glowing Overlay Indicator */}
-                      <div 
-                        style={{ 
-                          position: 'absolute', 
-                          inset: 0, 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          justifyContent: 'center', 
-                          opacity: 0, 
-                          transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)', 
-                          background: 'rgba(0, 143, 36, 0.15)' 
-                        }} 
-                        className="gallery-overlay"
-                        onClick={(e) => {
-                          if (isBuilder) {
-                            e.stopPropagation();
-                            setSelectedImageIndex(index);
-                          }
+                  {/* Sleek Category Filter Bar */}
+                  <div style={{ 
+                    background: 'var(--surface)', 
+                    padding: '0.75rem', 
+                    borderRadius: 'var(--radius)', 
+                    border: '1px solid var(--border)', 
+                    marginBottom: '4rem', 
+                    display: 'flex', 
+                    flexWrap: 'wrap', 
+                    gap: '0.5rem', 
+                    alignItems: 'center',
+                    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.02)'
+                  }}>
+                    {Object.keys(categoriesDict).map((catId) => (
+                      <button
+                        key={catId}
+                        onClick={() => {
+                          setActiveCategory(catId);
+                          setSelectedImageIndex(null);
+                        }}
+                        className={`btn-category ${activeCategory === catId ? 'active' : ''}`}
+                        style={{
+                          padding: '10px 24px',
+                          fontSize: '0.8rem',
+                          letterSpacing: '0.05em'
                         }}
                       >
-                        <div style={{ 
-                          background: '#ffffff', 
-                          color: '#000000', 
-                          padding: '1.25rem', 
-                          borderRadius: '50%', 
-                          boxShadow: '0 10px 30px rgba(0, 143, 36, 0.4)' 
-                        }}>
-                          <Maximize2 size={24} />
-                        </div>
-                      </div>
+                        {categoriesDict[catId][lang]}
+                      </button>
+                    ))}
+                  </div>
 
-                      {/* Image Context Footer Info Panel */}
-                      <div className="product-info" style={{ padding: '2.5rem' }}>
-                        <div style={{ 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          gap: '0.5rem', 
-                          color: 'var(--primary)', 
-                          fontSize: '0.8rem', 
-                          fontWeight: '800', 
-                          marginBottom: '0.5rem' 
-                        }}>
-                          {getCategoryIcon(item.category)}
-                          <span>{categoriesDict[item.category][lang].toUpperCase()}</span>
-                        </div>
-                        <h3 style={{ 
-                          fontSize: gridRow.includes('2') || gridColumn.includes('7') ? '2.2rem' : '1.4rem', 
-                          fontWeight: '900',
-                          lineHeight: '1.2' 
-                        }}>
-                          {item[lang]?.title}
-                        </h3>
-                      </div>
+                  {/* Visual Builder: Add Media Button */}
+                  {isBuilder && (
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '3rem' }}>
+                      <button 
+                        onClick={() => {
+                          const newId = `gallery_${Date.now()}`;
+                          const newItem = {
+                            id: newId,
+                            type: 'image',
+                            src: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=1200',
+                            category: activeCategory === 'all' ? 'production' : activeCategory,
+                            ru: { title: 'Новый элемент', desc: 'Описание нового элемента.' },
+                            kk: { title: 'Жаңа элемент', desc: 'Жаңа элемент сипаттамасы.' },
+                            en: { title: 'New Item', desc: 'Description of the new item.' }
+                          };
+                          
+                          const nextLayout = {
+                            ...layout,
+                            order_gallery: [...activeItemsOrder, newId],
+                            items: { ...activeItemsMap, [newId]: newItem }
+                          };
+                          
+                          window.parent.postMessage({
+                            type: 'DEMETRA_BUILDER',
+                            action: 'UPDATE_GALLERY_LAYOUT',
+                            layout: nextLayout
+                          }, '*');
+
+                          window.parent.postMessage({
+                            type: 'DEMETRA_BUILDER',
+                            action: 'EDIT_BLOCK',
+                            id: newId
+                          }, '*');
+                        }}
+                        style={{ 
+                          background: 'rgba(0, 255, 65, 0.1)', 
+                          border: '1px dashed #00ff41', 
+                          color: '#00ff41', 
+                          padding: '1.25rem 3rem', 
+                          borderRadius: '12px', 
+                          fontWeight: '900', 
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.75rem',
+                          fontSize: '0.85rem',
+                          letterSpacing: '0.15em',
+                          transition: 'all 0.2s ease'
+                        }}
+                      >
+                        <PlusCircle size={20} />
+                        ДОБАВИТЬ ФОТО / ВИДЕО В ГАЛЕРЕЮ
+                      </button>
                     </div>
-                  </BuilderWrapper>
-                );
-              })}
-            </AnimatePresence>
-          </motion.div>
-        </motion.div>
-      </div>
+                  )}
+
+                  {/* Bento Masonry Grid */}
+                  <motion.div 
+                    className="bento-grid" 
+                    style={{ gridAutoRows: '320px', gap: '2rem', marginBottom: '8rem' }}
+                    layout
+                  >
+                    <AnimatePresence mode="popLayout">
+                      {filteredItems.map((item: any, index: number) => {
+                        const gridColumn = index % 3 === 0 ? 'span 7' : 'span 5';
+                        const gridRow = index === 0 || index === 3 ? 'span 2' : 'span 1';
+                        
+                        return (
+                          <BuilderWrapper
+                            key={item.id}
+                            id={item.id}
+                            index={index}
+                            isFirst={index === 0}
+                            isLast={index === filteredItems.length - 1}
+                            isBuilder={isBuilder}
+                            arrayKey="order_gallery"
+                            style={{
+                              gridColumn: gridColumn,
+                              gridRow: gridRow,
+                            }}
+                          >
+                            <div 
+                              onClick={() => !isBuilder && setSelectedImageIndex(index)}
+                              className="product-card"
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                cursor: 'pointer',
+                                position: 'relative'
+                              }}
+                            >
+                              {renderMedia(item, lang)}
+                              
+                              <div 
+                                style={{ 
+                                  position: 'absolute', 
+                                  inset: 0, 
+                                  display: 'flex', 
+                                  alignItems: 'center', 
+                                  justifyContent: 'center', 
+                                  opacity: 0, 
+                                  transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)', 
+                                  background: 'rgba(0, 143, 36, 0.15)' 
+                                }} 
+                                className="gallery-overlay"
+                                onClick={(e) => {
+                                  if (isBuilder) {
+                                    e.stopPropagation();
+                                    setSelectedImageIndex(index);
+                                  }
+                                }}
+                              >
+                                <div style={{ 
+                                  background: '#ffffff', 
+                                  color: '#000000', 
+                                  padding: '1.25rem', 
+                                  borderRadius: '50%', 
+                                  boxShadow: '0 10px 30px rgba(0, 143, 36, 0.4)' 
+                                }}>
+                                  <Maximize2 size={24} />
+                                </div>
+                              </div>
+
+                              <div className="product-info" style={{ padding: '2.5rem' }}>
+                                <div style={{ 
+                                  display: 'flex', 
+                                  alignItems: 'center', 
+                                  gap: '0.5rem', 
+                                  color: 'var(--primary)', 
+                                  fontSize: '0.8rem', 
+                                  fontWeight: '800', 
+                                  marginBottom: '0.5rem' 
+                                }}>
+                                  {getCategoryIcon(item.category)}
+                                  <span>{categoriesDict[item.category][lang].toUpperCase()}</span>
+                                </div>
+                                <h3 style={{ 
+                                  fontSize: gridRow.includes('2') || gridColumn.includes('7') ? '2.2rem' : '1.4rem', 
+                                  fontWeight: '900',
+                                  lineHeight: '1.2' 
+                                }}>
+                                  {item[lang]?.title}
+                                </h3>
+                              </div>
+                            </div>
+                          </BuilderWrapper>
+                        );
+                      })}
+                    </AnimatePresence>
+                  </motion.div>
+                </motion.div>
+              </div>
+            </BuilderWrapper>
+          );
+        } else if (id.startsWith('new_block_')) {
+          const blockData = customBlocks[id];
+          if (blockData) {
+            return (
+              <BuilderWrapper 
+                key={id} 
+                id={id} 
+                index={index} 
+                isFirst={index === 0} 
+                isLast={index === pageOrder.length - 1} 
+                isBuilder={isBuilder} 
+                style={blockStyle}
+              >
+                <div className="container" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
+                  <CustomBlock id={id} data={blockData} />
+                </div>
+              </BuilderWrapper>
+            );
+          }
+        }
+        return null;
+      })}
 
       {/* FULLSCREEN LIGHTBOX PORTAL OVERLAY */}
       <AnimatePresence>
@@ -421,7 +467,6 @@ export default function Gallery() {
               alignItems: 'center'
             }}
           >
-            {/* Top Close Control Panel */}
             <div style={{
               position: 'absolute',
               top: '2rem',
@@ -456,20 +501,11 @@ export default function Gallery() {
                   justifyContent: 'center',
                   transition: 'all 0.3s'
                 }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.1)';
-                  e.currentTarget.style.borderColor = 'var(--primary)';
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)';
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
-                }}
               >
                 <X size={20} />
               </button>
             </div>
 
-            {/* Main Media Viewport */}
             <div style={{
               position: 'relative',
               width: '90%',
@@ -479,7 +515,6 @@ export default function Gallery() {
               justifyContent: 'center',
               alignItems: 'center'
             }}>
-              {/* Previous Button Left */}
               <button
                 onClick={(e) => { e.stopPropagation(); handlePrev(); }}
                 style={{
@@ -498,21 +533,10 @@ export default function Gallery() {
                   zIndex: 10001,
                   transition: 'all 0.3s'
                 }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.1)';
-                  e.currentTarget.style.borderColor = 'var(--primary)';
-                  e.currentTarget.style.color = 'var(--primary)';
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)';
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
-                  e.currentTarget.style.color = '#ffffff';
-                }}
               >
                 <ChevronLeft size={30} />
               </button>
 
-              {/* Dynamic Scaling Media Component */}
               {(() => {
                 const activeItem = filteredItems[selectedImageIndex];
                 if (activeItem.type === 'video') {
@@ -579,7 +603,6 @@ export default function Gallery() {
                 );
               })()}
 
-              {/* Next Button Right */}
               <button
                 onClick={(e) => { e.stopPropagation(); handleNext(); }}
                 style={{
@@ -598,22 +621,11 @@ export default function Gallery() {
                   zIndex: 10001,
                   transition: 'all 0.3s'
                 }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.1)';
-                  e.currentTarget.style.borderColor = 'var(--primary)';
-                  e.currentTarget.style.color = 'var(--primary)';
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)';
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
-                  e.currentTarget.style.color = '#ffffff';
-                }}
               >
                 <ChevronRight size={30} />
               </button>
             </div>
 
-            {/* Description Text Panel Footer */}
             <motion.div 
               key={`desc-${selectedImageIndex}`}
               initial={{ opacity: 0, y: 10 }}
@@ -644,7 +656,6 @@ export default function Gallery() {
                 {selectedImageIndex + 1} / {filteredItems.length}
               </div>
             </motion.div>
-
           </motion.div>
         )}
       </AnimatePresence>

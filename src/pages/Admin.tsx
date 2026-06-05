@@ -56,7 +56,8 @@ import {
 import { useLang } from '../LangContext';
 import { useTheme } from '../ThemeContext';
 import { translations as defaultTranslations, productsData as defaultProducts, categories as defaultCategories } from '../i18n';
-import { setCustomBlock, getCustomBlocks } from '../components/CustomBlock';
+import { setCustomBlock, getCustomBlocks, getPagesList } from '../components/CustomBlock';
+import type { PageItem } from '../components/CustomBlock';
 
 const findParentBlockOfNested = (nestedId: string) => {
   try {
@@ -99,25 +100,29 @@ export default function Admin() {
     return saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultProducts));
   });
 
+  const [pages, setPages] = useState<PageItem[]>(() => getPagesList());
+
   const [pageLayouts, setPageLayouts] = useState<any>(() => {
-    const keys = ['home', 'catalog', 'services', 'about', 'contacts', 'partner', 'gallery'];
+    const pageList = getPagesList();
     const layouts: any = {};
-    keys.forEach(k => {
+    pageList.forEach(p => {
+      const k = p.id;
       const saved = localStorage.getItem(`demetra_${k}_layout`);
       const defaults: any = {
         home: { order: ['hero', 'marquee', 'catalog', 'partnership', 'services', 'cta'], hidden: [], styles: {}, images: {} },
-        catalog: { order: [], hidden: [], styles: {}, images: {} },
-        services: { order: [], hidden: [], styles: {}, images: {} },
-        about: { order: [], hidden: [], styles: {}, images: {} },
-        contacts: { order: [], hidden: [], styles: {}, images: {} },
-        partner: { order: [], hidden: [], styles: {}, images: {} },
+        catalog: { order: ['catalog_main'], hidden: [], styles: {}, images: {} },
+        services: { order: ['services_main'], hidden: [], styles: {}, images: {} },
+        about: { order: ['about_main'], hidden: [], styles: {}, images: {} },
+        contacts: { order: ['contacts_main'], hidden: [], styles: {}, images: {} },
+        partner: { order: ['partner_main'], hidden: [], styles: {}, images: {} },
         gallery: {
-          order: ['gallery_1', 'gallery_2', 'gallery_3', 'gallery_4', 'gallery_5', 'gallery_6'],
+          order: ['gallery_main'],
+          order_gallery: ['gallery_1', 'gallery_2', 'gallery_3', 'gallery_4', 'gallery_5', 'gallery_6'],
           hidden: [],
           styles: {},
           images: {},
           items: {
-            gallery_1: { id: "gallery_1", src: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200", type: 'image', category: 'production', ru: { title: "Конвейерная линия Т-1500", desc: "Установка и пусконаладка новой автоматизированной конвейерной линии с HDPE роликами." }, kk: { title: "Т-1500 конвейерлік желісі", desc: "HDPE роликтері бар жаңа автоматтандырылған конвейер желісін орнату және іске қосу." }, en: { title: "T-1500 Conveyor Line", desc: "Installation and commissioning of a new automated conveyor line with HDPE rollers." } },
+            gallery_1: { id: "gallery_1", src: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200", type: 'image', category: 'production', ru: { title: "Конвейерная линия Т-1500", desc: "Установка и пусконаладка новой автоматизированной конвейерной линии с HDPE роликами." }, kk: { title: "Т-1500 конвейерлік желісі", desc: "HDPE роликтері бар жаңа автоматтандырылған конвейер желісін орнату и іске қосу." }, en: { title: "T-1500 Conveyor Line", desc: "Installation and commissioning of a new automated conveyor line with HDPE rollers." } },
             gallery_2: { id: "gallery_2", src: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=1200", type: 'image', category: 'services', ru: { title: "Ремонт конвейерной ленты", desc: "Срочная стыковка конвейерной ленты методом горячей вулканизации на глубине." }, kk: { title: "Конвейер таспасын жөндеу", desc: "Тереңдікте ыстық вулканизация әдісімен конвейер таспасын шұғыл біріктіру." }, en: { title: "Conveyor Belt Repair", desc: "Urgent splicing of a conveyor belt using hot vulcanization method at depth." } },
             gallery_3: { id: "gallery_3", src: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=1200", type: 'image', category: 'equipment', ru: { title: "Футеровка приводного барабана", desc: "Применение резинокерамической футеровки германского производства для предотвращения проскальзывания ленты." }, kk: { title: "Жетекші барабанды футерлеу", desc: "Таспаның сырғып кетуін болдырмау үшін германдық резеңке-керамикалық футерлеуді қолдану." }, en: { title: "Drive Drum Lagging", desc: "Application of German-made rubber-ceramic lagging to prevent belt slippage." } },
             gallery_4: { id: "gallery_4", src: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=1200", type: 'image', category: 'production', ru: { title: "Контроль качества роликов", desc: "Лабораторные испытания биения конвейерных роликов на специализированном стенде перед отгрузкой клиенту." }, kk: { title: "Роликтердің сапасын бақылау", desc: "Тапсырыс берушіге жөнелту алдында мамандандырылған стендте конвейер роликтерінің соғуын зертханалық сынау." }, en: { title: "Roller Quality Control", desc: "Laboratory testing of conveyor roller runout on a specialized stand before shipping to the client." } },
@@ -127,23 +132,24 @@ export default function Admin() {
         }
       };
       
+      const defaultLayout = defaults[k] || { order: [], hidden: [], styles: {}, images: {}, items: {} };
       try {
         if (saved) {
           const parsed = JSON.parse(saved);
-          // Ensure structure is correct
           layouts[k] = {
-            order: parsed.order || defaults[k].order,
-            hidden: parsed.hidden || defaults[k].hidden,
-            styles: parsed.styles || defaults[k].styles,
-            images: parsed.images || defaults[k].images,
-            links: parsed.links || defaults[k].links || {},
-            items: parsed.items || defaults[k].items || {}
+            order: parsed.order || defaultLayout.order,
+            order_gallery: parsed.order_gallery || defaultLayout.order_gallery,
+            hidden: parsed.hidden || defaultLayout.hidden,
+            styles: parsed.styles || defaultLayout.styles,
+            images: parsed.images || defaultLayout.images,
+            links: parsed.links || defaultLayout.links || {},
+            items: parsed.items || defaultLayout.items || {}
           };
         } else {
-          layouts[k] = defaults[k];
+          layouts[k] = defaultLayout;
         }
       } catch (e) {
-        layouts[k] = defaults[k];
+        layouts[k] = defaultLayout;
       }
     });
     return layouts;
@@ -163,6 +169,7 @@ export default function Admin() {
 
   const tabs = [
     { id: 'builder', icon: <Monitor size={20} />, label: 'Visual Builder (Tilda Mode)' },
+    { id: 'pages', icon: <Compass size={20} />, label: 'Управление страницами' },
     { id: 'dashboard', icon: <BarChart3 size={20} />, label: t.admin_dashboard || 'Dashboard' },
     { id: 'content', icon: <Layers size={20} />, label: t.admin_content || 'All Texts' },
     { id: 'products', icon: <Package size={20} />, label: t.admin_products || 'Catalog' },
@@ -246,9 +253,10 @@ export default function Admin() {
         <AnimatePresence mode="wait">
           <motion.div key={activeTab} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
             {activeTab === 'builder' ? (
-              <TildaEditor pageLayouts={pageLayouts} setPageLayouts={setPageLayouts} allTranslations={allTranslations} updateTranslation={updateTranslation} currentLang={effectiveLang} handleSave={handleSave} isSidebarOpen={isSidebarOpen} />
+              <TildaEditor pages={pages} pageLayouts={pageLayouts} setPageLayouts={setPageLayouts} allTranslations={allTranslations} updateTranslation={updateTranslation} currentLang={effectiveLang} handleSave={handleSave} isSidebarOpen={isSidebarOpen} />
             ) : (
               <div style={{ padding: '4rem' }}>
+                {activeTab === 'pages' && <PagesManager pages={pages} setPages={setPages} pageLayouts={pageLayouts} setPageLayouts={setPageLayouts} t={t} lang={effectiveLang} />}
                 {activeTab === 'dashboard' && <DashboardOverview windowWidth={windowWidth} t={t} />}
                 {activeTab === 'content' && <PageEditor allTranslations={allTranslations} updateTranslation={updateTranslation} currentLang={effectiveLang} windowWidth={windowWidth} t={t} />}
                 {activeTab === 'products' && <ProductManager products={products} setProducts={setProducts} currentLang={effectiveLang} categories={defaultCategories} windowWidth={windowWidth} />}
@@ -264,7 +272,7 @@ export default function Admin() {
 }
 
 // TILDA STYLE EDITOR
-function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTranslation, currentLang, handleSave, isSidebarOpen }: any) {
+function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, updateTranslation, currentLang, handleSave, isSidebarOpen }: any) {
   const [editingKey, setEditingKey] = useState<string | null>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [previewRoute, setPreviewRoute] = useState<string>('/');
@@ -692,13 +700,14 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
                onChange={(e) => setPreviewRoute(e.target.value)}
                style={{ background: '#0a0a0a', color: '#fff', border: '1px solid #333', padding: '0.5rem 1rem', borderRadius: '8px', fontSize: '0.85rem', outline: 'none', cursor: 'pointer' }}
             >
-               <option value="/">Главная (Home)</option>
-               <option value="/catalog">Оборудование (Catalog)</option>
-               <option value="/services">Услуги (Services)</option>
-               <option value="/about">О компании (About)</option>
-               <option value="/contacts">Контакты (Contacts)</option>
-               <option value="/partner">Партнерам (Partner)</option>
-               <option value="/gallery">Галерея (Gallery)</option>
+               {pages.map((p: any) => {
+                 const name = p.name[currentLang] || p.name.ru;
+                 return (
+                   <option key={p.id} value={p.path}>
+                     {name} ({p.id})
+                   </option>
+                 );
+               })}
             </select>
             <div style={{ color: '#888', fontSize: '0.85rem' }}>Switch pages to edit different areas.</div>
 
@@ -2533,6 +2542,261 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
           />
         </div>
       )}
+    </div>
+  );
+}
+
+function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }: any) {
+  const [newPageNameRu, setNewPageNameRu] = useState('');
+  const [newPageNameKk, setNewPageNameKk] = useState('');
+  const [newPageNameEn, setNewPageNameEn] = useState('');
+  const [newPagePath, setNewPagePath] = useState('');
+  const [editingPageId, setEditingPageId] = useState<string | null>(null);
+  
+  const [editNameRu, setEditNameRu] = useState('');
+  const [editNameKk, setEditNameKk] = useState('');
+  const [editNameEn, setEditNameEn] = useState('');
+  const [editPath, setEditPath] = useState('');
+
+  const handleCreatePage = () => {
+    if (!newPageNameRu.trim() || !newPagePath.trim()) {
+      alert('Пожалуйста, заполните как минимум русское название страницы и путь.');
+      return;
+    }
+    
+    // Validate path starts with /
+    let path = newPagePath.trim();
+    if (!path.startsWith('/')) {
+      path = '/' + path;
+    }
+    
+    // Check if path or id already exists
+    const slug = path.replace('/', '').toLowerCase() || 'home';
+    if (pages.some((p: any) => p.id === slug || p.path === path)) {
+      alert('Страница с таким путем или идентификатором уже существует.');
+      return;
+    }
+    
+    const newPage = {
+      id: slug,
+      path: path,
+      name: {
+        ru: newPageNameRu.trim(),
+        kk: newPageNameKk.trim() || newPageNameRu.trim(),
+        en: newPageNameEn.trim() || newPageNameRu.trim()
+      }
+    };
+    
+    const updated = [...pages, newPage];
+    setPages(updated);
+    localStorage.setItem('demetra_pages_list', JSON.stringify(updated));
+    
+    // Create default layout for this new page
+    const newLayout = { order: [], hidden: [], styles: {}, images: {} };
+    setPageLayouts((prev: any) => ({ ...prev, [slug]: newLayout }));
+    localStorage.setItem(`demetra_${slug}_layout`, JSON.stringify(newLayout));
+    
+    // Dispatch events to reload
+    window.dispatchEvent(new Event('storage'));
+    
+    // Reset fields
+    setNewPageNameRu('');
+    setNewPageNameKk('');
+    setNewPageNameEn('');
+    setNewPagePath('');
+  };
+
+  const handleStartEdit = (p: any) => {
+    setEditingPageId(p.id);
+    setEditNameRu(p.name.ru);
+    setEditNameKk(p.name.kk);
+    setEditNameEn(p.name.en);
+    setEditPath(p.path);
+  };
+
+  const handleSaveEdit = (pageId: string) => {
+    const updated = pages.map((p: any) => {
+      if (p.id === pageId) {
+        return {
+          ...p,
+          path: p.isSystem ? p.path : editPath,
+          name: {
+            ru: editNameRu,
+            kk: editNameKk,
+            en: editNameEn
+          }
+        };
+      }
+      return p;
+    });
+    
+    setPages(updated);
+    localStorage.setItem('demetra_pages_list', JSON.stringify(updated));
+    window.dispatchEvent(new Event('storage'));
+    setEditingPageId(null);
+  };
+
+  const handleDeletePage = (p: any) => {
+    if (p.isSystem) return;
+    if (window.confirm(`Вы уверены, что хотите удалить страницу "${p.name.ru}"? Все блоки на этой странице будут безвозвратно удалены.`)) {
+      const updated = pages.filter((item: any) => item.id !== p.id);
+      setPages(updated);
+      localStorage.setItem('demetra_pages_list', JSON.stringify(updated));
+      
+      // Clean up layout storage
+      localStorage.removeItem(`demetra_${p.id}_layout`);
+      setPageLayouts((prev: any) => {
+        const next = { ...prev };
+        delete next[p.id];
+        return next;
+      });
+      
+      window.dispatchEvent(new Event('storage'));
+    }
+  };
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }}>
+      {/* Create Page Form */}
+      <div style={{ background: '#0a0a0a', padding: '3rem', borderRadius: '32px', border: '1px solid #222', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+        <h3 style={{ fontWeight: '900', color: '#00ff41', letterSpacing: '0.1em', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <PlusCircle size={22} /> СОЗДАТЬ СТРАНИЦУ
+        </h3>
+        
+        <div style={{ display: 'grid', gap: '1.25rem' }}>
+          <div style={{ display: 'grid', gap: '0.5rem' }}>
+            <label style={{ fontSize: '0.7rem', color: '#888', fontWeight: '900' }}>НАЗВАНИЕ (RU)</label>
+            <input 
+              value={newPageNameRu} 
+              onChange={(e) => {
+                setNewPageNameRu(e.target.value);
+                // Auto generate path if empty
+                if (!newPagePath) {
+                  const slug = e.target.value.toLowerCase()
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .trim()
+                    .replace(/\s+/g, '-');
+                  setNewPagePath('/' + slug);
+                }
+              }} 
+              placeholder="Контакты"
+              style={{ background: '#111', border: '1px solid #222', padding: '1.25rem', borderRadius: '12px', color: '#fff', fontSize: '1rem', outline: 'none' }} 
+            />
+          </div>
+
+          <div style={{ display: 'grid', gap: '0.5rem' }}>
+            <label style={{ fontSize: '0.7rem', color: '#888', fontWeight: '900' }}>НАЗВАНИЕ (KK)</label>
+            <input 
+              value={newPageNameKk} 
+              onChange={(e) => setNewPageNameKk(e.target.value)} 
+              placeholder="Байланыс"
+              style={{ background: '#111', border: '1px solid #222', padding: '1.25rem', borderRadius: '12px', color: '#fff', fontSize: '1rem', outline: 'none' }} 
+            />
+          </div>
+
+          <div style={{ display: 'grid', gap: '0.5rem' }}>
+            <label style={{ fontSize: '0.7rem', color: '#888', fontWeight: '900' }}>НАЗВАНИЕ (EN)</label>
+            <input 
+              value={newPageNameEn} 
+              onChange={(e) => setNewPageNameEn(e.target.value)} 
+              placeholder="Contacts"
+              style={{ background: '#111', border: '1px solid #222', padding: '1.25rem', borderRadius: '12px', color: '#fff', fontSize: '1rem', outline: 'none' }} 
+            />
+          </div>
+
+          <div style={{ display: 'grid', gap: '0.5rem' }}>
+            <label style={{ fontSize: '0.7rem', color: '#888', fontWeight: '900' }}>URL ПУТЬ (должен начинаться с /)</label>
+            <input 
+              value={newPagePath} 
+              onChange={(e) => setNewPagePath(e.target.value)} 
+              placeholder="/contacts"
+              style={{ background: '#111', border: '1px solid #222', padding: '1.25rem', borderRadius: '12px', color: '#fff', fontSize: '1rem', outline: 'none' }} 
+            />
+          </div>
+        </div>
+
+        <button 
+          onClick={handleCreatePage}
+          style={{ background: '#00ff41', color: '#000', border: 'none', padding: '1.25rem', borderRadius: '12px', fontWeight: '900', cursor: 'pointer', transition: '0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+        >
+          <Plus size={20} /> ДОБАВИТЬ СТРАНИЦУ
+        </button>
+      </div>
+
+      {/* Pages List */}
+      <div style={{ background: '#0a0a0a', padding: '3rem', borderRadius: '32px', border: '1px solid #222', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+        <h3 style={{ fontWeight: '900', color: '#fff', letterSpacing: '0.1em' }}>СПИСОК СТРАНИЦ</h3>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxHeight: '550px', overflowY: 'auto', paddingRight: '0.5rem' }}>
+          {pages.map((p: any) => {
+            const isEditing = editingPageId === p.id;
+            
+            return (
+              <div key={p.id} style={{ background: '#111', border: '1px solid #222', borderRadius: '16px', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {isEditing ? (
+                  <div style={{ display: 'grid', gap: '1rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                      <div>
+                        <label style={{ fontSize: '0.6rem', color: '#666', fontWeight: '900' }}>ИМЯ (RU)</label>
+                        <input value={editNameRu} onChange={e => setEditNameRu(e.target.value)} style={{ background: '#000', border: '1px solid #333', padding: '0.5rem', borderRadius: '6px', color: '#fff', width: '100%' }} />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: '0.6rem', color: '#666', fontWeight: '900' }}>ИМЯ (KK)</label>
+                        <input value={editNameKk} onChange={e => setEditNameKk(e.target.value)} style={{ background: '#000', border: '1px solid #333', padding: '0.5rem', borderRadius: '6px', color: '#fff', width: '100%' }} />
+                      </div>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                      <div>
+                        <label style={{ fontSize: '0.6rem', color: '#666', fontWeight: '900' }}>ИМЯ (EN)</label>
+                        <input value={editNameEn} onChange={e => setEditNameEn(e.target.value)} style={{ background: '#000', border: '1px solid #333', padding: '0.5rem', borderRadius: '6px', color: '#fff', width: '100%' }} />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: '0.6rem', color: '#666', fontWeight: '900' }}>ПУТЬ</label>
+                        <input disabled={p.isSystem} value={editPath} onChange={e => setEditPath(e.target.value)} style={{ background: '#000', border: '1px solid #333', padding: '0.5rem', borderRadius: '6px', color: '#fff', width: '100%', opacity: p.isSystem ? 0.5 : 1 }} />
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+                      <button onClick={() => handleSaveEdit(p.id)} style={{ background: '#00ff41', color: '#000', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', fontWeight: '800', cursor: 'pointer', fontSize: '0.8rem' }}>Сохранить</button>
+                      <button onClick={() => setEditingPageId(null)} style={{ background: '#222', color: '#fff', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', fontWeight: '800', cursor: 'pointer', fontSize: '0.8rem' }}>Отмена</button>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span style={{ fontSize: '1rem', fontWeight: '900', color: '#fff' }}>{p.name[lang as 'ru' | 'kk' | 'en'] || p.name.ru}</span>
+                        {p.isSystem && (
+                          <span style={{ fontSize: '0.6rem', background: '#222', color: '#888', padding: '0.2rem 0.4rem', borderRadius: '4px', fontWeight: '700' }}>SYSTEM</span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: '0.8rem', color: '#00ff41', fontWeight: '700', marginTop: '0.25rem' }}>{p.path}</div>
+                    </div>
+                    
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <button 
+                        onClick={() => handleStartEdit(p)}
+                        style={{ background: '#222', border: 'none', color: '#aaa', padding: '0.5rem', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                        title="Редактировать название / путь"
+                      >
+                        <Edit3 size={16} />
+                      </button>
+                      {!p.isSystem && (
+                        <button 
+                          onClick={() => handleDeletePage(p)}
+                          style={{ background: 'rgba(255,0,0,0.1)', border: 'none', color: '#ff4b4b', padding: '0.5rem', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                          title="Удалить страницу"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }

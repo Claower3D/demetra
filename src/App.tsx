@@ -17,6 +17,10 @@ import Reviews from './pages/Reviews';
 import Admin from './pages/Admin';
 import './index.css';
 
+import { useState, useEffect } from 'react';
+import { getPagesList } from './components/CustomBlock';
+import DynamicPage from './pages/DynamicPage';
+
 class ErrorBoundary extends React.Component<{children: any}, {hasError: boolean, error: any}> {
   constructor(props: any) {
     super(props);
@@ -38,6 +42,16 @@ class ErrorBoundary extends React.Component<{children: any}, {hasError: boolean,
 }
 
 function App() {
+  const [pages, setPages] = useState(() => getPagesList());
+
+  useEffect(() => {
+    const sync = () => setPages(getPagesList());
+    window.addEventListener('storage', sync);
+    return () => window.removeEventListener('storage', sync);
+  }, []);
+
+  const customPages = pages.filter(p => !p.isSystem);
+
   return (
     <ErrorBoundary>
       <ThemeProvider>
@@ -56,6 +70,17 @@ function App() {
                 <Route path="gallery" element={<Gallery />} />
                 <Route path="reviews" element={<Reviews />} />
                 <Route path="pay" element={<Pay />} />
+                
+                {customPages.map(page => {
+                  const cleanPath = page.path.startsWith('/') ? page.path.substring(1) : page.path;
+                  return (
+                    <Route 
+                      key={page.id} 
+                      path={cleanPath} 
+                      element={<DynamicPage pageId={page.id} />} 
+                    />
+                  );
+                })}
               </Route>
               <Route path="/admin" element={<Admin />} />
             </Routes>
