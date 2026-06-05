@@ -703,6 +703,22 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
                 console.error("Remove nested block error", err);
               }
             }
+          } else if (id?.startsWith('cat_')) {
+            const prodId = id.replace('cat_', '');
+            const newOrder = (currentLayout.order_catalog || []).filter((x: any) => String(x) !== String(prodId));
+            updateLayout({ ...currentLayout, order_catalog: newOrder });
+            if (editingKey === id) {
+              setEditingKey(null);
+              setIsSettingsOpen(false);
+            }
+          } else if (id?.startsWith('srv_')) {
+            const srvId = id.replace('srv_', '');
+            const newOrder = (currentLayout.order_services || []).filter((x: any) => String(x) !== String(srvId));
+            updateLayout({ ...currentLayout, order_services: newOrder });
+            if (editingKey === id) {
+              setEditingKey(null);
+              setIsSettingsOpen(false);
+            }
           } else {
             removeSection(id);
           }
@@ -822,11 +838,24 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
            } else {
              const k = arrKey || 'order';
              const newOrder = [...(currentLayout[k] || [])];
-             const draggedIndex = newOrder.indexOf(draggedId);
-             const targetIndex = newOrder.indexOf(targetId);
+             
+             let cleanDraggedId = draggedId;
+             let cleanTargetId = targetId;
+             
+             if (k === 'order_catalog') {
+               cleanDraggedId = cleanDraggedId.replace('cat_', '');
+               cleanTargetId = cleanTargetId.replace('cat_', '');
+             } else if (k === 'order_services') {
+               cleanDraggedId = cleanDraggedId.replace('srv_', '');
+               cleanTargetId = cleanTargetId.replace('srv_', '');
+             }
+             
+             const draggedIndex = newOrder.findIndex(x => String(x) === String(cleanDraggedId));
+             const targetIndex = newOrder.findIndex(x => String(x) === String(cleanTargetId));
+             
              if (draggedIndex !== -1 && targetIndex !== -1) {
-               newOrder.splice(draggedIndex, 1);
-               newOrder.splice(targetIndex, 0, draggedId);
+               const [draggedItem] = newOrder.splice(draggedIndex, 1);
+               newOrder.splice(targetIndex, 0, draggedItem);
                updateLayout({ ...currentLayout, [k]: newOrder });
              }
            }
