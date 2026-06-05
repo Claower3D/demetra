@@ -91,6 +91,17 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
     e.stopPropagation();
     e.dataTransfer.setData("text/plain", id);
     e.dataTransfer.effectAllowed = "move";
+    
+    // Set a clean drag image using the inner content element (without green outlines and edit buttons)
+    const innerContent = containerRef.current?.querySelector('.builder-content-no-drag');
+    if (innerContent && e.dataTransfer.setDragImage) {
+      // Find the mouse offset relative to the innerContent bounding box to center it under cursor
+      const rect = innerContent.getBoundingClientRect();
+      const offsetX = e.clientX - rect.left;
+      const offsetY = e.clientY - rect.top;
+      e.dataTransfer.setDragImage(innerContent, offsetX > 0 ? offsetX : 20, offsetY > 0 ? offsetY : 20);
+    }
+    
     if (containerRef.current) {
       containerRef.current.style.opacity = '0.5';
     }
