@@ -138,13 +138,12 @@ export default function Admin() {
         if (saved) {
           const parsed = JSON.parse(saved);
           layouts[k] = {
-            order: parsed.order || defaultLayout.order,
-            order_gallery: parsed.order_gallery || defaultLayout.order_gallery,
-            hidden: parsed.hidden || defaultLayout.hidden,
-            styles: parsed.styles || defaultLayout.styles,
-            images: parsed.images || defaultLayout.images,
-            links: parsed.links || defaultLayout.links || {},
-            items: parsed.items || defaultLayout.items || {}
+            ...defaultLayout,
+            ...parsed,
+            styles: { ...(defaultLayout.styles || {}), ...(parsed.styles || {}) },
+            images: { ...(defaultLayout.images || {}), ...(parsed.images || {}) },
+            links: { ...(defaultLayout.links || {}), ...(parsed.links || {}) },
+            items: { ...(defaultLayout.items || {}), ...(parsed.items || {}) }
           };
         } else {
           layouts[k] = defaultLayout;
@@ -847,7 +846,7 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
                if (k === 'order_catalog') {
                  newOrder = [1, 2, 3, 4, 5];
                } else if (k === 'order_services') {
-                 newOrder = [1, 2, 3, 4, 5, 6, 7];
+                 newOrder = ['service-1', 'service-2', 'service-3', 'service-4'];
                } else if (k === 'order_gallery') {
                  newOrder = ['gallery_1', 'gallery_2', 'gallery_3', 'gallery_4', 'gallery_5', 'gallery_6'];
                }
