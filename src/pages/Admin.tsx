@@ -238,6 +238,7 @@ export default function Admin() {
 // TILDA STYLE EDITOR
 function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTranslation, currentLang, handleSave }: any) {
   const [editingKey, setEditingKey] = useState<string | null>(null);
+  const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [previewRoute, setPreviewRoute] = useState<string>('/');
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -273,7 +274,10 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
     const handleMessage = (e: MessageEvent) => {
       if (e.data?.type === 'DEMETRA_BUILDER') {
         const { action, id, index, key, value, arrayKey } = e.data;
-        if (action === 'EDIT_BLOCK') setEditingKey(id);
+        if (action === 'EDIT_BLOCK') {
+          setEditingKey(id);
+          setIsSettingsOpen(true);
+        }
         if (action === 'MOVE_UP') moveSection(arrayKey, index, 'up');
         if (action === 'MOVE_DOWN') moveSection(arrayKey, index, 'down');
         if (action === 'REMOVE_BLOCK') removeSection(id);
@@ -323,7 +327,7 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
     <div className="tilda-editor" style={{ position: 'relative', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Top Floating Toolbar */}
       <div style={{ background: '#1a1a1a', borderBottom: '1px solid #333', padding: '1.25rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 5000, flexShrink: 0 }}>
-         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
             <div style={{ background: '#00ff41', color: '#000', padding: '0.4rem 0.8rem', borderRadius: '4px', fontWeight: '900', fontSize: '0.7rem', letterSpacing: '0.05em' }}>VISUAL MODE</div>
             <select 
                value={previewRoute}
@@ -338,6 +342,47 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
                <option value="/partner">Партнерам (Partner)</option>
             </select>
             <div style={{ color: '#888', fontSize: '0.85rem' }}>Switch pages to edit different areas.</div>
+
+            {editingKey && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <button
+                  onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+                  style={{
+                    background: isSettingsOpen ? 'rgba(0, 255, 65, 0.1)' : '#222',
+                    color: isSettingsOpen ? '#00ff41' : '#aaa',
+                    border: isSettingsOpen ? '1px solid #00ff41' : '1px solid #444',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '8px',
+                    fontSize: '0.8rem',
+                    fontWeight: '800',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <Settings2 size={14} />
+                  {isSettingsOpen ? 'Скрыть настройки' : `Настройки (${editingKey})`}
+                </button>
+                <button
+                  onClick={() => { setEditingKey(null); setIsSettingsOpen(false); }}
+                  style={{
+                    background: 'rgba(255, 75, 75, 0.1)',
+                    color: '#ff4b4b',
+                    border: '1px solid rgba(255, 75, 75, 0.2)',
+                    padding: '0.5rem 0.8rem',
+                    borderRadius: '8px',
+                    fontSize: '0.8rem',
+                    fontWeight: '800',
+                    cursor: 'pointer',
+                  }}
+                  title="Сбросить выбор текущего блока"
+                >
+                  Сбросить
+                </button>
+              </div>
+            )}
          </div>
          <button onClick={handleSave} style={{ background: '#00ff41', color: '#000', border: 'none', padding: '0.75rem 2rem', borderRadius: '8px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '0 0 20px rgba(0, 255, 65, 0.2)' }}>
             <Save size={18} /> PUBLISH CHANGES
@@ -360,30 +405,75 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
          />
       </div>
 
+      {/* Floating Settings Toggle Handle on the right edge */}
+      {editingKey && !isSettingsOpen && (
+        <button
+          onClick={() => setIsSettingsOpen(true)}
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: '50%',
+            transform: 'translateY(-50%)',
+            background: '#1a1a1a',
+            border: '1px solid #333',
+            borderRight: 'none',
+            color: '#00ff41',
+            padding: '1.25rem 0.6rem 1.25rem 0.9rem',
+            borderRadius: '20px 0 0 20px',
+            cursor: 'pointer',
+            zIndex: 5500,
+            boxShadow: '-10px 0 30px rgba(0,0,0,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: '0.2s',
+          }}
+          title={`Показать настройки (${editingKey})`}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = '#222';
+            e.currentTarget.style.boxShadow = '-10px 0 30px rgba(0, 255, 65, 0.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = '#1a1a1a';
+            e.currentTarget.style.boxShadow = '-10px 0 30px rgba(0,0,0,0.5)';
+          }}
+        >
+          <Settings2 size={22} style={{ animation: 'spin 10s linear infinite' }} />
+        </button>
+      )}
+
       {/* Editing Sidebar (Slide-over) */}
       <AnimatePresence>
-        {editingKey && (
+        {editingKey && isSettingsOpen && (
           <motion.div 
             initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
             style={{ position: 'fixed', top: 0, right: 0, width: '480px', height: '100vh', background: '#0a0a0a', borderLeft: '1px solid #333', zIndex: 6000, padding: '2.5rem', boxShadow: '-20px 0 50px rgba(0,0,0,0.5)', overflowY: 'auto' }}
           >
              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
                 <h3 style={{ fontSize: '0.7rem', color: '#00ff41', fontWeight: '900', letterSpacing: '0.2em' }}>BLOCK: {editingKey.toUpperCase()}</h3>
-                <button onClick={() => setEditingKey(null)} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer' }}><X size={24} /></button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                   <button 
+                     onClick={() => { setEditingKey(null); setIsSettingsOpen(false); }} 
+                     style={{ background: 'rgba(255, 75, 75, 0.1)', border: '1px solid rgba(255, 75, 75, 0.2)', color: '#ff4b4b', padding: '0.4rem 0.8rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '800', cursor: 'pointer' }}
+                     title="Сбросить выбор текущего блока"
+                   >
+                     Сбросить выбор
+                   </button>
+                   <button onClick={() => setIsSettingsOpen(false)} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', display: 'flex', alignItems: 'center' }}><X size={24} /></button>
+                </div>
              </div>
              
              {editingKey.startsWith('new_block_')
-               ? <CustomBlockEditor blockId={editingKey} />
-               : <StyleEditor editingKey={editingKey} currentLayout={currentLayout} updateLayout={updateLayout} />
+                ? <CustomBlockEditor blockId={editingKey} />
+                : <StyleEditor editingKey={editingKey} currentLayout={currentLayout} updateLayout={updateLayout} />
              }
 
-             <button onClick={() => setEditingKey(null)} style={{ width: '100%', marginTop: '2rem', padding: '1.25rem', background: '#00ff41', color: '#000', border: 'none', borderRadius: '12px', fontWeight: '900', cursor: 'pointer' }}>
+             <button onClick={() => setIsSettingsOpen(false)} style={{ width: '100%', marginTop: '2rem', padding: '1.25rem', background: '#00ff41', color: '#000', border: 'none', borderRadius: '12px', fontWeight: '900', cursor: 'pointer' }}>
                 APPLY SETTINGS
              </button>
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
   );
 }
 

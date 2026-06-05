@@ -898,3 +898,12 @@ body.light-theme select:focus {
     grid-auto-rows: 300px !important;
   }
 }
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
