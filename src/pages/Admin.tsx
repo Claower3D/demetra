@@ -58,6 +58,19 @@ import { useTheme } from '../ThemeContext';
 import { translations as defaultTranslations, productsData as defaultProducts, categories as defaultCategories } from '../i18n';
 import { setCustomBlock, getCustomBlocks } from '../components/CustomBlock';
 
+const findParentBlockOfNested = (nestedId: string) => {
+  try {
+    const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+    for (const parentId in customBlocks) {
+      const parent = customBlocks[parentId];
+      if (parent.childrenBlocks && parent.childrenBlocks.some((c: any) => c.id === nestedId)) {
+        return parentId;
+      }
+    }
+  } catch {}
+  return null;
+};
+
 // Full site preview components (simplified for admin context)
 import HomeContent from './Home';
 
@@ -260,6 +273,7 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
   const [hoveredBlockId, setHoveredBlockId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalActiveTab, setModalActiveTab] = useState<'content' | 'media' | 'scaling'>('content');
+  const [addingNestedForBlockId, setAddingNestedForBlockId] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const getBlockHelp = (id: string) => {
@@ -468,7 +482,8 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
       card: { type: 'card', label: 'Заголовок карточки', body: 'Описание карточки...', src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=600' },
       two_col: { type: 'two_col', col1: 'Левая колонка с описанием...', col2: 'Правая колонка с характеристиками...' },
       image_text: { type: 'image_text', heading: 'Индустриальные решения', body: 'Описание преимуществ нашей компании...', src: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=600' },
-      cta_banner: { type: 'cta_banner', heading: 'Готовы начать проект?', subheading: 'Свяжитесь с нами', body: 'Наши специалисты ответят на все вопросы.', label: 'Оставить заявку', href: '/contacts' }
+      cta_banner: { type: 'cta_banner', heading: 'Готовы начать проект?', subheading: 'Свяжитесь с нами', body: 'Наши специалисты ответят на все вопросы.', label: 'Оставить заявку', href: '/contacts' },
+      container: { type: 'container', childrenBlocks: [] }
     };
     
     const allCustomBlocks = { ...getCustomBlocks(), [newId]: defaultDataMap[type] || { type } };
@@ -508,6 +523,46 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
     setIsSettingsOpen(true);
   };
 
+  const handleSelectNestedType = (type: string) => {
+    if (!addingNestedForBlockId) return;
+    try {
+      const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+      const parentBlock = customBlocks[addingNestedForBlockId] || { type: 'container' };
+      
+      const newNestedId = `nested_${Date.now()}`;
+      const newNestedBlock = {
+        id: newNestedId,
+        type: type,
+        heading: 'Новый элемент',
+        body: 'Описание элемента',
+        label: 'Кнопка',
+        src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80',
+        href: '#'
+      };
+      
+      parentBlock.childrenBlocks = [...(parentBlock.childrenBlocks || []), newNestedBlock];
+      customBlocks[addingNestedForBlockId] = parentBlock;
+      
+      localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
+      window.dispatchEvent(new Event('storage'));
+      
+      setAddingNestedForBlockId(null);
+      
+      if (iframeRef.current) {
+        iframeRef.current.contentWindow?.postMessage({
+          type: 'DEMETRA_UPDATE_LAYOUT',
+          layout: currentLayout
+        }, '*');
+      }
+      
+      setEditingKey(newNestedId);
+      setIsModalOpen(true);
+      setModalActiveTab('content');
+    } catch (err) {
+      console.error("Add nested error", err);
+    }
+  };
+
   useEffect(() => {
     const handleMessage = (e: MessageEvent) => {
       if (e.data?.type === 'DEMETRA_BUILDER') {
@@ -520,6 +575,27 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
           setEditingKey(id);
           setIsModalOpen(true);
           setModalActiveTab(e.data.tab || 'content');
+        }
+        if (action === 'ADD_NESTED') {
+          setAddingNestedForBlockId(id);
+        }
+        if (action === 'DELETE_NESTED') {
+          try {
+            const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+            const parentBlock = customBlocks[id] || {};
+            parentBlock.childrenBlocks = (parentBlock.childrenBlocks || []).filter((c: any) => c.id !== e.data.nestedId);
+            customBlocks[id] = parentBlock;
+            localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
+            window.dispatchEvent(new Event('storage'));
+            if (iframeRef.current) {
+              iframeRef.current.contentWindow?.postMessage({
+                type: 'DEMETRA_UPDATE_LAYOUT',
+                layout: currentLayout
+              }, '*');
+            }
+          } catch (err) {
+            console.error("Delete nested error", err);
+          }
         }
         if (action === 'MOVE_UP') moveSection(arrayKey, index, 'up');
         if (action === 'MOVE_DOWN') moveSection(arrayKey, index, 'down');
@@ -865,7 +941,8 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
                             { id: 'two_col', title: '2 Колонки', icon: '⫿', desc: '2 Columns' },
                             { id: 'image_text', title: 'Фото+Текст', icon: '⊡', desc: 'Image & Text' },
                             { id: 'cta_banner', title: 'Баннер', icon: '★', desc: 'Promo Banner' },
-                            { id: 'divider', title: 'Разделитель', icon: '—', desc: 'Divider Line' }
+                            { id: 'divider', title: 'Разделитель', icon: '—', desc: 'Divider Line' },
+                             { id: 'container', title: 'Контейнер', icon: '⧇', desc: 'Nested Blocks' }
                           ].filter(x => x.title.toLowerCase().includes(libSearch.toLowerCase()) || x.desc.toLowerCase().includes(libSearch.toLowerCase())).map(el => (
                             <button
                               key={el.id}
@@ -1267,6 +1344,119 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Choice of Nested Block Type Modal */}
+      <AnimatePresence>
+        {addingNestedForBlockId && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100vw',
+              height: '100vh',
+              background: 'rgba(0, 0, 0, 0.85)',
+              zIndex: 99999,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backdropFilter: 'blur(8px)'
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              style={{
+                background: '#0d0d0e',
+                border: '1px solid #1a1b1e',
+                borderRadius: '24px',
+                padding: '2.5rem',
+                width: '450px',
+                boxShadow: '0 30px 70px rgba(0, 0, 0, 0.8)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1.5rem'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: '900', letterSpacing: '0.05em' }}>ДОБАВИТЬ ЭЛЕМЕНТ</h3>
+                <button
+                  onClick={() => setAddingNestedForBlockId(null)}
+                  style={{ background: 'none', border: 'none', color: '#6c6f75', cursor: 'pointer' }}
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '400px', overflowY: 'auto', paddingRight: '0.25rem' }}>
+                {[
+                  { type: 'heading', name: '📝 Заголовок', desc: 'Заголовок с подзаголовком' },
+                  { type: 'text', name: '📄 Текст / Описание', desc: 'Абзац с форматированным текстом' },
+                  { type: 'button', name: '🎯 Кнопка действия', desc: 'Интерактивная кнопка со ссылкой' },
+                  { type: 'card', name: '🎴 Карточка с фото', desc: 'Сетка карточек с описанием' },
+                  { type: 'image_text', name: '🖼️ Медиа-блок', desc: 'Фото/Видео слева и текст справа' },
+                  { type: 'divider', name: '➖ Разделитель', desc: 'Элегантная градиентная линия' }
+                ].map(opt => (
+                  <button
+                    key={opt.type}
+                    onClick={() => handleSelectNestedType(opt.type)}
+                    style={{
+                      background: '#141416',
+                      border: '1px solid #1a1b1e',
+                      color: '#fff',
+                      padding: '1rem 1.25rem',
+                      borderRadius: '12px',
+                      fontSize: '0.9rem',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      transition: 'all 0.2s',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.25rem'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#00ff41';
+                      e.currentTarget.style.background = 'rgba(0, 255, 65, 0.04)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = '#1a1b1e';
+                      e.currentTarget.style.background = '#141416';
+                    }}
+                  >
+                    <span style={{ color: '#fff' }}>{opt.name}</span>
+                    <span style={{ fontSize: '0.7rem', color: '#6c6f75', fontWeight: 'normal' }}>{opt.desc}</span>
+                  </button>
+                ))}
+              </div>
+              
+              <button
+                onClick={() => setAddingNestedForBlockId(null)}
+                style={{
+                  width: '100%',
+                  background: '#1a1b1e',
+                  border: 'none',
+                  color: '#6c6f75',
+                  padding: '1rem',
+                  borderRadius: '12px',
+                  cursor: 'pointer',
+                  fontWeight: '700',
+                  fontSize: '0.9rem',
+                  transition: '0.2s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#25262b'}
+                onMouseLeave={(e) => e.currentTarget.style.background = '#1a1b1e'}
+              >
+                Отмена
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -1288,7 +1478,9 @@ function ModalBodyContent({
   updateTranslation: any; 
 }) {
   const [activeLang, setActiveLang] = useState<'ru' | 'kk' | 'en'>('ru');
-  const isCustomBlock = editingKey.startsWith('new_block_');
+  const isNestedBlock = editingKey.startsWith('nested_');
+  const parentKey = isNestedBlock ? findParentBlockOfNested(editingKey) : null;
+  const isCustomBlock = editingKey.startsWith('new_block_') || isNestedBlock;
   const isGalleryItem = editingKey.startsWith('gallery_');
   
   const inputStyle: React.CSSProperties = {
@@ -1504,7 +1696,11 @@ function ModalBodyContent({
     if (isCustomBlock) {
       try {
         const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
-        const data = customBlocks[editingKey] || {};
+        const targetKey = isNestedBlock ? parentKey! : editingKey;
+        const parentData = customBlocks[targetKey] || {};
+        const data = isNestedBlock
+          ? (parentData.childrenBlocks || []).find((c: any) => c.id === editingKey) || {}
+          : parentData;
         currentImg = data.src || '';
         currentVideo = data.videoSrc || '';
         isVideoType = data.mediaType === 'video';
@@ -1524,9 +1720,20 @@ function ModalBodyContent({
       if (isCustomBlock) {
         try {
           const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
-          const data = customBlocks[editingKey] || {};
-          const next = { ...data, src: imgUrl, videoSrc: vidUrl, mediaType: isVid ? 'video' : 'image' };
-          customBlocks[editingKey] = next;
+          const targetKey = isNestedBlock ? parentKey! : editingKey;
+          const parentData = customBlocks[targetKey] || {};
+          
+          if (isNestedBlock) {
+            parentData.childrenBlocks = (parentData.childrenBlocks || []).map((c: any) => 
+              c.id === editingKey ? { ...c, src: imgUrl, videoSrc: vidUrl, mediaType: isVid ? 'video' : 'image' } : c
+            );
+          } else {
+            parentData.src = imgUrl;
+            parentData.videoSrc = vidUrl;
+            parentData.mediaType = isVid ? 'video' : 'image';
+          }
+          
+          customBlocks[targetKey] = parentData;
           localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
           window.dispatchEvent(new Event('storage'));
         } catch {}
@@ -1666,17 +1873,28 @@ function ModalBodyContent({
   // 3. CONTENT & TRANSLATIONS TAB
   if (modalActiveTab === 'content') {
     if (isCustomBlock) {
+      const targetKey = isNestedBlock ? parentKey! : editingKey;
       let data: any = {};
       try {
-        data = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}')[editingKey] || { type: 'heading' };
+        const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+        const parentData = customBlocks[targetKey] || { type: 'heading' };
+        data = isNestedBlock
+          ? (parentData.childrenBlocks || []).find((c: any) => c.id === editingKey) || { type: 'heading' }
+          : parentData;
       } catch {}
 
       const updateCustomField = (fieldKey: string, val: string) => {
         try {
           const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
-          const currentData = customBlocks[editingKey] || {};
-          const next = { ...currentData, [fieldKey]: val };
-          customBlocks[editingKey] = next;
+          const parentData = customBlocks[targetKey] || {};
+          if (isNestedBlock) {
+            parentData.childrenBlocks = (parentData.childrenBlocks || []).map((c: any) => 
+              c.id === editingKey ? { ...c, [fieldKey]: val } : c
+            );
+          } else {
+            parentData[fieldKey] = val;
+          }
+          customBlocks[targetKey] = parentData;
           localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
           window.dispatchEvent(new Event('storage'));
         } catch {}
@@ -1685,9 +1903,15 @@ function ModalBodyContent({
       const selectType = (t: string) => {
         try {
           const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
-          const currentData = customBlocks[editingKey] || {};
-          const next = { ...currentData, type: t };
-          customBlocks[editingKey] = next;
+          const parentData = customBlocks[targetKey] || {};
+          if (isNestedBlock) {
+            parentData.childrenBlocks = (parentData.childrenBlocks || []).map((c: any) => 
+              c.id === editingKey ? { ...c, type: t } : c
+            );
+          } else {
+            parentData.type = t;
+          }
+          customBlocks[targetKey] = parentData;
           localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
           window.dispatchEvent(new Event('storage'));
         } catch {}

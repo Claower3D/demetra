@@ -1,9 +1,11 @@
 import React from 'react';
 import { useLang } from '../LangContext';
+import { BuilderWrapper } from './BuilderWrapper';
 
 // Shape of a custom block's data
 export interface CustomBlockData {
-  type: 'heading' | 'text' | 'divider' | 'button' | 'card' | 'two_col' | 'image_text' | 'cta_banner';
+  id?: string;
+  type: 'heading' | 'text' | 'divider' | 'button' | 'card' | 'two_col' | 'image_text' | 'cta_banner' | 'container';
   heading?: string;
   subheading?: string;
   body?: string;
@@ -17,6 +19,7 @@ export interface CustomBlockData {
   bg?: string;        // background override
   mediaType?: 'image' | 'video';
   videoSrc?: string;
+  childrenBlocks?: CustomBlockData[];
 }
 
 // Get all custom blocks from localStorage
@@ -250,6 +253,82 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
             }}>
               {label || 'Узнать больше'} →
             </a>
+          )}
+        </div>
+      );
+
+    case 'container':
+      const children = data.childrenBlocks || [];
+      const isBuilder = window.self !== window.top;
+      return (
+        <div style={{
+          ...base,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '2rem',
+          minHeight: isBuilder ? '120px' : 'auto',
+          border: isBuilder ? '1.5px dashed rgba(0, 255, 65, 0.25)' : 'none',
+          padding: isBuilder ? '2.5rem' : '1rem 0',
+          borderRadius: 'var(--radius)',
+          background: isBuilder ? 'rgba(255,255,255,0.01)' : bg,
+          position: 'relative'
+        }}>
+          {isBuilder && children.length === 0 && (
+            <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', textAlign: 'center', padding: '2rem 1rem' }}>
+              ✦ Пустой контейнер. Добавьте элементы внутри блока.
+            </div>
+          )}
+          {children.map((child, index) => (
+            <div key={child.id} style={{ position: 'relative' }}>
+              {isBuilder ? (
+                <div style={{ position: 'relative', border: '1px dashed rgba(255,255,255,0.1)', padding: '1.5rem', borderRadius: '12px', marginBottom: '0.5rem' }}>
+                  <div style={{ position: 'absolute', top: '5px', right: '5px', zIndex: 10 }}>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.parent.postMessage({ type: 'DEMETRA_BUILDER', action: 'DELETE_NESTED', id: id, nestedId: child.id || '' }, '*');
+                      }}
+                      style={{ background: '#ff4b4b', border: 'none', color: '#fff', fontSize: '0.65rem', padding: '0.25rem 0.5rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
+                    >
+                      Удалить элемент
+                    </button>
+                  </div>
+                  <BuilderWrapper id={child.id || ''} index={index} isFirst={index === 0} isLast={index === children.length - 1} isBuilder={isBuilder}>
+                    <CustomBlock id={child.id || ''} data={child} />
+                  </BuilderWrapper>
+                </div>
+              ) : (
+                <CustomBlock id={child.id || ''} data={child} />
+              )}
+            </div>
+          ))}
+          {isBuilder && (
+            <button
+              onClick={() => window.parent.postMessage({ type: 'DEMETRA_BUILDER', action: 'ADD_NESTED', id: id }, '*')}
+              style={{
+                alignSelf: 'center',
+                background: 'rgba(0, 255, 65, 0.1)',
+                border: '1px dashed var(--primary)',
+                color: 'var(--primary)',
+                padding: '0.75rem 2rem',
+                borderRadius: '8px',
+                fontSize: '0.8rem',
+                cursor: 'pointer',
+                fontWeight: '900',
+                transition: '0.2s',
+                marginTop: '1rem'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(0, 255, 65, 0.2)';
+                e.currentTarget.style.boxShadow = '0 0 15px rgba(0, 255, 65, 0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(0, 255, 65, 0.1)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              + Добавить элемент в блок
+            </button>
           )}
         </div>
       );
