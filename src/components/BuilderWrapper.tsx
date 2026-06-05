@@ -429,22 +429,42 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
       isDraggingRef.current = false;
 
       // Find the drop target: walk up from the element under cursor.
-      // PRIORITY: prefer a wrapper whose data-array-key matches the dragged element's arrayKey
-      // (avoids landing on the parent section wrapper instead of a sibling card).
+      // PRIORITY 1: element with the same data-array-key directly under cursor
+      // PRIORITY 2: geometrically nearest element with the same arrayKey on page
+      // PRIORITY 3: first wrapper found (fallback)
       let el = document.elementFromPoint(ue.clientX, ue.clientY);
-      let matchingWrapper: HTMLElement | null = null;   // same arrayKey → ideal
-      let fallbackWrapper: HTMLElement | null = null;   // first wrapper found → fallback
+      let matchingWrapper: HTMLElement | null = null;
+      let fallbackWrapper: HTMLElement | null = null;
 
       while (el && el !== document.body) {
         if ((el as HTMLElement).hasAttribute?.('data-builder-id')) {
           const elArrKey = (el as HTMLElement).getAttribute('data-array-key');
           if (!fallbackWrapper) fallbackWrapper = el as HTMLElement;
-          if (elArrKey === arrayKey && el !== containerRef.current) {
+          if (elArrKey === arrayKey && (el as HTMLElement).getAttribute('data-builder-id') !== id) {
             matchingWrapper = el as HTMLElement;
             break;
           }
         }
         el = (el as HTMLElement).parentElement;
+      }
+
+      // If no direct hit, find the nearest sibling in the same array by geometry
+      if (!matchingWrapper) {
+        const siblings = Array.from(
+          document.querySelectorAll(`[data-array-key="${arrayKey}"][data-builder-id]`)
+        ).filter(s => s.getAttribute('data-builder-id') !== id) as HTMLElement[];
+
+        let minDist = Infinity;
+        for (const sib of siblings) {
+          const r = sib.getBoundingClientRect();
+          const cx = r.left + r.width / 2;
+          const cy = r.top + r.height / 2;
+          const dist = Math.hypot(ue.clientX - cx, ue.clientY - cy);
+          if (dist < minDist) {
+            minDist = dist;
+            matchingWrapper = sib;
+          }
+        }
       }
 
       const dropWrapper = matchingWrapper || fallbackWrapper;
