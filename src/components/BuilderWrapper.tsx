@@ -175,13 +175,31 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
     window.addEventListener('mouseup', onMouseUp);
   };
 
+  const handleMouseOver = (e: React.MouseEvent) => {
+    if (!isBuilder) return;
+    e.stopPropagation();
+    const targetWrapper = (e.target as HTMLElement).closest('.builder-wrapper');
+    if (targetWrapper === containerRef.current) {
+      setIsHovered(true);
+    } else {
+      setIsHovered(false);
+    }
+  };
+
+  const handleMouseOut = (e: React.MouseEvent) => {
+    if (!isBuilder) return;
+    e.stopPropagation();
+    setIsHovered(false);
+  };
+
   const mergedStyle = { ...(localStyle || {}), ...(style || {}) };
 
   return (
     <div 
       ref={containerRef}
-      onMouseEnter={isBuilder ? () => setIsHovered(true) : undefined} 
-      onMouseLeave={isBuilder ? () => setIsHovered(false) : undefined}
+      className="builder-wrapper"
+      onMouseOver={isBuilder ? handleMouseOver : undefined} 
+      onMouseOut={isBuilder ? handleMouseOut : undefined}
       onContextMenu={isBuilder ? handleContextMenu : undefined}
       draggable={isBuilder}
       onDragStart={isBuilder ? handleDragStart : undefined}
@@ -221,10 +239,73 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
        <AnimatePresence>
          {isBuilder && isHovered && !dragSize && !contextMenu && (
            <motion.div 
-             initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
-             style={{ position: 'absolute', top: '0.5rem', left: '0.5rem', background: '#00ff41', color: '#000', padding: '0.4rem 1rem', borderRadius: '4px', fontSize: '0.7rem', fontWeight: '900', zIndex: 100, textTransform: 'uppercase' }}
+             initial={{ opacity: 0, y: -10 }} 
+             animate={{ opacity: 1, y: 0 }}
+             exit={{ opacity: 0, y: -10 }}
+             style={{ 
+               position: 'absolute', 
+               top: '4px', 
+               left: '4px', 
+               display: 'flex', 
+               alignItems: 'center', 
+               gap: '6px', 
+               zIndex: 99999, 
+               background: '#00ff41', 
+               padding: '4px 8px', 
+               borderRadius: '6px',
+               boxShadow: '0 2px 10px rgba(0, 0, 0, 0.4)'
+             }}
            >
-              BLOCK: {id}
+             <span style={{ color: '#000', fontSize: '0.65rem', fontWeight: '900', textTransform: 'uppercase', marginRight: '6px' }}>
+               {id.startsWith('nested_') ? 'Элемент' : id}
+             </span>
+             
+             {/* Edit button */}
+             <button 
+               onClick={(e) => {
+                 e.stopPropagation();
+                 postMsg('OPEN_MODAL', { tab: 'content' });
+               }}
+               title="Редактировать"
+               style={{ 
+                 background: 'rgba(0,0,0,0.1)', 
+                 border: 'none', 
+                 color: '#000', 
+                 cursor: 'pointer', 
+                 display: 'flex', 
+                 alignItems: 'center', 
+                 padding: '2px 4px', 
+                 borderRadius: '2px' 
+               }}
+             >
+               <Settings size={10} />
+             </button>
+
+             {/* Delete button */}
+             <button 
+               onClick={(e) => {
+                 e.stopPropagation();
+                 if (id.startsWith('nested_')) {
+                   const parentId = arrayKey.replace('nested:', '');
+                   window.parent.postMessage({ type: 'DEMETRA_BUILDER', action: 'DELETE_NESTED', id: parentId, nestedId: id }, '*');
+                 } else {
+                   postMsg('REMOVE_BLOCK');
+                 }
+               }}
+               title="Удалить"
+               style={{ 
+                 background: 'rgba(255,0,0,0.1)', 
+                 border: 'none', 
+                 color: '#d00', 
+                 cursor: 'pointer', 
+                 display: 'flex', 
+                 alignItems: 'center', 
+                 padding: '2px 4px', 
+                 borderRadius: '2px' 
+               }}
+             >
+               <Trash size={10} />
+             </button>
            </motion.div>
          )}
        </AnimatePresence>
@@ -232,7 +313,10 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
        <div className={isBuilder ? "builder-content-no-drag" : ""}
          onClickCapture={isBuilder ? (e) => {
            if ((e.target as HTMLElement).isContentEditable) return;
-           e.preventDefault();
+           const target = e.target as HTMLElement;
+           if (target.closest('a')) {
+             e.preventDefault();
+           }
          } : undefined}
          style={{ opacity: isBuilder && isHovered && !dragSize && !contextMenu ? 0.7 : 1, transition: '0.2s', width: '100%', height: '100%' }}
        >

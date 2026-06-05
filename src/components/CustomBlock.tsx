@@ -405,29 +405,18 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
                 }}
               >
                 {isBuilder ? (
-                  <div style={{ position: 'relative', border: '1px dashed rgba(255,255,255,0.1)', padding: '1.5rem', borderRadius: '12px', marginBottom: '0.5rem', height: '100%', boxSizing: 'border-box' }}>
-                    <div style={{ position: 'absolute', top: '5px', right: '5px', zIndex: 10 }}>
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          window.parent.postMessage({ type: 'DEMETRA_BUILDER', action: 'DELETE_NESTED', id: id, nestedId: child.id || '' }, '*');
-                        }}
-                        style={{ background: '#ff4b4b', border: 'none', color: '#fff', fontSize: '0.65rem', padding: '0.25rem 0.5rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
-                      >
-                        Удалить элемент
-                      </button>
-                    </div>
-                    <BuilderWrapper 
-                      id={child.id || ''} 
-                      index={index} 
-                      isFirst={index === 0} 
-                      isLast={index === children.length - 1} 
-                      isBuilder={isBuilder}
-                      arrayKey={"nested:" + id}
-                    >
+                  <BuilderWrapper 
+                    id={child.id || ''} 
+                    index={index} 
+                    isFirst={index === 0} 
+                    isLast={index === children.length - 1} 
+                    isBuilder={isBuilder}
+                    arrayKey={"nested:" + id}
+                  >
+                    <div style={{ height: '100%', boxSizing: 'border-box' }}>
                       <CustomBlock id={child.id || ''} data={child} />
-                    </BuilderWrapper>
-                  </div>
+                    </div>
+                  </BuilderWrapper>
                 ) : (
                   <CustomBlock id={child.id || ''} data={child} />
                 )}
