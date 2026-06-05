@@ -428,21 +428,29 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
 
       isDraggingRef.current = false;
 
-      // Find the drop target: walk up from the element under cursor
-      // (ghost is already removed, so elementFromPoint returns page content)
+      // Find the drop target: walk up from the element under cursor.
+      // PRIORITY: prefer a wrapper whose data-array-key matches the dragged element's arrayKey
+      // (avoids landing on the parent section wrapper instead of a sibling card).
       let el = document.elementFromPoint(ue.clientX, ue.clientY);
-      let dropWrapper: HTMLElement | null = null;
+      let matchingWrapper: HTMLElement | null = null;   // same arrayKey → ideal
+      let fallbackWrapper: HTMLElement | null = null;   // first wrapper found → fallback
+
       while (el && el !== document.body) {
         if ((el as HTMLElement).hasAttribute?.('data-builder-id')) {
-          dropWrapper = el as HTMLElement;
-          break;
+          const elArrKey = (el as HTMLElement).getAttribute('data-array-key');
+          if (!fallbackWrapper) fallbackWrapper = el as HTMLElement;
+          if (elArrKey === arrayKey && el !== containerRef.current) {
+            matchingWrapper = el as HTMLElement;
+            break;
+          }
         }
         el = (el as HTMLElement).parentElement;
       }
 
+      const dropWrapper = matchingWrapper || fallbackWrapper;
+
       if (dropWrapper) {
         const targetId = dropWrapper.getAttribute('data-builder-id');
-        // Use the TARGET's arrayKey so Admin.tsx looks up the correct list
         const targetArrKey = dropWrapper.getAttribute('data-array-key') || arrayKey;
         if (targetId && targetId !== id) {
           window.parent.postMessage({
@@ -450,8 +458,6 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
             action: 'MOVE_BLOCK_TO',
             id,
             index,
-            // Admin reads e.data.arrayKey – send the shared array key
-            // Both dragged and target must be in the same array
             arrayKey: targetArrKey,
             draggedId: id,
             targetId,
