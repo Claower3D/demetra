@@ -180,7 +180,7 @@ export default function Admin() {
         )}
       </AnimatePresence>
 
-      <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ position: 'fixed', top: '1.25rem', left: '1.25rem', zIndex: 3000, background: '#111', border: '1px solid #333', color: '#00ff41', padding: '0.75rem', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ position: 'fixed', top: '1.25rem', left: '1.25rem', zIndex: 9999, background: '#111', border: '1px solid #333', color: '#00ff41', padding: '0.75rem', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Menu size={24} />
       </button>
 
@@ -218,7 +218,7 @@ export default function Admin() {
         <AnimatePresence mode="wait">
           <motion.div key={activeTab} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
             {activeTab === 'builder' ? (
-              <TildaEditor pageLayouts={pageLayouts} setPageLayouts={setPageLayouts} allTranslations={allTranslations} updateTranslation={updateTranslation} currentLang={effectiveLang} handleSave={handleSave} />
+              <TildaEditor pageLayouts={pageLayouts} setPageLayouts={setPageLayouts} allTranslations={allTranslations} updateTranslation={updateTranslation} currentLang={effectiveLang} handleSave={handleSave} isSidebarOpen={isSidebarOpen} />
             ) : (
               <div style={{ padding: '4rem' }}>
                 {activeTab === 'dashboard' && <DashboardOverview windowWidth={windowWidth} t={t} />}
@@ -236,7 +236,7 @@ export default function Admin() {
 }
 
 // TILDA STYLE EDITOR
-function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTranslation, currentLang, handleSave }: any) {
+function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTranslation, currentLang, handleSave, isSidebarOpen }: any) {
   const [editingKey, setEditingKey] = useState<string | null>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [previewRoute, setPreviewRoute] = useState<string>('/');
@@ -326,7 +326,7 @@ function TildaEditor({ pageLayouts, setPageLayouts, allTranslations, updateTrans
   return (
     <div className="tilda-editor" style={{ position: 'relative', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Top Floating Toolbar */}
-      <div style={{ background: '#1a1a1a', borderBottom: '1px solid #333', padding: '1.25rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 5000, flexShrink: 0 }}>
+      <div style={{ background: '#1a1a1a', borderBottom: '1px solid #333', padding: '1.25rem 2rem', paddingLeft: isSidebarOpen ? '2rem' : '5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 5000, flexShrink: 0, transition: 'padding-left 0.2s ease' }}>
          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
             <div style={{ background: '#00ff41', color: '#000', padding: '0.4rem 0.8rem', borderRadius: '4px', fontWeight: '900', fontSize: '0.7rem', letterSpacing: '0.05em' }}>VISUAL MODE</div>
             <select 
