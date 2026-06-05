@@ -443,7 +443,12 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
   const currentLayout = pageLayouts[layoutKey];
 
   const updateLayout = (newLayout: any) => {
-    setPageLayouts((prev: any) => ({ ...prev, [layoutKey]: newLayout }));
+    setPageLayouts((prev: any) => {
+      const updated = { ...prev, [layoutKey]: newLayout };
+      localStorage.setItem(`demetra_${layoutKey}_layout`, JSON.stringify(newLayout));
+      window.dispatchEvent(new Event('storage'));
+      return updated;
+    });
   };
   
   const moveSection = (arrayKey: string, index: number, direction: 'up' | 'down') => {
