@@ -76,6 +76,18 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
   };
 
   const handleDragStart = (e: React.DragEvent) => {
+    const target = e.target as HTMLElement;
+    if (
+      target.closest('input') ||
+      target.closest('button') ||
+      target.closest('select') ||
+      target.closest('textarea') ||
+      target.isContentEditable
+    ) {
+      e.preventDefault();
+      return;
+    }
+
     e.stopPropagation();
     e.dataTransfer.setData("text/plain", id);
     e.dataTransfer.effectAllowed = "move";
@@ -319,7 +331,17 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
            }
          } : undefined}
          onClick={isBuilder ? (e) => {
-           if ((e.target as HTMLElement).isContentEditable) return;
+           const target = e.target as HTMLElement;
+           if (
+             target.isContentEditable ||
+             target.closest('input') ||
+             target.closest('button') ||
+             target.closest('select') ||
+             target.closest('textarea') ||
+             target.closest('.floating-assistant-container')
+           ) {
+             return;
+           }
            e.stopPropagation();
            postMsg('OPEN_MODAL', { tab: 'content' });
          } : undefined}
