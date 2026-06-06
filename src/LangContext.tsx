@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useRef, type ReactNode } from 'react';
 import { translations } from './i18n';
 
 type Language = 'ru' | 'kk' | 'en';
@@ -94,8 +94,52 @@ export function InlineEdit({ tKey, className, style }: { tKey: string, className
   const { t } = useLang();
   const isBuilder = window.self !== window.top;
   
+  const [offset, setOffset] = useState(() => {
+    try {
+      const saved = localStorage.getItem(`demetra_text_offset_${tKey}`);
+      return saved ? JSON.parse(saved) : { x: 0, y: 0 };
+    } catch {
+      return { x: 0, y: 0 };
+    }
+  });
+
+  const isDraggingRef = useRef(false);
+  const startPosRef = useRef({ x: 0, y: 0 });
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!isBuilder) return;
+    if (e.altKey || e.shiftKey || e.button === 1) {
+      e.preventDefault();
+      e.stopPropagation();
+      isDraggingRef.current = true;
+      startPosRef.current = { x: e.clientX - offset.x, y: e.clientY - offset.y };
+      
+      const handleMouseMove = (moveEvent: MouseEvent) => {
+         if (!isDraggingRef.current) return;
+         const newX = moveEvent.clientX - startPosRef.current.x;
+         const newY = moveEvent.clientY - startPosRef.current.y;
+         setOffset({ x: newX, y: newY });
+      };
+      
+      const handleMouseUp = (upEvent: MouseEvent) => {
+         isDraggingRef.current = false;
+         const finalX = upEvent.clientX - startPosRef.current.x;
+         const finalY = upEvent.clientY - startPosRef.current.y;
+         localStorage.setItem(`demetra_text_offset_${tKey}`, JSON.stringify({ x: finalX, y: finalY }));
+         document.removeEventListener('mousemove', handleMouseMove);
+         document.removeEventListener('mouseup', handleMouseUp);
+         window.dispatchEvent(new Event('storage'));
+      };
+      
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+  };
+
+  const transformStyle = offset.x || offset.y ? `translate(${offset.x}px, ${offset.y}px)` : undefined;
+
   if (!isBuilder) {
-    return <span className={className} style={style}>{(t as any)[tKey] || tKey}</span>;
+    return <span className={className} style={{ ...style, transform: transformStyle, display: transformStyle ? 'inline-block' : undefined }}>{(t as any)[tKey] || tKey}</span>;
   }
 
   const handleBlur = (e: React.FocusEvent<HTMLElement>) => {
@@ -105,9 +149,20 @@ export function InlineEdit({ tKey, className, style }: { tKey: string, className
   return (
     <span 
       className={className} 
-      style={{ ...style, outline: '1px dashed rgba(0,255,65,0.4)', padding: '0.1em 0.2em', cursor: 'text', display: 'inline-block', transition: '0.2s' }}
+      style={{ 
+        ...style, 
+        transform: transformStyle,
+        outline: '1px dashed rgba(0,255,65,0.4)', 
+        padding: '0.1em 0.2em', 
+        cursor: 'text', 
+        display: 'inline-block', 
+        transition: isDraggingRef.current ? 'none' : '0.2s outline, 0.2s background',
+        position: 'relative',
+        zIndex: isDraggingRef.current ? 100 : 1
+      }}
       contentEditable
       suppressContentEditableWarning
+      onMouseDown={handleMouseDown}
       onBlur={handleBlur}
       onFocus={(e) => { 
         const target = e.target as HTMLElement;
@@ -121,6 +176,7 @@ export function InlineEdit({ tKey, className, style }: { tKey: string, className
           target.style.background = 'transparent';
         } 
       }}
+      title="Alt + Drag to move text (Figma style)"
     >
       {(t as any)[tKey] || tKey}
     </span>
