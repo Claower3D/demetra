@@ -1,0 +1,6 @@
+[providers]
+node = {}
+go = {}
+
+[phases.setup]
+nixPkgs = ["nodejs", "go"]
