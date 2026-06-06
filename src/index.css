@@ -546,8 +546,13 @@ body.light-theme .industrial-card:hover {
 }
 
 @media (max-width: 868px) {
-  .responsive-hide {
+  body:not(.builder-mode) .responsive-hide {
     display: none !important;
+  }
+  body.builder-mode .responsive-hide {
+    opacity: 0.55 !important;
+    outline: 2px dashed #ff4b4b !important;
+    outline-offset: 2px;
   }
 }
 
