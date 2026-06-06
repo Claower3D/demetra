@@ -433,8 +433,31 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
             transition: 'all 0.15s ease'
           }}
         >
+          {isBuilder && displayType === 'grid' && (
+            <div style={{
+              position: 'absolute',
+              top: 0, left: 0, right: 0, bottom: 0,
+              pointerEvents: 'none',
+              zIndex: 0,
+              display: 'grid',
+              gridTemplateColumns: `repeat(${cols}, 1fr)`,
+              gap: gap,
+              padding: isBuilder ? '2.5rem' : '1rem 0',
+              boxSizing: 'border-box'
+            }}>
+              {Array.from({ length: cols * 3 }).map((_, i) => (
+                <div key={i} style={{
+                  border: '1px dashed rgba(0, 255, 65, 0.12)',
+                  borderRadius: '4px',
+                  minHeight: '80px',
+                  background: 'rgba(0, 255, 65, 0.003)'
+                }} />
+              ))}
+            </div>
+          )}
+
           {isBuilder && children.length === 0 && (
-            <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', textAlign: 'center', padding: '2rem 1rem', gridColumn: 'span 12' }}>
+            <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', textAlign: 'center', padding: '2rem 1rem', gridColumn: 'span 12', zIndex: 1 }}>
               ✦ Пустой контейнер. Добавьте элементы внутри блока.
             </div>
           )}
@@ -452,6 +475,7 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
                   gridRow: displayType === 'grid' ? gridRow : undefined,
                   width: displayType === 'grid' ? '100%' : undefined,
                   height: displayType === 'grid' ? '100%' : undefined,
+                  zIndex: 1,
                 }}
               >
                 {isBuilder ? (

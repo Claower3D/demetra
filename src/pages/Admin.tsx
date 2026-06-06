@@ -1247,63 +1247,116 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
                     )}
 
                     {/* CUSTOM BLOCKS LIST */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                       <div style={{ fontSize: '0.75rem', color: '#8e9196', fontWeight: '900', letterSpacing: '0.15em' }}>ДОБАВИТЬ ЭЛЕМЕНТЫ</div>
-                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-                          {[
-                            { id: 'heading', title: 'Заголовок', icon: '𝐇', desc: 'Heading' },
-                            { id: 'text', title: 'Текст', icon: '¶', desc: 'Paragraph' },
-                            { id: 'button', title: 'Кнопка', icon: '↗', desc: 'Button' },
-                            { id: 'card', title: 'Карточка', icon: '▭', desc: 'Bento Card' },
-                            { id: 'two_col', title: '2 Колонки', icon: '⫿', desc: '2 Columns' },
-                            { id: 'image_text', title: 'Фото+Текст', icon: '⊡', desc: 'Image & Text' },
-                            { id: 'cta_banner', title: 'Баннер', icon: '★', desc: 'Promo Banner' },
-                            { id: 'divider', title: 'Разделитель', icon: '—', desc: 'Divider Line' },
-                            { id: 'container', title: 'Контейнер', icon: '⧇', desc: 'Nested Blocks' },
-                            { id: 'shape_rect', title: 'Квадрат', icon: '■', desc: 'Rectangle Shape' },
-                            { id: 'shape_circle', title: 'Круг', icon: '●', desc: 'Circle Shape' },
-                            { id: 'shape_line', title: 'Линия', icon: '│', desc: 'Line Shape' }
-                          ].filter(x => x.title.toLowerCase().includes(libSearch.toLowerCase()) || x.desc.toLowerCase().includes(libSearch.toLowerCase())).map(el => (
-                            <button
-                              key={el.id}
-                              onClick={() => addCustomBlock(el.id)}
-                              draggable={true}
-                              onDragStart={(e) => {
-                                e.dataTransfer.setData("text/plain", `add_block:${el.id}`);
-                                e.dataTransfer.effectAllowed = "copy";
-                              }}
-                              style={{
-                                background: '#121214',
-                                border: '1px solid #1e1e22',
-                                borderRadius: '10px',
-                                padding: '1rem 0.5rem',
-                                color: '#fff',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                gap: '0.4rem'
-                              }}
-                              onMouseEnter={(e) => {
-                                setHoveredBlockId(el.id);
-                                e.currentTarget.style.borderColor = '#00ff41';
-                                e.currentTarget.style.background = 'rgba(0, 255, 65, 0.04)';
-                                e.currentTarget.style.transform = 'translateY(-2px)';
-                              }}
-                              onMouseLeave={(e) => {
-                                setHoveredBlockId(null);
-                                e.currentTarget.style.borderColor = '#1e1e22';
-                                e.currentTarget.style.background = '#121214';
-                                e.currentTarget.style.transform = 'translateY(0)';
-                              }}
-                            >
-                              <div style={{ fontSize: '1.4rem', color: '#00ff41', fontWeight: '800' }}>{el.icon}</div>
-                              <div style={{ fontSize: '0.85rem', fontWeight: '800' }}>{el.title}</div>
-                              <div style={{ fontSize: '0.65rem', color: '#a1a1aa' }}>{el.desc}</div>
-                            </button>
-                          ))}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                       
+                       {/* Standard Elements */}
+                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                          <div style={{ fontSize: '0.75rem', color: '#8e9196', fontWeight: '900', letterSpacing: '0.15em' }}>СТАНДАРТНЫЕ ЭЛЕМЕНТЫ</div>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                             {[
+                               { id: 'heading', title: 'Заголовок', icon: '𝐇', desc: 'Heading' },
+                               { id: 'text', title: 'Текст', icon: '¶', desc: 'Paragraph' },
+                               { id: 'button', title: 'Кнопка', icon: '↗', desc: 'Button' },
+                               { id: 'card', title: 'Карточка', icon: '▭', desc: 'Bento Card' },
+                               { id: 'two_col', title: '2 Колонки', icon: '⫿', desc: '2 Columns' },
+                               { id: 'image_text', title: 'Фото+Текст', icon: '⊡', desc: 'Image & Text' },
+                               { id: 'cta_banner', title: 'Баннер', icon: '★', desc: 'Promo Banner' },
+                               { id: 'divider', title: 'Разделитель', icon: '—', desc: 'Divider Line' },
+                               { id: 'container', title: 'Контейнер', icon: '⧇', desc: 'Nested Blocks' }
+                             ].filter(x => x.title.toLowerCase().includes(libSearch.toLowerCase()) || x.desc.toLowerCase().includes(libSearch.toLowerCase())).map(el => (
+                               <button
+                                 key={el.id}
+                                 onClick={() => addCustomBlock(el.id)}
+                                 draggable={true}
+                                 onDragStart={(e) => {
+                                   e.dataTransfer.setData("text/plain", `add_block:${el.id}`);
+                                   e.dataTransfer.effectAllowed = "copy";
+                                 }}
+                                 style={{
+                                   background: '#121214',
+                                   border: '1px solid #1e1e22',
+                                   borderRadius: '10px',
+                                   padding: '1rem 0.5rem',
+                                   color: '#fff',
+                                   cursor: 'pointer',
+                                   transition: 'all 0.2s',
+                                   display: 'flex',
+                                   flexDirection: 'column',
+                                   alignItems: 'center',
+                                   gap: '0.4rem'
+                                 }}
+                                 onMouseEnter={(e) => {
+                                   setHoveredBlockId(el.id);
+                                   e.currentTarget.style.borderColor = '#00ff41';
+                                   e.currentTarget.style.background = 'rgba(0, 255, 65, 0.04)';
+                                   e.currentTarget.style.transform = 'translateY(-2px)';
+                                 }}
+                                 onMouseLeave={(e) => {
+                                   setHoveredBlockId(null);
+                                   e.currentTarget.style.borderColor = '#1e1e22';
+                                   e.currentTarget.style.background = '#121214';
+                                   e.currentTarget.style.transform = 'translateY(0)';
+                                 }}
+                               >
+                                 <div style={{ fontSize: '1.4rem', color: '#00ff41', fontWeight: '800' }}>{el.icon}</div>
+                                 <div style={{ fontSize: '0.85rem', fontWeight: '800' }}>{el.title}</div>
+                                 <div style={{ fontSize: '0.65rem', color: '#a1a1aa' }}>{el.desc}</div>
+                               </button>
+                             ))}
+                          </div>
                        </div>
+
+                       {/* Shapes Section */}
+                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                          <div style={{ fontSize: '0.75rem', color: '#8e9196', fontWeight: '900', letterSpacing: '0.15em' }}>ФИГУРЫ (SHAPES)</div>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                             {[
+                               { id: 'shape_rect', title: 'Квадрат', icon: '■', desc: 'Rectangle Shape' },
+                               { id: 'shape_circle', title: 'Круг', icon: '●', desc: 'Circle Shape' },
+                               { id: 'shape_line', title: 'Линия', icon: '│', desc: 'Line Shape' }
+                             ].filter(x => x.title.toLowerCase().includes(libSearch.toLowerCase()) || x.desc.toLowerCase().includes(libSearch.toLowerCase())).map(el => (
+                               <button
+                                 key={el.id}
+                                 onClick={() => addCustomBlock(el.id)}
+                                 draggable={true}
+                                 onDragStart={(e) => {
+                                   e.dataTransfer.setData("text/plain", `add_block:${el.id}`);
+                                   e.dataTransfer.effectAllowed = "copy";
+                                 }}
+                                 style={{
+                                   background: '#121214',
+                                   border: '1px solid #1e1e22',
+                                   borderRadius: '10px',
+                                   padding: '1rem 0.5rem',
+                                   color: '#fff',
+                                   cursor: 'pointer',
+                                   transition: 'all 0.2s',
+                                   display: 'flex',
+                                   flexDirection: 'column',
+                                   alignItems: 'center',
+                                   gap: '0.4rem'
+                                 }}
+                                 onMouseEnter={(e) => {
+                                   setHoveredBlockId(el.id);
+                                   e.currentTarget.style.borderColor = '#00ff41';
+                                   e.currentTarget.style.background = 'rgba(0, 255, 65, 0.04)';
+                                   e.currentTarget.style.transform = 'translateY(-2px)';
+                                 }}
+                                 onMouseLeave={(e) => {
+                                   setHoveredBlockId(null);
+                                   e.currentTarget.style.borderColor = '#1e1e22';
+                                   e.currentTarget.style.background = '#121214';
+                                   e.currentTarget.style.transform = 'translateY(0)';
+                                 }}
+                               >
+                                 <div style={{ fontSize: '1.4rem', color: '#00ff41', fontWeight: '800' }}>{el.icon}</div>
+                                 <div style={{ fontSize: '0.85rem', fontWeight: '800' }}>{el.title}</div>
+                                 <div style={{ fontSize: '0.65rem', color: '#a1a1aa' }}>{el.desc}</div>
+                               </button>
+                             ))}
+                          </div>
+                       </div>
+
                     </div>
 
                  </div>

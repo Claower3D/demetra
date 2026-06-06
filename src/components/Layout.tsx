@@ -9,7 +9,7 @@ import { BuilderWrapper } from './BuilderWrapper';
 
 
 
-import { getPagesList } from './CustomBlock';
+import CustomBlock, { getPagesList, getCustomBlocks } from './CustomBlock';
 
 export default function Layout() {
   const isBuilder = window.self !== window.top;
@@ -23,14 +23,30 @@ export default function Layout() {
   const location = useLocation();
 
   const [pages, setPages] = useState(() => getPagesList());
+  const [customBlocks, setCustomBlocks] = useState(() => getCustomBlocks());
+  const [activeModalId, setActiveModalId] = useState<string | null>(null);
   const [showDesignerGrid, setShowDesignerGrid] = useState(() => {
     return localStorage.getItem('demetra_show_designer_grid') === 'true';
   });
 
   useEffect(() => {
-    const sync = () => setPages(getPagesList());
+    const sync = () => {
+      setPages(getPagesList());
+      setCustomBlocks(getCustomBlocks());
+    };
     window.addEventListener('storage', sync);
     return () => window.removeEventListener('storage', sync);
+  }, []);
+
+  useEffect(() => {
+    const handleOpenModal = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail && customEvent.detail.id) {
+        setActiveModalId(customEvent.detail.id);
+      }
+    };
+    window.addEventListener('OPEN_CUSTOM_MODAL', handleOpenModal);
+    return () => window.removeEventListener('OPEN_CUSTOM_MODAL', handleOpenModal);
   }, []);
 
   useEffect(() => {
@@ -378,6 +394,96 @@ export default function Layout() {
           </div>
         </div>
       )}
+      {/* Custom Triggered Modals */}
+      <AnimatePresence>
+        {activeModalId && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setActiveModalId(null)}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(5, 5, 8, 0.85)',
+              backdropFilter: 'blur(16px)',
+              zIndex: 999999,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '2rem',
+              boxSizing: 'border-box'
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 15, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.95, y: 15, opacity: 0 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                background: 'var(--surface, #121214)',
+                border: '1px solid var(--primary, #00ff41)',
+                borderRadius: '16px',
+                width: '100%',
+                maxWidth: '650px',
+                maxHeight: '85vh',
+                overflowY: 'auto',
+                position: 'relative',
+                boxShadow: '0 25px 80px rgba(0, 255, 65, 0.15), 0 0 100px rgba(0,0,0,0.8)',
+                padding: '2.5rem'
+              }}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setActiveModalId(null)}
+                style={{
+                  position: 'absolute',
+                  top: '1.25rem',
+                  right: '1.25rem',
+                  background: 'rgba(255,255,255,0.05)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '50%',
+                  color: '#fff',
+                  width: '32px',
+                  height: '32px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: '0.2s',
+                  zIndex: 10
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--primary)'; e.currentTarget.style.color = 'var(--primary)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = '#fff'; }}
+              >
+                <X size={16} />
+              </button>
+
+              {/* Modal Content */}
+              {customBlocks[activeModalId] ? (
+                <div style={{ pointerEvents: 'auto' }}>
+                  <CustomBlock id={activeModalId} data={customBlocks[activeModalId]} />
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '3rem 1rem' }}>
+                  <div style={{ fontSize: '3rem', color: 'var(--primary, #00ff41)', marginBottom: '1rem' }}>✦</div>
+                  <h3 style={{ fontSize: '1.25rem', color: '#fff', marginBottom: '0.5rem', fontWeight: '900' }}>
+                    Модальное окно не заполнено
+                  </h3>
+                  <p style={{ color: 'var(--text-muted, #a1a1aa)', fontSize: '0.85rem', maxWidth: '350px', margin: '0 auto', lineHeight: '1.6' }}>
+                    Создайте элемент с ID <code style={{ color: 'var(--primary, #00ff41)', padding: '0.2rem 0.4rem', background: '#000', borderRadius: '4px', fontFamily: 'monospace' }}>{activeModalId}</code> в визуальном редакторе.
+                  </p>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <FloatingAssistant />
     </div>
   );

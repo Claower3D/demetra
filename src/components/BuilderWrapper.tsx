@@ -11,6 +11,7 @@ const dragState = {
 
 export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder, arrayKey = 'order', style = {}, className = '' }: any) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isHoveredProd, setIsHoveredProd] = useState(false);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [contextMenu, setContextMenu] = useState<{x: number, y: number} | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -94,7 +95,8 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
     if (!isBuilder) return;
 
     const target = e.target as HTMLElement;
-    const isFigmaDrag = e.altKey || e.shiftKey || e.button === 1;
+    const isAbsolute = mergedStyle?.position === 'absolute';
+    const isFigmaDrag = e.altKey || e.shiftKey || e.button === 1 || isAbsolute;
 
     // Don't intercept clicks on interactive controls unless it is a Figma-style Alt/Shift drag
     if (!isFigmaDrag && (
@@ -318,9 +320,7 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
         addMeasure(ghostRect.right, midY, parentRect.right, midY,
           Math.round(parentRect.right - ghostRect.right), 'h');
       }
-    };
-
-    if (isFigmaDrag) {
+    };    if (isFigmaDrag) {
       e.preventDefault();
       
       let initialX = 0;
@@ -329,6 +329,13 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
       if (match) {
         initialX = parseFloat(match[1]);
         initialY = parseFloat(match[2]);
+      }
+
+      let initialLeft = 0;
+      let initialTop = 0;
+      if (containerRef.current) {
+        initialLeft = containerRef.current.offsetLeft;
+        initialTop = containerRef.current.offsetTop;
       }
 
       let guidesContainer = document.getElementById('drag-guides-container');
@@ -352,7 +359,12 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
         const dy = me.clientY - startY;
         
         if (containerRef.current) {
-          containerRef.current.style.transform = `translate3d(${initialX + dx}px, ${initialY + dy}px, 0)`;
+          if (isAbsolute) {
+            containerRef.current.style.left = `${initialLeft + dx}px`;
+            containerRef.current.style.top = `${initialTop + dy}px`;
+          } else {
+            containerRef.current.style.transform = `translate3d(${initialX + dx}px, ${initialY + dy}px, 0)`;
+          }
         }
 
         if (initialRect) {
@@ -383,18 +395,27 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
           guidesContainer.remove();
         }
 
-        postMsg('UPDATE_STYLE', {
-          styles: {
-            transform: `translate3d(${finalX}px, ${finalY}px, 0)`
-          }
-        });
+        if (isAbsolute) {
+          postMsg('UPDATE_STYLE', {
+            styles: {
+              left: `${initialLeft + dx}px`,
+              top: `${initialTop + dy}px`,
+              position: 'absolute'
+            }
+          });
+        } else {
+          postMsg('UPDATE_STYLE', {
+            styles: {
+              transform: `translate3d(${finalX}px, ${finalY}px, 0)`
+            }
+          });
+        }
       };
 
       window.addEventListener('mousemove', onFigmaMouseMove);
       window.addEventListener('mouseup', onFigmaMouseUp);
       return;
     }
-
     const onMouseMove = (me: MouseEvent) => {
       const dx = me.clientX - startX;
       const dy = me.clientY - startY;
@@ -680,6 +701,8 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
   // ─────────────────────────────────────────────────────────────────────────────
 
   const mergedStyle = { ...(localStyle || {}), ...(style || {}) };
+  const isHoveredActive = isHoveredProd || (isBuilder && isHovered);
+  const hoverStyles = isHoveredActive ? (mergedStyle?.hoverStyles || {}) : {};
 
   return (
     <div 
@@ -687,6 +710,8 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
       className={`builder-wrapper ${localStyle?.hideOnMobile ? 'responsive-hide' : ''} ${className}`}
       data-builder-id={isBuilder ? id : undefined}
       data-array-key={isBuilder ? arrayKey : undefined}
+      onMouseEnter={() => setIsHoveredProd(true)}
+      onMouseLeave={() => setIsHoveredProd(false)}
       onMouseOver={isBuilder ? handleMouseOver : undefined} 
       onMouseOut={isBuilder ? handleMouseOut : undefined}
       onContextMenu={isBuilder ? handleContextMenu : undefined}
@@ -696,25 +721,32 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
       onDragLeave={isBuilder ? handleDragLeave : undefined}
       onDrop={isBuilder ? handleDrop : undefined}
       style={{ 
-        position: 'relative', 
+        position: mergedStyle?.position || 'relative', 
+        left: mergedStyle?.left || undefined,
+        top: mergedStyle?.top || undefined,
+        zIndex: mergedStyle?.zIndex || undefined,
         border: isBuilder 
           ? (isDraggingOver 
               ? '2px dashed #00ff41' 
               : (isHovered ? '2px solid #00ff41' : '2px solid transparent'))
           : 'none',
-        boxShadow: (isBuilder && isDraggingOver) ? '0 0 25px rgba(0, 255, 65, 0.4)' : 'none',
+        boxShadow: (isBuilder && isDraggingOver) 
+          ? '0 0 25px rgba(0, 255, 65, 0.4)' 
+          : (hoverStyles.boxShadow || mergedStyle?.boxShadow || 'none'),
         transition: dragSize ? 'none' : 'all 0.15s ease', 
         gridColumn: arrayKey === 'order' ? undefined : (dragSize?.gridColumn || mergedStyle?.gridColumn || undefined),
         gridRow: arrayKey === 'order' ? undefined : (dragSize?.gridRow || mergedStyle?.gridRow || undefined),
-        width: arrayKey === 'order' ? '100%' : (dragSize?.width || mergedStyle?.width || (id?.startsWith('btn_') ? 'fit-content' : '100%')), 
-        height: dragSize?.height || mergedStyle?.height || (id?.startsWith('btn_') ? 'auto' : undefined), 
+        width: arrayKey === 'order' ? '100%' : (dragSize?.width || hoverStyles.width || mergedStyle?.width || (id?.startsWith('btn_') ? 'fit-content' : '100%')), 
+        height: dragSize?.height || hoverStyles.height || mergedStyle?.height || (id?.startsWith('btn_') ? 'auto' : undefined), 
         boxSizing: 'border-box',
         cursor: isBuilder ? 'grab' : 'default',
-        background: mergedStyle?.background || 'transparent',
+        background: hoverStyles.background || mergedStyle?.background || 'transparent',
         padding: mergedStyle?.padding || '0px',
         borderRadius: mergedStyle?.borderRadius || '0px',
-        opacity: (mergedStyle?.opacity !== undefined ? mergedStyle.opacity : 1) * (isDraggingThis ? 0.4 : 1),
-        transform: arrayKey === 'order' ? 'none' : (mergedStyle?.transform || 'none'),
+        opacity: (hoverStyles.opacity !== undefined ? hoverStyles.opacity : (mergedStyle?.opacity !== undefined ? mergedStyle.opacity : 1)) * (isDraggingThis ? 0.4 : 1),
+        transform: arrayKey === 'order' ? 'none' : (hoverStyles.transform || mergedStyle?.transform || 'none'),
+        filter: hoverStyles.filter || mergedStyle?.filter || undefined,
+        backdropFilter: hoverStyles.backdropFilter || mergedStyle?.backdropFilter || undefined,
         marginTop: arrayKey === 'order' ? undefined : (mergedStyle?.marginTop || undefined),
         marginBottom: arrayKey === 'order' ? undefined : (mergedStyle?.marginBottom || undefined),
         paddingTop: arrayKey === 'order' ? undefined : (mergedStyle?.paddingTop || undefined),
@@ -725,6 +757,7 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
         marginRight: arrayKey === 'order' ? 'auto' : undefined,
         backgroundColor: mergedStyle?.backgroundColor || undefined,
         userSelect: 'none',
+        ...hoverStyles,
       }}
     >
        {/* Hover toolbar */}
@@ -793,6 +826,45 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
                style={{ background: 'rgba(0,0,0,0.15)', border: 'none', color: '#000', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '3px 5px', borderRadius: '4px' }}
              >
                <ImageIcon size={10} />
+             </button>
+
+             {/* Position Absolute/Relative Toggle */}
+             <button 
+               onMouseDown={(e) => e.stopPropagation()}
+               onClick={(e) => {
+                 e.stopPropagation();
+                 const currentPos = mergedStyle?.position || 'relative';
+                 const nextPos = currentPos === 'absolute' ? 'relative' : 'absolute';
+                 
+                 const extra: any = {};
+                 if (nextPos === 'absolute' && containerRef.current) {
+                   extra.left = `${containerRef.current.offsetLeft}px`;
+                   extra.top = `${containerRef.current.offsetTop}px`;
+                 } else {
+                   extra.left = undefined;
+                   extra.top = undefined;
+                 }
+
+                 postMsg('UPDATE_STYLE', { 
+                   styles: { 
+                     position: nextPos,
+                     ...extra
+                   } 
+                 });
+               }}
+               title={mergedStyle?.position === 'absolute' ? "Режим сетки (Relative)" : "Свободное позиционирование (Absolute)"}
+               style={{ 
+                 background: mergedStyle?.position === 'absolute' ? '#000' : 'rgba(0,0,0,0.15)', 
+                 border: 'none', 
+                 color: mergedStyle?.position === 'absolute' ? '#00ff41' : '#000', 
+                 cursor: 'pointer', 
+                 display: 'flex', 
+                 alignItems: 'center', 
+                 padding: '3px 5px', 
+                 borderRadius: '4px' 
+               }}
+             >
+               <Layers size={10} />
              </button>
 
              {/* Edit */}
