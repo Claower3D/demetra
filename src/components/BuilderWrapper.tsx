@@ -94,22 +94,24 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
     if (!isBuilder) return;
 
     const target = e.target as HTMLElement;
-    // Don't intercept clicks on interactive controls or contentEditable
-    if (
+    const isFigmaDrag = e.altKey || e.shiftKey || e.button === 1;
+
+    // Don't intercept clicks on interactive controls unless it is a Figma-style Alt/Shift drag
+    if (!isFigmaDrag && (
       target.closest('input') ||
       target.closest('button') ||
       target.closest('select') ||
       target.closest('textarea') ||
       target.isContentEditable ||
       target.closest('.floating-assistant-container')
-    ) {
+    )) {
       return;
     }
 
     // Only allow dragging from the green label/toolbar area (top-left corner)
     // or from empty space directly on this wrapper (not a deeper nested .builder-wrapper)
     const deepestWrapper = (e.target as HTMLElement).closest('.builder-wrapper');
-    if (deepestWrapper !== containerRef.current) {
+    if (!isFigmaDrag && deepestWrapper !== containerRef.current) {
       // Mouse is over a CHILD builder-wrapper – let that child handle it
       return;
     }
@@ -317,6 +319,81 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
           Math.round(parentRect.right - ghostRect.right), 'h');
       }
     };
+
+    if (isFigmaDrag) {
+      e.preventDefault();
+      
+      let initialX = 0;
+      let initialY = 0;
+      const match = (mergedStyle?.transform || '').match(/translate(?:3d)?\((-?\d+(?:\.\d+)?)px,\s*(-?\d+(?:\.\d+)?)px/);
+      if (match) {
+        initialX = parseFloat(match[1]);
+        initialY = parseFloat(match[2]);
+      }
+
+      let guidesContainer = document.getElementById('drag-guides-container');
+      if (!guidesContainer) {
+        guidesContainer = document.createElement('div');
+        guidesContainer.id = 'drag-guides-container';
+        guidesContainer.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          pointer-events: none;
+          z-index: 999998;
+        `;
+        document.body.appendChild(guidesContainer);
+      }
+
+      const onFigmaMouseMove = (me: MouseEvent) => {
+        const dx = me.clientX - startX;
+        const dy = me.clientY - startY;
+        
+        if (containerRef.current) {
+          containerRef.current.style.transform = `translate3d(${initialX + dx}px, ${initialY + dy}px, 0)`;
+        }
+
+        if (initialRect) {
+          const ghostRect = {
+            left: initialRect.left + dx,
+            top: initialRect.top + dy,
+            right: initialRect.left + dx + initialRect.width,
+            bottom: initialRect.top + dy + initialRect.height,
+            width: initialRect.width,
+            height: initialRect.height
+          };
+          drawGuides(ghostRect);
+        }
+      };
+
+      const onFigmaMouseUp = (me: MouseEvent) => {
+        window.removeEventListener('mousemove', onFigmaMouseMove);
+        window.removeEventListener('mouseup', onFigmaMouseUp);
+
+        const dx = me.clientX - startX;
+        const dy = me.clientY - startY;
+
+        const finalX = initialX + dx;
+        const finalY = initialY + dy;
+
+        const guidesContainer = document.getElementById('drag-guides-container');
+        if (guidesContainer) {
+          guidesContainer.remove();
+        }
+
+        postMsg('UPDATE_STYLE', {
+          styles: {
+            transform: `translate3d(${finalX}px, ${finalY}px, 0)`
+          }
+        });
+      };
+
+      window.addEventListener('mousemove', onFigmaMouseMove);
+      window.addEventListener('mouseup', onFigmaMouseUp);
+      return;
+    }
 
     const onMouseMove = (me: MouseEvent) => {
       const dx = me.clientX - startX;
