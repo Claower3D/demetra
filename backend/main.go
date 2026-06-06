@@ -13,7 +13,7 @@ import (
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "3030" // Default port for development
+		port = "3030"
 	}
 
 	// Create data directory
@@ -147,19 +147,15 @@ func main() {
 			return
 		}
 
-		// Clean path
 		path := filepath.Clean(r.URL.Path)
 		fullPath := filepath.Join(distDir, path)
 
-		// Check if file exists and is not a directory
 		info, err := os.Stat(fullPath)
 		if err != nil || info.IsDir() {
-			// Fallback to index.html for SPA routing
 			indexPath := filepath.Join(distDir, "index.html")
 			if _, err := os.Stat(indexPath); err == nil {
 				http.ServeFile(w, r, indexPath)
 			} else {
-				// During development, if dist doesn't exist yet, return a simple status
 				w.WriteHeader(http.StatusOK)
 				w.Write([]byte("Backend is running! Frontend is not built yet."))
 			}
