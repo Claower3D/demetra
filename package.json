@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && go build -o server backend/main.go",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "go run backend/main.go"
+    "start": "./server"
   },
   "dependencies": {
     "framer-motion": "^12.38.0",

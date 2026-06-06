@@ -1,4 +1,4 @@
 [deploy]
-startCommand = "npm run start"
+startCommand = "./server"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
