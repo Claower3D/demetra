@@ -759,26 +759,67 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
             cta_banner: { type: 'cta_banner', heading: 'Готовы начать проект?', subheading: 'Свяжитесь с нами', body: 'Наши специалисты ответят на все вопросы.', label: 'Оставить заявку', href: '/contacts' },
             container: { type: 'container', childrenBlocks: [] }
           };
-          
-          const allCustomBlocks = { ...getCustomBlocks(), [newId]: defaultDataMap[type] || { type } };
-          localStorage.setItem('demetra_custom_blocks', JSON.stringify(allCustomBlocks));
-          window.dispatchEvent(new Event('storage'));
-          
-          const newOrder = [...(currentLayout[k] || [])];
-          const targetIndex = newOrder.indexOf(targetId);
-          if (targetIndex !== -1) {
-            newOrder.splice(targetIndex, 0, newId);
+
+          if (k.startsWith('nested:')) {
+            const containerBlockId = k.replace('nested:', '');
+            try {
+              const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+              const parentBlock = customBlocks[containerBlockId] || { type: 'container', childrenBlocks: [] };
+              
+              const newNestedId = `nested_${Date.now()}`;
+              const newNestedBlock = {
+                id: newNestedId,
+                ...((defaultDataMap[type] || { type }))
+              };
+              
+              const children = [...(parentBlock.childrenBlocks || [])];
+              const targetIndex = children.findIndex(c => c.id === targetId);
+              if (targetIndex !== -1) {
+                children.splice(targetIndex, 0, newNestedBlock);
+              } else {
+                children.push(newNestedBlock);
+              }
+              
+              parentBlock.childrenBlocks = children;
+              customBlocks[containerBlockId] = parentBlock;
+              
+              localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
+              window.dispatchEvent(new Event('storage'));
+              
+              if (iframeRef.current) {
+                iframeRef.current.contentWindow?.postMessage({
+                  type: 'DEMETRA_UPDATE_LAYOUT',
+                  layout: currentLayout
+                }, '*');
+              }
+              
+              setEditingKey(newNestedId);
+              setIsModalOpen(true);
+              setModalActiveTab('content');
+            } catch (err) {
+              console.error("Add nested drop at index error", err);
+            }
           } else {
-            newOrder.push(newId);
+            const allCustomBlocks = { ...getCustomBlocks(), [newId]: defaultDataMap[type] || { type } };
+            localStorage.setItem('demetra_custom_blocks', JSON.stringify(allCustomBlocks));
+            window.dispatchEvent(new Event('storage'));
+            
+            const newOrder = [...(currentLayout[k] || [])];
+            const targetIndex = newOrder.indexOf(targetId);
+            if (targetIndex !== -1) {
+              newOrder.splice(targetIndex, 0, newId);
+            } else {
+              newOrder.push(newId);
+            }
+            
+            updateLayout({
+              ...currentLayout,
+              [k]: newOrder
+            });
+            
+            setEditingKey(newId);
+            setIsSettingsOpen(true);
           }
-          
-          updateLayout({
-            ...currentLayout,
-            [k]: newOrder
-          });
-          
-          setEditingKey(newId);
-          setIsSettingsOpen(true);
         }
         if (action === 'ADD_NESTED_AT') {
           const { id: containerBlockId, blockType } = e.data;
