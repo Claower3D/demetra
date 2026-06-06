@@ -9,7 +9,7 @@ const dragState = {
   startY: 0,
 };
 
-export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder, arrayKey = 'order', style = {} }: any) {
+export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder, arrayKey = 'order', style = {}, className = '' }: any) {
   const [isHovered, setIsHovered] = useState(false);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [contextMenu, setContextMenu] = useState<{x: number, y: number} | null>(null);
@@ -679,7 +679,7 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
   return (
     <div 
       ref={containerRef}
-      className="builder-wrapper"
+      className={`builder-wrapper ${localStyle?.hideOnMobile ? 'responsive-hide' : ''} ${className}`}
       data-builder-id={isBuilder ? id : undefined}
       data-array-key={isBuilder ? arrayKey : undefined}
       onMouseOver={isBuilder ? handleMouseOver : undefined} 

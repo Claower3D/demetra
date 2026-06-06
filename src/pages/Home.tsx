@@ -23,7 +23,9 @@ export default function Home() {
   const { layout, isBuilder } = useBuilderLayout('home', {
     order: ['hero', 'marquee', 'catalog', 'partnership', 'services', 'cta'],
     hidden: [],
-    styles: {},
+    styles: {
+      partnership: { hideOnMobile: true }
+    },
     images: {}
   });
 
@@ -206,7 +208,7 @@ export default function Home() {
                       <Link to={layout?.links?.btn_partner || "/partner"} className="btn-primary" style={{ padding: '1.5rem 3rem', ...(layout?.styles?.btn_partner || {}) }}><InlineEdit tKey="nav_partner" /></Link>
                     </BuilderWrapper>
                   </div>
-                  <div style={{ position: 'relative' }} className="responsive-hide">
+                  <div style={{ position: 'relative' }}>
                     <BuilderWrapper id="partnership" isBuilder={isBuilder}>
                       <img src={layout?.images?.partnership_img || "/corporate_about.png"} alt="" style={{ width: '100%', borderRadius: 'var(--radius)', filter: 'grayscale(0.5) brightness(1.1)', ...(layout?.styles?.partnership || {}) }} />
                     </BuilderWrapper>

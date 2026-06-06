@@ -1948,6 +1948,22 @@ function ModalBodyContent({
           </div>
 
           <div>
+            {labelStyle('Адаптивность / Скрытие')}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.25rem' }}>
+              <input 
+                type="checkbox" 
+                id="hideOnMobile"
+                checked={!!s.hideOnMobile} 
+                onChange={e => setStyleVal('hideOnMobile', e.target.checked)} 
+                style={{ width: '20px', height: '20px', accentColor: '#00ff41', cursor: 'pointer' }}
+              />
+              <label htmlFor="hideOnMobile" style={{ fontSize: '0.85rem', color: '#fff', fontWeight: 'bold', cursor: 'pointer', userSelect: 'none' }}>
+                Скрыть на мобильных (class="responsive-hide")
+              </label>
+            </div>
+          </div>
+
+          <div>
             {labelStyle('Ширина в сетке (Grid Column Span)')}
             <select 
               value={s.gridColumn || 'span 12'} 
