@@ -210,7 +210,17 @@ export default function Home() {
                   </div>
                   <div style={{ position: 'relative' }}>
                     <BuilderWrapper id="partnership" isBuilder={isBuilder}>
-                      <img src={layout?.images?.partnership_img || "/corporate_about.png"} alt="" style={{ width: '100%', borderRadius: 'var(--radius)', filter: 'grayscale(0.5) brightness(1.1)', ...(layout?.styles?.partnership || {}) }} />
+                      <img 
+                        src={layout?.images?.partnership_img || "/corporate_about.png"} 
+                        alt="" 
+                        style={{ 
+                          width: '100%', 
+                          borderRadius: 'var(--radius)', 
+                          filter: 'grayscale(0.5) brightness(1.1)', 
+                          display: 'block',
+                          pointerEvents: isBuilder ? 'none' : 'auto',
+                        }} 
+                      />
                     </BuilderWrapper>
                   </div>
                 </div>

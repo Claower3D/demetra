@@ -496,7 +496,12 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
           !clickTarget.closest('textarea') &&
           !clickTarget.closest('.floating-assistant-container')
         ) {
-          postMsg('OPEN_MODAL', { tab: 'content' });
+          // Auto-open media tab for image/photo wrappers
+          const isImageBlock = id.includes('img') || id.includes('photo') || id.includes('image') ||
+            id === 'partnership' || id === 'hero' || id.startsWith('gallery_');
+          const clickedImg = clickTarget.tagName === 'IMG' || !!clickTarget.closest('img');
+          const defaultTab = (isImageBlock || clickedImg) ? 'media' : 'content';
+          postMsg('OPEN_MODAL', { tab: defaultTab });
         }
         dragState.draggingId = null;
         isDraggingRef.current = false;
@@ -780,11 +785,21 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
                </button>
              )}
 
+             {/* Image edit */}
+             <button 
+               onMouseDown={(e) => e.stopPropagation()}
+               onClick={(e) => { e.stopPropagation(); postMsg('OPEN_MODAL', { tab: 'media' }); }}
+               title="Изменить фото/медиа"
+               style={{ background: 'rgba(0,0,0,0.15)', border: 'none', color: '#000', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '3px 5px', borderRadius: '4px' }}
+             >
+               <ImageIcon size={10} />
+             </button>
+
              {/* Edit */}
              <button 
                onMouseDown={(e) => e.stopPropagation()}
                onClick={(e) => { e.stopPropagation(); postMsg('OPEN_MODAL', { tab: 'content' }); }}
-               title="Редактировать"
+               title="Редактировать текст / настройки"
                style={{ background: 'rgba(0,0,0,0.15)', border: 'none', color: '#000', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '3px 5px', borderRadius: '4px' }}
              >
                <Settings size={10} />
