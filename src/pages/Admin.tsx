@@ -285,6 +285,7 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalActiveTab, setModalActiveTab] = useState<'content' | 'media' | 'scaling'>('content');
   const [addingNestedForBlockId, setAddingNestedForBlockId] = useState<string | null>(null);
+  const [addingBlockAfterContext, setAddingBlockAfterContext] = useState<{ id: string; index: number; arrayKey: string } | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   // Refs so message handlers always read fresh values (avoid stale closures)
   const pageLayoutsRef = useRef<any>({});
@@ -591,6 +592,97 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
     }
   };
 
+  const handleSelectBlockAfterType = (type: string) => {
+    if (!addingBlockAfterContext) return;
+    const { id: targetId, index, arrayKey } = addingBlockAfterContext;
+    const lk = layoutKeyRef.current;
+    const freshLayout = pageLayoutsRef.current[lk] || { order: [], hidden: [] };
+    const newId = arrayKey.startsWith('nested:') ? `nested_${Date.now()}` : `new_block_${Date.now()}`;
+    
+    const defaultDataMap: Record<string, any> = {
+      heading: { type: 'heading', heading: 'Новый заголовок', subheading: 'Раздел', body: 'Описание раздела...' },
+      text: { type: 'text', body: 'Текст нового элемента. Вы можете изменить этот текст в панели настроек.' },
+      divider: { type: 'divider' },
+      button: { type: 'button', label: 'Нажми меня', href: '#' },
+      card: { type: 'card', label: 'Заголовок карточки', body: 'Описание карточки...', src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=600' },
+      two_col: { type: 'two_col', col1: 'Левая колонка с описанием...', col2: 'Правая колонка с характеристиками...' },
+      image_text: { type: 'image_text', heading: 'Индустриальные решения', body: 'Описание преимуществ нашей компании...', src: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=600' },
+      cta_banner: { type: 'cta_banner', heading: 'Готовы начать проект?', subheading: 'Свяжитесь с нами', body: 'Наши специалисты ответят на все вопросы.', label: 'Оставить заявку', href: '/contacts' },
+      container: { type: 'container', childrenBlocks: [] },
+      shape_rect: { type: 'shape_rect', heading: 'Фигура квадрат', src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80' },
+      shape_circle: { type: 'shape_circle', heading: 'Фигура круг', src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80' },
+      shape_line: { type: 'shape_line', heading: 'Фигура линия' }
+    };
+    
+    const blockData = defaultDataMap[type] || { type };
+    setAddingBlockAfterContext(null);
+
+    if (arrayKey.startsWith('nested:')) {
+      const containerBlockId = arrayKey.replace('nested:', '');
+      try {
+        const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+        const parentBlock = customBlocks[containerBlockId] || { type: 'container', childrenBlocks: [] };
+        
+        const children = [...(parentBlock.childrenBlocks || [])];
+        const targetIndex = children.findIndex(c => c.id === targetId);
+        
+        const newNestedBlock = {
+          id: newId,
+          ...blockData
+        };
+        
+        if (targetIndex !== -1) {
+          children.splice(targetIndex + 1, 0, newNestedBlock);
+        } else {
+          children.push(newNestedBlock);
+        }
+        
+        parentBlock.childrenBlocks = children;
+        customBlocks[containerBlockId] = parentBlock;
+        
+        localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
+        window.dispatchEvent(new Event('storage'));
+        
+        if (iframeRef.current) {
+          iframeRef.current.contentWindow?.postMessage({
+            type: 'DEMETRA_UPDATE_LAYOUT',
+            layout: freshLayout
+          }, '*');
+        }
+        
+        setEditingKey(newId);
+        setIsModalOpen(true);
+        setModalActiveTab('content');
+      } catch (err) {
+        console.error("Add block after nested error", err);
+      }
+    } else {
+      try {
+        const allCustomBlocks = { ...getCustomBlocks(), [newId]: blockData };
+        localStorage.setItem('demetra_custom_blocks', JSON.stringify(allCustomBlocks));
+        window.dispatchEvent(new Event('storage'));
+        
+        const newOrder = [...(freshLayout[arrayKey] || [])];
+        const targetIndex = newOrder.indexOf(targetId);
+        if (targetIndex !== -1) {
+          newOrder.splice(targetIndex + 1, 0, newId);
+        } else {
+          newOrder.push(newId);
+        }
+        
+        updateLayout({
+          ...freshLayout,
+          [arrayKey]: newOrder
+        });
+        
+        setEditingKey(newId);
+        setIsSettingsOpen(true);
+      } catch (err) {
+        console.error("Add block after page section error", err);
+      }
+    }
+  };
+
   useEffect(() => {
     const handleMessage = (e: MessageEvent) => {
       if (e.data?.type === 'DEMETRA_BUILDER') {
@@ -862,9 +954,7 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
           updateLayout(e.data.layout);
         }
         if (action === 'ADD_BLOCK_AFTER') {
-           const newOrder = [...(currentLayout.order || [])];
-           newOrder.splice(index + 1, 0, `new_block_${Date.now()}`); // Insert a new dummy block
-           updateLayout({ ...currentLayout, order: newOrder });
+          setAddingBlockAfterContext({ id, index, arrayKey: arrayKey || 'order' });
         }
         if (action === 'MOVE_BLOCK_TO') {
            const { draggedId, targetId, arrayKey: arrKey } = e.data;
@@ -1857,6 +1947,138 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
               
               <button
                 onClick={() => setAddingNestedForBlockId(null)}
+                style={{
+                  width: '100%',
+                  background: '#1a1b1e',
+                  border: 'none',
+                  color: '#6c6f75',
+                  padding: '1rem',
+                  borderRadius: '12px',
+                  cursor: 'pointer',
+                  fontWeight: '700',
+                  fontSize: '0.9rem',
+                  transition: '0.2s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#25262b'}
+                onMouseLeave={(e) => e.currentTarget.style.background = '#1a1b1e'}
+              >
+                Отмена
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Choice of Element After Click Plus Modal */}
+      <AnimatePresence>
+        {addingBlockAfterContext && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100vw',
+              height: '100vh',
+              background: 'rgba(0, 0, 0, 0.85)',
+              zIndex: 99999,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backdropFilter: 'blur(8px)'
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              style={{
+                background: '#0d0d0e',
+                border: '1px solid #1a1b1e',
+                borderRadius: '24px',
+                padding: '2.5rem',
+                width: '450px',
+                boxShadow: '0 30px 70px rgba(0, 0, 0, 0.8)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1.5rem'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: '900', letterSpacing: '0.05em' }}>
+                  {addingBlockAfterContext.arrayKey.startsWith('nested:') 
+                    ? 'ДОБАВИТЬ ЭЛЕМЕНТ В КОНТЕЙНЕР' 
+                    : 'ДОБАВИТЬ СЕКЦИЮ НА СТРАНИЦУ'}
+                </h3>
+                <button
+                  onClick={() => setAddingBlockAfterContext(null)}
+                  style={{ background: 'none', border: 'none', color: '#6c6f75', cursor: 'pointer' }}
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '420px', overflowY: 'auto', paddingRight: '0.25rem' }}>
+                {(addingBlockAfterContext.arrayKey.startsWith('nested:')
+                  ? [
+                      { type: 'heading', name: '📝 Заголовок', desc: 'Заголовок с подзаголовком' },
+                      { type: 'text', name: '📄 Текст / Описание', desc: 'Абзац с форматированным текстом' },
+                      { type: 'button', name: '🎯 Кнопка действия', desc: 'Интерактивная кнопка со ссылкой' },
+                      { type: 'card', name: '🎴 Карточка с фото', desc: 'Сетка карточек с описанием' },
+                      { type: 'image_text', name: '🖼️ Медиа-блок', desc: 'Фото/Видео слева и текст справа' },
+                      { type: 'divider', name: '➖ Разделитель', desc: 'Элегантная градиентная линия' },
+                      { type: 'shape_rect', name: '🟩 Фигура: Квадрат', desc: 'Прямоугольная плашка с фоном/картинкой' },
+                      { type: 'shape_circle', name: '🔴 Фигура: Круг', desc: 'Круглая плашка с фоном/картинкой' },
+                      { type: 'shape_line', name: '➖ Фигура: Линия', desc: 'Декоративная разделительная линия' }
+                    ]
+                  : [
+                      { type: 'container', name: '🔲 Контейнер', desc: 'Свободная область для вложенных элементов и фигур' },
+                      { type: 'heading', name: '📝 Заголовок', desc: 'Крупный заголовок с описанием' },
+                      { type: 'text', name: '📄 Текст', desc: 'Информационный текстовый блок' },
+                      { type: 'button', name: '🎯 Кнопка действия', desc: 'Акцентная кнопка перехода' },
+                      { type: 'card', name: '🎴 Bento Карточка', desc: 'Карточка с картинкой, текстом и ссылкой' },
+                      { type: 'image_text', name: '🖼️ Фото + Текст', desc: 'Блок с разделением контента' },
+                      { type: 'cta_banner', name: '📣 Промо-баннер', desc: 'Акцентный блок обратной связи с кнопкой' },
+                      { type: 'divider', name: '➖ Разделитель', desc: 'Линия-разделитель' }
+                    ]
+                ).map(opt => (
+                  <button
+                    key={opt.type}
+                    onClick={() => handleSelectBlockAfterType(opt.type)}
+                    style={{
+                      background: '#141416',
+                      border: '1px solid #1a1b1e',
+                      color: '#fff',
+                      padding: '1rem 1.25rem',
+                      borderRadius: '12px',
+                      fontSize: '0.9rem',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      transition: 'all 0.2s',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.25rem'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#00ff41';
+                      e.currentTarget.style.background = 'rgba(0, 255, 65, 0.04)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = '#1a1b1e';
+                      e.currentTarget.style.background = '#141416';
+                    }}
+                  >
+                    <span style={{ color: '#fff' }}>{opt.name}</span>
+                    <span style={{ fontSize: '0.7rem', color: '#6c6f75', fontWeight: 'normal' }}>{opt.desc}</span>
+                  </button>
+                ))}
+              </div>
+              
+              <button
+                onClick={() => setAddingBlockAfterContext(null)}
                 style={{
                   width: '100%',
                   background: '#1a1b1e',
