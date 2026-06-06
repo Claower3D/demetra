@@ -707,11 +707,7 @@ body.builder-mode .container {
 }
 
 /* Snapping Grid Builder support */
-body.builder-mode .home-wrapper,
-body.builder-mode .bento-grid,
-body.builder-mode .grid-2,
-body.builder-mode .grid-3,
-body.builder-mode .grid-4 {
+body.builder-mode .home-wrapper {
   display: grid !important;
   grid-template-columns: repeat(12, 1fr) !important;
   grid-auto-flow: dense !important;
@@ -720,7 +716,36 @@ body.builder-mode .grid-4 {
   min-height: 100px;
 }
 
-body.builder-mode .home-wrapper > *,
+body.builder-mode .bento-grid,
+body.builder-mode .grid-2,
+body.builder-mode .grid-3,
+body.builder-mode .grid-4 {
+  display: grid !important;
+  grid-template-columns: repeat(12, 1fr) !important;
+  grid-auto-flow: dense !important;
+  gap: 24px !important;
+  padding: 12px !important;
+  min-height: 100px;
+}
+
+body.builder-mode .home-wrapper > * {
+  grid-column: span 12 !important;
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
+body.builder-mode .grid-2 > * {
+  grid-column: span 6 !important;
+}
+
+body.builder-mode .grid-3 > * {
+  grid-column: span 4 !important;
+}
+
+body.builder-mode .grid-4 > * {
+  grid-column: span 3 !important;
+}
+
 body.builder-mode .bento-grid > *,
 body.builder-mode .grid-2 > *,
 body.builder-mode .grid-3 > *,
@@ -728,6 +753,37 @@ body.builder-mode .grid-4 > * {
   width: 100% !important;
   height: 100% !important;
   box-sizing: border-box;
+}
+
+@media (max-width: 1024px) {
+  body.builder-mode .grid-3 > * {
+    grid-column: span 6 !important;
+  }
+  body.builder-mode .grid-4 > * {
+    grid-column: span 6 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  body.builder-mode .bento-grid,
+  body.builder-mode .grid-2,
+  body.builder-mode .grid-3,
+  body.builder-mode .grid-4 {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    padding: 8px !important;
+  }
+
+  body.builder-mode .bento-grid > *,
+  body.builder-mode .grid-2 > *,
+  body.builder-mode .grid-3 > *,
+  body.builder-mode .grid-4 > * {
+    grid-column: span 12 !important;
+  }
+  
+  .industrial-card {
+    padding: 2rem !important;
+  }
 }
 
 /* Grab cursors for dragging indicators */
@@ -910,5 +966,43 @@ body.light-theme select:focus {
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Responsive catalog big card */
+.catalog-big-card {
+  height: 700px;
+}
+
+@media (max-width: 768px) {
+  .catalog-big-card {
+    height: 400px !important;
+  }
+}
+
+/* Responsive service grid inside page and cards */
+.service-item-grid {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 4rem;
+  align-items: center;
+}
+
+@media (max-width: 868px) {
+  .service-item-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+    text-align: center;
+    justify-items: center;
+  }
+}
+
+.service-item-card {
+  padding: 4rem;
+}
+
+@media (max-width: 768px) {
+  .service-item-card {
+    padding: 2rem !important;
   }
 }

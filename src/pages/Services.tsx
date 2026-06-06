@@ -69,11 +69,11 @@ export default function Services() {
                         <motion.div
                           key={i}
                           whileHover={{ x: 20 }}
-                          className="industrial-card"
-                          style={{ padding: '4rem', display: 'grid', gridTemplateColumns: 'auto 1fr auto', gap: '4rem', alignItems: 'center', ...cardStyle }}
+                          className="industrial-card service-item-card"
+                          style={{ ...cardStyle }}
                         >
                           <BuilderWrapper id={cardId} isBuilder={isBuilder}>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', gap: '4rem', alignItems: 'center' }}>
+                            <div className="service-item-grid">
                               <div style={{ color: 'var(--primary)', background: 'rgba(0, 255, 65, 0.1)', padding: '2rem', borderRadius: '16px' }}>
                                 {srv.icon}
                               </div>

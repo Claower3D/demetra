@@ -151,7 +151,7 @@ export default function Home() {
                      const style = layout?.styles?.[blockId] || {};
                      return (
                        <BuilderWrapper key={blockId} id={blockId} index={0} isFirst={true} isLast={false} isBuilder={isBuilder} arrayKey="order_catalog" style={style}>
-                         <div className="product-card" style={{ height: '700px' }}>
+                         <div className="product-card catalog-big-card">
                            <Link to={`/product/${item.id}`} style={{ display: 'block', height: '100%' }}>
                              <img src={layout?.images?.[`${blockId}_img`] || item.image} alt="" style={{ height: '100%', objectFit: 'cover' }} />
                              <div className="product-info" style={{ padding: '4rem' }}>
@@ -232,7 +232,7 @@ export default function Home() {
                    return (
                      <div key={blockId}>
                        <BuilderWrapper id={blockId} index={i} isFirst={i === 0} isLast={i === servicesOrder.length - 1} isBuilder={isBuilder} arrayKey="order_services" style={style}>
-                         <div className="industrial-card" style={{ padding: '4rem', height: '100%' }}>
+                         <div className="industrial-card service-item-card" style={{ height: '100%' }}>
                            <div style={{ color: 'var(--primary)', marginBottom: '2.5rem' }}>{service.icon}</div>
                            <h3 style={{ fontSize: '1.8rem', marginBottom: '1.5rem' }}><InlineEdit tKey={service.titleKey} /></h3>
                            <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', lineHeight: '1.7', marginBottom: '2.5rem' }}><InlineEdit tKey={service.descKey} /></p>
