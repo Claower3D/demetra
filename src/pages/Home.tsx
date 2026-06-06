@@ -197,23 +197,59 @@ export default function Home() {
         content = (
           <section key="partnership" className="section-padding bg-carbon" style={{ ...blockStyle, width: '100%', transform: 'none', margin: '0 auto' }}>
             <div className="container">
-              <div className="industrial-card" style={{ padding: 'clamp(2rem, 5vw, 6rem)' }}>
-                <div className="grid-2" style={{ alignItems: 'center' }}>
-                  <div>
-                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.75rem', color: 'var(--primary)', fontWeight: '800', fontSize: '0.8rem', letterSpacing: '0.3em', marginBottom: '2rem' }}><Handshake size={20} /> <InlineEdit tKey="partner_title" /></div>
-                    <h2 style={{ fontSize: 'clamp(2rem, 5vw, 4rem)', marginBottom: '2rem', lineHeight: '1.1' }}><InlineEdit tKey="partner_subtitle" /></h2>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', lineHeight: '1.7', marginBottom: '3rem' }}><InlineEdit tKey="partner_desc" /></p>
-                    <div style={{ display: 'grid', gap: '1.5rem', marginBottom: '4rem' }}>{[1, 2, 3].map((num) => (<div key={num} style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontWeight: '700' }}><div style={{ width: '8px', height: '8px', background: 'var(--primary)', borderRadius: '50%' }}></div> <InlineEdit tKey={`partner_feat_${num}`} /></div>))}</div>
-                    <BuilderWrapper id="btn_partner" isBuilder={isBuilder}>
-                      <Link to={layout?.links?.btn_partner || "/partner"} className="btn-primary" style={{ padding: '1.5rem 3rem', ...(layout?.styles?.btn_partner || {}) }}><InlineEdit tKey="nav_partner" /></Link>
+              <div className="industrial-card" style={{ padding: 'clamp(2rem, 5vw, 6rem)', position: 'relative', ...(layout?.styles?.partnership_card || {}) }}>
+                <div className="grid-2" style={{ alignItems: 'center', position: 'relative', ...(layout?.styles?.partnership_grid || {}) }}>
+                  <div style={{ position: 'relative', ...(layout?.styles?.partnership_left || {}) }}>
+                    
+                    <BuilderWrapper id="partner_badge" isBuilder={isBuilder} style={layout?.styles?.partner_badge}>
+                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.75rem', color: 'var(--primary)', fontWeight: '800', fontSize: '0.8rem', letterSpacing: '0.3em', marginBottom: '2rem' }}>
+                        <Handshake size={20} /> <InlineEdit tKey="partner_title" />
+                      </div>
                     </BuilderWrapper>
+
+                    <BuilderWrapper id="partner_heading" isBuilder={isBuilder} style={layout?.styles?.partner_heading}>
+                      <h2 style={{ fontSize: 'clamp(2rem, 5vw, 4rem)', marginBottom: '2rem', lineHeight: '1.1' }}>
+                        <InlineEdit tKey="partner_subtitle" />
+                      </h2>
+                    </BuilderWrapper>
+
+                    <BuilderWrapper id="partner_desc" isBuilder={isBuilder} style={layout?.styles?.partner_desc}>
+                      <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', lineHeight: '1.7', marginBottom: '3rem' }}>
+                        <InlineEdit tKey="partner_desc" />
+                      </p>
+                    </BuilderWrapper>
+
+                    <div style={{ display: 'grid', gap: '1.5rem', marginBottom: '4rem', ...(layout?.styles?.partner_features_list || {}) }}>
+                      {[1, 2, 3].map((num) => {
+                        const featId = `partner_feat_${num}`;
+                        return (
+                          <BuilderWrapper key={featId} id={featId} isBuilder={isBuilder} style={layout?.styles?.[featId]}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontWeight: '700' }}>
+                              <div style={{ width: '8px', height: '8px', background: 'var(--primary)', borderRadius: '50%', flexShrink: 0 }}></div>
+                              <InlineEdit tKey={`partner_feat_${num}`} />
+                            </div>
+                          </BuilderWrapper>
+                        );
+                      })}
+                    </div>
+
+                    <BuilderWrapper id="btn_partner" isBuilder={isBuilder} style={layout?.styles?.btn_partner}>
+                      <Link to={layout?.links?.btn_partner || "/partner"} className="btn-primary" style={{ padding: '1.5rem 3rem', display: 'inline-block' }}>
+                        <InlineEdit tKey="nav_partner" />
+                      </Link>
+                    </BuilderWrapper>
+
                   </div>
-                  <div style={{ position: 'relative' }}>
-                    <PartnershipImageEditor
-                      isBuilder={isBuilder}
-                      layout={layout}
-                    />
-                  </div>
+
+                  <BuilderWrapper id="partner_image" isBuilder={isBuilder} style={layout?.styles?.partner_image}>
+                    <div style={{ position: 'relative' }}>
+                      <PartnershipImageEditor
+                        isBuilder={isBuilder}
+                        layout={layout}
+                      />
+                    </div>
+                  </BuilderWrapper>
+
                 </div>
               </div>
             </div>
