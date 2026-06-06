@@ -306,6 +306,8 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
   // Refs so message handlers always read fresh values (avoid stale closures)
   const pageLayoutsRef = useRef<any>({});
   const layoutKeyRef   = useRef<string>('home');
+  // Ref for addCustomBlock so global drag listeners always call the latest version
+  const addCustomBlockRef = useRef<(type: string) => void>(() => {});
 
   const getBlockHelp = (id: string) => {
     const helpData: Record<string, { title: string; desc: string; steps: string[] }> = {
@@ -532,6 +534,8 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
     setEditingKey(newId);
     setIsSettingsOpen(true);
   };
+  // Keep ref in sync so global drag-drop listener always calls latest addCustomBlock
+  addCustomBlockRef.current = addCustomBlock;
 
   const addGalleryItem = () => {
     const newId = `gallery_${Date.now()}`;
@@ -1050,6 +1054,35 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
   }, []); // Empty deps: refs keep values fresh
 
   useEffect(() => {
+    const handleDocDragOver = (e: DragEvent) => {
+      if (!e.dataTransfer) return;
+      const data = e.dataTransfer.types;
+      if (data && data.includes('text/plain')) {
+        e.preventDefault();
+      }
+    };
+    const handleDocDrop = (e: DragEvent) => {
+      if (!e.dataTransfer) return;
+      const raw = e.dataTransfer.getData('text/plain');
+      if (!raw || !raw.startsWith('add_block:')) return;
+      e.preventDefault();
+      const type = raw.replace('add_block:', '');
+      if (type) {
+        // Use a ref-stable reference so we always call the latest addCustomBlock
+        addCustomBlockRef.current(type);
+      }
+      setIsDraggingFromLib(null);
+    };
+    document.addEventListener('dragover', handleDocDragOver);
+    document.addEventListener('drop', handleDocDrop);
+    return () => {
+      document.removeEventListener('dragover', handleDocDragOver);
+      document.removeEventListener('drop', handleDocDrop);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     if (iframeRef.current?.contentWindow) {
       iframeRef.current.contentWindow.postMessage({ type: 'DEMETRA_UPDATE_LAYOUT', layout: currentLayout }, '*');
       iframeRef.current.contentWindow.postMessage({ type: 'DEMETRA_UPDATE_TRANSLATIONS', translations: allTranslations }, '*');
@@ -1565,22 +1598,11 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
         )}
 
         {/* The Page Itself - Now a real Iframe showing the full site including Header and Footer! */}
-        <div
-          style={{ flex: 1, position: 'relative', background: '#000' }}
-          onDragOver={(e) => { if (isDraggingFromLib) { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; } }}
-          onDrop={(e) => {
-            if (!isDraggingFromLib) return;
-            e.preventDefault();
-            const raw = e.dataTransfer.getData('text/plain');
-            const type = raw.startsWith('add_block:') ? raw.replace('add_block:', '') : raw;
-            if (type) addCustomBlock(type);
-            setIsDraggingFromLib(null);
-          }}
-        >
+        <div style={{ flex: 1, position: 'relative', background: '#000' }}>
            <iframe 
               ref={iframeRef}
               src={previewRoute} 
-              style={{ width: '100%', height: '100%', border: 'none', pointerEvents: isDraggingFromLib ? 'none' : 'auto' }}
+              style={{ width: '100%', height: '100%', border: 'none' }}
               title="Live Preview"
               onLoad={(e) => {
                  // Resync data when iframe navigates
@@ -1589,22 +1611,34 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
                  win?.postMessage({ type: 'DEMETRA_UPDATE_TRANSLATIONS', translations: allTranslations }, '*');
               }}
            />
-           {/* Drop overlay — visible only while dragging from library */}
+           {/* Active drop overlay — receives drag events when dragging from library */}
            {isDraggingFromLib && (
-             <div style={{
-               position: 'absolute', inset: 0,
-               background: 'rgba(0, 255, 65, 0.05)',
-               border: '3px dashed rgba(0, 255, 65, 0.6)',
-               borderRadius: '8px',
-               display: 'flex',
-               flexDirection: 'column',
-               alignItems: 'center',
-               justifyContent: 'center',
-               gap: '1rem',
-               pointerEvents: 'none',
-               zIndex: 9999
-             }}>
-               <div style={{ fontSize: '3rem' }}>✦</div>
+             <div
+               style={{
+                 position: 'absolute', inset: 0,
+                 background: 'rgba(0, 255, 65, 0.08)',
+                 border: '3px dashed rgba(0, 255, 65, 0.7)',
+                 borderRadius: '8px',
+                 display: 'flex',
+                 flexDirection: 'column',
+                 alignItems: 'center',
+                 justifyContent: 'center',
+                 gap: '1rem',
+                 pointerEvents: 'all',
+                 zIndex: 9999,
+                 cursor: 'copy'
+               }}
+               onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; }}
+               onDragLeave={() => {}}
+               onDrop={(e) => {
+                 e.preventDefault();
+                 const raw = e.dataTransfer.getData('text/plain');
+                 const type = raw.startsWith('add_block:') ? raw.replace('add_block:', '') : raw;
+                 if (type) addCustomBlock(type);
+                 setIsDraggingFromLib(null);
+               }}
+             >
+               <div style={{ fontSize: '3rem', animation: 'pulse 1s infinite' }}>✦</div>
                <div style={{ color: '#00ff41', fontSize: '1.2rem', fontWeight: '900', letterSpacing: '0.1em' }}>Отпустите для добавления</div>
                <div style={{ color: 'rgba(0,255,65,0.6)', fontSize: '0.85rem' }}>Элемент добавится в конец страницы</div>
              </div>
