@@ -708,12 +708,13 @@ body.builder-mode .container {
 
 /* Snapping Grid Builder support */
 body.builder-mode .home-wrapper {
-  display: grid !important;
-  grid-template-columns: repeat(12, 1fr) !important;
-  grid-auto-flow: dense !important;
-  gap: 24px !important;
-  padding: 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  padding: 0 !important;
   min-height: 100px;
+  width: 100% !important;
+  align-items: stretch !important;
 }
 
 body.builder-mode .bento-grid,
@@ -729,8 +730,8 @@ body.builder-mode .grid-4 {
 }
 
 body.builder-mode .home-wrapper > * {
-  grid-column: span 12 !important;
   width: 100% !important;
+  flex-shrink: 0 !important;
   box-sizing: border-box;
 }
 
