@@ -301,6 +301,7 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
   const [modalActiveTab, setModalActiveTab] = useState<'content' | 'media' | 'scaling'>('content');
   const [addingNestedForBlockId, setAddingNestedForBlockId] = useState<string | null>(null);
   const [addingBlockAfterContext, setAddingBlockAfterContext] = useState<{ id: string; index: number; arrayKey: string } | null>(null);
+  const [isDraggingFromLib, setIsDraggingFromLib] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   // Refs so message handlers always read fresh values (avoid stale closures)
   const pageLayoutsRef = useRef<any>({});
@@ -1382,7 +1383,9 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
                                  onDragStart={(e) => {
                                    e.dataTransfer.setData("text/plain", `add_block:${el.id}`);
                                    e.dataTransfer.effectAllowed = "copy";
+                                   setIsDraggingFromLib(el.id);
                                  }}
+                                 onDragEnd={() => setIsDraggingFromLib(null)}
                                  style={{
                                    background: '#121214',
                                    border: '1px solid #1e1e22',
@@ -1433,7 +1436,9 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
                                  onDragStart={(e) => {
                                    e.dataTransfer.setData("text/plain", `add_block:${el.id}`);
                                    e.dataTransfer.effectAllowed = "copy";
+                                   setIsDraggingFromLib(el.id);
                                  }}
+                                 onDragEnd={() => setIsDraggingFromLib(null)}
                                  style={{
                                    background: '#121214',
                                    border: '1px solid #1e1e22',
@@ -1560,11 +1565,22 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
         )}
 
         {/* The Page Itself - Now a real Iframe showing the full site including Header and Footer! */}
-        <div style={{ flex: 1, position: 'relative', background: '#000' }}>
+        <div
+          style={{ flex: 1, position: 'relative', background: '#000' }}
+          onDragOver={(e) => { if (isDraggingFromLib) { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; } }}
+          onDrop={(e) => {
+            if (!isDraggingFromLib) return;
+            e.preventDefault();
+            const raw = e.dataTransfer.getData('text/plain');
+            const type = raw.startsWith('add_block:') ? raw.replace('add_block:', '') : raw;
+            if (type) addCustomBlock(type);
+            setIsDraggingFromLib(null);
+          }}
+        >
            <iframe 
               ref={iframeRef}
               src={previewRoute} 
-              style={{ width: '100%', height: '100%', border: 'none' }}
+              style={{ width: '100%', height: '100%', border: 'none', pointerEvents: isDraggingFromLib ? 'none' : 'auto' }}
               title="Live Preview"
               onLoad={(e) => {
                  // Resync data when iframe navigates
@@ -1573,6 +1589,26 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
                  win?.postMessage({ type: 'DEMETRA_UPDATE_TRANSLATIONS', translations: allTranslations }, '*');
               }}
            />
+           {/* Drop overlay — visible only while dragging from library */}
+           {isDraggingFromLib && (
+             <div style={{
+               position: 'absolute', inset: 0,
+               background: 'rgba(0, 255, 65, 0.05)',
+               border: '3px dashed rgba(0, 255, 65, 0.6)',
+               borderRadius: '8px',
+               display: 'flex',
+               flexDirection: 'column',
+               alignItems: 'center',
+               justifyContent: 'center',
+               gap: '1rem',
+               pointerEvents: 'none',
+               zIndex: 9999
+             }}>
+               <div style={{ fontSize: '3rem' }}>✦</div>
+               <div style={{ color: '#00ff41', fontSize: '1.2rem', fontWeight: '900', letterSpacing: '0.1em' }}>Отпустите для добавления</div>
+               <div style={{ color: 'rgba(0,255,65,0.6)', fontSize: '0.85rem' }}>Элемент добавится в конец страницы</div>
+             </div>
+           )}
         </div>
       </div>
 
