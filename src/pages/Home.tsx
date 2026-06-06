@@ -74,7 +74,7 @@ export default function Home() {
     switch (id) {
       case 'hero':
         content = (
-          <section key="hero" style={{ height: '100vh', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', ...blockStyle }}>
+          <section key="hero" style={{ height: '100vh', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', ...blockStyle, width: '100%', transform: 'none', margin: '0 auto' }}>
             <AnimatePresence mode="wait">
               <motion.div key={currentSlide} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.5 }} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', overflow: 'hidden' }}>
                 {layout?.mediaTypes?.hero_type === 'video' && layout?.videos?.hero_video ? (
@@ -132,14 +132,14 @@ export default function Home() {
         break;
       case 'marquee':
         content = (
-          <div key="marquee" className="marquee-container bg-blueprint" style={{ ...blockStyle }}>
+          <div key="marquee" className="marquee-container bg-blueprint" style={{ ...blockStyle, width: '100%', transform: 'none', margin: '0 auto' }}>
             <div className="marquee-content">{[...Array(10)].map((_, i) => (<div key={i} className="marquee-item">DEMETRA-2005 / SYSTEM_ACTIVE / QUALITY_ASSURANCE / </div>))}</div>
           </div>
         );
         break;
       case 'catalog':
         content = (
-          <section key="catalog" className="section-padding bg-blueprint" style={{ borderBottom: '1px solid var(--border)', ...blockStyle }}>
+          <section key="catalog" className="section-padding bg-blueprint" style={{ borderBottom: '1px solid var(--border)', ...blockStyle, width: '100%', transform: 'none', margin: '0 auto' }}>
             <div className="container">
               <div className="section-header"><div><div style={{ color: 'var(--primary)', fontWeight: '800', fontSize: '0.8rem', letterSpacing: '0.3em', marginBottom: '1rem' }}>EQUIPMENT INVENTORY</div><h2 style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)' }}><InlineEdit tKey="cat_title_1" /> <span style={{ color: 'var(--primary)' }}><InlineEdit tKey="cat_title_2" /></span></h2></div><Link to="/catalog" className="btn-outline"><InlineEdit tKey="btn_catalog" /> <ChevronRight size={18} /></Link></div>
               <div className="catalog-grid-asymmetric">
@@ -193,7 +193,7 @@ export default function Home() {
         break;
       case 'partnership':
         content = (
-          <section key="partnership" className="section-padding bg-carbon" style={{ ...blockStyle }}>
+          <section key="partnership" className="section-padding bg-carbon" style={{ ...blockStyle, width: '100%', transform: 'none', margin: '0 auto' }}>
             <div className="container">
               <div className="industrial-card" style={{ padding: 'clamp(2rem, 5vw, 6rem)' }}>
                 <div className="grid-2" style={{ alignItems: 'center' }}>
@@ -215,7 +215,7 @@ export default function Home() {
         break;
       case 'services':
         content = (
-          <section key="services" className="section-padding" style={{ background: 'var(--surface)', ...blockStyle }}>
+          <section key="services" className="section-padding" style={{ background: 'var(--surface)', ...blockStyle, width: '100%', transform: 'none', margin: '0 auto' }}>
             <div className="container">
               <div style={{ textAlign: 'center', marginBottom: '6rem' }}>
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: '1rem', color: 'var(--primary)', fontWeight: '800', fontSize: '0.8rem', letterSpacing: '0.3em', marginBottom: '2rem' }}><div style={{ width: '40px', height: '1px', background: 'var(--primary)' }}></div> <InlineEdit tKey="srv_subtitle" /></div>
@@ -249,7 +249,7 @@ export default function Home() {
         break;
       case 'cta':
         content = (
-          <section key="cta" className="section-padding bg-gradient-tech" style={{ ...blockStyle }}>
+          <section key="cta" className="section-padding bg-gradient-tech" style={{ ...blockStyle, width: '100%', transform: 'none', margin: '0 auto' }}>
             <div className="container">
               <div className="industrial-card" style={{ padding: 'clamp(4rem, 10vw, 8rem) 1.5rem', textAlign: 'center', borderColor: 'var(--primary)', background: 'transparent', ...blockStyle }}><h2 style={{ fontSize: 'clamp(2.5rem, 8vw, 5rem)', marginBottom: '2rem' }}><InlineEdit tKey="cta_title" /></h2><p style={{ fontSize: '1.5rem', color: 'var(--text-muted)', maxWidth: '800px', margin: '0 auto 4rem' }}><InlineEdit tKey="footer_desc" /></p>
                 <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', flexWrap: 'wrap' }}>
