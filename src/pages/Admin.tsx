@@ -662,8 +662,15 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
         localStorage.setItem('demetra_custom_blocks', JSON.stringify(allCustomBlocks));
         window.dispatchEvent(new Event('storage'));
         
-        const newOrder = [...(freshLayout[arrayKey] || [])];
-        const targetIndex = newOrder.indexOf(targetId);
+        let targetSectionId = targetId;
+        if (targetId.startsWith('cat_')) targetSectionId = 'catalog';
+        else if (targetId.startsWith('partner_') || targetId === 'btn_partner' || targetId === 'partnership_img') targetSectionId = 'partnership';
+        else if (targetId.startsWith('srv_') || targetId.startsWith('service-')) targetSectionId = 'services';
+        else if (targetId.startsWith('btn_hero_')) targetSectionId = 'hero';
+        else if (targetId.startsWith('btn_cta_')) targetSectionId = 'cta';
+
+        const newOrder = [...(freshLayout.order || [])];
+        const targetIndex = newOrder.indexOf(targetSectionId);
         if (targetIndex !== -1) {
           newOrder.splice(targetIndex + 1, 0, newId);
         } else {
@@ -672,7 +679,7 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
         
         updateLayout({
           ...freshLayout,
-          [arrayKey]: newOrder
+          order: newOrder
         });
         
         setEditingKey(newId);
@@ -849,7 +856,10 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
             two_col: { type: 'two_col', col1: 'Левая колонка с описанием...', col2: 'Правая колонка с характеристиками...' },
             image_text: { type: 'image_text', heading: 'Индустриальные решения', body: 'Описание преимуществ нашей компании...', src: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=600' },
             cta_banner: { type: 'cta_banner', heading: 'Готовы начать проект?', subheading: 'Свяжитесь с нами', body: 'Наши специалисты ответят на все вопросы.', label: 'Оставить заявку', href: '/contacts' },
-            container: { type: 'container', childrenBlocks: [] }
+            container: { type: 'container', childrenBlocks: [] },
+            shape_rect: { type: 'shape_rect', heading: 'Фигура квадрат', src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80' },
+            shape_circle: { type: 'shape_circle', heading: 'Фигура круг', src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80' },
+            shape_line: { type: 'shape_line', heading: 'Фигура линия' }
           };
 
           if (k.startsWith('nested:')) {
@@ -896,8 +906,15 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
             localStorage.setItem('demetra_custom_blocks', JSON.stringify(allCustomBlocks));
             window.dispatchEvent(new Event('storage'));
             
-            const newOrder = [...(currentLayout[k] || [])];
-            const targetIndex = newOrder.indexOf(targetId);
+            let targetSectionId = targetId;
+            if (targetId.startsWith('cat_')) targetSectionId = 'catalog';
+            else if (targetId.startsWith('partner_') || targetId === 'btn_partner' || targetId === 'partnership_img') targetSectionId = 'partnership';
+            else if (targetId.startsWith('srv_') || targetId.startsWith('service-')) targetSectionId = 'services';
+            else if (targetId.startsWith('btn_hero_')) targetSectionId = 'hero';
+            else if (targetId.startsWith('btn_cta_')) targetSectionId = 'cta';
+
+            const newOrder = [...(currentLayout.order || [])];
+            const targetIndex = newOrder.indexOf(targetSectionId);
             if (targetIndex !== -1) {
               newOrder.splice(targetIndex, 0, newId);
             } else {
@@ -906,7 +923,7 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
             
             updateLayout({
               ...currentLayout,
-              [k]: newOrder
+              order: newOrder
             });
             
             setEditingKey(newId);
