@@ -243,7 +243,20 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
                 )}
               </div>
             ) : (
-              data.src && <img src={data.src} alt="" style={{ width: '100%', height: '260px', objectFit: 'cover', display: 'block' }} />
+              data.src ? (
+                <img src={data.src} alt="" style={{ width: '100%', height: '260px', objectFit: 'cover', display: 'block' }} />
+              ) : (
+                isBuilder ? (
+                  <div style={{
+                    width: '100%', height: '260px', background: 'rgba(255,255,255,0.02)',
+                    borderBottom: '1.5px dashed var(--border)', display: 'flex', flexDirection: 'column',
+                    alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: 'var(--text-muted)'
+                  }}>
+                    <span style={{ fontSize: '2rem' }}>🖼️</span>
+                    <span style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>Добавь фото или видео</span>
+                  </div>
+                ) : null
+              )
             )}
             <div style={{ padding: '2.5rem' }}>
               {label && (
@@ -300,7 +313,21 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
               )}
             </div>
           ) : (
-            data.src && <img src={data.src} alt="" style={{ width: '100%', borderRadius: 'var(--radius)', display: 'block', aspectRatio: '16/9', objectFit: 'cover' }} />
+            data.src ? (
+              <img src={data.src} alt="" style={{ width: '100%', borderRadius: 'var(--radius)', display: 'block', aspectRatio: '16/9', objectFit: 'cover' }} />
+            ) : (
+              isBuilder ? (
+                <div style={{
+                  width: '100%', aspectRatio: '16/9', background: 'rgba(255,255,255,0.02)',
+                  border: '1.5px dashed var(--border)', borderRadius: 'var(--radius)',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  gap: '0.5rem', color: 'var(--text-muted)'
+                }}>
+                  <span style={{ fontSize: '2rem' }}>🖼️</span>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>Добавь фото или видео</span>
+                </div>
+              ) : null
+            )
           )}
           <div>
             {heading && <h3 style={{ fontSize: '2rem', fontWeight: '900', marginBottom: '1.5rem', color: 'var(--foreground)' }}>{heading}</h3>}
@@ -369,7 +396,6 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
 
     case 'container':
       const children = data.childrenBlocks || [];
-      const isBuilder = window.self !== window.top;
 
       const handleContainerDragOver = (e: React.DragEvent) => {
         if (!isBuilder) return;

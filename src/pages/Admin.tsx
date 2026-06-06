@@ -73,6 +73,21 @@ const findParentBlockOfNested = (nestedId: string) => {
   return null;
 };
 
+export const defaultDataMap: Record<string, any> = {
+  heading: { type: 'heading', heading: 'Впиши заголовок...', subheading: 'Раздел', body: 'Впиши описание...' },
+  text: { type: 'text', body: 'Впиши текст...' },
+  divider: { type: 'divider' },
+  button: { type: 'button', label: 'Нажми меня', href: '#' },
+  card: { type: 'card', label: 'Впиши заголовок', body: 'Впиши описание карточки...', src: '', mediaType: 'image' },
+  two_col: { type: 'two_col', col1: 'Впиши левую колонку...', col2: 'Впиши правую колонку...' },
+  image_text: { type: 'image_text', heading: 'Впиши заголовок', body: 'Впиши описание...', src: '', mediaType: 'image' },
+  cta_banner: { type: 'cta_banner', heading: 'Готовы начать?', subheading: 'Обратная связь', body: 'Впиши описание...', label: 'Оставить заявку', href: '/contacts' },
+  container: { type: 'container', childrenBlocks: [] },
+  shape_rect: { type: 'shape_rect', heading: 'Фигура квадрат', src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80' },
+  shape_circle: { type: 'shape_circle', heading: 'Фигура круг', src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80' },
+  shape_line: { type: 'shape_line', heading: 'Фигура линия' }
+};
+
 // Full site preview components (simplified for admin context)
 import HomeContent from './Home';
 
@@ -503,18 +518,6 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
   const addCustomBlock = (type: string) => {
     const newId = `new_block_${Date.now()}`;
     
-    const defaultDataMap: Record<string, any> = {
-      heading: { type: 'heading', heading: 'Новый заголовок', subheading: 'Раздел', body: 'Описание раздела...' },
-      text: { type: 'text', body: 'Текст нового блока. Вы можете изменить этот текст в панели настроек.' },
-      divider: { type: 'divider' },
-      button: { type: 'button', label: 'Нажми меня', href: '#' },
-      card: { type: 'card', label: 'Заголовок карточки', body: 'Описание карточки...', src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=600' },
-      two_col: { type: 'two_col', col1: 'Левая колонка с описанием...', col2: 'Правая колонка с характеристиками...' },
-      image_text: { type: 'image_text', heading: 'Индустриальные решения', body: 'Описание преимуществ нашей компании...', src: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=600' },
-      cta_banner: { type: 'cta_banner', heading: 'Готовы начать проект?', subheading: 'Свяжитесь с нами', body: 'Наши специалисты ответят на все вопросы.', label: 'Оставить заявку', href: '/contacts' },
-      container: { type: 'container', childrenBlocks: [] }
-    };
-    
     const allCustomBlocks = { ...getCustomBlocks(), [newId]: defaultDataMap[type] || { type } };
     localStorage.setItem('demetra_custom_blocks', JSON.stringify(allCustomBlocks));
     window.dispatchEvent(new Event('storage'));
@@ -561,12 +564,7 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
       const newNestedId = `nested_${Date.now()}`;
       const newNestedBlock = {
         id: newNestedId,
-        type: type,
-        heading: 'Новый элемент',
-        body: 'Описание элемента',
-        label: 'Кнопка',
-        src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80',
-        href: '#'
+        ...(defaultDataMap[type] || { type })
       };
       
       parentBlock.childrenBlocks = [...(parentBlock.childrenBlocks || []), newNestedBlock];
@@ -598,21 +596,6 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
     const lk = layoutKeyRef.current;
     const freshLayout = pageLayoutsRef.current[lk] || { order: [], hidden: [] };
     const newId = arrayKey.startsWith('nested:') ? `nested_${Date.now()}` : `new_block_${Date.now()}`;
-    
-    const defaultDataMap: Record<string, any> = {
-      heading: { type: 'heading', heading: 'Новый заголовок', subheading: 'Раздел', body: 'Описание раздела...' },
-      text: { type: 'text', body: 'Текст нового элемента. Вы можете изменить этот текст в панели настроек.' },
-      divider: { type: 'divider' },
-      button: { type: 'button', label: 'Нажми меня', href: '#' },
-      card: { type: 'card', label: 'Заголовок карточки', body: 'Описание карточки...', src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=600' },
-      two_col: { type: 'two_col', col1: 'Левая колонка с описанием...', col2: 'Правая колонка с характеристиками...' },
-      image_text: { type: 'image_text', heading: 'Индустриальные решения', body: 'Описание преимуществ нашей компании...', src: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=600' },
-      cta_banner: { type: 'cta_banner', heading: 'Готовы начать проект?', subheading: 'Свяжитесь с нами', body: 'Наши специалисты ответят на все вопросы.', label: 'Оставить заявку', href: '/contacts' },
-      container: { type: 'container', childrenBlocks: [] },
-      shape_rect: { type: 'shape_rect', heading: 'Фигура квадрат', src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80' },
-      shape_circle: { type: 'shape_circle', heading: 'Фигура круг', src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80' },
-      shape_line: { type: 'shape_line', heading: 'Фигура линия' }
-    };
     
     const blockData = defaultDataMap[type] || { type };
     setAddingBlockAfterContext(null);
@@ -846,21 +829,6 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
           const { type, targetId, arrayKey: arrKey } = e.data;
           const k = arrKey || 'order';
           const newId = `new_block_${Date.now()}`;
-          
-          const defaultDataMap: Record<string, any> = {
-            heading: { type: 'heading', heading: 'Новый заголовок', subheading: 'Раздел', body: 'Описание раздела...' },
-            text: { type: 'text', body: 'Текст нового блока. Вы можете изменить этот текст в панели настроек.' },
-            divider: { type: 'divider' },
-            button: { type: 'button', label: 'Нажми меня', href: '#' },
-            card: { type: 'card', label: 'Заголовок карточки', body: 'Описание карточки...', src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=600' },
-            two_col: { type: 'two_col', col1: 'Левая колонка с описанием...', col2: 'Правая колонка с характеристиками...' },
-            image_text: { type: 'image_text', heading: 'Индустриальные решения', body: 'Описание преимуществ нашей компании...', src: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=600' },
-            cta_banner: { type: 'cta_banner', heading: 'Готовы начать проект?', subheading: 'Свяжитесь с нами', body: 'Наши специалисты ответят на все вопросы.', label: 'Оставить заявку', href: '/contacts' },
-            container: { type: 'container', childrenBlocks: [] },
-            shape_rect: { type: 'shape_rect', heading: 'Фигура квадрат', src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80' },
-            shape_circle: { type: 'shape_circle', heading: 'Фигура круг', src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80' },
-            shape_line: { type: 'shape_line', heading: 'Фигура линия' }
-          };
 
           if (k.startsWith('nested:')) {
             const containerBlockId = k.replace('nested:', '');
@@ -939,12 +907,7 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
             const newNestedId = `nested_${Date.now()}`;
             const newNestedBlock = {
               id: newNestedId,
-              type: blockType,
-              heading: 'Новый элемент',
-              body: 'Описание элемента',
-              label: 'Кнопка',
-              src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80',
-              href: '#'
+              ...(defaultDataMap[blockType] || { type: blockType })
             };
             
             parentBlock.childrenBlocks = [...(parentBlock.childrenBlocks || []), newNestedBlock];

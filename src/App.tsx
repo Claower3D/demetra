@@ -50,6 +50,98 @@ function App() {
     return () => window.removeEventListener('storage', sync);
   }, []);
 
+  // 1. Initial Load from Go Backend to client localStorage
+  useEffect(() => {
+    fetch('/api/pages')
+      .then(r => r.json())
+      .then(data => {
+        if (data && Array.isArray(data) && data.length > 0) {
+          localStorage.setItem('demetra_pages_list', JSON.stringify(data));
+          window.dispatchEvent(new Event('storage'));
+        }
+      })
+      .catch(e => console.warn("Could not load pages from backend:", e));
+
+    fetch('/api/custom-blocks')
+      .then(r => r.json())
+      .then(data => {
+        if (data && Object.keys(data).length > 0) {
+          localStorage.setItem('demetra_custom_blocks', JSON.stringify(data));
+          window.dispatchEvent(new Event('storage'));
+        }
+      })
+      .catch(e => console.warn("Could not load custom blocks from backend:", e));
+
+    const defaultPages = ['home', 'catalog', 'services', 'about', 'contacts', 'partner', 'gallery'];
+    const currentPages = getPagesList();
+    const allPageIds = Array.from(new Set([...defaultPages, ...currentPages.map(p => p.id)]));
+    
+    allPageIds.forEach(id => {
+      fetch(`/api/layout/${id}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data) {
+            localStorage.setItem(`demetra_${id}_layout`, JSON.stringify(data));
+            window.dispatchEvent(new Event('storage'));
+          }
+        })
+        .catch(e => console.warn(`Could not load layout for ${id} from backend:`, e));
+    });
+  }, []);
+
+  // 2. Debounced Save to Go Backend on client storage changes
+  useEffect(() => {
+    let timeoutId: any = null;
+
+    const handleStorageSync = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+
+      timeoutId = setTimeout(() => {
+        const customBlocksData = localStorage.getItem('demetra_custom_blocks');
+        if (customBlocksData) {
+          fetch('/api/custom-blocks', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: customBlocksData
+          }).catch(err => console.warn("Sync custom blocks failed", err));
+        }
+
+        const pagesListData = localStorage.getItem('demetra_pages_list');
+        if (pagesListData) {
+          fetch('/api/pages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: pagesListData
+          }).catch(err => console.warn("Sync pages list failed", err));
+        }
+
+        const defaultPages = ['home', 'catalog', 'services', 'about', 'contacts', 'partner', 'gallery'];
+        let pageIds = [...defaultPages];
+        try {
+          const parsed = JSON.parse(pagesListData || '[]');
+          pageIds = Array.from(new Set([...defaultPages, ...parsed.map((p: any) => p.id)]));
+        } catch {}
+
+        pageIds.forEach(pageId => {
+          const layoutData = localStorage.getItem(`demetra_${pageId}_layout`);
+          if (layoutData) {
+            fetch(`/api/layout/${pageId}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: layoutData
+            }).catch(err => console.warn(`Sync layout ${pageId} failed`, err));
+          }
+        });
+      }, 1000);
+    };
+
+    window.addEventListener('storage', handleStorageSync);
+    return () => {
+      window.removeEventListener('storage', handleStorageSync);
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, []);
+
   const customPages = pages.filter(p => !p.isSystem);
 
   return (
