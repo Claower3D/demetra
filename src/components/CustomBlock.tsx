@@ -5,7 +5,7 @@ import { BuilderWrapper } from './BuilderWrapper';
 // Shape of a custom block's data
 export interface CustomBlockData {
   id?: string;
-  type: 'heading' | 'text' | 'divider' | 'button' | 'card' | 'two_col' | 'image_text' | 'cta_banner' | 'container';
+  type: 'heading' | 'text' | 'divider' | 'button' | 'card' | 'two_col' | 'image_text' | 'cta_banner' | 'container' | 'shape_rect' | 'shape_circle' | 'shape_line';
   heading?: string;
   subheading?: string;
   body?: string;
@@ -82,6 +82,7 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
   const { lang } = useLang();
   const [isOverContainer, setIsOverContainer] = React.useState(false);
   const [layoutStyles, setLayoutStyles] = React.useState<Record<string, any>>({});
+  const [layoutLinks, setLayoutLinks] = React.useState<Record<string, any>>({});
 
   React.useEffect(() => {
     const syncStyles = () => {
@@ -93,9 +94,12 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
           if (layout && layout.styles) {
             setLayoutStyles(layout.styles);
           }
+          if (layout && layout.links) {
+            setLayoutLinks(layout.links);
+          }
         }
       } catch (e) {
-        console.error("Failed to sync layout styles in CustomBlock", e);
+        console.error("Failed to sync layout data in CustomBlock", e);
       }
     };
     syncStyles();
@@ -118,18 +122,48 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
   const col1 = (data as any)[`col1_${lang}`] || data.col1;
   const col2 = (data as any)[`col2_${lang}`] || data.col2;
 
+  const links = layoutLinks[id] || {};
+  const isBuilder = window.self !== window.top;
+  
+  const handleClick = (e: React.MouseEvent) => {
+    if (isBuilder) return; // Don't trigger links in builder
+    if (links.modalId) {
+      // dispatch custom event to open modal
+      window.dispatchEvent(new CustomEvent('OPEN_CUSTOM_MODAL', { detail: { id: links.modalId } }));
+    }
+    if (links.onClickAction) {
+      try {
+        // eslint-disable-next-line no-new-func
+        const fn = new Function('e', links.onClickAction);
+        fn(e);
+      } catch (err) {
+        console.error('Custom click action failed', err);
+      }
+    }
+    if (links.href && !data.href) {
+      window.location.href = links.href;
+    }
+  };
+
   const base: React.CSSProperties = {
     background: bg,
     textAlign: align,
     width: '100%',
     padding: '3rem 0',
-    color: 'var(--foreground)'
+    color: 'var(--foreground)',
+    cursor: (!isBuilder && (links.modalId || links.onClickAction || links.href)) ? 'pointer' : undefined,
+  };
+
+  const wrapperProps = {
+    style: base,
+    onClick: handleClick,
+    className: links.className || undefined
   };
 
   switch (data.type) {
     case 'heading':
       return (
-        <div style={base}>
+        <div {...wrapperProps}>
           {subheading && (
             <div style={{ color: accent, fontWeight: '800', fontSize: '0.8rem', letterSpacing: '0.3em', marginBottom: '1rem', textTransform: 'uppercase' }}>
               ◆ {subheading}
@@ -148,7 +182,7 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
 
     case 'text':
       return (
-        <div style={base}>
+        <div {...wrapperProps}>
           <p style={{ fontSize: '1.15rem', lineHeight: 1.8, color: 'var(--text-muted)', maxWidth: '800px', margin: align === 'center' ? '0 auto' : '0', whiteSpace: 'pre-wrap' }}>
             {body || 'Введите text блока...'}
           </p>
@@ -157,14 +191,14 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
 
     case 'divider':
       return (
-        <div style={{ ...base, padding: '1.5rem 0' }}>
+        <div {...wrapperProps} style={{ ...wrapperProps.style, padding: '1.5rem 0' }}>
           <div style={{ height: '1px', background: `linear-gradient(to right, transparent, ${accent}, transparent)`, opacity: 0.4 }} />
         </div>
       );
 
     case 'button':
       return (
-        <div style={base}>
+        <div {...wrapperProps}>
           <a
             href={data.href || '#'}
             style={{
@@ -182,7 +216,7 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
 
     case 'card':
       return (
-        <div style={base}>
+        <div {...wrapperProps}>
           <div style={{
             background: 'var(--surface)', border: '1px solid var(--border)',
             borderRadius: 'var(--radius)', overflow: 'hidden',
@@ -232,7 +266,7 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
 
     case 'two_col':
       return (
-        <div style={{ ...base, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start' }}>
+        <div {...wrapperProps} style={{ ...wrapperProps.style, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start' }}>
           <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: 'var(--text-muted)', margin: 0, whiteSpace: 'pre-wrap' }}>
             {col1 || 'Левая колонка...'}
           </p>
@@ -244,7 +278,7 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
 
     case 'image_text':
       return (
-        <div style={{ ...base, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
+        <div {...wrapperProps} style={{ ...wrapperProps.style, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
           {data.mediaType === 'video' && data.videoSrc ? (
             <div style={{ width: '100%', borderRadius: 'var(--radius)', aspectRatio: '16/9', overflow: 'hidden', position: 'relative' }}>
               {data.videoSrc.includes('youtube.com') || data.videoSrc.includes('youtu.be') ? (
@@ -282,8 +316,8 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
 
     case 'cta_banner':
       return (
-        <div style={{
-          ...base,
+        <div {...wrapperProps} style={{
+          ...wrapperProps.style,
           background: bg !== 'transparent' ? bg : `linear-gradient(135deg, var(--surface), var(--background))`,
           border: '1px solid var(--border)',
           borderRadius: 'var(--radius)',
@@ -316,6 +350,21 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
             </a>
           )}
         </div>
+      );
+
+    case 'shape_rect':
+      return (
+        <div {...wrapperProps} style={{ ...wrapperProps.style, width: '100%', height: '200px', background: accent, borderRadius: '8px' }} />
+      );
+
+    case 'shape_circle':
+      return (
+        <div {...wrapperProps} style={{ ...wrapperProps.style, width: '150px', height: '150px', background: accent, borderRadius: '50%' }} />
+      );
+
+    case 'shape_line':
+      return (
+        <div {...wrapperProps} style={{ ...wrapperProps.style, width: '100%', height: '2px', background: accent, margin: '2rem 0' }} />
       );
 
     case 'container':
@@ -359,6 +408,7 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
 
       return (
         <div 
+          {...wrapperProps}
           onDragOver={handleContainerDragOver}
           onDragLeave={handleContainerDragLeave}
           onDrop={handleContainerDrop}

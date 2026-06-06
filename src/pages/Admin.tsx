@@ -1259,7 +1259,10 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
                             { id: 'image_text', title: 'Фото+Текст', icon: '⊡', desc: 'Image & Text' },
                             { id: 'cta_banner', title: 'Баннер', icon: '★', desc: 'Promo Banner' },
                             { id: 'divider', title: 'Разделитель', icon: '—', desc: 'Divider Line' },
-                             { id: 'container', title: 'Контейнер', icon: '⧇', desc: 'Nested Blocks' }
+                            { id: 'container', title: 'Контейнер', icon: '⧇', desc: 'Nested Blocks' },
+                            { id: 'shape_rect', title: 'Квадрат', icon: '■', desc: 'Rectangle Shape' },
+                            { id: 'shape_circle', title: 'Круг', icon: '●', desc: 'Circle Shape' },
+                            { id: 'shape_line', title: 'Линия', icon: '│', desc: 'Line Shape' }
                           ].filter(x => x.title.toLowerCase().includes(libSearch.toLowerCase()) || x.desc.toLowerCase().includes(libSearch.toLowerCase())).map(el => (
                             <button
                               key={el.id}
@@ -1571,7 +1574,9 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
                 {[
                   { id: 'content', label: '📝 Текст & Информация' },
                   { id: 'media', label: '🖼️ Изображения & Видео' },
-                  { id: 'scaling', label: '📐 Размеры & Масштабирование' },
+                  { id: 'scaling', label: '📐 Размеры & Сетка' },
+                  { id: 'effects', label: '✨ Эффекты & Фон' },
+                  { id: 'actions', label: '⚡ Действия & Модалки' }
                 ].map(tab => (
                   <button
                     key={tab.id}
@@ -1793,7 +1798,7 @@ function ModalBodyContent({
   updateTranslation 
 }: { 
   editingKey: string; 
-  modalActiveTab: 'content' | 'media' | 'scaling'; 
+  modalActiveTab: 'content' | 'media' | 'scaling' | 'effects' | 'actions'; 
   currentLayout: any; 
   updateLayout: any; 
   allTranslations: any; 
@@ -1993,6 +1998,56 @@ function ModalBodyContent({
             </select>
           </div>
 
+          <div style={{ gridColumn: 'span 2', height: '1px', background: '#222', margin: '0.5rem 0' }} />
+
+          <div>
+            {labelStyle('Тип позиционирования (Position)')}
+            <select 
+              value={s.position || 'relative'} 
+              onChange={e => setStyleVal('position', e.target.value)} 
+              style={{ ...inputStyle, cursor: 'pointer' }}
+            >
+              <option value="relative">В потоке (Relative / Grid)</option>
+              <option value="absolute">Свободное (Absolute - как в Figma)</option>
+              <option value="fixed">Фиксированное (Fixed)</option>
+            </select>
+          </div>
+          <div>
+            {labelStyle('Z-Index (Слой)')}
+            <input 
+              type="number" 
+              value={s.zIndex || ''} 
+              onChange={e => setStyleVal('zIndex', e.target.value ? parseInt(e.target.value) : undefined)} 
+              placeholder="10" 
+              style={inputStyle} 
+            />
+          </div>
+
+          {s.position === 'absolute' && (
+            <>
+              <div>
+                {labelStyle('Смещение слева (Left)')}
+                <input 
+                  type="text" 
+                  value={s.left || ''} 
+                  onChange={e => setStyleVal('left', e.target.value)} 
+                  placeholder="20px или 50%" 
+                  style={inputStyle} 
+                />
+              </div>
+              <div>
+                {labelStyle('Смещение сверху (Top)')}
+                <input 
+                  type="text" 
+                  value={s.top || ''} 
+                  onChange={e => setStyleVal('top', e.target.value)} 
+                  placeholder="50px или 10%" 
+                  style={inputStyle} 
+                />
+              </div>
+            </>
+          )}
+
           <div>
             {labelStyle('Цвет фона / Заливка (CSS)')}
             <div style={{ display: 'flex', gap: '0.75rem' }}>
@@ -2010,6 +2065,93 @@ function ModalBodyContent({
                 style={inputStyle}
               />
             </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 1.5 EFFECTS TAB
+  if (modalActiveTab === 'effects') {
+    const s = currentLayout.styles?.[editingKey] || {};
+    const setStyleVal = (key: string, val: any) => {
+      updateLayout({
+        ...currentLayout,
+        styles: {
+          ...(currentLayout.styles || {}),
+          [editingKey]: { ...(currentLayout.styles?.[editingKey] || {}), [key]: val }
+        }
+      });
+    };
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: '#111', padding: '1rem', borderRadius: '12px', border: '1px solid #222' }}>
+          <div style={{ fontSize: '1.5rem' }}>✨</div>
+          <div>
+            <h4 style={{ margin: '0 0 0.25rem 0', color: '#fff', fontSize: '0.9rem', fontWeight: '800' }}>Эффекты и Трансформации</h4>
+            <p style={{ margin: 0, color: '#888', fontSize: '0.75rem' }}>Настройте визуальные фильтры, тени и размытие для выделенного блока.</p>
+          </div>
+        </div>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          <div>
+            {labelStyle('Размытие фона (Backdrop Filter)')}
+            <input type="text" value={s.backdropFilter || ''} onChange={e => setStyleVal('backdropFilter', e.target.value)} placeholder="blur(10px)" style={inputStyle} />
+          </div>
+          <div>
+            {labelStyle('Тень блока (Box Shadow)')}
+            <input type="text" value={s.boxShadow || ''} onChange={e => setStyleVal('boxShadow', e.target.value)} placeholder="0 10px 20px rgba(0,0,0,0.5)" style={inputStyle} />
+          </div>
+          <div>
+            {labelStyle('Трансформация (Transform)')}
+            <input type="text" value={s.transform || ''} onChange={e => setStyleVal('transform', e.target.value)} placeholder="scale(1.05) rotate(5deg)" style={inputStyle} />
+          </div>
+          <div>
+            {labelStyle('Фильтр картинки (Filter)')}
+            <input type="text" value={s.filter || ''} onChange={e => setStyleVal('filter', e.target.value)} placeholder="grayscale(100%) blur(2px)" style={inputStyle} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 1.6 ACTIONS TAB
+  if (modalActiveTab === 'actions') {
+    const l = currentLayout.links?.[editingKey] || {};
+    const setLinkVal = (key: string, val: any) => {
+      updateLayout({
+        ...currentLayout,
+        links: {
+          ...(currentLayout.links || {}),
+          [editingKey]: { ...(currentLayout.links?.[editingKey] || {}), [key]: val }
+        }
+      });
+    };
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: '#111', padding: '1rem', borderRadius: '12px', border: '1px solid #222' }}>
+          <div style={{ fontSize: '1.5rem' }}>⚡</div>
+          <div>
+            <h4 style={{ margin: '0 0 0.25rem 0', color: '#fff', fontSize: '0.9rem', fontWeight: '800' }}>Интерактивность</h4>
+            <p style={{ margin: 0, color: '#888', fontSize: '0.75rem' }}>Привяжите открытие модального окна или скрипт к этому элементу.</p>
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem' }}>
+          <div>
+            {labelStyle('Связь с модальным окном (ID окна)')}
+            <input type="text" value={l.modalId || ''} onChange={e => setLinkVal('modalId', e.target.value)} placeholder="Введи ID модалки (напр. 'contact_modal')" style={inputStyle} />
+            <p style={{ fontSize: '0.7rem', color: '#888', marginTop: '0.5rem' }}>Если указан ID модального окна, при клике на этот элемент будет открываться указанное окно.</p>
+          </div>
+          <div>
+            {labelStyle('URL Ссылка (Href)')}
+            <input type="text" value={l.href || ''} onChange={e => setLinkVal('href', e.target.value)} placeholder="/catalog или https://..." style={inputStyle} />
+          </div>
+          <div>
+            {labelStyle('Свой класс для клика (Class)')}
+            <input type="text" value={l.className || ''} onChange={e => setLinkVal('className', e.target.value)} placeholder="my-custom-trigger" style={inputStyle} />
           </div>
         </div>
       </div>
