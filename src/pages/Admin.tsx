@@ -2480,7 +2480,7 @@ function ModalBodyContent({
       if (editingKey === 'hero') return key.startsWith('hero_') || key === 'btn_catalog' || key === 'btn_services';
       if (editingKey === 'catalog') return key.startsWith('cat_') || key === 'btn_details';
       if (editingKey === 'services') return key.startsWith('srv_');
-      if (editingKey === 'partner') return key.startsWith('partner_');
+      if (editingKey === 'partner' || editingKey === 'partnership') return key.startsWith('partner_') || key === 'nav_partner';
       if (editingKey === 'reviews') return key.startsWith('reviews_') || key.startsWith('review_');
       if (editingKey === 'contact') return key.startsWith('contact_');
       if (editingKey === 'faq') return key.startsWith('faq_');

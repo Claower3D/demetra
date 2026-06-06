@@ -206,7 +206,11 @@ export default function Home() {
                       <Link to={layout?.links?.btn_partner || "/partner"} className="btn-primary" style={{ padding: '1.5rem 3rem', ...(layout?.styles?.btn_partner || {}) }}><InlineEdit tKey="nav_partner" /></Link>
                     </BuilderWrapper>
                   </div>
-                  <div style={{ position: 'relative' }} className="responsive-hide"><img src={layout?.images?.partnership_img || "/corporate_about.png"} alt="" style={{ width: '100%', borderRadius: 'var(--radius)', filter: 'grayscale(0.5) brightness(1.1)' }} /></div>
+                  <div style={{ position: 'relative' }} className="responsive-hide">
+                    <BuilderWrapper id="partnership" isBuilder={isBuilder}>
+                      <img src={layout?.images?.partnership_img || "/corporate_about.png"} alt="" style={{ width: '100%', borderRadius: 'var(--radius)', filter: 'grayscale(0.5) brightness(1.1)', ...(layout?.styles?.partnership || {}) }} />
+                    </BuilderWrapper>
+                  </div>
                 </div>
               </div>
             </div>
