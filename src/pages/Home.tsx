@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, Zap, Cog, Cpu, Layers, ShieldCheck, Handshake } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -209,19 +209,10 @@ export default function Home() {
                     </BuilderWrapper>
                   </div>
                   <div style={{ position: 'relative' }}>
-                    <BuilderWrapper id="partnership" isBuilder={isBuilder}>
-                      <img 
-                        src={layout?.images?.partnership_img || "/corporate_about.png"} 
-                        alt="" 
-                        style={{ 
-                          width: '100%', 
-                          borderRadius: 'var(--radius)', 
-                          filter: 'grayscale(0.5) brightness(1.1)', 
-                          display: 'block',
-                          pointerEvents: isBuilder ? 'none' : 'auto',
-                        }} 
-                      />
-                    </BuilderWrapper>
+                    <PartnershipImageEditor
+                      isBuilder={isBuilder}
+                      layout={layout}
+                    />
                   </div>
                 </div>
               </div>
@@ -332,6 +323,168 @@ export default function Home() {
            <h1 style={{ color: '#fff', fontSize: '2rem' }}>WELCOME TO DEMETRA-2005</h1>
         </div>
       )}
+    </div>
+  );
+}
+
+// ─── Inline Partnership Image Editor ─────────────────────────────────────────
+function PartnershipImageEditor({ isBuilder, layout }: { isBuilder: boolean; layout: any }) {
+  const [hovered, setHovered] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [urlInput, setUrlInput] = useState('');
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const PRESETS = [
+    { url: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80', name: 'Завод' },
+    { url: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80', name: 'Оборудование' },
+    { url: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=800&q=80', name: 'Сварка' },
+    { url: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80', name: 'Склад' },
+    { url: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80', name: 'Логистика' },
+    { url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80', name: 'Автоматика' },
+  ];
+
+  const saveImg = (url: string) => {
+    try {
+      const pageKey = 'home';
+      const saved = localStorage.getItem(`demetra_${pageKey}_layout`);
+      const current = saved ? JSON.parse(saved) : {};
+      const updated = {
+        ...current,
+        images: { ...(current.images || {}), partnership_img: url }
+      };
+      localStorage.setItem(`demetra_${pageKey}_layout`, JSON.stringify(updated));
+      window.dispatchEvent(new Event('storage'));
+      window.parent.postMessage({ type: 'DEMETRA_UPDATE_LAYOUT', layout: updated }, '*');
+    } catch (e) {
+      console.error('Failed to save partnership image', e);
+    }
+    setEditMode(false);
+    setUrlInput('');
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      if (dataUrl) saveImg(dataUrl);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const currentSrc = layout?.images?.partnership_img || '/corporate_about.png';
+
+  if (!isBuilder) {
+    return (
+      <img
+        src={currentSrc}
+        alt=""
+        style={{ width: '100%', borderRadius: 'var(--radius)', filter: 'grayscale(0.5) brightness(1.1)', display: 'block' }}
+      />
+    );
+  }
+
+  return (
+    <div
+      style={{ position: 'relative', borderRadius: 'var(--radius)', overflow: 'hidden', cursor: 'pointer' }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => { setHovered(false); }}
+    >
+      <img
+        src={currentSrc}
+        alt=""
+        style={{
+          width: '100%', display: 'block', borderRadius: 'var(--radius)',
+          filter: hovered ? 'grayscale(0.8) brightness(0.45)' : 'grayscale(0.5) brightness(1.1)',
+          transition: 'filter 0.3s ease',
+          pointerEvents: 'none',
+        }}
+      />
+
+      {/* Hover Overlay */}
+      {hovered && !editMode && (
+        <div style={{
+          position: 'absolute', inset: 0,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '0.75rem',
+          zIndex: 10,
+        }}>
+          <div style={{ color: '#00ff41', fontWeight: '900', fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.25rem' }}>
+            📷 ИЗМЕНИТЬ ФОТО
+          </div>
+          <button
+            onClick={(e) => { e.stopPropagation(); setEditMode(true); }}
+            style={{
+              background: '#00ff41', color: '#000', border: 'none', borderRadius: '8px',
+              padding: '0.65rem 1.5rem', fontWeight: '900', fontSize: '0.85rem', cursor: 'pointer',
+              boxShadow: '0 0 20px rgba(0,255,65,0.5)', whiteSpace: 'nowrap',
+            }}
+          >
+            🔗 Вставить URL
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); fileRef.current?.click(); }}
+            style={{
+              background: 'rgba(255,255,255,0.12)', color: '#fff', border: '1px solid rgba(255,255,255,0.3)',
+              borderRadius: '8px', padding: '0.65rem 1.5rem', fontWeight: '800', fontSize: '0.85rem', cursor: 'pointer',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            📁 Загрузить файл
+          </button>
+        </div>
+      )}
+
+      {/* URL edit mode */}
+      {editMode && (
+        <div
+          style={{
+            position: 'absolute', inset: 0,
+            display: 'flex', flexDirection: 'column', gap: '0.6rem', padding: '1rem',
+            background: 'rgba(0,0,0,0.93)', zIndex: 20, overflowY: 'auto',
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div style={{ color: '#00ff41', fontWeight: '900', fontSize: '0.7rem', letterSpacing: '0.08em' }}>ССЫЛКА НА ИЗОБРАЖЕНИЕ</div>
+          <input
+            autoFocus
+            type="text"
+            value={urlInput}
+            onChange={e => setUrlInput(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && urlInput.trim()) saveImg(urlInput.trim());
+              if (e.key === 'Escape') setEditMode(false);
+            }}
+            placeholder="https://..."
+            style={{
+              background: '#111', border: '1px solid #00ff41', color: '#fff', borderRadius: '6px',
+              padding: '0.5rem 0.75rem', fontSize: '0.8rem', outline: 'none', width: '100%', boxSizing: 'border-box',
+            }}
+          />
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button onClick={() => urlInput.trim() && saveImg(urlInput.trim())}
+              style={{ flex: 1, background: '#00ff41', color: '#000', border: 'none', borderRadius: '6px', padding: '0.5rem', fontWeight: '900', fontSize: '0.8rem', cursor: 'pointer' }}>
+              ✓ Применить
+            </button>
+            <button onClick={() => setEditMode(false)}
+              style={{ background: '#333', color: '#fff', border: 'none', borderRadius: '6px', padding: '0.5rem 0.75rem', cursor: 'pointer', fontSize: '0.8rem' }}>
+              ✕
+            </button>
+          </div>
+          <div style={{ color: '#888', fontSize: '0.65rem', fontWeight: '700', marginTop: '0.1rem' }}>ИЛИ ВЫБЕРИТЕ ИЗ ГАЛЕРЕИ:</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem' }}>
+            {PRESETS.map((p, i) => (
+              <div key={i} onClick={() => saveImg(p.url)}
+                style={{ borderRadius: '6px', overflow: 'hidden', cursor: 'pointer', position: 'relative', height: '56px', border: currentSrc === p.url ? '2px solid #00ff41' : '1px solid #333' }}>
+                <img src={p.url} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.7 }} />
+                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.7)', padding: '0.15rem', fontSize: '0.55rem', color: '#fff', fontWeight: '800', textAlign: 'center' }}>{p.name}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileUpload} />
     </div>
   );
 }
