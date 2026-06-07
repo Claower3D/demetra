@@ -617,7 +617,7 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
     if (draggedId) {
       if (draggedId.startsWith("add_block:")) {
         const type = draggedId.replace("add_block:", "");
-        postMsg('ADD_BLOCK_AT', { type, targetId: id, arrayKey });
+        postMsg('ADD_BLOCK_AT', { blockType: type, targetId: id, arrayKey });
       }
     }
   };

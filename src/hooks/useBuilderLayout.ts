@@ -48,5 +48,37 @@ export function useBuilderLayout(pageKey: string, defaultLayout: any) {
     };
   }, [pageKey, isBuilder]);
 
+  useEffect(() => {
+    if (!isBuilder) return;
+
+    const handleDocumentDragOver = (e: DragEvent) => {
+      e.preventDefault();
+    };
+
+    const handleDocumentDrop = (e: DragEvent) => {
+      if (e.defaultPrevented) return;
+      
+      const raw = e.dataTransfer?.getData('text/plain');
+      if (raw && raw.startsWith('add_block:')) {
+        e.preventDefault();
+        const type = raw.replace('add_block:', '');
+        window.parent.postMessage({
+          type: 'DEMETRA_BUILDER',
+          action: 'ADD_BLOCK_AT',
+          blockType: type,
+          targetId: 'order',
+          arrayKey: 'order'
+        }, '*');
+      }
+    };
+
+    document.addEventListener('dragover', handleDocumentDragOver);
+    document.addEventListener('drop', handleDocumentDrop);
+    return () => {
+      document.removeEventListener('dragover', handleDocumentDragOver);
+      document.removeEventListener('drop', handleDocumentDrop);
+    };
+  }, [isBuilder]);
+
   return { layout, isBuilder };
 }
