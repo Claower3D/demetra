@@ -19,6 +19,7 @@ export interface CustomBlockData {
   bg?: string;        // background override
   mediaType?: 'image' | 'video';
   videoSrc?: string;
+  mediaPosition?: string;
   childrenBlocks?: CustomBlockData[];
   displayType?: 'grid' | 'flex';
   cols?: number;
@@ -215,6 +216,64 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
       );
 
     case 'card':
+      const cardMediaPosition = data.mediaPosition || 'top';
+      const cardMediaElement = (
+        data.mediaType === 'video' && data.videoSrc ? (
+          <div style={{ width: '100%', height: '260px', position: 'relative', overflow: 'hidden' }}>
+            {data.videoSrc.includes('youtube.com') || data.videoSrc.includes('youtu.be') ? (
+              (() => {
+                let embedId = '';
+                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                const match = data.videoSrc.match(regExp);
+                if (match && match[2].length === 11) embedId = match[2];
+                return embedId ? (
+                  <iframe
+                    src={`https://www.youtube.com/embed/${embedId}?autoplay=1&mute=1&loop=1&playlist=${embedId}&controls=0`}
+                    style={{ width: '100%', height: '100%', border: 'none' }}
+                    title="Card Video"
+                  />
+                ) : null;
+              })()
+            ) : (
+              <video src={data.videoSrc} autoPlay loop muted playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            )}
+          </div>
+        ) : (
+          data.src ? (
+            <img src={data.src} alt="" style={{ width: '100%', height: '260px', objectFit: 'cover', display: 'block' }} />
+          ) : (
+            isBuilder ? (
+              <div style={{
+                width: '100%', height: '260px', background: 'rgba(255,255,255,0.02)',
+                borderBottom: '1.5px dashed var(--border)', display: 'flex', flexDirection: 'column',
+                alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: 'var(--text-muted)'
+              }}>
+                <span style={{ fontSize: '2rem' }}>🖼️</span>
+                <span style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>Добавь фото или видео</span>
+              </div>
+            ) : null
+          )
+        )
+      );
+
+      const cardTextElement = (
+        <div style={{ padding: '2.5rem' }}>
+          {label && (
+            <h3 style={{ fontSize: '1.5rem', fontWeight: '900', marginBottom: '1rem', color: 'var(--foreground)' }}>
+              {label}
+            </h3>
+          )}
+          {body && (
+            <p style={{ color: 'var(--text-muted)', lineHeight: 1.7, fontSize: '1rem' }}>{body}</p>
+          )}
+          {data.href && (
+            <a href={data.href} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: accent, fontWeight: '800', fontSize: '0.85rem', marginTop: '1.5rem', textDecoration: 'none' }}>
+              Подробнее →
+            </a>
+          )}
+        </div>
+      );
+
       return (
         <div {...wrapperProps}>
           <div style={{
@@ -222,57 +281,17 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
             borderRadius: 'var(--radius)', overflow: 'hidden',
             transition: 'all 0.4s'
           }}>
-            {data.mediaType === 'video' && data.videoSrc ? (
-              <div style={{ width: '100%', height: '260px', position: 'relative', overflow: 'hidden' }}>
-                {data.videoSrc.includes('youtube.com') || data.videoSrc.includes('youtu.be') ? (
-                  (() => {
-                    let embedId = '';
-                    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-                    const match = data.videoSrc.match(regExp);
-                    if (match && match[2].length === 11) embedId = match[2];
-                    return embedId ? (
-                      <iframe
-                        src={`https://www.youtube.com/embed/${embedId}?autoplay=1&mute=1&loop=1&playlist=${embedId}&controls=0`}
-                        style={{ width: '100%', height: '100%', border: 'none' }}
-                        title="Card Video"
-                      />
-                    ) : null;
-                  })()
-                ) : (
-                  <video src={data.videoSrc} autoPlay loop muted playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                )}
-              </div>
+            {cardMediaPosition === 'bottom' ? (
+              <>
+                {cardTextElement}
+                {cardMediaElement}
+              </>
             ) : (
-              data.src ? (
-                <img src={data.src} alt="" style={{ width: '100%', height: '260px', objectFit: 'cover', display: 'block' }} />
-              ) : (
-                isBuilder ? (
-                  <div style={{
-                    width: '100%', height: '260px', background: 'rgba(255,255,255,0.02)',
-                    borderBottom: '1.5px dashed var(--border)', display: 'flex', flexDirection: 'column',
-                    alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: 'var(--text-muted)'
-                  }}>
-                    <span style={{ fontSize: '2rem' }}>🖼️</span>
-                    <span style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>Добавь фото или видео</span>
-                  </div>
-                ) : null
-              )
+              <>
+                {cardMediaElement}
+                {cardTextElement}
+              </>
             )}
-            <div style={{ padding: '2.5rem' }}>
-              {label && (
-                <h3 style={{ fontSize: '1.5rem', fontWeight: '900', marginBottom: '1rem', color: 'var(--foreground)' }}>
-                  {label}
-                </h3>
-              )}
-              {body && (
-                <p style={{ color: 'var(--text-muted)', lineHeight: 1.7, fontSize: '1rem' }}>{body}</p>
-              )}
-              {data.href && (
-                <a href={data.href} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: accent, fontWeight: '800', fontSize: '0.85rem', marginTop: '1.5rem', textDecoration: 'none' }}>
-                  Подробнее →
-                </a>
-              )}
-            </div>
           </div>
         </div>
       );
@@ -290,54 +309,72 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
       );
 
     case 'image_text':
-      return (
-        <div {...wrapperProps} style={{ ...wrapperProps.style, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
-          {data.mediaType === 'video' && data.videoSrc ? (
-            <div style={{ width: '100%', borderRadius: 'var(--radius)', aspectRatio: '16/9', overflow: 'hidden', position: 'relative' }}>
-              {data.videoSrc.includes('youtube.com') || data.videoSrc.includes('youtu.be') ? (
-                (() => {
-                  let embedId = '';
-                  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-                  const match = data.videoSrc.match(regExp);
-                  if (match && match[2].length === 11) embedId = match[2];
-                  return embedId ? (
-                    <iframe
-                      src={`https://www.youtube.com/embed/${embedId}?autoplay=1&mute=1&loop=1&playlist=${embedId}&controls=0`}
-                      style={{ width: '100%', height: '100%', border: 'none' }}
-                      title="Block Video"
-                    />
-                  ) : null;
-                })()
-              ) : (
-                <video src={data.videoSrc} autoPlay loop muted playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              )}
-            </div>
-          ) : (
-            data.src ? (
-              <img src={data.src} alt="" style={{ width: '100%', borderRadius: 'var(--radius)', display: 'block', aspectRatio: '16/9', objectFit: 'cover' }} />
+      const mediaPosition = data.mediaPosition || 'left';
+      const mediaElement = (
+        data.mediaType === 'video' && data.videoSrc ? (
+          <div style={{ width: '100%', borderRadius: 'var(--radius)', aspectRatio: '16/9', overflow: 'hidden', position: 'relative' }}>
+            {data.videoSrc.includes('youtube.com') || data.videoSrc.includes('youtu.be') ? (
+              (() => {
+                let embedId = '';
+                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                const match = data.videoSrc.match(regExp);
+                if (match && match[2].length === 11) embedId = match[2];
+                return embedId ? (
+                  <iframe
+                    src={`https://www.youtube.com/embed/${embedId}?autoplay=1&mute=1&loop=1&playlist=${embedId}&controls=0`}
+                    style={{ width: '100%', height: '100%', border: 'none' }}
+                    title="Block Video"
+                  />
+                ) : null;
+              })()
             ) : (
-              isBuilder ? (
-                <div style={{
-                  width: '100%', aspectRatio: '16/9', background: 'rgba(255,255,255,0.02)',
-                  border: '1.5px dashed var(--border)', borderRadius: 'var(--radius)',
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                  gap: '0.5rem', color: 'var(--text-muted)'
-                }}>
-                  <span style={{ fontSize: '2rem' }}>🖼️</span>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>Добавь фото или видео</span>
-                </div>
-              ) : null
-            )
-          )}
-          <div>
-            {heading && <h3 style={{ fontSize: '2rem', fontWeight: '900', marginBottom: '1.5rem', color: 'var(--foreground)' }}>{heading}</h3>}
-            {body && <p style={{ color: 'var(--text-muted)', lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>{body}</p>}
-            {data.href && label && (
-              <a href={data.href} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: accent, fontWeight: '800', marginTop: '2rem', textDecoration: 'none' }}>
-                {label} →
-              </a>
+              <video src={data.videoSrc} autoPlay loop muted playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             )}
           </div>
+        ) : (
+          data.src ? (
+            <img src={data.src} alt="" style={{ width: '100%', borderRadius: 'var(--radius)', display: 'block', aspectRatio: '16/9', objectFit: 'cover' }} />
+          ) : (
+            isBuilder ? (
+              <div style={{
+                width: '100%', aspectRatio: '16/9', background: 'rgba(255,255,255,0.02)',
+                border: '1.5px dashed var(--border)', borderRadius: 'var(--radius)',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                gap: '0.5rem', color: 'var(--text-muted)'
+              }}>
+                <span style={{ fontSize: '2rem' }}>🖼️</span>
+                <span style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>Добавь фото или видео</span>
+              </div>
+            ) : null
+          )
+        )
+      );
+
+      const textElement = (
+        <div>
+          {heading && <h3 style={{ fontSize: '2rem', fontWeight: '900', marginBottom: '1.5rem', color: 'var(--foreground)' }}>{heading}</h3>}
+          {body && <p style={{ color: 'var(--text-muted)', lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>{body}</p>}
+          {data.href && label && (
+            <a href={data.href} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: accent, fontWeight: '800', marginTop: '2rem', textDecoration: 'none' }}>
+              {label} →
+            </a>
+          )}
+        </div>
+      );
+
+      return (
+        <div {...wrapperProps} style={{ ...wrapperProps.style, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
+          {mediaPosition === 'right' ? (
+            <>
+              {textElement}
+              {mediaElement}
+            </>
+          ) : (
+            <>
+              {mediaElement}
+              {textElement}
+            </>
+          )}
         </div>
       );
 
