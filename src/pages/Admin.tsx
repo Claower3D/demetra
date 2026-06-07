@@ -8988,175 +8988,383 @@ function PageEditor({ allTranslations, updateTranslation, currentLang, windowWid
 }
 
 function ProductManager({ products, setProducts, currentLang, categories, windowWidth }: any) {
+  // New product form states
+  const [newImage, setNewImage] = useState('');
+  const [newCategoryId, setNewCategoryId] = useState('rollers');
+  const [newTitleRu, setNewTitleRu] = useState('');
+  const [newTitleKk, setNewTitleKk] = useState('');
+  const [newTitleEn, setNewTitleEn] = useState('');
+  const [newDescRu, setNewDescRu] = useState('');
+  const [newDescKk, setNewDescKk] = useState('');
+  const [newDescEn, setNewDescEn] = useState('');
 
-  const updateProduct = (id: number, field: string, value: string) => {
+  // Active language tab for editing each product in the list (dictionary map of product ID to language)
+  const [productLangMap, setProductLangMap] = useState<Record<number | string, 'ru' | 'kk' | 'en'>>({});
+
+  // Get active categories (filtering out 'all')
+  const activeCategories = categories.filter((c: any) => c.id !== 'all');
+
+  const handleAddProduct = () => {
+    if (!newTitleRu.trim()) {
+      alert('Пожалуйста, заполните хотя бы русское название товара.');
+      return;
+    }
+
+    const selectedCat = activeCategories.find((c: any) => c.id === newCategoryId);
+    const catRu = selectedCat ? selectedCat.ru : '';
+    const catKk = selectedCat ? selectedCat.kk : '';
+    const catEn = selectedCat ? selectedCat.en : '';
+
+    const newProduct = {
+      id: Date.now(),
+      categoryId: newCategoryId,
+      image: newImage.trim() || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800',
+      ru: {
+        title: newTitleRu.trim(),
+        category: catRu,
+        desc: newDescRu.trim()
+      },
+      kk: {
+        title: newTitleKk.trim() || newTitleRu.trim(),
+        category: catKk,
+        desc: newDescKk.trim() || newDescRu.trim()
+      },
+      en: {
+        title: newTitleEn.trim() || newTitleRu.trim(),
+        category: catEn,
+        desc: newDescEn.trim() || newDescRu.trim()
+      }
+    };
+
+    setProducts((prev: any[]) => [...prev, newProduct]);
+    
+    // Clear inputs
+    setNewImage('');
+    setNewTitleRu('');
+    setNewTitleKk('');
+    setNewTitleEn('');
+    setNewDescRu('');
+    setNewDescKk('');
+    setNewDescEn('');
+  };
+
+  const handleDeleteProduct = (id: number | string) => {
+    if (window.confirm('Вы уверены, что хотите удалить этот товар?')) {
+      setProducts((prev: any[]) => prev.filter(p => p.id !== id));
+    }
+  };
+
+  const updateProductField = (id: number | string, field: string, value: any) => {
+    setProducts((prev: any[]) => prev.map(p => {
+      if (p.id === id) {
+        return { ...p, [field]: value };
+      }
+      return p;
+    }));
+  };
+
+  const updateProductLangField = (id: number | string, langKey: 'ru' | 'kk' | 'en', field: string, value: string) => {
+    setProducts((prev: any[]) => prev.map(p => {
+      if (p.id === id) {
+        return {
+          ...p,
+          [langKey]: {
+            ...p[langKey],
+            [field]: value
+          }
+        };
+      }
+      return p;
+    }));
+  };
+
+  const handleCategoryChangeForProduct = (id: number | string, newCatId: string) => {
+    const selectedCat = activeCategories.find((c: any) => c.id === newCatId);
+    if (!selectedCat) return;
 
     setProducts((prev: any[]) => prev.map(p => {
-
       if (p.id === id) {
-
-        const updated = { ...p };
-
-        if (['title', 'desc', 'category'].includes(field)) {
-
-          updated[currentLang][field] = value;
-
-        } else {
-
-          updated[field] = value;
-
-        }
-
-        return updated;
-
+        return {
+          ...p,
+          categoryId: newCatId,
+          ru: { ...p.ru, category: selectedCat.ru },
+          kk: { ...p.kk, category: selectedCat.kk },
+          en: { ...p.en, category: selectedCat.en }
+        };
       }
-
       return p;
-
     }));
-
   };
 
   return (
+    <div style={{ display: 'grid', gridTemplateColumns: windowWidth < 1200 ? '1fr' : '1fr 1.5fr', gap: '3rem', alignItems: 'start' }}>
+      {/* ADD PRODUCT FORM */}
+      <div style={{ background: '#18181b', padding: '3rem', borderRadius: '32px', border: '1px solid #27272a', display: 'flex', flexDirection: 'column', gap: '2rem', boxShadow: '0 10px 40px rgba(0, 0, 0, 0.4)', position: windowWidth < 1200 ? 'static' : 'sticky', top: '100px' }}>
+        <h3 style={{ fontWeight: '900', color: 'var(--admin-accent)', letterSpacing: '0.1em', display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1.3rem' }}>
+          <PlusCircle size={22} /> ДОБАВИТЬ ТОВАР
+        </h3>
 
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2.5rem' }}>
-
-      {products.map((product: any) => (
-
-        <div 
-
-          key={product.id} 
-
-          style={{ 
-
-            background: '#18181b', 
-
-            border: '1px solid #27272a', 
-
-            borderRadius: '24px', 
-
-            overflow: 'hidden', 
-
-            display: 'flex',
-
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)',
-
-            transition: 'transform 0.2s, border-color 0.2s'
-
-          }}
-
-          onMouseEnter={(e) => {
-
-            e.currentTarget.style.borderColor = 'var(--admin-accent)';
-
-            e.currentTarget.style.transform = 'translateY(-2px)';
-
-          }}
-
-          onMouseLeave={(e) => {
-
-            e.currentTarget.style.borderColor = '#27272a';
-
-            e.currentTarget.style.transform = 'none';
-
-          }}
-
-        >
-
-          <div style={{ width: '150px', background: '#09090b', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRight: '1px solid #27272a' }}>
-
-            <img src={product.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-
+        <div style={{ display: 'grid', gap: '1.25rem' }}>
+          {/* Image URL */}
+          <div style={{ display: 'grid', gap: '0.5rem' }}>
+            <label style={{ fontSize: '0.75rem', color: '#a1a1aa', fontWeight: '900', letterSpacing: '0.05em' }}>URL ИЗОБРАЖЕНИЯ</label>
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <div style={{ width: '60px', height: '60px', borderRadius: '8px', background: '#09090b', border: '1px solid #27272a', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                {newImage ? (
+                  <img src={newImage} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/100?text=Error'; }} />
+                ) : (
+                  <ImageIcon size={20} style={{ color: '#555' }} />
+                )}
+              </div>
+              <input 
+                value={newImage} 
+                onChange={(e) => setNewImage(e.target.value)}
+                placeholder="https://example.com/image.jpg"
+                style={{ background: '#09090b', border: '1px solid #27272a', padding: '0.75rem 1rem', borderRadius: '12px', color: '#ffffff', fontSize: '0.95rem', outline: 'none', transition: 'border-color 0.2s', flex: 1 }} 
+                onFocus={(e) => e.target.style.borderColor = 'var(--admin-accent)'}
+                onBlur={(e) => e.target.style.borderColor = '#27272a'}
+              />
+            </div>
           </div>
 
-          <div style={{ padding: '2rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-
-            <input 
-
-              value={product[currentLang]?.title} 
-
-              onChange={(e) => updateProduct(product.id, 'title', e.target.value)} 
-
-              style={{ 
-
-                background: 'transparent', 
-
-                border: 'none', 
-
-                borderBottom: '2px solid transparent',
-
-                color: '#ffffff', 
-
-                fontSize: '1.25rem', 
-
-                fontWeight: '900', 
-
-                width: '100%', 
-
-                outline: 'none',
-
-                paddingBottom: '0.25rem',
-
-                transition: 'border-color 0.2s'
-
-              }} 
-
-              onFocus={(e) => (e.currentTarget as HTMLElement).style.borderBottomColor = 'var(--admin-accent)'}
-
-              onBlur={(e) => (e.currentTarget as HTMLElement).style.borderBottomColor = 'transparent'}
-
-            />
-
-            <textarea 
-
-              value={product[currentLang]?.desc} 
-
-              onChange={(e) => updateProduct(product.id, 'desc', e.target.value)} 
-
-              style={{ 
-
-                background: '#09090b', 
-
-                border: '1px solid #27272a', 
-
-                color: '#ffffff', 
-
-                fontSize: '0.85rem', 
-
-                lineHeight: '1.5',
-
-                padding: '1rem', 
-
-                borderRadius: '12px', 
-
-                minHeight: '90px', 
-
-                resize: 'vertical', 
-
-                width: '100%',
-
-                outline: 'none',
-
-                transition: 'border-color 0.2s'
-
-              }} 
-
-              onFocus={(e) => (e.currentTarget as HTMLElement).style.borderColor = 'var(--admin-accent)'}
-
-              onBlur={(e) => (e.currentTarget as HTMLElement).style.borderColor = '#27272a'}
-
-            />
-
+          {/* Category Selector */}
+          <div style={{ display: 'grid', gap: '0.5rem' }}>
+            <label style={{ fontSize: '0.75rem', color: '#a1a1aa', fontWeight: '900', letterSpacing: '0.05em' }}>КАТЕГОРИЯ</label>
+            <select
+              value={newCategoryId}
+              onChange={(e) => setNewCategoryId(e.target.value)}
+              style={{ background: '#09090b', border: '1px solid #27272a', padding: '1rem', borderRadius: '12px', color: '#ffffff', fontSize: '0.95rem', outline: 'none', cursor: 'pointer', transition: 'border-color 0.2s' }}
+              onFocus={(e) => e.target.style.borderColor = 'var(--admin-accent)'}
+              onBlur={(e) => e.target.style.borderColor = '#27272a'}
+            >
+              {activeCategories.map((c: any) => (
+                <option key={c.id} value={c.id}>{c.ru}</option>
+              ))}
+            </select>
           </div>
 
+          {/* Collapsible Tabs for Languages */}
+          <div style={{ background: '#09090b', borderRadius: '16px', padding: '1.5rem', border: '1px solid #27272a', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div style={{ fontSize: '0.8rem', fontWeight: '900', color: 'var(--admin-accent)', letterSpacing: '0.05em', borderBottom: '1px solid #27272a', paddingBottom: '0.5rem' }}>
+              ЯЗЫКОВЫЕ ВЕРСИИ
+            </div>
+            
+            {/* RU */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <span style={{ fontSize: '0.7rem', color: '#e4e4e7', fontWeight: '800' }}>РУССКАЯ ВЕРСИЯ (RU) *</span>
+              <input 
+                value={newTitleRu} 
+                onChange={(e) => setNewTitleRu(e.target.value)}
+                placeholder="Название товара"
+                style={{ background: '#18181b', border: '1px solid #27272a', padding: '0.75rem 1rem', borderRadius: '8px', color: '#ffffff', fontSize: '0.9rem', outline: 'none' }} 
+              />
+              <textarea 
+                value={newDescRu} 
+                onChange={(e) => setNewDescRu(e.target.value)}
+                placeholder="Описание товара"
+                style={{ background: '#18181b', border: '1px solid #27272a', padding: '0.75rem 1rem', borderRadius: '8px', color: '#ffffff', fontSize: '0.85rem', outline: 'none', resize: 'vertical', minHeight: '60px' }} 
+              />
+            </div>
+
+            {/* KK */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', borderTop: '1px solid #27272a', paddingTop: '1rem' }}>
+              <span style={{ fontSize: '0.7rem', color: '#a1a1aa', fontWeight: '800' }}>КАЗАХСКАЯ ВЕРСИЯ (KK)</span>
+              <input 
+                value={newTitleKk} 
+                onChange={(e) => setNewTitleKk(e.target.value)}
+                placeholder="Тауардың атауы"
+                style={{ background: '#18181b', border: '1px solid #27272a', padding: '0.75rem 1rem', borderRadius: '8px', color: '#ffffff', fontSize: '0.9rem', outline: 'none' }} 
+              />
+              <textarea 
+                value={newDescKk} 
+                onChange={(e) => setNewDescKk(e.target.value)}
+                placeholder="Тауардың сипаттамасы"
+                style={{ background: '#18181b', border: '1px solid #27272a', padding: '0.75rem 1rem', borderRadius: '8px', color: '#ffffff', fontSize: '0.85rem', outline: 'none', resize: 'vertical', minHeight: '60px' }} 
+              />
+            </div>
+
+            {/* EN */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', borderTop: '1px solid #27272a', paddingTop: '1rem' }}>
+              <span style={{ fontSize: '0.7rem', color: '#a1a1aa', fontWeight: '800' }}>АНГЛИЙСКАЯ ВЕРСИЯ (EN)</span>
+              <input 
+                value={newTitleEn} 
+                onChange={(e) => setNewTitleEn(e.target.value)}
+                placeholder="Product Title"
+                style={{ background: '#18181b', border: '1px solid #27272a', padding: '0.75rem 1rem', borderRadius: '8px', color: '#ffffff', fontSize: '0.9rem', outline: 'none' }} 
+              />
+              <textarea 
+                value={newDescEn} 
+                onChange={(e) => setNewDescEn(e.target.value)}
+                placeholder="Product Description"
+                style={{ background: '#18181b', border: '1px solid #27272a', padding: '0.75rem 1rem', borderRadius: '8px', color: '#ffffff', fontSize: '0.85rem', outline: 'none', resize: 'vertical', minHeight: '60px' }} 
+              />
+            </div>
+          </div>
         </div>
 
-      ))}
+        <button 
+          onClick={handleAddProduct}
+          style={{ background: 'var(--admin-accent)', color: '#000', border: 'none', padding: '1.25rem', borderRadius: '12px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontSize: '1rem' }}
+        >
+          <Plus size={20} /> ДОБАВИТЬ ТОВАР
+        </button>
+      </div>
 
+      {/* PRODUCTS LIST */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+        <h3 style={{ fontWeight: '900', color: '#fff', letterSpacing: '0.1em', fontSize: '1.3rem' }}>СПИСОК ТОВАРОВ ({products.length})</h3>
+        
+        {products.length === 0 ? (
+          <div style={{ background: '#18181b', border: '1px solid #27272a', borderRadius: '24px', padding: '4rem', textAlign: 'center', color: '#a1a1aa' }}>
+            Товары отсутствуют. Добавьте первый товар с помощью формы слева.
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            {products.map((product: any) => {
+              const activeLang = productLangMap[product.id] || 'ru';
+              return (
+                <div 
+                  key={product.id} 
+                  style={{ 
+                    background: '#18181b', 
+                    border: '1px solid #27272a', 
+                    borderRadius: '24px', 
+                    overflow: 'hidden', 
+                    display: 'flex',
+                    flexDirection: windowWidth < 768 ? 'column' : 'row',
+                    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)',
+                    transition: 'border-color 0.2s'
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--admin-accent)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#27272a'; }}
+                >
+                  {/* Left part: Image editing */}
+                  <div style={{ width: windowWidth < 768 ? '100%' : '240px', background: '#09090b', flexShrink: 0, display: 'flex', flexDirection: 'column', borderRight: windowWidth < 768 ? 'none' : '1px solid #27272a', borderBottom: windowWidth < 768 ? '1px solid #27272a' : 'none' }}>
+                    <div style={{ width: '100%', height: '180px', position: 'relative', overflow: 'hidden' }}>
+                      <img src={product.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/200?text=No+Image'; }} />
+                      <button 
+                        onClick={() => handleDeleteProduct(product.id)}
+                        style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(239, 68, 68, 0.9)', color: '#fff', border: 'none', borderRadius: '8px', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background 0.2s' }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = '#ef4444'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.9)'}
+                        title="Удалить товар"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                    <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <label style={{ fontSize: '0.65rem', color: '#a1a1aa', fontWeight: '900', letterSpacing: '0.05em' }}>URL КАРТИНКИ</label>
+                      <input 
+                        value={product.image || ''} 
+                        onChange={(e) => updateProductField(product.id, 'image', e.target.value)} 
+                        style={{ background: '#18181b', border: '1px solid #27272a', padding: '0.5rem', borderRadius: '6px', color: '#ffffff', fontSize: '0.8rem', width: '100%', outline: 'none' }} 
+                        placeholder="URL изображения"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Right part: Category and localized title/desc */}
+                  <div style={{ padding: '2rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                      {/* Category Selector */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span style={{ fontSize: '0.7rem', color: '#a1a1aa', fontWeight: '900' }}>КАТЕГОРИЯ:</span>
+                        <select
+                          value={product.categoryId}
+                          onChange={(e) => handleCategoryChangeForProduct(product.id, e.target.value)}
+                          style={{ background: '#09090b', border: '1px solid #27272a', padding: '0.4rem 0.8rem', borderRadius: '8px', color: '#ffffff', fontSize: '0.85rem', outline: 'none', cursor: 'pointer' }}
+                        >
+                          {activeCategories.map((c: any) => (
+                            <option key={c.id} value={c.id}>{c.ru}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Card Localized switcher tabs */}
+                      <div style={{ display: 'flex', background: '#09090b', padding: '0.2rem', borderRadius: '6px', border: '1px solid #27272a' }}>
+                        {(['ru', 'kk', 'en'] as const).map((l) => (
+                          <button 
+                            key={l} 
+                            onClick={() => setProductLangMap(prev => ({ ...prev, [product.id]: l }))} 
+                            style={{ 
+                              padding: '0.3rem 0.75rem', 
+                              borderRadius: '4px', 
+                              border: 'none', 
+                              background: activeLang === l ? 'var(--admin-accent)' : 'transparent', 
+                              color: activeLang === l ? '#000' : '#a1a1aa', 
+                              fontSize: '0.7rem', 
+                              fontWeight: '900', 
+                              cursor: 'pointer',
+                              textTransform: 'uppercase'
+                            }}
+                          >
+                            {l}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Localized inputs */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      <div style={{ display: 'grid', gap: '0.4rem' }}>
+                        <label style={{ fontSize: '0.65rem', color: '#a1a1aa', fontWeight: '900', letterSpacing: '0.05em' }}>
+                          НАЗВАНИЕ ({activeLang.toUpperCase()})
+                        </label>
+                        <input 
+                          value={product[activeLang]?.title || ''} 
+                          onChange={(e) => updateProductLangField(product.id, activeLang, 'title', e.target.value)} 
+                          style={{ 
+                            background: '#09090b', 
+                            border: '1px solid #27272a', 
+                            padding: '0.75rem 1rem', 
+                            borderRadius: '10px', 
+                            color: '#ffffff', 
+                            fontSize: '1.1rem', 
+                            fontWeight: '700', 
+                            width: '100%', 
+                            outline: 'none',
+                            transition: 'border-color 0.2s'
+                          }} 
+                          onFocus={(e) => (e.currentTarget as HTMLElement).style.borderColor = 'var(--admin-accent)'}
+                          onBlur={(e) => (e.currentTarget as HTMLElement).style.borderColor = '#27272a'}
+                        />
+                      </div>
+
+                      <div style={{ display: 'grid', gap: '0.4rem' }}>
+                        <label style={{ fontSize: '0.65rem', color: '#a1a1aa', fontWeight: '900', letterSpacing: '0.05em' }}>
+                          ОПИСАНИЕ ({activeLang.toUpperCase()})
+                        </label>
+                        <textarea 
+                          value={product[activeLang]?.desc || ''} 
+                          onChange={(e) => updateProductLangField(product.id, activeLang, 'desc', e.target.value)} 
+                          style={{ 
+                            background: '#09090b', 
+                            border: '1px solid #27272a', 
+                            color: '#ffffff', 
+                            fontSize: '0.85rem', 
+                            lineHeight: '1.5',
+                            padding: '1rem', 
+                            borderRadius: '12px', 
+                            minHeight: '100px', 
+                            resize: 'vertical', 
+                            width: '100%',
+                            outline: 'none',
+                            transition: 'border-color 0.2s'
+                          }} 
+                          onFocus={(e) => (e.currentTarget as HTMLElement).style.borderColor = 'var(--admin-accent)'}
+                          onBlur={(e) => (e.currentTarget as HTMLElement).style.borderColor = '#27272a'}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
-
   );
-
 }
 
 function ServicesManager({ allTranslations, updateTranslation, currentLang, windowWidth }: any) {
