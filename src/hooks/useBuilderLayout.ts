@@ -50,6 +50,19 @@ export function useBuilderLayout(pageKey: string, defaultLayout: any) {
         })
         .then(data => {
           if (data && typeof data === 'object') {
+            // Guard: check if backend data is contaminated
+            if (pageKey !== 'home' && Array.isArray(data.order) && data.order.includes('hero')) {
+              console.warn(`Fetched contaminated layout for ${pageKey}, overwriting on backend...`);
+              localStorage.removeItem(`demetra_${pageKey}_layout`);
+              setLayout(defaultLayout);
+              // Auto-heal: overwrite on server
+              fetch(`/api/layout/${pageKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(defaultLayout)
+              }).catch(err => console.warn("Failed to heal contaminated layout on backend", err));
+              return;
+            }
             setLayout(data);
             localStorage.setItem(`demetra_${pageKey}_layout`, JSON.stringify(data));
           }

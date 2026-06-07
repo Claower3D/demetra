@@ -96,6 +96,18 @@ function App() {
         .then(r => r.json())
         .then(data => {
           if (data && typeof data === 'object') {
+            // Guard: auto-heal contaminated layouts
+            if (id !== 'home' && Array.isArray(data.order) && data.order.includes('hero')) {
+              console.warn(`Startup load found contaminated layout for ${id}, cleaning up...`);
+              localStorage.removeItem(`demetra_${id}_layout`);
+              const cleanDefault = { order: [id + '_main'], hidden: [], styles: {}, images: {} };
+              fetch(`/api/layout/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(cleanDefault)
+              }).catch(err => console.warn(`Failed to auto-heal ${id} layout on server`, err));
+              return;
+            }
             localStorage.setItem(`demetra_${id}_layout`, JSON.stringify(data));
           }
         })
