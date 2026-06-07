@@ -16,6 +16,36 @@ export function useBuilderLayout(pageKey: string, defaultLayout: any) {
     return defaultLayout;
   });
 
+  // Sync state when pageKey changes (crucial for React Router transitions without full page reload!)
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(`demetra_${pageKey}_layout`);
+      if (saved && saved !== 'undefined') {
+        setLayout(JSON.parse(saved));
+      } else {
+        setLayout(defaultLayout);
+      }
+    } catch (e) {
+      setLayout(defaultLayout);
+    }
+
+    // Stale-While-Revalidate: fetch the fresh layout from Go backend in non-builder mode
+    if (!isBuilder) {
+      fetch(`/api/layout/${pageKey}`)
+        .then(r => {
+          if (!r.ok) throw new Error("Status " + r.status);
+          return r.json();
+        })
+        .then(data => {
+          if (data && typeof data === 'object') {
+            setLayout(data);
+            localStorage.setItem(`demetra_${pageKey}_layout`, JSON.stringify(data));
+          }
+        })
+        .catch(e => console.warn(`Could not load fresh layout for ${pageKey}:`, e));
+    }
+  }, [pageKey, isBuilder]);
+
   useEffect(() => {
     if (isBuilder) {
       document.body.classList.add('builder-mode');
