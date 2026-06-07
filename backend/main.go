@@ -137,6 +137,41 @@ func main() {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	})
 
+	http.HandleFunc("/api/log", func(w http.ResponseWriter, r *http.Request) {
+		setupCORS(w, r)
+		if r.Method == http.MethodOptions {
+			return
+		}
+		if r.Method == http.MethodPost {
+			body, err := io.ReadAll(r.Body)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			f, err := os.OpenFile(filepath.Join(dataDir, "client_errors.log"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+			if err == nil {
+				f.Write(body)
+				f.Write([]byte("\n"))
+				f.Close()
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.Write([]byte(`{"success":true}`))
+			return
+		}
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	})
+
+	http.HandleFunc("/api/log-get", func(w http.ResponseWriter, r *http.Request) {
+		setupCORS(w, r)
+		filePath := filepath.Join(dataDir, "client_errors.log")
+		if _, err := os.Stat(filePath); os.IsNotExist(err) {
+			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+			w.Write([]byte("No errors logged yet."))
+			return
+		}
+		http.ServeFile(w, r, filePath)
+	})
+
 	// Serve Static Frontend Files (SPA Fallback)
 	distDir := "./dist"
 	fileServer := http.FileServer(http.Dir(distDir))

@@ -3034,7 +3034,7 @@ export function BuilderWrapper({ children, id, index, isFirst, isLast, isBuilder
 
 
 
-        userSelect: 'none',
+        userSelect: isBuilder ? 'none' : 'auto',
 
 
 
