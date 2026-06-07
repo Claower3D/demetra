@@ -177,6 +177,14 @@ export const defaultDataMap: Record<string, any> = {
 import HomeContent from './Home';
 
 export default function Admin() {
+  const [adminTheme, setAdminTheme] = useState(() => {
+    try {
+      const saved = localStorage.getItem('demetra_admin_theme');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return { color: '#00ff41', rgb: '0, 255, 65', name: 'Green' };
+  });
+
 
   const { lang, setLang, t } = useLang();
 
@@ -411,6 +419,29 @@ export default function Admin() {
   return (
 
     <div className="admin-layout" style={{ display: 'flex', minHeight: '100vh', background: '#050505', color: '#ffffff', position: 'relative', zIndex: 999999, pointerEvents: 'auto', fontFamily: 'Inter, system-ui, sans-serif' }}>
+      <style>{`
+        :root {
+          --admin-accent: ${adminTheme.color};
+          --admin-accent-rgb: ${adminTheme.rgb};
+        }
+        /* Custom sleek scrollbar for entire admin panel */
+        ::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+          background: #111113;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: #2d2d30;
+          border-radius: 6px;
+          border: 2px solid #111113;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: var(--admin-accent);
+        }
+      `}</style>
+
 
       <AnimatePresence>
 
@@ -497,7 +528,7 @@ export default function Admin() {
 
             {activeTab === 'builder' ? (
 
-              <TildaEditor pages={pages} pageLayouts={pageLayouts} setPageLayouts={setPageLayouts} allTranslations={allTranslations} updateTranslation={updateTranslation} currentLang={effectiveLang} handleSave={handleSave} isSidebarOpen={isSidebarOpen} />
+              <TildaEditor pages={pages} pageLayouts={pageLayouts} setPageLayouts={setPageLayouts} allTranslations={allTranslations} updateTranslation={updateTranslation} currentLang={effectiveLang} handleSave={handleSave} isSidebarOpen={isSidebarOpen} adminTheme={adminTheme} setAdminTheme={setAdminTheme} />
 
             ) : (
 
@@ -533,21 +564,9 @@ export default function Admin() {
 
 // TILDA STYLE EDITOR
 
-function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, updateTranslation, currentLang, handleSave, isSidebarOpen }: any) {
+function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, updateTranslation, currentLang, handleSave, isSidebarOpen, adminTheme, setAdminTheme }: any) {
 
-  const [adminTheme, setAdminTheme] = useState(() => {
-
-    try {
-
-      const saved = localStorage.getItem('demetra_admin_theme');
-
-      if (saved) return JSON.parse(saved);
-
-    } catch {}
-
-    return { color: '#00ff41', rgb: '0, 255, 65', name: 'Green' };
-
-  });
+  
 
   const [showThemePicker, setShowThemePicker] = useState(false);
 
@@ -2795,49 +2814,7 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
     <div className="tilda-editor" style={{ position: 'relative', height: '100vh', display: 'flex', flexDirection: 'column' }}>
 
-            <style>{`
-
-        :root {
-
-          --admin-accent: ${adminTheme.color};
-
-          --admin-accent-rgb: ${adminTheme.rgb};
-
-        }
-
-        /* Custom sleek scrollbar for entire admin panel */
-
-        ::-webkit-scrollbar {
-
-          width: 8px;
-
-          height: 8px;
-
-        }
-
-        ::-webkit-scrollbar-track {
-
-          background: #111113;
-
-        }
-
-        ::-webkit-scrollbar-thumb {
-
-          background: #2d2d30;
-
-          border-radius: 6px;
-
-          border: 2px solid #111113;
-
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-
-          background: var(--admin-accent);
-
-        }
-
-      `}</style>
+            
 
       {/* Top Floating Toolbar */}
 
