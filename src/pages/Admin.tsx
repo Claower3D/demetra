@@ -223,7 +223,7 @@ export default function Admin() {
 
   const { lang, setLang, t } = useLang();
 
-  const [activeTab, setActiveTab] = useState('builder'); // Default to Builder (Tilda Mode)
+  const [activeTab, setActiveTab] = useState('dashboard'); // Default to Dashboard home
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
 
@@ -591,7 +591,7 @@ export default function Admin() {
 
                 {activeTab === 'pages' && <PagesManager pages={pages} setPages={setPages} pageLayouts={pageLayouts} setPageLayouts={setPageLayouts} t={t} lang={effectiveLang} />}
 
-                {activeTab === 'dashboard' && <DashboardOverview windowWidth={windowWidth} t={t} />}
+                {activeTab === 'dashboard' && <DashboardOverview windowWidth={windowWidth} t={t} setActiveTab={setActiveTab} products={products} services={services} pages={pages} categories={categories} />}
 
                 {activeTab === 'content' && <PageEditor allTranslations={allTranslations} updateTranslation={updateTranslation} currentLang={effectiveLang} windowWidth={windowWidth} t={t} />}
 
@@ -8919,19 +8919,206 @@ function ModalBodyContent({
 
 // OTHER COMPONENTS (RE-INTEGRATED FROM PREVIOUS V1.8)
 
-function DashboardOverview({ windowWidth, t }: any) {
+function DashboardOverview({ windowWidth, t, setActiveTab, products, services, pages, categories }: any) {
+  const cols = windowWidth < 700 ? '1fr' : windowWidth < 1100 ? '1fr 1fr' : '1fr 1fr 1fr';
+
+  const tiles = [
+    {
+      id: 'products',
+      icon: <Package size={36} />,
+      accent: 'var(--admin-accent)',
+      label: t.admin_products || 'Продукция',
+      sublabel: 'Каталог товаров',
+      count: (products || []).length,
+      countLabel: 'позиций',
+      desc: 'Добавляйте, редактируйте и удаляйте товары. Назначайте категории и фото.',
+      action: 'Управление →'
+    },
+    {
+      id: 'services',
+      icon: <Truck size={36} />,
+      accent: '#3b82f6',
+      label: t.admin_services || 'Услуги',
+      sublabel: 'Список услуг',
+      count: (services || []).length,
+      countLabel: 'услуг',
+      desc: 'Управляйте описанием услуг, изображениями, видео и переводами.',
+      action: 'Управление →'
+    },
+    {
+      id: 'builder',
+      icon: <LayoutDashboard size={36} />,
+      accent: '#a855f7',
+      label: 'Visual Builder',
+      sublabel: 'Конструктор страниц',
+      count: (pages || []).length,
+      countLabel: 'страниц',
+      desc: 'Перетаскивайте блоки, добавляйте медиа и настраивайте каждую страницу сайта.',
+      action: 'Открыть Builder →'
+    },
+    {
+      id: 'content',
+      icon: <Globe size={36} />,
+      accent: '#f59e0b',
+      label: 'Контент',
+      sublabel: 'Тексты и переводы',
+      count: 3,
+      countLabel: 'языка',
+      desc: 'Редактируйте все тексты сайта на русском, казахском и английском языках.',
+      action: 'Редактировать →'
+    },
+    {
+      id: 'pages',
+      icon: <ImageIcon size={36} />,
+      accent: '#ec4899',
+      label: 'Страницы',
+      sublabel: 'Структура сайта',
+      count: (pages || []).length,
+      countLabel: 'страниц',
+      desc: 'Управляйте порядком блоков, скрывайте секции и настраивайте мета-данные.',
+      action: 'Управление →'
+    },
+    {
+      id: 'settings',
+      icon: <Settings size={36} />,
+      accent: '#6b7280',
+      label: 'Настройки',
+      sublabel: 'Глобальные параметры',
+      count: null,
+      countLabel: '',
+      desc: 'Название компании, цвета, логотип, контактная информация и SEO.',
+      action: 'Настроить →'
+    },
+  ];
+
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: windowWidth < 1024 ? '1fr' : '1fr 1fr 1fr', gap: '2rem' }}>
-      {[
-        { label: t.admin_products, value: '24', icon: <Package />, color: 'var(--admin-accent)' },
-        { label: t.admin_services, value: '12', icon: <Truck />, color: '#0066ff' },
-        { label: 'Inquiries', value: '158', icon: <MessageSquare />, color: '#ff00ff' },
-      ].map((stat, i) => (
-        <div key={i} style={{ padding: '2.5rem', background: '#18181b', border: '1px solid #27272a', borderRadius: '24px', display: 'flex', alignItems: 'center', gap: '1.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
-          <div style={{ padding: '1.25rem', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', color: stat.color }}>{stat.icon}</div>
-          <div><div style={{ fontSize: '0.75rem', color: '#a1a1aa', fontWeight: '800', letterSpacing: '0.15em' }}>{stat.label?.toUpperCase()}</div><div style={{ fontSize: '3rem', fontWeight: '900', lineHeight: 1, marginTop: '0.5rem', color: '#ffffff' }}>{stat.value}</div></div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
+      {/* Header */}
+      <div style={{ borderBottom: '1px solid #27272a', paddingBottom: '2rem' }}>
+        <div style={{ fontSize: '0.75rem', color: 'var(--admin-accent)', fontWeight: '900', letterSpacing: '0.3em', marginBottom: '0.75rem' }}>
+          ГЛАВНАЯ ПАНЕЛЬ
         </div>
-      ))}
+        <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.8rem)', fontWeight: '900', color: '#fff', lineHeight: 1.1, margin: 0 }}>
+          Выберите раздел для управления
+        </h2>
+        <p style={{ color: '#71717a', marginTop: '0.75rem', fontSize: '1rem' }}>
+          Нажмите на плитку чтобы открыть нужный раздел администрирования.
+        </p>
+      </div>
+
+      {/* Tile Grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: cols, gap: '1.5rem' }}>
+        {tiles.map((tile) => (
+          <button
+            key={tile.id}
+            onClick={() => setActiveTab(tile.id)}
+            style={{
+              background: '#18181b',
+              border: '1px solid #27272a',
+              borderRadius: '24px',
+              padding: '2.5rem 2rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1.25rem',
+              textAlign: 'left',
+              cursor: 'pointer',
+              transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}
+            onMouseEnter={(e) => {
+              const el = e.currentTarget;
+              el.style.borderColor = tile.accent;
+              el.style.transform = 'translateY(-4px)';
+              el.style.boxShadow = `0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px ${tile.accent}22`;
+              el.style.background = '#1c1c1f';
+            }}
+            onMouseLeave={(e) => {
+              const el = e.currentTarget;
+              el.style.borderColor = '#27272a';
+              el.style.transform = 'translateY(0)';
+              el.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+              el.style.background = '#18181b';
+            }}
+          >
+            {/* Glow accent top bar */}
+            <div style={{
+              position: 'absolute', top: 0, left: 0, right: 0, height: '3px',
+              background: `linear-gradient(90deg, transparent, ${tile.accent}, transparent)`,
+              opacity: 0.6
+            }} />
+
+            {/* Icon + Count row */}
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+              <div style={{
+                padding: '1rem',
+                background: `${tile.accent}18`,
+                borderRadius: '16px',
+                color: tile.accent,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: `1px solid ${tile.accent}22`
+              }}>
+                {tile.icon}
+              </div>
+              {tile.count !== null && (
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#fff', lineHeight: 1 }}>
+                    {tile.count}
+                  </div>
+                  <div style={{ fontSize: '0.7rem', color: '#71717a', fontWeight: '700', letterSpacing: '0.05em', marginTop: '0.15rem' }}>
+                    {tile.countLabel.toUpperCase()}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Label */}
+            <div>
+              <div style={{ fontSize: '0.65rem', color: '#71717a', fontWeight: '800', letterSpacing: '0.15em', marginBottom: '0.35rem' }}>
+                {tile.sublabel.toUpperCase()}
+              </div>
+              <div style={{ fontSize: '1.4rem', fontWeight: '900', color: '#fff' }}>
+                {tile.label}
+              </div>
+            </div>
+
+            {/* Description */}
+            <div style={{ fontSize: '0.85rem', color: '#a1a1aa', lineHeight: '1.55', flex: 1 }}>
+              {tile.desc}
+            </div>
+
+            {/* CTA */}
+            <div style={{ fontSize: '0.8rem', fontWeight: '900', color: tile.accent, letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              {tile.action}
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {/* Quick stats footer */}
+      <div style={{ display: 'grid', gridTemplateColumns: windowWidth < 700 ? '1fr' : '1fr 1fr 1fr', gap: '1rem' }}>
+        {[
+          { label: 'Товаров в каталоге', value: (products || []).length, color: 'var(--admin-accent)' },
+          { label: 'Категорий товаров',  value: (categories || []).length, color: '#3b82f6' },
+          { label: 'Услуг на сайте',     value: (services || []).length,  color: '#a855f7' },
+        ].map((stat, i) => (
+          <div key={i} style={{
+            background: '#18181b',
+            border: '1px solid #27272a',
+            borderRadius: '16px',
+            padding: '1.5rem 2rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
+            <span style={{ fontSize: '0.8rem', color: '#71717a', fontWeight: '700' }}>{stat.label}</span>
+            <span style={{ fontSize: '1.8rem', fontWeight: '900', color: stat.color }}>{stat.value}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
