@@ -410,6 +410,7 @@ export default function Admin() {
     { id: 'services', icon: <Truck size={20} />, label: t.admin_services || 'Services' },
 
     { id: 'settings', icon: <Settings size={20} />, label: t.admin_settings || 'Global Settings' },
+    { id: 'assistant', icon: <MessageSquare size={20} />, label: 'ASSISTANT' },
 
   ];
 
@@ -600,6 +601,8 @@ export default function Admin() {
                 {activeTab === 'services' && <ServicesManager services={services} setServices={setServices} currentLang={effectiveLang} windowWidth={windowWidth} />}
 
                 {activeTab === 'settings' && <GlobalSettings allTranslations={allTranslations} updateTranslation={updateTranslation} currentLang={effectiveLang} windowWidth={windowWidth} />}
+
+                {activeTab === 'assistant' && <AssistantSettings windowWidth={windowWidth} />}
 
               </div>
 
@@ -8989,6 +8992,17 @@ function DashboardOverview({ windowWidth, t, setActiveTab, products, services, p
       desc: 'Название компании, цвета, логотип, контактная информация и SEO.',
       action: 'Настроить →'
     },
+    {
+      id: 'assistant',
+      icon: <MessageSquare size={36} />,
+      accent: '#22d3ee',
+      label: 'DEMETRA_ASSISTANT',
+      sublabel: 'Настройки чат-бота',
+      count: null,
+      countLabel: '',
+      desc: 'Приветствие, FAQ, авто-ответы, телефон поддержки и имя ассистента.',
+      action: 'Настроить ассистента →'
+    },
   ];
 
   return (
@@ -10303,6 +10317,343 @@ function ServicesManager({ services, setServices, currentLang, windowWidth }: an
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+// ─── ASSISTANT SETTINGS COMPONENT ────────────────────────────────────────────
+function AssistantSettings({ windowWidth }: any) {
+  const defaultConfig = {
+    enabled: true,
+    name: 'DEMETRA_ASSISTANT',
+    subtitle: 'SYSTEM_ONLINE // AI_CORE',
+    phone: '+7 (700) 920-70-12',
+    greeting: {
+      ru: 'Здравствуйте! Я ваш индустриальный ассистент Деметра. Чем могу помочь?',
+      kk: 'Сәлем! Мен сіздің Деметра индустриалды көмекшіңізбін. Қалай көмектесе аламын?',
+      en: 'Hello! I am your Demetra industrial assistant. How can I help you?'
+    },
+    autoReply: {
+      ru: 'Ваш запрос принят в обработку. Наши специалисты свяжутся с вами в ближайшее время или вы можете позвонить нам по номеру {{phone}} для срочной консультации.',
+      kk: 'Сіздің сұранысыңыз өңдеуге қабылданды. Біздің мамандар жақын арада сізбен байланысады немесе шұғыл кеңес алу үшін {{phone}} нөміріне қоңырау шала аласыз.',
+      en: 'Your request has been received. Our specialists will contact you shortly, or you can call us at {{phone}} for urgent consultation.'
+    },
+    faqs: [
+      { q_ru: 'Как заказать аудит?', a_ru: 'Оставьте заявку в разделе контакты или позвоните нам.', q_kk: 'Аудитке қалай тапсырыс беруге болады?', a_kk: 'Байланыс бөлімінде өтінім қалдырыңыз немесе бізге қоңырау шалыңыз.', q_en: 'How to order an audit?', a_en: 'Leave a request in the contact section or call us.' },
+      { q_ru: 'Сроки доставки комплектующих?', a_ru: 'От 3 до 14 рабочих дней в зависимости от региона.', q_kk: 'Жеткізу мерзімі қандай?', a_kk: 'Аймаққа байланысты 3-тен 14 жұмыс күніне дейін.', q_en: 'Delivery times?', a_en: 'From 3 to 14 business days depending on the region.' }
+    ]
+  };
+
+  const [config, setConfig] = useState<any>(() => {
+    try {
+      const saved = localStorage.getItem('demetra_assistant_config');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return defaultConfig;
+  });
+
+  const [activeLang, setActiveLang] = useState<'ru' | 'kk' | 'en'>('ru');
+  const [saved, setSaved] = useState(false);
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+
+  const saveConfig = () => {
+    localStorage.setItem('demetra_assistant_config', JSON.stringify(config));
+    window.dispatchEvent(new Event('storage'));
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2500);
+  };
+
+  const updateGreeting = (lang: 'ru' | 'kk' | 'en', val: string) =>
+    setConfig((c: any) => ({ ...c, greeting: { ...c.greeting, [lang]: val } }));
+
+  const updateAutoReply = (lang: 'ru' | 'kk' | 'en', val: string) =>
+    setConfig((c: any) => ({ ...c, autoReply: { ...c.autoReply, [lang]: val } }));
+
+  const updateFaq = (idx: number, field: string, val: string) =>
+    setConfig((c: any) => {
+      const faqs = [...c.faqs];
+      faqs[idx] = { ...faqs[idx], [field]: val };
+      return { ...c, faqs };
+    });
+
+  const addFaq = () =>
+    setConfig((c: any) => ({
+      ...c,
+      faqs: [...c.faqs, { q_ru: '', a_ru: '', q_kk: '', a_kk: '', q_en: '', a_en: '' }]
+    }));
+
+  const deleteFaq = (idx: number) =>
+    setConfig((c: any) => ({ ...c, faqs: c.faqs.filter((_: any, i: number) => i !== idx) }));
+
+  const inputSt: React.CSSProperties = {
+    background: '#09090b', border: '1px solid #27272a', padding: '0.85rem 1rem',
+    borderRadius: '10px', color: '#ffffff', fontSize: '0.9rem', outline: 'none',
+    width: '100%', transition: 'border-color 0.2s'
+  };
+  const labelSt: React.CSSProperties = {
+    fontSize: '0.7rem', color: '#a1a1aa', fontWeight: '900', letterSpacing: '0.08em', marginBottom: '0.35rem', display: 'block'
+  };
+  const cardSt: React.CSSProperties = {
+    background: '#18181b', border: '1px solid #27272a', borderRadius: '24px',
+    padding: '2.5rem', display: 'flex', flexDirection: 'column', gap: '1.75rem'
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+        <div>
+          <div style={{ fontSize: '0.7rem', color: '#22d3ee', fontWeight: '900', letterSpacing: '0.3em', marginBottom: '0.4rem' }}>
+            CHAT-BOT CONFIGURATION
+          </div>
+          <h2 style={{ fontSize: '1.8rem', fontWeight: '900', color: '#fff', margin: 0 }}>DEMETRA_ASSISTANT</h2>
+          <p style={{ color: '#71717a', marginTop: '0.4rem', fontSize: '0.85rem' }}>Управляйте поведением и контентом чат-бота на сайте.</p>
+        </div>
+        <button
+          onClick={saveConfig}
+          style={{
+            background: saved ? '#22c55e' : '#22d3ee', color: '#000', border: 'none',
+            padding: '1rem 2rem', borderRadius: '12px', fontWeight: '900', cursor: 'pointer',
+            fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.3s'
+          }}
+        >
+          {saved ? <><CheckCircle2 size={18} /> СОХРАНЕНО!</> : <><Save size={18} /> ПРИМЕНИТЬ</>}
+        </button>
+      </div>
+
+      {/* Toggle enabled + basic identity */}
+      <div style={{ ...cardSt }}>
+        <h3 style={{ fontWeight: '900', color: '#22d3ee', letterSpacing: '0.1em', fontSize: '1.1rem', margin: 0 }}>
+          ⚙️ ОСНОВНЫЕ ПАРАМЕТРЫ
+        </h3>
+
+        {/* Enable toggle */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#09090b', padding: '1.25rem 1.5rem', borderRadius: '14px', border: '1px solid #27272a' }}>
+          <div>
+            <div style={{ fontWeight: '800', color: '#fff', fontSize: '0.95rem' }}>Ассистент включён</div>
+            <div style={{ color: '#71717a', fontSize: '0.8rem', marginTop: '0.15rem' }}>Показывать ли кнопку чата на сайте</div>
+          </div>
+          <button
+            onClick={() => setConfig((c: any) => ({ ...c, enabled: !c.enabled }))}
+            style={{
+              width: '52px', height: '28px', borderRadius: '14px', border: 'none', cursor: 'pointer',
+              background: config.enabled ? '#22d3ee' : '#27272a',
+              position: 'relative', transition: 'background 0.3s', flexShrink: 0
+            }}
+          >
+            <div style={{
+              position: 'absolute', top: '3px',
+              left: config.enabled ? '26px' : '3px',
+              width: '22px', height: '22px', borderRadius: '50%',
+              background: '#fff', transition: 'left 0.3s',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.4)'
+            }} />
+          </button>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: windowWidth < 900 ? '1fr' : '1fr 1fr', gap: '1.25rem' }}>
+          <div>
+            <label style={labelSt}>ИМЯ БОТА</label>
+            <input
+              value={config.name}
+              onChange={(e) => setConfig((c: any) => ({ ...c, name: e.target.value }))}
+              style={inputSt}
+              onFocus={(e) => e.target.style.borderColor = '#22d3ee'}
+              onBlur={(e) => e.target.style.borderColor = '#27272a'}
+            />
+          </div>
+          <div>
+            <label style={labelSt}>ПОДЗАГОЛОВОК / СТАТУС</label>
+            <input
+              value={config.subtitle}
+              onChange={(e) => setConfig((c: any) => ({ ...c, subtitle: e.target.value }))}
+              style={inputSt}
+              onFocus={(e) => e.target.style.borderColor = '#22d3ee'}
+              onBlur={(e) => e.target.style.borderColor = '#27272a'}
+            />
+          </div>
+          <div style={{ gridColumn: windowWidth < 900 ? '1' : '1 / -1' }}>
+            <label style={labelSt}>ТЕЛЕФОН ПОДДЕРЖКИ (в авто-ответах)</label>
+            <input
+              value={config.phone}
+              onChange={(e) => setConfig((c: any) => ({ ...c, phone: e.target.value }))}
+              style={inputSt}
+              onFocus={(e) => e.target.style.borderColor = '#22d3ee'}
+              onBlur={(e) => e.target.style.borderColor = '#27272a'}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Language tabs for greeting & auto-reply */}
+      <div style={{ ...cardSt }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+          <h3 style={{ fontWeight: '900', color: '#22d3ee', letterSpacing: '0.1em', fontSize: '1.1rem', margin: 0 }}>
+            💬 ПРИВЕТСТВИЕ И АВТО-ОТВЕТ
+          </h3>
+          <div style={{ display: 'flex', background: '#09090b', padding: '0.2rem', borderRadius: '8px', border: '1px solid #27272a' }}>
+            {(['ru', 'kk', 'en'] as const).map((l) => (
+              <button
+                key={l}
+                onClick={() => setActiveLang(l)}
+                style={{
+                  padding: '0.4rem 1rem', borderRadius: '6px', border: 'none',
+                  background: activeLang === l ? '#22d3ee' : 'transparent',
+                  color: activeLang === l ? '#000' : '#a1a1aa',
+                  fontSize: '0.75rem', fontWeight: '900', cursor: 'pointer', textTransform: 'uppercase'
+                }}
+              >{l}</button>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <div>
+            <label style={labelSt}>ПРИВЕТСТВИЕ ({activeLang.toUpperCase()})</label>
+            <textarea
+              value={config.greeting[activeLang]}
+              onChange={(e) => updateGreeting(activeLang, e.target.value)}
+              style={{ ...inputSt, minHeight: '80px', resize: 'vertical', lineHeight: '1.55' }}
+              onFocus={(e) => e.target.style.borderColor = '#22d3ee'}
+              onBlur={(e) => e.target.style.borderColor = '#27272a'}
+            />
+          </div>
+          <div>
+            <label style={labelSt}>
+              АВТО-ОТВЕТ ({activeLang.toUpperCase()}) — используй {'{{'+'phone'+'}}'} для подстановки телефона
+            </label>
+            <textarea
+              value={config.autoReply[activeLang]}
+              onChange={(e) => updateAutoReply(activeLang, e.target.value)}
+              style={{ ...inputSt, minHeight: '100px', resize: 'vertical', lineHeight: '1.55' }}
+              onFocus={(e) => e.target.style.borderColor = '#22d3ee'}
+              onBlur={(e) => e.target.style.borderColor = '#27272a'}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* FAQ Management */}
+      <div style={{ ...cardSt }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+          <h3 style={{ fontWeight: '900', color: '#22d3ee', letterSpacing: '0.1em', fontSize: '1.1rem', margin: 0 }}>
+            ❓ FAQ — БЫСТРЫЕ КНОПКИ ({config.faqs.length})
+          </h3>
+          <button
+            onClick={addFaq}
+            style={{ background: 'rgba(34,211,238,0.12)', border: '1px solid #22d3ee', color: '#22d3ee', padding: '0.6rem 1.25rem', borderRadius: '10px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem' }}
+          >
+            <Plus size={16} /> ДОБАВИТЬ FAQ
+          </button>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {config.faqs.map((faq: any, idx: number) => (
+            <div key={idx} style={{ border: '1px solid #27272a', borderRadius: '16px', overflow: 'hidden' }}>
+              {/* Accordion header */}
+              <div
+                style={{ padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', background: expandedFaq === idx ? '#1c1c1f' : '#09090b' }}
+                onClick={() => setExpandedFaq(expandedFaq === idx ? null : idx)}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: 'rgba(34,211,238,0.1)', border: '1px solid #22d3ee22', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#22d3ee', fontWeight: '900', fontSize: '0.8rem', flexShrink: 0 }}>
+                    {idx + 1}
+                  </div>
+                  <div style={{ color: '#e4e4e7', fontWeight: '700', fontSize: '0.9rem' }}>
+                    {faq.q_ru || <span style={{ color: '#52525b', fontStyle: 'italic' }}>Пустой вопрос...</span>}
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); deleteFaq(idx); }}
+                    style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.3)', color: '#ef4444', borderRadius: '8px', padding: '0.3rem 0.6rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.75rem', fontWeight: '800' }}
+                  >
+                    <Trash2 size={13} /> Удалить
+                  </button>
+                  <div style={{ color: '#52525b', transform: expandedFaq === idx ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s' }}>▼</div>
+                </div>
+              </div>
+
+              {/* Accordion body */}
+              {expandedFaq === idx && (
+                <div style={{ padding: '1.5rem', borderTop: '1px solid #27272a', background: '#0d0d10', display: 'grid', gap: '1.5rem' }}>
+                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                    {(['ru', 'kk', 'en'] as const).map(l => (
+                      <span key={l} style={{ padding: '0.2rem 0.6rem', borderRadius: '6px', background: l === 'ru' ? '#22d3ee22' : '#18181b', border: `1px solid ${l === 'ru' ? '#22d3ee44' : '#27272a'}`, color: l === 'ru' ? '#22d3ee' : '#52525b', fontSize: '0.65rem', fontWeight: '900' }}>{l.toUpperCase()}</span>
+                    ))}
+                  </div>
+
+                  {(['ru', 'kk', 'en'] as const).map(l => (
+                    <div key={l} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                      <div>
+                        <label style={{ ...labelSt, color: l === activeLang ? '#22d3ee' : '#71717a' }}>ВОПРОС ({l.toUpperCase()})</label>
+                        <input
+                          value={faq[`q_${l}`]}
+                          onChange={(e) => updateFaq(idx, `q_${l}`, e.target.value)}
+                          style={inputSt}
+                          onFocus={(e) => e.target.style.borderColor = '#22d3ee'}
+                          onBlur={(e) => e.target.style.borderColor = '#27272a'}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ ...labelSt, color: l === activeLang ? '#22d3ee' : '#71717a' }}>ОТВЕТ ({l.toUpperCase()})</label>
+                        <input
+                          value={faq[`a_${l}`]}
+                          onChange={(e) => updateFaq(idx, `a_${l}`, e.target.value)}
+                          style={inputSt}
+                          onFocus={(e) => e.target.style.borderColor = '#22d3ee'}
+                          onBlur={(e) => e.target.style.borderColor = '#27272a'}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+
+          {config.faqs.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '3rem', color: '#52525b', background: '#09090b', borderRadius: '12px', border: '1px dashed #27272a' }}>
+              Нет FAQ. Нажмите «Добавить FAQ» чтобы создать первый вопрос.
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Live Preview */}
+      <div style={{ ...cardSt }}>
+        <h3 style={{ fontWeight: '900', color: '#22d3ee', letterSpacing: '0.1em', fontSize: '1.1rem', margin: 0 }}>
+          👁 ПРЕДПРОСМОТР
+        </h3>
+        <div style={{ background: '#09090b', borderRadius: '20px', border: '1px solid #27272a', overflow: 'hidden', maxWidth: '420px' }}>
+          {/* Chat header */}
+          <div style={{ background: '#22d3ee', padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ background: '#000', padding: '0.5rem', borderRadius: '10px' }}>
+              <Zap size={18} color="#22d3ee" />
+            </div>
+            <div>
+              <div style={{ fontWeight: '900', fontSize: '0.85rem', color: '#000', letterSpacing: '0.05em' }}>{config.name || 'DEMETRA_ASSISTANT'}</div>
+              <div style={{ fontSize: '0.6rem', fontWeight: '700', opacity: 0.6, color: '#000' }}>{config.subtitle || 'SYSTEM_ONLINE'}</div>
+            </div>
+          </div>
+          {/* Greeting bubble */}
+          <div style={{ padding: '1.5rem' }}>
+            <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid #27272a', borderRadius: '0 14px 14px 14px', padding: '1rem', color: '#e4e4e7', fontSize: '0.85rem', lineHeight: '1.55', maxWidth: '85%' }}>
+              {config.greeting[activeLang] || '...'}
+            </div>
+          </div>
+          {/* FAQ chips */}
+          <div style={{ padding: '0 1.5rem 1.5rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            {config.faqs.slice(0, 3).map((faq: any, i: number) => (
+              <div key={i} style={{ padding: '0.4rem 0.9rem', background: 'rgba(34,211,238,0.05)', border: '1px solid #27272a', borderRadius: '20px', color: '#22d3ee', fontSize: '0.65rem', fontWeight: '800' }}>
+                {faq[`q_${activeLang}`] || faq.q_ru || `FAQ ${i + 1}`}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }
