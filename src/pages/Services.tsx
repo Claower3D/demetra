@@ -1,17 +1,23 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Settings, Shield, Zap, Hammer, ArrowRight } from 'lucide-react';
+import { servicesData } from '../i18n';
 import { useLang, InlineEdit } from '../LangContext';
 import { BuilderWrapper } from '../components/BuilderWrapper';
 import { useBuilderLayout } from '../hooks/useBuilderLayout';
 import CustomBlock, { getCustomBlocks } from '../components/CustomBlock';
 
 export default function Services() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const [customBlocks, setCustomBlocks] = useState<Record<string, any>>(() => getCustomBlocks());
 
+  const [servicesList, setServicesList] = useState(() => servicesData);
+
   useEffect(() => {
-    const sync = () => setCustomBlocks(getCustomBlocks());
+    const sync = () => {
+      setCustomBlocks(getCustomBlocks());
+      setServicesList([...servicesData]);
+    };
     window.addEventListener('storage', sync);
     return () => window.removeEventListener('storage', sync);
   }, []);
@@ -23,12 +29,7 @@ export default function Services() {
     images: {} 
   });
 
-  const services = [
-    { icon: <Settings />, title: t.srv_1_title, desc: t.srv_1_desc, tKeyTitle: 'srv_1_title', tKeyDesc: 'srv_1_desc' },
-    { icon: <Shield />, title: t.srv_2_title, desc: t.srv_2_desc, tKeyTitle: 'srv_2_title', tKeyDesc: 'srv_2_desc' },
-    { icon: <Zap />, title: t.srv_3_title, desc: t.srv_3_desc, tKeyTitle: 'srv_3_title', tKeyDesc: 'srv_3_desc' },
-    { icon: <Hammer />, title: t.srv_4_title, desc: t.srv_4_desc, tKeyTitle: 'srv_4_title', tKeyDesc: 'srv_4_desc' }
-  ];
+  
 
   const pageOrder = Array.isArray(layout?.order) && layout.order.length > 0 ? layout.order : ['services_main'];
   const hiddenBlocks = Array.isArray(layout?.hidden) ? layout.hidden : [];
@@ -62,24 +63,48 @@ export default function Services() {
                   </h1>
 
                   <div style={{ display: 'grid', gap: '2rem', marginBottom: '8rem' }}>
-                    {services.map((srv, i) => {
-                      const cardId = `srv_item_${i}`;
+                    {servicesList.map((srv, i) => {
+                      const cardId = `srv_item_${srv.id || i}`;
                       const cardStyle = layout.styles?.[cardId] || {};
                       return (
                         <motion.div
-                          key={i}
+                          key={srv.id || i}
                           whileHover={{ x: 20 }}
                           className="industrial-card service-item-card"
                           style={{ ...cardStyle }}
                         >
                           <BuilderWrapper id={cardId} isBuilder={isBuilder}>
                             <div className="service-item-grid">
-                              <div style={{ color: 'var(--primary)', background: 'rgba(0, 255, 65, 0.1)', padding: '2rem', borderRadius: '16px' }}>
-                                {srv.icon}
+                              <div style={{ 
+                                color: 'var(--primary)', 
+                                background: srv.mediaType === 'icon' ? 'rgba(0, 255, 65, 0.1)' : 'transparent', 
+                                width: '100px', 
+                                height: '100px', 
+                                borderRadius: '16px', 
+                                overflow: 'hidden', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center',
+                                flexShrink: 0
+                              }}>
+                                {srv.mediaType === 'video' ? (
+                                  <video src={srv.mediaUrl} autoPlay loop muted playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                ) : srv.mediaType === 'image' ? (
+                                  <img src={srv.mediaUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                ) : (
+                                  srv.iconType === 'Shield' ? <Shield size={32} /> :
+                                  srv.iconType === 'Zap' ? <Zap size={32} /> :
+                                  srv.iconType === 'Hammer' ? <Hammer size={32} /> :
+                                  <Settings size={32} />
+                                )}
                               </div>
-                              <div>
-                                <h3 style={{ fontSize: '2rem', color: 'var(--foreground)', marginBottom: '1rem' }}><InlineEdit tKey={srv.tKeyTitle} /></h3>
-                                <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', maxWidth: '800px' }}><InlineEdit tKey={srv.tKeyDesc} /></p>
+                              <div style={{ flex: 1 }}>
+                                <h3 style={{ fontSize: '2rem', color: 'var(--foreground)', marginBottom: '1rem' }}>
+                                  {(srv as any)[lang]?.title || srv.ru?.title}
+                                </h3>
+                                <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', maxWidth: '800px' }}>
+                                  {(srv as any)[lang]?.desc || srv.ru?.desc}
+                                </p>
                               </div>
                               <div style={{ color: 'var(--primary)' }}>
                                 <ArrowRight size={32} />

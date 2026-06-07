@@ -31,6 +31,8 @@ import {
   Globe, 
 
   Zap,
+  Shield,
+  Hammer,
 
   BarChart3,
 
@@ -114,7 +116,7 @@ import { useLang } from '../LangContext';
 
 import { useTheme } from '../ThemeContext';
 
-import { translations as defaultTranslations, productsData as defaultProducts, categories as defaultCategories, setDynamicCategories, setDynamicProductsData } from '../i18n';
+import { translations as defaultTranslations, productsData as defaultProducts, categories as defaultCategories, setDynamicCategories, setDynamicProductsData, servicesData as defaultServices, setDynamicServicesData } from '../i18n';
 
 import { setCustomBlock, getCustomBlocks, getPagesList } from '../components/CustomBlock';
 
@@ -266,6 +268,11 @@ export default function Admin() {
     return saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultCategories));
   });
 
+  const [services, setServices] = useState<any[]>(() => {
+    const saved = localStorage.getItem('demetra_services');
+    return saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultServices));
+  });
+
   const [pages, setPages] = useState<PageItem[]>(() => getPagesList());
 
   const [pageLayouts, setPageLayouts] = useState<any>(() => {
@@ -413,6 +420,10 @@ export default function Admin() {
     localStorage.setItem('demetra_products', JSON.stringify(products));
 
     localStorage.setItem('demetra_categories', JSON.stringify(categories));
+
+    localStorage.setItem('demetra_services', JSON.stringify(services));
+
+    setDynamicServicesData(services);
 
     setDynamicCategories(categories);
 
@@ -586,7 +597,7 @@ export default function Admin() {
 
                 {activeTab === 'products' && <ProductManager products={products} setProducts={setProducts} currentLang={effectiveLang} categories={categories} setCategories={setCategories} windowWidth={windowWidth} />}
 
-                {activeTab === 'services' && <ServicesManager allTranslations={allTranslations} updateTranslation={updateTranslation} currentLang={effectiveLang} windowWidth={windowWidth} />}
+                {activeTab === 'services' && <ServicesManager services={services} setServices={setServices} currentLang={effectiveLang} windowWidth={windowWidth} />}
 
                 {activeTab === 'settings' && <GlobalSettings allTranslations={allTranslations} updateTranslation={updateTranslation} currentLang={effectiveLang} windowWidth={windowWidth} />}
 
@@ -9585,8 +9596,528 @@ function ProductManager({ products, setProducts, currentLang, categories, setCat
   );
 }
 
-function ServicesManager({ allTranslations, updateTranslation, currentLang, windowWidth }: any) {
-  return <div style={{ padding: '4rem', background: '#18181b', border: '1px solid #27272a', borderRadius: '24px', textAlign: 'center', color: '#ffffff', fontSize: '1.1rem', fontWeight: '500', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>Services are managed via Visual Builder.</div>;
+function ServicesManager({ services, setServices, currentLang, windowWidth }: any) {
+  // New service form states
+  const [newTitleRu, setNewTitleRu] = useState('');
+  const [newTitleKk, setNewTitleKk] = useState('');
+  const [newTitleEn, setNewTitleEn] = useState('');
+  const [newDescRu, setNewDescRu] = useState('');
+  const [newDescKk, setNewDescKk] = useState('');
+  const [newDescEn, setNewDescEn] = useState('');
+  
+  const [newMediaType, setNewMediaType] = useState<'icon' | 'image' | 'video'>('icon');
+  const [newIconType, setNewIconType] = useState<'Settings' | 'Shield' | 'Zap' | 'Hammer'>('Settings');
+  const [newMediaUrl, setNewMediaUrl] = useState('');
+
+  // File input ref for new service
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Active language tab for editing each service (dictionary map of service ID to language)
+  const [serviceLangMap, setServiceLangMap] = useState<Record<number | string, 'ru' | 'kk' | 'en'>>({});
+
+  const handleAddService = () => {
+    if (!newTitleRu.trim()) {
+      alert('Пожалуйста, заполните хотя бы русское название услуги.');
+      return;
+    }
+
+    const newService = {
+      id: 'srv_' + Date.now(),
+      mediaType: newMediaType,
+      iconType: newIconType,
+      mediaUrl: newMediaUrl.trim(),
+      ru: {
+        title: newTitleRu.trim(),
+        desc: newDescRu.trim()
+      },
+      kk: {
+        title: newTitleKk.trim() || newTitleRu.trim(),
+        desc: newDescKk.trim() || newDescRu.trim()
+      },
+      en: {
+        title: newTitleEn.trim() || newTitleRu.trim(),
+        desc: newDescEn.trim() || newDescRu.trim()
+      }
+    };
+
+    setServices((prev: any[]) => [...prev, newService]);
+    
+    // Clear inputs
+    setNewTitleRu('');
+    setNewTitleKk('');
+    setNewTitleEn('');
+    setNewDescRu('');
+    setNewDescKk('');
+    setNewDescEn('');
+    setNewMediaType('icon');
+    setNewIconType('Settings');
+    setNewMediaUrl('');
+  };
+
+  const handleDeleteService = (id: number | string) => {
+    if (window.confirm('Вы уверены, что хотите удалить эту услугу?')) {
+      setServices((prev: any[]) => prev.filter(s => s.id !== id));
+    }
+  };
+
+  const handleMoveService = (index: number, direction: 'up' | 'down') => {
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= services.length) return;
+    
+    const next = [...services];
+    const temp = next[index];
+    next[index] = next[targetIndex];
+    next[targetIndex] = temp;
+    setServices(next);
+  };
+
+  const updateServiceField = (id: number | string, field: string, value: any) => {
+    setServices((prev: any[]) => prev.map(s => {
+      if (s.id === id) {
+        return { ...s, [field]: value };
+      }
+      return s;
+    }));
+  };
+
+  const updateServiceLangField = (id: number | string, langKey: 'ru' | 'kk' | 'en', field: string, value: string) => {
+    setServices((prev: any[]) => prev.map(s => {
+      if (s.id === id) {
+        return {
+          ...s,
+          [langKey]: {
+            ...s[langKey],
+            [field]: value
+          }
+        };
+      }
+      return s;
+    }));
+  };
+
+  const handleFileUpload = (file: File, callback: (url: string) => void) => {
+    if (file.type.startsWith('video/')) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert("Файл слишком большой! Максимальный размер видео для сохранения в браузере - 2MB. Для больших видео загрузите их на хостинг и укажите ссылку.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        callback(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else if (file.type.startsWith('image/')) {
+      compressAndGetBase64(file, callback);
+    }
+  };
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: windowWidth < 1200 ? '1fr' : '1fr 1.5fr', gap: '3rem', alignItems: 'start' }}>
+      {/* ADD SERVICE FORM */}
+      <div style={{ background: '#18181b', padding: '3rem', borderRadius: '32px', border: '1px solid #27272a', display: 'flex', flexDirection: 'column', gap: '2rem', boxShadow: '0 10px 40px rgba(0, 0, 0, 0.4)', position: windowWidth < 1200 ? 'static' : 'sticky', top: '100px' }}>
+        <h3 style={{ fontWeight: '900', color: 'var(--admin-accent)', letterSpacing: '0.1em', display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1.3rem' }}>
+          <PlusCircle size={22} /> ДОБАВИТЬ УСЛУГУ
+        </h3>
+
+        <div style={{ display: 'grid', gap: '1.25rem' }}>
+          {/* Media Type */}
+          <div style={{ display: 'grid', gap: '0.5rem' }}>
+            <label style={{ fontSize: '0.75rem', color: '#a1a1aa', fontWeight: '900', letterSpacing: '0.05em' }}>ТИП МЕДИА</label>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              {(['icon', 'image', 'video'] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setNewMediaType(t)}
+                  style={{
+                    flex: 1,
+                    padding: '0.6rem',
+                    borderRadius: '8px',
+                    border: '1px solid',
+                    borderColor: newMediaType === t ? 'var(--admin-accent)' : '#27272a',
+                    background: newMediaType === t ? 'rgba(var(--admin-accent-rgb), 0.1)' : '#09090b',
+                    color: newMediaType === t ? 'var(--admin-accent)' : '#a1a1aa',
+                    fontWeight: '800',
+                    fontSize: '0.8rem',
+                    textTransform: 'uppercase',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {t === 'icon' ? 'Иконка' : t === 'image' ? 'Фото' : 'Видео'}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Media Input depending on Type */}
+          {newMediaType === 'icon' ? (
+            <div style={{ display: 'grid', gap: '0.5rem' }}>
+              <label style={{ fontSize: '0.75rem', color: '#a1a1aa', fontWeight: '900', letterSpacing: '0.05em' }}>ВЫБОР ИКОНКИ</label>
+              <select
+                value={newIconType}
+                onChange={(e: any) => setNewIconType(e.target.value)}
+                style={{ background: '#09090b', border: '1px solid #27272a', padding: '1rem', borderRadius: '12px', color: '#ffffff', fontSize: '0.95rem', outline: 'none', cursor: 'pointer' }}
+              >
+                <option value="Settings">Шестерёнка (Настройки)</option>
+                <option value="Shield">Щит (Защита/Футеровка)</option>
+                <option value="Zap">Молния (Вулканизация/Скорость)</option>
+                <option value="Hammer">Молоток (Монтаж/Ремонт)</option>
+              </select>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gap: '0.5rem' }}>
+              <label style={{ fontSize: '0.75rem', color: '#a1a1aa', fontWeight: '900', letterSpacing: '0.05em' }}>
+                {newMediaType === 'image' ? 'ИЗОБРАЖЕНИЕ (ФОТО)' : 'ВИДЕОРОЛИК (MP4/WEBM)'}
+              </label>
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <div 
+                  onClick={() => fileInputRef.current?.click()}
+                  style={{ width: '60px', height: '60px', borderRadius: '8px', background: '#09090b', border: '1px solid #27272a', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer' }}
+                  title="Кликните для выбора файла с устройства"
+                >
+                  {newMediaUrl ? (
+                    newMediaType === 'video' ? (
+                      <video src={newMediaUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted />
+                    ) : (
+                      <img src={newMediaUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/100?text=Error'; }} />
+                    )
+                  ) : (
+                    <ImageIcon size={20} style={{ color: '#555' }} />
+                  )}
+                </div>
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  accept={newMediaType === 'video' ? 'video/*' : 'image/*'} 
+                  style={{ display: 'none' }} 
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      handleFileUpload(file, (url) => setNewMediaUrl(url));
+                    }
+                  }} 
+                />
+                <input 
+                  value={newMediaUrl} 
+                  onChange={(e) => setNewMediaUrl(e.target.value)}
+                  placeholder="Вставьте ссылку или выберите файл..."
+                  style={{ background: '#09090b', border: '1px solid #27272a', padding: '0.75rem 1rem', borderRadius: '12px', color: '#ffffff', fontSize: '0.95rem', outline: 'none', transition: 'border-color 0.2s', flex: 1 }} 
+                  onFocus={(e) => e.target.style.borderColor = 'var(--admin-accent)'}
+                  onBlur={(e) => e.target.style.borderColor = '#27272a'}
+                />
+                <button 
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  style={{ background: '#09090b', border: '1px solid #27272a', color: '#fff', padding: '0.75rem 1rem', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.9rem', transition: 'all 0.2s' }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--admin-accent)'; (e.currentTarget as HTMLElement).style.background = '#18181b'; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = '#27272a'; (e.currentTarget as HTMLElement).style.background = '#09090b'; }}
+                >
+                  Обзор
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Collapsible Tabs for Languages */}
+          <div style={{ background: '#09090b', borderRadius: '16px', padding: '1.5rem', border: '1px solid #27272a', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div style={{ fontSize: '0.8rem', fontWeight: '900', color: 'var(--admin-accent)', letterSpacing: '0.05em', borderBottom: '1px solid #27272a', paddingBottom: '0.5rem' }}>
+              ЯЗЫКОВЫЕ ВЕРСИИ
+            </div>
+            
+            {/* RU */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <span style={{ fontSize: '0.7rem', color: '#e4e4e7', fontWeight: '800' }}>РУССКАЯ ВЕРСИЯ (RU) *</span>
+              <input 
+                value={newTitleRu} 
+                onChange={(e) => setNewTitleRu(e.target.value)}
+                placeholder="Название услуги"
+                style={{ background: '#18181b', border: '1px solid #27272a', padding: '0.75rem 1rem', borderRadius: '8px', color: '#ffffff', fontSize: '0.9rem', outline: 'none' }} 
+              />
+              <textarea 
+                value={newDescRu} 
+                onChange={(e) => setNewDescRu(e.target.value)}
+                placeholder="Описание услуги"
+                style={{ background: '#18181b', border: '1px solid #27272a', padding: '0.75rem 1rem', borderRadius: '8px', color: '#ffffff', fontSize: '0.85rem', outline: 'none', resize: 'vertical', minHeight: '60px' }} 
+              />
+            </div>
+
+            {/* KK */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', borderTop: '1px solid #27272a', paddingTop: '1rem' }}>
+              <span style={{ fontSize: '0.7rem', color: '#a1a1aa', fontWeight: '800' }}>КАЗАХСКАЯ ВЕРСИЯ (KK)</span>
+              <input 
+                value={newTitleKk} 
+                onChange={(e) => setNewTitleKk(e.target.value)}
+                placeholder="Қызмет атауы"
+                style={{ background: '#18181b', border: '1px solid #27272a', padding: '0.75rem 1rem', borderRadius: '8px', color: '#ffffff', fontSize: '0.9rem', outline: 'none' }} 
+              />
+              <textarea 
+                value={newDescKk} 
+                onChange={(e) => setNewDescKk(e.target.value)}
+                placeholder="Қызмет сипаттамасы"
+                style={{ background: '#18181b', border: '1px solid #27272a', padding: '0.75rem 1rem', borderRadius: '8px', color: '#ffffff', fontSize: '0.85rem', outline: 'none', resize: 'vertical', minHeight: '60px' }} 
+              />
+            </div>
+
+            {/* EN */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', borderTop: '1px solid #27272a', paddingTop: '1rem' }}>
+              <span style={{ fontSize: '0.7rem', color: '#a1a1aa', fontWeight: '800' }}>АНГЛИЙСКАЯ ВЕРСИЯ (EN)</span>
+              <input 
+                value={newTitleEn} 
+                onChange={(e) => setNewTitleEn(e.target.value)}
+                placeholder="Service Title"
+                style={{ background: '#18181b', border: '1px solid #27272a', padding: '0.75rem 1rem', borderRadius: '8px', color: '#ffffff', fontSize: '0.9rem', outline: 'none' }} 
+              />
+              <textarea 
+                value={newDescEn} 
+                onChange={(e) => setNewDescEn(e.target.value)}
+                placeholder="Service Description"
+                style={{ background: '#18181b', border: '1px solid #27272a', padding: '0.75rem 1rem', borderRadius: '8px', color: '#ffffff', fontSize: '0.85rem', outline: 'none', resize: 'vertical', minHeight: '60px' }} 
+              />
+            </div>
+          </div>
+        </div>
+
+        <button 
+          onClick={handleAddService}
+          style={{ background: 'var(--admin-accent)', color: '#000', border: 'none', padding: '1.25rem', borderRadius: '12px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontSize: '1rem' }}
+        >
+          <Plus size={20} /> ДОБАВИТЬ УСЛУГУ
+        </button>
+      </div>
+
+      {/* SERVICES LIST */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+        <h3 style={{ fontWeight: '900', color: '#fff', letterSpacing: '0.1em', fontSize: '1.3rem' }}>СПИСОК УСЛУГ ({services.length})</h3>
+        
+        {services.length === 0 ? (
+          <div style={{ background: '#18181b', border: '1px solid #27272a', borderRadius: '24px', padding: '4rem', textAlign: 'center', color: '#a1a1aa' }}>
+            Услуги отсутствуют. Добавьте первую услугу с помощью формы слева.
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            {services.map((service: any, index: number) => {
+              const activeLang = serviceLangMap[service.id] || 'ru';
+              return (
+                <div 
+                  key={service.id} 
+                  style={{ 
+                    background: '#18181b', 
+                    border: '1px solid #27272a', 
+                    borderRadius: '24px', 
+                    overflow: 'hidden', 
+                    display: 'flex',
+                    flexDirection: windowWidth < 768 ? 'column' : 'row',
+                    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)',
+                    transition: 'border-color 0.2s'
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--admin-accent)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#27272a'; }}
+                >
+                  {/* Left part: Media preview & upload */}
+                  <div style={{ width: windowWidth < 768 ? '100%' : '240px', background: '#09090b', flexShrink: 0, display: 'flex', flexDirection: 'column', borderRight: windowWidth < 768 ? 'none' : '1px solid #27272a', borderBottom: windowWidth < 768 ? '1px solid #27272a' : 'none' }}>
+                    <div style={{ width: '100%', height: '180px', position: 'relative', overflow: 'hidden', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {service.mediaType === 'video' ? (
+                        <video src={service.mediaUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted loop autoPlay playsInline />
+                      ) : service.mediaType === 'image' ? (
+                        <img src={service.mediaUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/200?text=No+Image'; }} />
+                      ) : (
+                        <div style={{ color: 'var(--admin-accent)', background: 'rgba(var(--admin-accent-rgb), 0.1)', padding: '2rem', borderRadius: '16px' }}>
+                          {service.iconType === 'Shield' ? <Shield size={32} /> :
+                           service.iconType === 'Zap' ? <Zap size={32} /> :
+                           service.iconType === 'Hammer' ? <Hammer size={32} /> :
+                           <Settings size={32} />}
+                        </div>
+                      )}
+
+                      {/* Top Action buttons */}
+                      <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '0.4rem', zIndex: 10 }}>
+                        <button
+                          disabled={index === 0}
+                          onClick={() => handleMoveService(index, 'up')}
+                          style={{ background: 'rgba(0, 0, 0, 0.75)', color: '#fff', border: 'none', borderRadius: '6px', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: index === 0 ? 'not-allowed' : 'pointer', opacity: index === 0 ? 0.3 : 1 }}
+                        >
+                          ▲
+                        </button>
+                        <button
+                          disabled={index === services.length - 1}
+                          onClick={() => handleMoveService(index, 'down')}
+                          style={{ background: 'rgba(0, 0, 0, 0.75)', color: '#fff', border: 'none', borderRadius: '6px', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: index === services.length - 1 ? 'not-allowed' : 'pointer', opacity: index === services.length - 1 ? 0.3 : 1 }}
+                        >
+                          ▼
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteService(service.id)}
+                          style={{ background: 'rgba(239, 68, 68, 0.9)', color: '#fff', border: 'none', borderRadius: '6px', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                          title="Удалить услугу"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+
+                      {/* File upload overlay trigger */}
+                      {service.mediaType !== 'icon' && (
+                        <>
+                          <button 
+                            onClick={() => {
+                              document.getElementById(`srv-file-input-${service.id}`)?.click();
+                            }}
+                            style={{ position: 'absolute', bottom: '10px', right: '10px', background: 'rgba(0, 0, 0, 0.75)', color: '#fff', border: '1px solid #333', borderRadius: '8px', padding: '0.4rem 0.8rem', display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 'bold', zIndex: 10 }}
+                          >
+                            <ImageIcon size={14} /> Загрузить
+                          </button>
+                          <input 
+                            id={`srv-file-input-${service.id}`}
+                            type="file" 
+                            accept={service.mediaType === 'video' ? 'video/*' : 'image/*'} 
+                            style={{ display: 'none' }} 
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                handleFileUpload(file, (url) => {
+                                  updateServiceField(service.id, 'mediaUrl', url);
+                                });
+                              }
+                            }} 
+                          />
+                        </>
+                      )}
+                    </div>
+
+                    {/* Media Type switcher & URL edit */}
+                    <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      <div style={{ display: 'flex', gap: '0.25rem', background: '#18181b', padding: '0.15rem', borderRadius: '6px' }}>
+                        {(['icon', 'image', 'video'] as const).map((t) => (
+                          <button
+                            key={t}
+                            onClick={() => updateServiceField(service.id, 'mediaType', t)}
+                            style={{
+                              flex: 1,
+                              padding: '0.3rem',
+                              borderRadius: '4px',
+                              border: 'none',
+                              background: service.mediaType === t ? 'var(--admin-accent)' : 'transparent',
+                              color: service.mediaType === t ? '#000' : '#888',
+                              fontSize: '0.65rem',
+                              fontWeight: '900',
+                              cursor: 'pointer',
+                              textTransform: 'uppercase'
+                            }}
+                          >
+                            {t === 'icon' ? 'Иконка' : t === 'image' ? 'Фото' : 'Видео'}
+                          </button>
+                        ))}
+                      </div>
+
+                      {service.mediaType === 'icon' ? (
+                        <select
+                          value={service.iconType || 'Settings'}
+                          onChange={(e: any) => updateServiceField(service.id, 'iconType', e.target.value)}
+                          style={{ background: '#18181b', border: '1px solid #27272a', padding: '0.4rem', borderRadius: '6px', color: '#ffffff', fontSize: '0.8rem', outline: 'none' }}
+                        >
+                          <option value="Settings">Настройки</option>
+                          <option value="Shield">Защита</option>
+                          <option value="Zap">Скорость</option>
+                          <option value="Hammer">Ремонт</option>
+                        </select>
+                      ) : (
+                        <input 
+                          value={service.mediaUrl || ''} 
+                          onChange={(e) => updateServiceField(service.id, 'mediaUrl', e.target.value)} 
+                          style={{ background: '#18181b', border: '1px solid #27272a', padding: '0.5rem', borderRadius: '6px', color: '#ffffff', fontSize: '0.8rem', width: '100%', outline: 'none' }} 
+                          placeholder={service.mediaType === 'video' ? 'Ссылка на видео' : 'Ссылка на картинку'}
+                        />
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Right part: Localized title/desc */}
+                  <div style={{ padding: '2rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                      {/* Card Localized switcher tabs */}
+                      <div style={{ display: 'flex', background: '#09090b', padding: '0.2rem', borderRadius: '6px', border: '1px solid #27272a' }}>
+                        {(['ru', 'kk', 'en'] as const).map((l) => (
+                          <button 
+                            key={l} 
+                            onClick={() => setServiceLangMap(prev => ({ ...prev, [service.id]: l }))} 
+                            style={{ 
+                              padding: '0.3rem 0.75rem', 
+                              borderRadius: '4px', 
+                              border: 'none', 
+                              background: activeLang === l ? 'var(--admin-accent)' : 'transparent', 
+                              color: activeLang === l ? '#000' : '#a1a1aa', 
+                              fontSize: '0.7rem', 
+                              fontWeight: '900', 
+                              cursor: 'pointer',
+                              textTransform: 'uppercase'
+                            }}
+                          >
+                            {l}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Localized inputs */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      <div style={{ display: 'grid', gap: '0.4rem' }}>
+                        <label style={{ fontSize: '0.65rem', color: '#a1a1aa', fontWeight: '900', letterSpacing: '0.05em' }}>
+                          НАЗВАНИЕ ({activeLang.toUpperCase()})
+                        </label>
+                        <input 
+                          value={service[activeLang]?.title || ''} 
+                          onChange={(e) => updateServiceLangField(service.id, activeLang, 'title', e.target.value)} 
+                          style={{ 
+                            background: '#09090b', 
+                            border: '1px solid #27272a', 
+                            padding: '0.75rem 1rem', 
+                            borderRadius: '10px', 
+                            color: '#ffffff', 
+                            fontSize: '1.1rem', 
+                            fontWeight: '700', 
+                            width: '100%', 
+                            outline: 'none',
+                            transition: 'border-color 0.2s'
+                          }} 
+                          onFocus={(e) => (e.currentTarget as HTMLElement).style.borderColor = 'var(--admin-accent)'}
+                          onBlur={(e) => (e.currentTarget as HTMLElement).style.borderColor = '#27272a'}
+                        />
+                      </div>
+
+                      <div style={{ display: 'grid', gap: '0.4rem' }}>
+                        <label style={{ fontSize: '0.65rem', color: '#a1a1aa', fontWeight: '900', letterSpacing: '0.05em' }}>
+                          ОПИСАНИЕ ({activeLang.toUpperCase()})
+                        </label>
+                        <textarea 
+                          value={service[activeLang]?.desc || ''} 
+                          onChange={(e) => updateServiceLangField(service.id, activeLang, 'desc', e.target.value)} 
+                          style={{ 
+                            background: '#09090b', 
+                            border: '1px solid #27272a', 
+                            color: '#ffffff', 
+                            fontSize: '0.85rem', 
+                            lineHeight: '1.5',
+                            padding: '1rem', 
+                            borderRadius: '12px', 
+                            minHeight: '100px', 
+                            resize: 'vertical', 
+                            width: '100%',
+                            outline: 'none',
+                            transition: 'border-color 0.2s'
+                          }} 
+                          onFocus={(e) => (e.currentTarget as HTMLElement).style.borderColor = 'var(--admin-accent)'}
+                          onBlur={(e) => (e.currentTarget as HTMLElement).style.borderColor = '#27272a'}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 function GlobalSettings({ allTranslations, updateTranslation, currentLang, windowWidth }: any) {

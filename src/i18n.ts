@@ -522,6 +522,95 @@ if (typeof window !== 'undefined') {
   } catch (e) {}
 }
 
+export let servicesData = [
+  {
+    id: 'srv_1',
+    iconType: 'Settings',
+    mediaType: 'icon',
+    mediaUrl: '',
+    ru: {
+      title: "Сервисное обслуживание ленточных конвейеров",
+      desc: "Комплексное сервисное обслуживание для обеспечения бесперебойной работы вашего предприятия. Мониторинг, диагностика и оперативное устранение неполадок."
+    },
+    kk: {
+      title: "Таспалы конвейерлерге сервистік қызмет көрсету",
+      desc: "Кәсіпорыныңыздың үздіксіз жұмысын қамтамасыз ету үшін кешенді сервистік қызмет көрсету. Мониторинг, диагностика және ақауларды жедел жою."
+    },
+    en: {
+      title: "Conveyor Belt Maintenance",
+      desc: "Comprehensive service maintenance to ensure your enterprise's uninterrupted operation. Monitoring, diagnostics, and rapid troubleshooting."
+    }
+  },
+  {
+    id: 'srv_2',
+    iconType: 'Shield',
+    mediaType: 'icon',
+    mediaUrl: '',
+    ru: {
+      title: "Футеровка барабанов и приводных шкивов",
+      desc: "Качественная обрезинка и футеровка приводных, натяжных и концевых барабанов конвейера. Увеличивает сцепление с лентой и снижает износ."
+    },
+    kk: {
+      title: "Барабандар мен жетекші шкивтерді футерлеу",
+      desc: "Конвейердің жетекші, созылмалы және шеткі барабандарын сапалы резеңкелеу және футерлеу. Таспамен ілінісуді арттырады және тозуды азайтады."
+    },
+    en: {
+      title: "Pulley Lagging Services",
+      desc: "High-quality rubber and ceramic lagging of drive, take-up, and tail pulleys of the conveyor. Increases grip with the belt and reduces wear."
+    }
+  },
+  {
+    id: 'srv_3',
+    iconType: 'Zap',
+    mediaType: 'icon',
+    mediaUrl: '',
+    ru: {
+      title: "Горячая и холодная вулканизация лент",
+      desc: "Стыковка конвейерных лент методами горячей и холодной вулканизации, а также механическими соединителями. Надежность швов гарантирована."
+    },
+    kk: {
+      title: "Таспаларды ыстық және суық вулканизациялау",
+      desc: "Конвейер таспаларын ыстық және суық вулканизация әдістерімен, сондай-ақ механикалық қосқыштармен біріктіру. Жіктердің сенімділігіне кепілдік беріледі."
+    },
+    en: {
+      title: "Hot and Cold Belt Splicing",
+      desc: "Splicing of conveyor belts by hot and cold vulcanization methods, as well as mechanical fasteners. Reliability of joints is guaranteed."
+    }
+  },
+  {
+    id: 'srv_4',
+    iconType: 'Hammer',
+    mediaType: 'icon',
+    mediaUrl: '',
+    ru: {
+      title: "Монтаж и пусконаладочные работы",
+      desc: "Профессиональный монтаж конвейерного оборудования любого уровня сложности, центровка ленты, настройка датчиков и тестовый запуск системы."
+    },
+    kk: {
+      title: "Монтаждау және іске қосу-реттеу жұмыстары",
+      desc: "Кез келген күрделілік деңгейіндегі конвейерлік жабдықтарды кәсіби монтаждау, таспаны орталықтандыру, датчиктерді реттеу және жүйені сынақтан өткізу."
+    },
+    en: {
+      title: "Installation & Commissioning",
+      desc: "Professional installation of conveyor equipment of any complexity, belt tracking, sensor adjustment, and test launch of the system."
+    }
+  }
+];
+
+// Load services from localStorage on startup
+if (typeof window !== 'undefined') {
+  try {
+    const savedSrvs = localStorage.getItem('demetra_services');
+    if (savedSrvs) {
+      servicesData = JSON.parse(savedSrvs);
+    }
+  } catch (e) {}
+}
+
+export const setDynamicServicesData = (newSrvs: any[]) => {
+  servicesData = newSrvs;
+};
+
 export const setDynamicCategories = (newCats: any[]) => {
   categories = newCats;
 };
