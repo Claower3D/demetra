@@ -391,7 +391,7 @@ export const translations = {
   }
 };
 
-export const categories = [
+export let categories = [
   { id: 'all', ru: 'Все категории', kk: 'Барлық санаттар', en: 'All Categories' },
   { id: 'rollers', ru: 'Конвейерные ролики', kk: 'Конвейерлік роликтер', en: 'Conveyor Rollers' },
   { id: 'lining', ru: 'Футеровочные материалы', kk: 'Футерлеу материалдары', en: 'Lining Materials' },
@@ -401,7 +401,7 @@ export const categories = [
   { id: 'service', ru: 'Услуги сервиса', kk: 'Сервистік қызметтер', en: 'Engineering Services' }
 ];
 
-export const productsData = [
+export let productsData = [
   {
     id: 1,
     categoryId: "rollers",
@@ -503,3 +503,29 @@ export const productsData = [
     }
   }
 ];
+
+
+// Dynamic sync from localStorage on startup/import
+if (typeof window !== 'undefined') {
+  try {
+    const savedCats = localStorage.getItem('demetra_categories');
+    if (savedCats) {
+      categories = JSON.parse(savedCats);
+    }
+  } catch (e) {}
+
+  try {
+    const savedProds = localStorage.getItem('demetra_products');
+    if (savedProds) {
+      productsData = JSON.parse(savedProds);
+    }
+  } catch (e) {}
+}
+
+export const setDynamicCategories = (newCats: any[]) => {
+  categories = newCats;
+};
+
+export const setDynamicProductsData = (newProds: any[]) => {
+  productsData = newProds;
+};
