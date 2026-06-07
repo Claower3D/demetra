@@ -1019,10 +1019,10 @@ body.builder-mode .builder-media-hoverable {
   position: relative;
   cursor: pointer;
   transition: all 0.3s ease;
-  outline: 2px solid transparent;
+  outline: 1.5px dashed rgba(0, 255, 65, 0.4);
 }
 body.builder-mode .builder-media-hoverable:hover {
-  outline: 2px solid #00ff41;
+  outline: 2px dashed #00ff41;
   box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
 }
 body.builder-mode .builder-media-hoverable::after {
@@ -1053,12 +1053,12 @@ body.builder-mode .builder-text-hoverable {
   position: relative;
   cursor: pointer;
   transition: all 0.3s ease;
-  outline: 2px solid transparent;
+  outline: 1.5px dashed rgba(0, 255, 65, 0.4);
   padding: 4px;
   border-radius: 4px;
 }
 body.builder-mode .builder-text-hoverable:hover {
-  outline: 2px solid #00ff41;
+  outline: 2px dashed #00ff41;
 }
 body.builder-mode .builder-text-hoverable::after {
   content: '✏️ Редактировать текст';
