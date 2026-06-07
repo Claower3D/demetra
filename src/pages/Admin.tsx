@@ -6,7 +6,23 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 
 
+
+
+
+
+
+
+
+
 import { motion, AnimatePresence } from 'framer-motion';
+
+
+
+
+
+
+
+
 
 
 
@@ -22,7 +38,23 @@ import { Link } from 'react-router-dom';
 
 
 
+
+
+
+
+
+
+
+
 import { 
+
+
+
+
+
+
+
+
 
 
 
@@ -38,7 +70,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   LayoutDashboard, 
+
+
+
+
+
+
+
+
 
 
 
@@ -54,7 +102,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   Truck, 
+
+
+
+
+
+
+
+
 
 
 
@@ -70,7 +134,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   Image as ImageIcon, 
+
+
+
+
+
+
+
+
 
 
 
@@ -86,7 +166,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   Plus, 
+
+
+
+
+
+
+
+
 
 
 
@@ -102,7 +198,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   Edit3, 
+
+
+
+
+
+
+
+
 
 
 
@@ -118,7 +230,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   Globe, 
+
+
+
+
+
+
+
+
 
 
 
@@ -134,7 +262,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   BarChart3,
+
+
+
+
+
+
+
+
 
 
 
@@ -150,7 +294,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   Search,
+
+
+
+
+
+
+
+
 
 
 
@@ -166,7 +326,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   Activity,
+
+
+
+
+
+
+
+
 
 
 
@@ -182,7 +358,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   ArrowLeft,
+
+
+
+
+
+
+
+
 
 
 
@@ -198,7 +390,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   Menu,
+
+
+
+
+
+
+
+
 
 
 
@@ -214,7 +422,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   PlusCircle,
+
+
+
+
+
+
+
+
 
 
 
@@ -230,7 +454,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   ExternalLink,
+
+
+
+
+
+
+
+
 
 
 
@@ -246,7 +486,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   Mail,
+
+
+
+
+
+
+
+
 
 
 
@@ -262,7 +518,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   Info,
+
+
+
+
+
+
+
+
 
 
 
@@ -278,7 +550,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   Home,
+
+
+
+
+
+
+
+
 
 
 
@@ -294,7 +582,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   Compass,
+
+
+
+
+
+
+
+
 
 
 
@@ -310,7 +614,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   Monitor,
+
+
+
+
+
+
+
+
 
 
 
@@ -326,7 +646,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   MoveDown,
+
+
+
+
+
+
+
+
 
 
 
@@ -342,7 +678,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   EyeOff,
+
+
+
+
+
+
+
+
 
 
 
@@ -358,7 +710,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   MousePointer2,
+
+
+
+
+
+
+
+
 
 
 
@@ -374,7 +742,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   Copy,
+
+
+
+
+
+
+
+
 
 
 
@@ -390,7 +774,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   Type,
+
+
+
+
+
+
+
+
 
 
 
@@ -406,7 +806,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   Columns,
+
+
+
+
+
+
+
+
 
 
 
@@ -422,7 +838,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
   Megaphone,
+
+
+
+
+
+
+
+
 
 
 
@@ -438,7 +870,23 @@ import {
 
 
 
+
+
+
+
+
+
+
+
 } from 'lucide-react';
+
+
+
+
+
+
+
+
 
 
 
@@ -454,7 +902,23 @@ import { useLang } from '../LangContext';
 
 
 
+
+
+
+
+
+
+
+
 import { useTheme } from '../ThemeContext';
+
+
+
+
+
+
+
+
 
 
 
@@ -470,7 +934,23 @@ import { translations as defaultTranslations, productsData as defaultProducts, c
 
 
 
+
+
+
+
+
+
+
+
 import { setCustomBlock, getCustomBlocks, getPagesList } from '../components/CustomBlock';
+
+
+
+
+
+
+
+
 
 
 
@@ -486,7 +966,23 @@ import type { PageItem } from '../components/CustomBlock';
 
 
 
+
+
+
+
+
+
+
+
 const findParentBlockOfNested = (nestedId: string) => {
+
+
+
+
+
+
+
+
 
 
 
@@ -502,7 +998,23 @@ const findParentBlockOfNested = (nestedId: string) => {
 
 
 
+
+
+
+
+
+
+
+
     const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+
+
+
+
+
+
+
+
 
 
 
@@ -518,7 +1030,23 @@ const findParentBlockOfNested = (nestedId: string) => {
 
 
 
+
+
+
+
+
+
+
+
       const parent = customBlocks[parentId];
+
+
+
+
+
+
+
+
 
 
 
@@ -534,7 +1062,23 @@ const findParentBlockOfNested = (nestedId: string) => {
 
 
 
+
+
+
+
+
+
+
+
         return parentId;
+
+
+
+
+
+
+
+
 
 
 
@@ -550,7 +1094,23 @@ const findParentBlockOfNested = (nestedId: string) => {
 
 
 
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -566,6 +1126,14 @@ const findParentBlockOfNested = (nestedId: string) => {
 
 
 
+
+
+
+
+
+
+
+
   return null;
 
 
@@ -574,7 +1142,23 @@ const findParentBlockOfNested = (nestedId: string) => {
 
 
 
+
+
+
+
+
+
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -590,7 +1174,23 @@ export const defaultDataMap: Record<string, any> = {
 
 
 
+
+
+
+
+
+
+
+
   heading: { type: 'heading', heading: 'Впиши заголовок...', subheading: 'Раздел', body: 'Впиши описание...' },
+
+
+
+
+
+
+
+
 
 
 
@@ -606,7 +1206,23 @@ export const defaultDataMap: Record<string, any> = {
 
 
 
+
+
+
+
+
+
+
+
   divider: { type: 'divider' },
+
+
+
+
+
+
+
+
 
 
 
@@ -622,7 +1238,23 @@ export const defaultDataMap: Record<string, any> = {
 
 
 
+
+
+
+
+
+
+
+
   card: { type: 'card', label: 'Впиши заголовок', body: 'Впиши описание карточки...', src: '', mediaType: 'image' },
+
+
+
+
+
+
+
+
 
 
 
@@ -638,7 +1270,23 @@ export const defaultDataMap: Record<string, any> = {
 
 
 
+
+
+
+
+
+
+
+
   image_text: { type: 'image_text', heading: 'Впиши заголовок', body: 'Впиши описание...', src: '', mediaType: 'image' },
+
+
+
+
+
+
+
+
 
 
 
@@ -654,7 +1302,23 @@ export const defaultDataMap: Record<string, any> = {
 
 
 
+
+
+
+
+
+
+
+
   container: { type: 'container', childrenBlocks: [] },
+
+
+
+
+
+
+
+
 
 
 
@@ -670,7 +1334,23 @@ export const defaultDataMap: Record<string, any> = {
 
 
 
+
+
+
+
+
+
+
+
   shape_circle: { type: 'shape_circle', heading: 'Фигура круг', src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80' },
+
+
+
+
+
+
+
+
 
 
 
@@ -686,7 +1366,23 @@ export const defaultDataMap: Record<string, any> = {
 
 
 
+
+
+
+
+
+
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -702,7 +1398,23 @@ export const defaultDataMap: Record<string, any> = {
 
 
 
+
+
+
+
+
+
+
+
 import HomeContent from './Home';
+
+
+
+
+
+
+
+
 
 
 
@@ -718,7 +1430,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
   const { lang, setLang, t } = useLang();
+
+
+
+
+
+
+
+
 
 
 
@@ -734,7 +1462,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
+
+
+
+
+
+
+
+
 
 
 
@@ -750,6 +1494,14 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
   const [allTranslations, setAllTranslations] = useState<any>(() => {
 
 
@@ -758,7 +1510,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
     try {
+
+
+
+
+
+
+
+
 
 
 
@@ -774,7 +1542,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
       const base = JSON.parse(JSON.stringify(defaultTranslations));
+
+
+
+
+
+
+
+
 
 
 
@@ -790,7 +1574,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
         const parsed = JSON.parse(saved);
+
+
+
+
+
+
+
+
 
 
 
@@ -806,7 +1606,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
         if (parsed.kk) base.kk = { ...base.kk, ...parsed.kk };
+
+
+
+
+
+
+
+
 
 
 
@@ -822,7 +1638,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -838,6 +1670,14 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
     } catch (e) { return JSON.parse(JSON.stringify(defaultTranslations)); }
 
 
@@ -846,7 +1686,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -862,7 +1718,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
     const saved = localStorage.getItem('demetra_products');
+
+
+
+
+
+
+
+
 
 
 
@@ -878,7 +1750,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -894,7 +1782,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
   const [pageLayouts, setPageLayouts] = useState<any>(() => {
+
+
+
+
+
+
+
+
 
 
 
@@ -910,7 +1814,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
     const layouts: any = {};
+
+
+
+
+
+
+
+
 
 
 
@@ -926,7 +1846,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
       const k = p.id;
+
+
+
+
+
+
+
+
 
 
 
@@ -942,7 +1878,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
       const defaults: any = {
+
+
+
+
+
+
+
+
 
 
 
@@ -958,7 +1910,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
         catalog: { order: ['catalog_main'], hidden: [], styles: {}, images: {} },
+
+
+
+
+
+
+
+
 
 
 
@@ -974,7 +1942,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
         about: { order: ['about_main'], hidden: [], styles: {}, images: {} },
+
+
+
+
+
+
+
+
 
 
 
@@ -990,7 +1974,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
         partner: { order: ['partner_main'], hidden: [], styles: {}, images: {} },
+
+
+
+
+
+
+
+
 
 
 
@@ -1006,7 +2006,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
           order: ['gallery_main'],
+
+
+
+
+
+
+
+
 
 
 
@@ -1022,7 +2038,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
           hidden: [],
+
+
+
+
+
+
+
+
 
 
 
@@ -1038,6 +2070,14 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
           images: {},
 
 
@@ -1046,7 +2086,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
           items: {
+
+
+
+
+
+
+
+
 
 
 
@@ -1062,7 +2118,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
             gallery_2: { id: "gallery_2", src: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=1200", type: 'image', category: 'services', ru: { title: "Ремонт конвейерной ленты", desc: "Срочная стыковка конвейерной ленты методом горячей вулканизации на глубине." }, kk: { title: "Конвейер таспасын жөндеу", desc: "Тереңдікте ыстық вулканизация әдісімен конвейер таспасын шұғыл біріктіру." }, en: { title: "Conveyor Belt Repair", desc: "Urgent splicing of a conveyor belt using hot vulcanization method at depth." } },
+
+
+
+
+
+
+
+
 
 
 
@@ -1078,7 +2150,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
             gallery_4: { id: "gallery_4", src: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=1200", type: 'image', category: 'production', ru: { title: "Контроль качества роликов", desc: "Лабораторные испытания биения конвейерных роликов на специализированном стенде перед отгрузкой клиенту." }, kk: { title: "Роликтердің сапасын бақылау", desc: "Тапсырыс берушіге жөнелту алдында мамандандырылған стендте конвейер роликтерінің соғуын зертханалық сынау." }, en: { title: "Roller Quality Control", desc: "Laboratory testing of conveyor roller runout on a specialized stand before shipping to the client." } },
+
+
+
+
+
+
+
+
 
 
 
@@ -1094,7 +2182,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
             gallery_6: { id: "gallery_6", src: "https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?auto=format&fit=crop&q=80&w=1200", type: 'image', category: 'services', ru: { title: "Антикоррозийная защита", desc: "Нанесение полимерных защитных составов на стальные конструкции металлургического цеха." }, kk: { title: "Коррозияға қарсы қорғаныс", desc: "Металлургиялық цехтың болат конструкцияларына полимерлі қорғаныс құрамдарын жағу." }, en: { title: "Anti-Corrosion Protection", desc: "Application of polymer protective coatings to the steel structures of the metallurgical workshop." } }
+
+
+
+
+
+
+
+
 
 
 
@@ -1110,6 +2214,14 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
         }
 
 
@@ -1118,7 +2230,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
       };
+
+
+
+
+
+
+
+
 
 
 
@@ -1134,7 +2262,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
       try {
+
+
+
+
+
+
+
+
 
 
 
@@ -1150,7 +2294,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
           const parsed = JSON.parse(saved);
+
+
+
+
+
+
+
+
 
 
 
@@ -1166,7 +2326,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
             ...defaultLayout,
+
+
+
+
+
+
+
+
 
 
 
@@ -1182,7 +2358,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
             styles: { ...(defaultLayout.styles || {}), ...(parsed.styles || {}) },
+
+
+
+
+
+
+
+
 
 
 
@@ -1198,7 +2390,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
             links: { ...(defaultLayout.links || {}), ...(parsed.links || {}) },
+
+
+
+
+
+
+
+
 
 
 
@@ -1214,6 +2422,14 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
           };
 
 
@@ -1222,7 +2438,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
         } else {
+
+
+
+
+
+
+
+
 
 
 
@@ -1238,7 +2470,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -1254,7 +2502,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
         layouts[k] = defaultLayout;
+
+
+
+
+
+
+
+
 
 
 
@@ -1270,7 +2534,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
     });
+
+
+
+
+
+
+
+
 
 
 
@@ -1286,7 +2566,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -1302,7 +2598,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
   useEffect(() => {
+
+
+
+
+
+
+
+
 
 
 
@@ -1318,7 +2630,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
       setWindowWidth(window.innerWidth);
+
+
+
+
+
+
+
+
 
 
 
@@ -1334,6 +2662,14 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
       else setIsSidebarOpen(true);
 
 
@@ -1342,7 +2678,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
     };
+
+
+
+
+
+
+
+
 
 
 
@@ -1358,6 +2710,14 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
     return () => window.removeEventListener('resize', handleResize);
 
 
@@ -1366,7 +2726,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
   }, []);
+
+
+
+
+
+
+
+
 
 
 
@@ -1382,7 +2758,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
     { id: 'builder', icon: <Monitor size={20} />, label: 'Visual Builder (Tilda Mode)' },
+
+
+
+
+
+
+
+
 
 
 
@@ -1398,7 +2790,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
     { id: 'dashboard', icon: <BarChart3 size={20} />, label: t.admin_dashboard || 'Dashboard' },
+
+
+
+
+
+
+
+
 
 
 
@@ -1414,7 +2822,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
     { id: 'products', icon: <Package size={20} />, label: t.admin_products || 'Catalog' },
+
+
+
+
+
+
+
+
 
 
 
@@ -1430,7 +2854,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
     { id: 'settings', icon: <Settings size={20} />, label: t.admin_settings || 'Global Settings' },
+
+
+
+
+
+
+
+
 
 
 
@@ -1446,7 +2886,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
   const handleSave = () => {
+
+
+
+
+
+
+
+
 
 
 
@@ -1462,7 +2918,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
     localStorage.setItem('demetra_products', JSON.stringify(products));
+
+
+
+
+
+
+
+
 
 
 
@@ -1478,7 +2950,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
       localStorage.setItem(`demetra_${k}_layout`, JSON.stringify(pageLayouts[k]));
+
+
+
+
+
+
+
+
 
 
 
@@ -1494,7 +2982,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
     window.dispatchEvent(new Event('storage'));
+
+
+
+
+
+
+
+
 
 
 
@@ -1510,6 +3014,14 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
     setTimeout(() => setShowSaveToast(false), 3000);
 
 
@@ -1518,7 +3030,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -1534,7 +3062,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
     if (window.confirm('Reset all changes?')) {
+
+
+
+
+
+
+
+
 
 
 
@@ -1550,7 +3094,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
       localStorage.removeItem('demetra_products');
+
+
+
+
+
+
+
+
 
 
 
@@ -1566,7 +3126,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
       keys.forEach(k => localStorage.removeItem(`demetra_${k}_layout`));
+
+
+
+
+
+
+
+
 
 
 
@@ -1582,6 +3158,14 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
     }
 
 
@@ -1590,7 +3174,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -1606,6 +3206,14 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
     setAllTranslations((prev: any) => ({ ...prev, [langKey]: { ...prev[langKey], [itemKey]: newValue }}));
 
 
@@ -1614,7 +3222,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -1630,6 +3254,14 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
   const effectiveLang = (['ru', 'kk', 'en'].includes(lang)) ? lang : 'ru';
 
 
@@ -1638,7 +3270,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
   return (
+
+
+
+
+
+
+
+
 
 
 
@@ -1654,7 +3302,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
       <AnimatePresence>
+
+
+
+
+
+
+
+
 
 
 
@@ -1670,7 +3334,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
           <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }} style={{ position: 'fixed', bottom: '2rem', right: '2rem', background: '#00ff41', color: '#000', padding: '1rem 2rem', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: '900', zIndex: 1000000, boxShadow: '0 10px 40px rgba(0, 255, 65, 0.4)' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -1686,7 +3366,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
           </motion.div>
+
+
+
+
+
+
+
+
 
 
 
@@ -1702,7 +3398,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
       </AnimatePresence>
+
+
+
+
+
+
+
+
 
 
 
@@ -1718,7 +3430,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
         <Menu size={24} />
+
+
+
+
+
+
+
+
 
 
 
@@ -1734,7 +3462,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
       {/* Sidebar */}
+
+
+
+
+
+
+
+
 
 
 
@@ -1750,7 +3494,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#00ff41', fontWeight: '800', fontSize: '0.8rem', textDecoration: 'none', background: 'rgba(0,255,65,0.05)', padding: '1rem', borderRadius: '8px', border: '1px solid #222' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -1766,7 +3526,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
         </Link>
+
+
+
+
+
+
+
+
 
 
 
@@ -1782,7 +3558,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
           {(['ru', 'kk', 'en'] as const).map((l) => (
+
+
+
+
+
+
+
+
 
 
 
@@ -1798,6 +3590,14 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
           ))}
 
 
@@ -1806,7 +3606,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -1822,7 +3638,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -1838,6 +3670,14 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
             <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', borderRadius: '12px', border: 'none', background: activeTab === tab.id ? 'rgba(0, 255, 65, 0.1)' : 'transparent', color: activeTab === tab.id ? '#00ff41' : '#888', cursor: 'pointer', transition: '0.2s', textAlign: 'left', fontWeight: '700', fontSize: '0.9rem' }}>{tab.icon} {tab.label}</button>
 
 
@@ -1846,7 +3686,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
           ))}
+
+
+
+
+
+
+
+
 
 
 
@@ -1862,7 +3718,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
         <button onClick={resetToDefault} style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1rem', background: 'rgba(255,0,0,0.05)', color: '#ff4b4b', border: '1px solid #222', borderRadius: '8px', cursor: 'pointer', fontWeight: '800', fontSize: '0.8rem' }}><RotateCcw size={16} /> {t.admin_reset}</button>
+
+
+
+
+
+
+
+
 
 
 
@@ -1878,7 +3750,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
       {/* Main Area */}
+
+
+
+
+
+
+
+
 
 
 
@@ -1894,7 +3782,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
         {activeTab !== 'builder' && (
+
+
+
+
+
+
+
+
 
 
 
@@ -1910,7 +3814,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
             <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -1926,6 +3846,14 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
               <p style={{ color: '#888' }}>{t.admin_desc}</p>
 
 
@@ -1934,7 +3862,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -1950,6 +3894,14 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
           </header>
 
 
@@ -1958,7 +3910,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
         )}
+
+
+
+
+
+
+
+
 
 
 
@@ -1974,7 +3942,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
           <motion.div key={activeTab} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -1990,6 +3974,14 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
               <TildaEditor pages={pages} pageLayouts={pageLayouts} setPageLayouts={setPageLayouts} allTranslations={allTranslations} updateTranslation={updateTranslation} currentLang={effectiveLang} handleSave={handleSave} isSidebarOpen={isSidebarOpen} />
 
 
@@ -1998,7 +3990,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
             ) : (
+
+
+
+
+
+
+
+
 
 
 
@@ -2014,7 +4022,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
                 {activeTab === 'pages' && <PagesManager pages={pages} setPages={setPages} pageLayouts={pageLayouts} setPageLayouts={setPageLayouts} t={t} lang={effectiveLang} />}
+
+
+
+
+
+
+
+
 
 
 
@@ -2030,7 +4054,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
                 {activeTab === 'content' && <PageEditor allTranslations={allTranslations} updateTranslation={updateTranslation} currentLang={effectiveLang} windowWidth={windowWidth} t={t} />}
+
+
+
+
+
+
+
+
 
 
 
@@ -2046,7 +4086,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
                 {activeTab === 'services' && <ServicesManager allTranslations={allTranslations} updateTranslation={updateTranslation} currentLang={effectiveLang} windowWidth={windowWidth} />}
+
+
+
+
+
+
+
+
 
 
 
@@ -2062,7 +4118,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -2078,6 +4150,14 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
           </motion.div>
 
 
@@ -2086,7 +4166,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
         </AnimatePresence>
+
+
+
+
+
+
+
+
 
 
 
@@ -2102,7 +4198,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
     </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -2118,7 +4230,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -2134,7 +4262,23 @@ export default function Admin() {
 
 
 
+
+
+
+
+
+
+
+
 function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, updateTranslation, currentLang, handleSave, isSidebarOpen }: any) {
+
+
+
+
+
+
+
+
 
 
 
@@ -2150,7 +4294,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
+
+
+
+
+
+
+
+
 
 
 
@@ -2166,7 +4326,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   const [isLibraryOpen, setIsLibraryOpen] = useState<boolean>(true);
+
+
+
+
+
+
+
+
 
 
 
@@ -2182,6 +4358,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     return localStorage.getItem('demetra_show_designer_grid') === 'true';
 
 
@@ -2190,7 +4374,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -2206,7 +4406,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   const [hoveredBlockId, setHoveredBlockId] = useState<string | null>(null);
+
+
+
+
+
+
+
+
 
 
 
@@ -2222,7 +4438,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   const [modalActiveTab, setModalActiveTab] = useState<'content' | 'media' | 'scaling' | 'effects' | 'actions' | 'library'>('content');
+
+
+
+
+
+
+
+
 
 
 
@@ -2238,7 +4470,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   const [addingBlockAfterContext, setAddingBlockAfterContext] = useState<{ id: string; index: number; arrayKey: string } | null>(null);
+
+
+
+
+
+
+
+
 
 
 
@@ -2254,7 +4502,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   const iframeRef = useRef<HTMLIFrameElement>(null);
+
+
+
+
+
+
+
+
 
 
 
@@ -2270,7 +4534,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   const historyRef = useRef<Array<{ pageLayouts: any; customBlocks: any }>>([]);
+
+
+
+
+
+
+
+
 
 
 
@@ -2286,7 +4566,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   const saveHistorySnapshot = useCallback(() => {
+
+
+
+
+
+
+
+
 
 
 
@@ -2302,7 +4598,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+
+
+
+
+
+
+
+
 
 
 
@@ -2318,7 +4630,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         pageLayouts: JSON.parse(JSON.stringify(pageLayoutsRef.current || {})),
+
+
+
+
+
+
+
+
 
 
 
@@ -2334,7 +4662,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       });
+
+
+
+
+
+
+
+
 
 
 
@@ -2350,6 +4694,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         historyRef.current.shift();
 
 
@@ -2358,7 +4710,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -2374,7 +4742,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     } catch (err) {
+
+
+
+
+
+
+
+
 
 
 
@@ -2390,6 +4774,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     }
 
 
@@ -2398,7 +4790,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   }, []);
+
+
+
+
+
+
+
+
 
 
 
@@ -2414,7 +4822,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     if (historyRef.current.length === 0) return;
+
+
+
+
+
+
+
+
 
 
 
@@ -2430,6 +4854,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     if (!previous) return;
 
 
@@ -2438,7 +4870,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     try {
+
+
+
+
+
+
+
+
 
 
 
@@ -2454,7 +4902,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       window.dispatchEvent(new Event('storage'));
+
+
+
+
+
+
+
+
 
 
 
@@ -2470,7 +4934,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       const lk = layoutKeyRef.current;
+
+
+
+
+
+
+
+
 
 
 
@@ -2486,7 +4966,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         localStorage.setItem(`demetra_${lk}_layout`, JSON.stringify(previous.pageLayouts[lk]));
+
+
+
+
+
+
+
+
 
 
 
@@ -2502,6 +4998,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           iframeRef.current.contentWindow.postMessage({
 
 
@@ -2510,7 +5014,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             type: 'DEMETRA_UPDATE_LAYOUT',
+
+
+
+
+
+
+
+
 
 
 
@@ -2526,7 +5046,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           }, '*');
+
+
+
+
+
+
+
+
 
 
 
@@ -2542,7 +5078,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -2558,6 +5110,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         iframeRef.current.contentWindow.dispatchEvent(new Event('storage'));
 
 
@@ -2566,7 +5126,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -2582,6 +5158,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       setCanUndo(historyRef.current.length > 0);
 
 
@@ -2590,7 +5174,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     } catch (err) {
+
+
+
+
+
+
+
+
 
 
 
@@ -2606,6 +5206,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     }
 
 
@@ -2614,7 +5222,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   }, []);
+
+
+
+
+
+
+
+
 
 
 
@@ -2630,171 +5254,109 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   useEffect(() => {
-
-
-
-
-
-
 
     const handleKeyDown = (e: KeyboardEvent) => {
 
-
-
-
-
-
-
       const isZ = e.key.toLowerCase() === 'z';
-
-
-
-
-
-
 
       const isS = e.key.toLowerCase() === 's';
 
-
-
-
-
-
+      
 
       if ((e.ctrlKey || e.metaKey) && isS) {
 
-
-
-
-
-
-
         e.preventDefault();
-
-
-
-
-
-
 
         handleSave();
 
-
-
-
-
-
-
       }
 
-
-
-
-
-
+      
 
       if ((e.ctrlKey || e.metaKey) && isZ) {
 
+        // Only intercept Ctrl+Z if the user is not actively typing in an input field or contenteditable
 
+        const activeEl = e.target as HTMLElement;
 
+        const isInput = activeEl && (
 
+          activeEl.tagName.toLowerCase() === 'input' || 
 
+          activeEl.tagName.toLowerCase() === 'textarea' || 
 
+          activeEl.isContentEditable
 
-        e.preventDefault();
+        );
 
+        if (!isInput) {
 
+          e.preventDefault();
 
+          handleUndo();
 
-
-
-
-        handleUndo();
-
-
-
-
-
-
+        }
 
       }
-
-
-
-
-
-
 
     };
 
 
 
+    const handleFocusIn = (e: FocusEvent) => {
 
+      const target = e.target as HTMLElement;
+
+      if (target && (
+
+        target.tagName.toLowerCase() === 'input' || 
+
+        target.tagName.toLowerCase() === 'textarea' || 
+
+        target.tagName.toLowerCase() === 'select' || 
+
+        target.isContentEditable
+
+      )) {
+
+        saveHistorySnapshotRef.current();
+
+      }
+
+    };
 
 
 
     window.addEventListener('keydown', handleKeyDown);
 
-
-
-
+    window.addEventListener('focusin', handleFocusIn);
 
 
 
     let iframeWin: Window | null = null;
 
-
-
-
-
-
-
     const attachToIframe = () => {
-
-
-
-
-
-
 
       if (iframeRef.current && iframeRef.current.contentWindow) {
 
-
-
-
-
-
-
         iframeWin = iframeRef.current.contentWindow;
-
-
-
-
-
-
 
         iframeWin.addEventListener('keydown', handleKeyDown);
 
-
-
-
-
-
+        iframeWin.addEventListener('focusin', handleFocusIn);
 
       }
 
-
-
-
-
-
-
     };
-
-
-
-
 
 
 
@@ -2802,131 +5364,51 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
-
-
-
-
     const iframeEl = iframeRef.current;
-
-
-
-
-
-
 
     if (iframeEl) {
 
-
-
-
-
-
-
       iframeEl.addEventListener('load', attachToIframe);
-
-
-
-
-
-
 
     }
 
 
 
-
-
-
-
     return () => {
-
-
-
-
-
-
 
       window.removeEventListener('keydown', handleKeyDown);
 
-
-
-
-
-
+      window.removeEventListener('focusin', handleFocusIn);
 
       if (iframeWin) {
 
-
-
-
-
-
-
         try {
-
-
-
-
-
-
 
           iframeWin.removeEventListener('keydown', handleKeyDown);
 
-
-
-
-
-
+          iframeWin.removeEventListener('focusin', handleFocusIn);
 
         } catch (_) {}
 
-
-
-
-
-
-
       }
-
-
-
-
-
-
 
       if (iframeEl) {
 
-
-
-
-
-
-
         iframeEl.removeEventListener('load', attachToIframe);
-
-
-
-
-
-
 
       }
 
-
-
-
-
-
-
     };
 
-
-
-
-
-
-
   }, [handleSave, handleUndo]);
+
+
+
+
+
+
+
+
 
 
 
@@ -2942,6 +5424,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   const pageLayoutsRef = useRef<any>({});
 
 
@@ -2950,7 +5440,25 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   const layoutKeyRef   = useRef<string>('home');
+
+  const saveHistorySnapshotRef = useRef<() => void>(() => {});
+
+
+
+
+
+
+
+
 
 
 
@@ -2966,7 +5474,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   const addCustomBlockRef = useRef<(type: string) => void>(() => {});
+
+
+
+
+
+
+
+
 
 
 
@@ -2982,7 +5506,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     const helpData: Record<string, { title: string; desc: string; steps: string[] }> = {
+
+
+
+
+
+
+
+
 
 
 
@@ -2998,7 +5538,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         title: 'Hero (Обложка)',
+
+
+
+
+
+
+
+
 
 
 
@@ -3014,7 +5570,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         steps: [
+
+
+
+
+
+
+
+
 
 
 
@@ -3030,7 +5602,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           'Кликните на текст прямо в окне предпросмотра, чтобы изменить его.',
+
+
+
+
+
+
+
+
 
 
 
@@ -3046,6 +5634,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         ]
 
 
@@ -3054,7 +5650,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       },
+
+
+
+
+
+
+
+
 
 
 
@@ -3070,7 +5682,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         title: 'Marquee (Инфо-строка)',
+
+
+
+
+
+
+
+
 
 
 
@@ -3086,7 +5714,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         steps: [
+
+
+
+
+
+
+
+
 
 
 
@@ -3102,7 +5746,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           'В панели настроек (StyleEditor) можно изменить фоновый цвет и скорость анимации.',
+
+
+
+
+
+
+
+
 
 
 
@@ -3118,6 +5778,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         ]
 
 
@@ -3126,7 +5794,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       },
+
+
+
+
+
+
+
+
 
 
 
@@ -3142,7 +5826,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         title: 'Catalog (Сетка каталога)',
+
+
+
+
+
+
+
+
 
 
 
@@ -3158,7 +5858,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         steps: [
+
+
+
+
+
+
+
+
 
 
 
@@ -3174,7 +5890,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           'Позволяет покупателям мгновенно искать и фильтровать оборудование.',
+
+
+
+
+
+
+
+
 
 
 
@@ -3190,6 +5922,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         ]
 
 
@@ -3198,7 +5938,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       },
+
+
+
+
+
+
+
+
 
 
 
@@ -3214,7 +5970,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         title: 'Partnership (Партнеры)',
+
+
+
+
+
+
+
+
 
 
 
@@ -3230,7 +6002,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         steps: [
+
+
+
+
+
+
+
+
 
 
 
@@ -3246,7 +6034,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           'Нажмите на настройки блока для изменения логотипов или добавления новых ссылок.'
+
+
+
+
+
+
+
+
 
 
 
@@ -3262,7 +6066,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       },
+
+
+
+
+
+
+
+
 
 
 
@@ -3278,7 +6098,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         title: 'Services (Сетка услуг)',
+
+
+
+
+
+
+
+
 
 
 
@@ -3294,7 +6130,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         steps: [
+
+
+
+
+
+
+
+
 
 
 
@@ -3310,7 +6162,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           'Вы можете перетаскивать карточки услуг, меняя их порядок.',
+
+
+
+
+
+
+
+
 
 
 
@@ -3326,6 +6194,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         ]
 
 
@@ -3334,7 +6210,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       },
+
+
+
+
+
+
+
+
 
 
 
@@ -3350,7 +6242,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         title: 'CTA (Обратная связь)',
+
+
+
+
+
+
+
+
 
 
 
@@ -3366,7 +6274,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         steps: [
+
+
+
+
+
+
+
+
 
 
 
@@ -3382,7 +6306,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           'Вы можете привязать кнопки к форме обратной связи или Telegram.',
+
+
+
+
+
+
+
+
 
 
 
@@ -3398,6 +6338,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         ]
 
 
@@ -3406,7 +6354,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       },
+
+
+
+
+
+
+
+
 
 
 
@@ -3422,7 +6386,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         title: 'Кастомный заголовок',
+
+
+
+
+
+
+
+
 
 
 
@@ -3438,7 +6418,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         steps: [
+
+
+
+
+
+
+
+
 
 
 
@@ -3454,7 +6450,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           'Выберите выравнивание (слева, центр, справа) и цвет акцента.',
+
+
+
+
+
+
+
+
 
 
 
@@ -3470,6 +6482,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         ]
 
 
@@ -3478,7 +6498,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       },
+
+
+
+
+
+
+
+
 
 
 
@@ -3494,7 +6530,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         title: 'Текст',
+
+
+
+
+
+
+
+
 
 
 
@@ -3510,7 +6562,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         steps: [
+
+
+
+
+
+
+
+
 
 
 
@@ -3526,7 +6594,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           'Вы можете настроить цвет текста и фона.',
+
+
+
+
+
+
+
+
 
 
 
@@ -3542,6 +6626,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         ]
 
 
@@ -3550,7 +6642,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       },
+
+
+
+
+
+
+
+
 
 
 
@@ -3566,7 +6674,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         title: 'Акцентная кнопка',
+
+
+
+
+
+
+
+
 
 
 
@@ -3582,7 +6706,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         steps: [
+
+
+
+
+
+
+
+
 
 
 
@@ -3598,7 +6738,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           'В поле «Ссылка» укажите адрес перехода (например, /contacts).',
+
+
+
+
+
+
+
+
 
 
 
@@ -3614,6 +6770,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         ]
 
 
@@ -3622,7 +6786,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       },
+
+
+
+
+
+
+
+
 
 
 
@@ -3638,7 +6818,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         title: 'Bento Карточка',
+
+
+
+
+
+
+
+
 
 
 
@@ -3654,7 +6850,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         steps: [
+
+
+
+
+
+
+
+
 
 
 
@@ -3670,7 +6882,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           'Заполните заголовок и текст карточки.',
+
+
+
+
+
+
+
+
 
 
 
@@ -3686,6 +6914,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         ]
 
 
@@ -3694,7 +6930,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       },
+
+
+
+
+
+
+
+
 
 
 
@@ -3710,7 +6962,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         title: '2 Колонки',
+
+
+
+
+
+
+
+
 
 
 
@@ -3726,7 +6994,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         steps: [
+
+
+
+
+
+
+
+
 
 
 
@@ -3742,7 +7026,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           'Заполняйте левую и правую колонки в панели настроек.'
+
+
+
+
+
+
+
+
 
 
 
@@ -3758,7 +7058,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       },
+
+
+
+
+
+
+
+
 
 
 
@@ -3774,7 +7090,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         title: 'Фото + Текст',
+
+
+
+
+
+
+
+
 
 
 
@@ -3790,7 +7122,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         steps: [
+
+
+
+
+
+
+
+
 
 
 
@@ -3806,7 +7154,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           'Настройте заголовок, описание и ссылку.',
+
+
+
+
+
+
+
+
 
 
 
@@ -3822,6 +7186,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         ]
 
 
@@ -3830,7 +7202,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       },
+
+
+
+
+
+
+
+
 
 
 
@@ -3846,7 +7234,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         title: 'Промо-баннер',
+
+
+
+
+
+
+
+
 
 
 
@@ -3862,7 +7266,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         steps: [
+
+
+
+
+
+
+
+
 
 
 
@@ -3878,7 +7298,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           'Задайте фоновый градиент (цвет) для привлечения внимания.',
+
+
+
+
+
+
+
+
 
 
 
@@ -3894,6 +7330,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         ]
 
 
@@ -3902,7 +7346,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       },
+
+
+
+
+
+
+
+
 
 
 
@@ -3918,7 +7378,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         title: 'Разделитель',
+
+
+
+
+
+
+
+
 
 
 
@@ -3934,7 +7410,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         steps: [
+
+
+
+
+
+
+
+
 
 
 
@@ -3950,6 +7442,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           'В настройках можно переопределить цвет линии.'
 
 
@@ -3958,7 +7458,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         ]
+
+
+
+
+
+
+
+
 
 
 
@@ -3974,7 +7490,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       gallery_add: {
+
+
+
+
+
+
+
+
 
 
 
@@ -3990,7 +7522,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         desc: 'Добавление нового фото или видео в Bento-сетку галереи.',
+
+
+
+
+
+
+
+
 
 
 
@@ -4006,7 +7554,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           'Выберите тип медиа (Изображение или Видео).',
+
+
+
+
+
+
+
+
 
 
 
@@ -4022,7 +7586,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           'Задайте категорию фильтрации и подписи на трех языках.'
+
+
+
+
+
+
+
+
 
 
 
@@ -4038,6 +7618,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       }
 
 
@@ -4046,7 +7634,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     };
+
+
+
+
+
+
+
+
 
 
 
@@ -4062,7 +7666,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       title: 'Элемент',
+
+
+
+
+
+
+
+
 
 
 
@@ -4078,7 +7698,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       steps: [
+
+
+
+
+
+
+
+
 
 
 
@@ -4094,7 +7730,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         'Редактируйте параметры в панели настроек.'
+
+
+
+
+
+
+
+
 
 
 
@@ -4110,6 +7762,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     };
 
 
@@ -4118,7 +7778,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -4134,7 +7810,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   const routeToKey = (route: string) => {
+
+
+
+
+
+
+
+
 
 
 
@@ -4150,6 +7842,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     return route.replace('/', '');
 
 
@@ -4158,7 +7858,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -4174,7 +7890,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   const currentLayout = pageLayouts[layoutKey];
+
+
+
+
+
+
+
+
 
 
 
@@ -4190,6 +7922,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   pageLayoutsRef.current = pageLayouts;
 
 
@@ -4198,7 +7938,24 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   layoutKeyRef.current   = layoutKey;
+  saveHistorySnapshotRef.current = saveHistorySnapshot;
+
+
+
+
+
+
+
+
 
 
 
@@ -4207,6 +7964,38 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
   const updateLayout = (newLayout: any, overrideKey?: string) => {
+
+    // Check if the user is typing in a text field or contenteditable
+
+    const activeTag = document.activeElement?.tagName.toLowerCase();
+
+    const iframeDoc = iframeRef.current?.contentDocument || iframeRef.current?.contentWindow?.document;
+
+    const iframeActiveTag = iframeDoc?.activeElement?.tagName.toLowerCase();
+
+    const isTyping = (
+
+      activeTag === 'input' || activeTag === 'textarea' || (document.activeElement as HTMLElement)?.isContentEditable ||
+
+      iframeActiveTag === 'input' || iframeActiveTag === 'textarea' || (iframeDoc?.activeElement as HTMLElement)?.isContentEditable
+
+    );
+
+
+
+    if (!isTyping) {
+
+      saveHistorySnapshot();
+
+    }
+
+
+
+
+
+
+
+
 
 
 
@@ -4222,7 +8011,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     setPageLayouts((prev: any) => {
+
+
+
+
+
+
+
+
 
 
 
@@ -4238,6 +8043,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       localStorage.setItem(`demetra_${lk}_layout`, JSON.stringify(newLayout));
 
 
@@ -4246,7 +8059,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       window.dispatchEvent(new Event('storage'));
+
+
+
+
+
+
+
+
 
 
 
@@ -4262,7 +8091,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       if (iframeRef.current?.contentWindow) {
+
+
+
+
+
+
+
+
 
 
 
@@ -4278,7 +8123,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -4294,6 +8155,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     });
 
 
@@ -4302,7 +8171,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -4318,7 +8203,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     const key = arrayKey || 'order';
+
+
+
+
+
+
+
+
 
 
 
@@ -4334,7 +8235,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     const targetIndex = direction === 'up' ? index - 1 : index + 1;
+
+
+
+
+
+
+
+
 
 
 
@@ -4350,7 +8267,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     const temp = newOrder[index];
+
+
+
+
+
+
+
+
 
 
 
@@ -4366,7 +8299,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     newOrder[targetIndex] = temp;
+
+
+
+
+
+
+
+
 
 
 
@@ -4382,7 +8331,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -4398,6 +8363,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     updateLayout({ ...currentLayout, hidden: [...(currentLayout.hidden || []), id] });
 
 
@@ -4406,7 +8379,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -4422,7 +8411,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     let nextOrder = [...(currentLayout.order || [])];
+
+
+
+
+
+
+
+
 
 
 
@@ -4438,7 +8443,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     // If hidden, unhide it
+
+
+
+
+
+
+
+
 
 
 
@@ -4454,6 +8475,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       nextHidden = nextHidden.filter(x => x !== sectionId);
 
 
@@ -4462,7 +8491,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -4478,7 +8523,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     if (!nextOrder.includes(sectionId)) {
+
+
+
+
+
+
+
+
 
 
 
@@ -4494,7 +8555,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -4510,7 +8587,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       ...currentLayout,
+
+
+
+
+
+
+
+
 
 
 
@@ -4526,7 +8619,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       hidden: nextHidden
+
+
+
+
+
+
+
+
 
 
 
@@ -4542,7 +8651,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -4558,7 +8683,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     const newId = `new_block_${Date.now()}`;
+
+
+
+
+
+
+
+
 
 
 
@@ -4574,6 +8715,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     localStorage.setItem('demetra_custom_blocks', JSON.stringify(allCustomBlocks));
 
 
@@ -4582,7 +8731,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     window.dispatchEvent(new Event('storage'));
+
+
+
+
+
+
+
+
 
 
 
@@ -4598,6 +8763,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     updateLayout({
 
 
@@ -4606,7 +8779,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       ...currentLayout,
+
+
+
+
+
+
+
+
 
 
 
@@ -4622,7 +8811,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     });
+
+
+
+
+
+
+
+
 
 
 
@@ -4638,6 +8843,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     setIsSettingsOpen(true);
 
 
@@ -4646,7 +8859,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -4662,7 +8891,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   addCustomBlockRef.current = addCustomBlock;
+
+
+
+
+
+
+
+
 
 
 
@@ -4678,7 +8923,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     const newId = `gallery_${Date.now()}`;
+
+
+
+
+
+
+
+
 
 
 
@@ -4694,7 +8955,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       id: newId,
+
+
+
+
+
+
+
+
 
 
 
@@ -4710,7 +8987,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       src: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=1200',
+
+
+
+
+
+
+
+
 
 
 
@@ -4726,7 +9019,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       ru: { title: 'Новый элемент', desc: 'Описание нового элемента.' },
+
+
+
+
+
+
+
+
 
 
 
@@ -4742,6 +9051,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       en: { title: 'New Item', desc: 'Description of the new item.' }
 
 
@@ -4750,7 +9067,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     };
+
+
+
+
+
+
+
+
 
 
 
@@ -4766,7 +9099,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       ...currentLayout,
+
+
+
+
+
+
+
+
 
 
 
@@ -4782,6 +9131,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       items: { ...(currentLayout.items || {}), [newId]: newItem }
 
 
@@ -4790,7 +9147,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     };
+
+
+
+
+
+
+
+
 
 
 
@@ -4806,7 +9179,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     setEditingKey(newId);
+
+
+
+
+
+
+
+
 
 
 
@@ -4822,7 +9211,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -4838,7 +9243,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     saveHistorySnapshot();
+
+
+
+
+
+
+
+
 
 
 
@@ -4854,7 +9275,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+
+
+
+
+
+
+
+
 
 
 
@@ -4870,7 +9307,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       const newNestedBlock = {
+
+
+
+
+
+
+
+
 
 
 
@@ -4886,6 +9339,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         ...(defaultDataMap[type] || { type })
 
 
@@ -4894,7 +9355,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       };
+
+
+
+
+
+
+
+
 
 
 
@@ -4910,7 +9387,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         if (block.id === parentBlockId) {
+
+
+
+
+
+
+
+
 
 
 
@@ -4926,7 +9419,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             block.childrenBlocks = [...(block.childrenBlocks || []), newNestedBlock];
+
+
+
+
+
+
+
+
 
 
 
@@ -4942,7 +9451,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             const originalChild = {
+
+
+
+
+
+
+
+
 
 
 
@@ -4958,6 +9483,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               ...block
 
 
@@ -4966,7 +9499,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             };
+
+
+
+
+
+
+
+
 
 
 
@@ -4982,7 +9531,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             block.childrenBlocks = [originalChild, newNestedBlock];
+
+
+
+
+
+
+
+
 
 
 
@@ -4998,7 +9563,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             block.flexDirection = 'column';
+
+
+
+
+
+
+
+
 
 
 
@@ -5014,7 +9595,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             delete block.heading;
+
+
+
+
+
+
+
+
 
 
 
@@ -5030,7 +9627,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             delete block.body;
+
+
+
+
+
+
+
+
 
 
 
@@ -5046,7 +9659,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             delete block.href;
+
+
+
+
+
+
+
+
 
 
 
@@ -5062,7 +9691,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             delete block.col1;
+
+
+
+
+
+
+
+
 
 
 
@@ -5078,7 +9723,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           }
+
+
+
+
+
+
+
+
 
 
 
@@ -5094,7 +9755,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -5110,7 +9787,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           for (let i = 0; i < block.childrenBlocks.length; i++) {
+
+
+
+
+
+
+
+
 
 
 
@@ -5126,6 +9819,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           }
 
 
@@ -5134,7 +9835,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -5150,7 +9867,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       };
+
+
+
+
+
+
+
+
 
 
 
@@ -5166,7 +9899,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       for (const key of Object.keys(customBlocks)) {
+
+
+
+
+
+
+
+
 
 
 
@@ -5182,7 +9931,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           const block = customBlocks[key];
+
+
+
+
+
+
+
+
 
 
 
@@ -5198,6 +9963,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             block.childrenBlocks = [...(block.childrenBlocks || []), newNestedBlock];
 
 
@@ -5206,7 +9979,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           } else {
+
+
+
+
+
+
+
+
 
 
 
@@ -5222,7 +10011,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               id: `nested_orig_${Date.now()}`,
+
+
+
+
+
+
+
+
 
 
 
@@ -5238,7 +10043,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             };
+
+
+
+
+
+
+
+
 
 
 
@@ -5254,7 +10075,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               id: parentBlockId,
+
+
+
+
+
+
+
+
 
 
 
@@ -5270,7 +10107,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               childrenBlocks: [originalChild, newNestedBlock],
+
+
+
+
+
+
+
+
 
 
 
@@ -5286,7 +10139,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               flexDirection: 'column',
+
+
+
+
+
+
+
+
 
 
 
@@ -5302,7 +10171,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             };
+
+
+
+
+
+
+
+
 
 
 
@@ -5318,7 +10203,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           found = true;
+
+
+
+
+
+
+
+
 
 
 
@@ -5334,7 +10235,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -5350,7 +10267,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           found = true;
+
+
+
+
+
+
+
+
 
 
 
@@ -5366,6 +10299,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }
 
 
@@ -5374,7 +10315,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -5390,7 +10347,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
+
+
+
+
+
+
+
+
 
 
 
@@ -5406,7 +10379,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         
+
+
+
+
+
+
+
+
 
 
 
@@ -5422,6 +10411,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           iframeRef.current.contentWindow?.postMessage({
 
 
@@ -5430,7 +10427,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             type: 'DEMETRA_UPDATE_LAYOUT',
+
+
+
+
+
+
+
+
 
 
 
@@ -5446,7 +10459,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           }, '*');
+
+
+
+
+
+
+
+
 
 
 
@@ -5462,7 +10491,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         
+
+
+
+
+
+
+
+
 
 
 
@@ -5478,7 +10523,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         setModalActiveTab('content');
+
+
+
+
+
+
+
+
 
 
 
@@ -5494,7 +10555,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     } catch (err) {
+
+
+
+
+
+
+
+
 
 
 
@@ -5510,7 +10587,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -5526,7 +10619,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   const handleSelectNestedType = (type: string) => {
+
+
+
+
+
+
+
+
 
 
 
@@ -5542,7 +10651,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     try {
+
+
+
+
+
+
+
+
 
 
 
@@ -5558,7 +10683,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       const parentBlock = customBlocks[addingNestedForBlockId] || { type: 'container' };
+
+
+
+
+
+
+
+
 
 
 
@@ -5574,7 +10715,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       const newNestedBlock = {
+
+
+
+
+
+
+
+
 
 
 
@@ -5590,6 +10747,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         ...(defaultDataMap[type] || { type })
 
 
@@ -5598,7 +10763,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       };
+
+
+
+
+
+
+
+
 
 
 
@@ -5614,7 +10795,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       customBlocks[addingNestedForBlockId] = parentBlock;
+
+
+
+
+
+
+
+
 
 
 
@@ -5630,7 +10827,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       window.dispatchEvent(new Event('storage'));
+
+
+
+
+
+
+
+
 
 
 
@@ -5646,7 +10859,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       if (iframeRef.current) {
+
+
+
+
+
+
+
+
 
 
 
@@ -5662,7 +10891,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           type: 'DEMETRA_UPDATE_LAYOUT',
+
+
+
+
+
+
+
+
 
 
 
@@ -5678,6 +10923,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }, '*');
 
 
@@ -5686,7 +10939,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -5702,7 +10971,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       setIsModalOpen(true);
+
+
+
+
+
+
+
+
 
 
 
@@ -5718,7 +11003,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     } catch (err) {
+
+
+
+
+
+
+
+
 
 
 
@@ -5734,6 +11035,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     }
 
 
@@ -5742,7 +11051,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -5758,7 +11083,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     if (!addingBlockAfterContext) return;
+
+
+
+
+
+
+
+
 
 
 
@@ -5774,7 +11115,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     const lk = layoutKeyRef.current;
+
+
+
+
+
+
+
+
 
 
 
@@ -5790,7 +11147,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     const newId = arrayKey.startsWith('nested:') ? `nested_${Date.now()}` : `new_block_${Date.now()}`;
+
+
+
+
+
+
+
+
 
 
 
@@ -5806,7 +11179,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     setAddingBlockAfterContext(null);
+
+
+
+
+
+
+
+
 
 
 
@@ -5822,7 +11211,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       const containerBlockId = arrayKey.replace('nested:', '');
+
+
+
+
+
+
+
+
 
 
 
@@ -5838,7 +11243,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+
+
+
+
+
+
+
+
 
 
 
@@ -5854,7 +11275,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         const children = [...(parentBlock.childrenBlocks || [])];
+
+
+
+
+
+
+
+
 
 
 
@@ -5870,7 +11307,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         const newNestedBlock = {
+
+
+
+
+
+
+
+
 
 
 
@@ -5886,7 +11339,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           ...blockData
+
+
+
+
+
+
+
+
 
 
 
@@ -5902,7 +11371,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         if (targetIndex !== -1) {
+
+
+
+
+
+
+
+
 
 
 
@@ -5918,7 +11403,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         } else {
+
+
+
+
+
+
+
+
 
 
 
@@ -5934,7 +11435,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -5950,7 +11467,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         customBlocks[containerBlockId] = parentBlock;
+
+
+
+
+
+
+
+
 
 
 
@@ -5966,7 +11499,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         window.dispatchEvent(new Event('storage'));
+
+
+
+
+
+
+
+
 
 
 
@@ -5982,7 +11531,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           iframeRef.current.contentWindow?.postMessage({
+
+
+
+
+
+
+
+
 
 
 
@@ -5998,7 +11563,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             layout: freshLayout
+
+
+
+
+
+
+
+
 
 
 
@@ -6014,6 +11595,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }
 
 
@@ -6022,7 +11611,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         setEditingKey(newId);
+
+
+
+
+
+
+
+
 
 
 
@@ -6038,6 +11643,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         setModalActiveTab('content');
 
 
@@ -6046,7 +11659,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       } catch (err) {
+
+
+
+
+
+
+
+
 
 
 
@@ -6062,7 +11691,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -6078,7 +11723,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       try {
+
+
+
+
+
+
+
+
 
 
 
@@ -6094,7 +11755,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         localStorage.setItem('demetra_custom_blocks', JSON.stringify(allCustomBlocks));
+
+
+
+
+
+
+
+
 
 
 
@@ -6110,7 +11787,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         let targetSectionId = targetId;
+
+
+
+
+
+
+
+
 
 
 
@@ -6126,7 +11819,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         else if (targetId.startsWith('partner_') || targetId === 'btn_partner' || targetId === 'partnership_img') targetSectionId = 'partnership';
+
+
+
+
+
+
+
+
 
 
 
@@ -6142,7 +11851,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         else if (targetId.startsWith('btn_hero_')) targetSectionId = 'hero';
+
+
+
+
+
+
+
+
 
 
 
@@ -6158,7 +11883,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         const newOrder = [...(freshLayout.order || [])];
+
+
+
+
+
+
+
+
 
 
 
@@ -6174,7 +11915,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         if (targetIndex !== -1) {
+
+
+
+
+
+
+
+
 
 
 
@@ -6190,7 +11947,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         } else {
+
+
+
+
+
+
+
+
 
 
 
@@ -6206,6 +11979,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }
 
 
@@ -6214,7 +11995,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         updateLayout({
+
+
+
+
+
+
+
+
 
 
 
@@ -6230,6 +12027,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           order: newOrder
 
 
@@ -6238,7 +12043,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         });
+
+
+
+
+
+
+
+
 
 
 
@@ -6254,7 +12075,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         setIsSettingsOpen(true);
+
+
+
+
+
+
+
+
 
 
 
@@ -6270,7 +12107,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         console.error("Add block after page section error", err);
+
+
+
+
+
+
+
+
 
 
 
@@ -6286,7 +12139,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -6302,7 +12171,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   useEffect(() => {
+
+
+
+
+
+
+
+
 
 
 
@@ -6318,6 +12203,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       if (e.data?.type === 'DEMETRA_BUILDER') {
 
 
@@ -6326,7 +12219,33 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         const { action, id, index, key, value, arrayKey } = e.data;
+
+          
+
+          // Save history snapshot before modifying actions
+
+          if (['DELETE_NESTED', 'MOVE_UP', 'MOVE_DOWN', 'REMOVE_BLOCK', 'ADD_BLOCK_AT', 'ADD_BLOCK_AFTER', 'MOVE_BLOCK_TO'].includes(action)) {
+
+            saveHistorySnapshotRef.current();
+
+          }
+
+
+
+
+
+
+
+
 
 
 
@@ -6342,7 +12261,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           setEditingKey(id);
+
+
+
+
+
+
+
+
 
 
 
@@ -6358,7 +12293,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -6374,7 +12325,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           setEditingKey(id);
+
+
+
+
+
+
+
+
 
 
 
@@ -6390,6 +12357,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           setModalActiveTab(e.data.tab || 'content');
 
 
@@ -6398,7 +12373,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -6414,6 +12405,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           setAddingNestedForBlockId(id);
 
 
@@ -6422,7 +12421,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -6438,6 +12453,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           try {
 
 
@@ -6446,7 +12469,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+
+
+
+
+
+
+
+
 
 
 
@@ -6462,7 +12501,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             parentBlock.childrenBlocks = (parentBlock.childrenBlocks || []).filter((c: any) => c.id !== e.data.nestedId);
+
+
+
+
+
+
+
+
 
 
 
@@ -6478,7 +12533,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
+
+
+
+
+
+
+
+
 
 
 
@@ -6494,7 +12565,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             if (iframeRef.current) {
+
+
+
+
+
+
+
+
 
 
 
@@ -6510,7 +12597,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 type: 'DEMETRA_UPDATE_LAYOUT',
+
+
+
+
+
+
+
+
 
 
 
@@ -6526,7 +12629,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               }, '*');
+
+
+
+
+
+
+
+
 
 
 
@@ -6542,7 +12661,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           } catch (err) {
+
+
+
+
+
+
+
+
 
 
 
@@ -6558,6 +12693,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           }
 
 
@@ -6566,7 +12709,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -6582,7 +12741,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           if (arrayKey && arrayKey.startsWith('nested:')) {
+
+
+
+
+
+
+
+
 
 
 
@@ -6598,7 +12773,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             try {
+
+
+
+
+
+
+
+
 
 
 
@@ -6614,7 +12805,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               const parentBlock = customBlocks[parentId];
+
+
+
+
+
+
+
+
 
 
 
@@ -6630,7 +12837,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 const newChildren = [...parentBlock.childrenBlocks];
+
+
+
+
+
+
+
+
 
 
 
@@ -6646,7 +12869,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   const temp = newChildren[index];
+
+
+
+
+
+
+
+
 
 
 
@@ -6662,7 +12901,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   newChildren[index - 1] = temp;
+
+
+
+
+
+
+
+
 
 
 
@@ -6678,7 +12933,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   customBlocks[parentId] = parentBlock;
+
+
+
+
+
+
+
+
 
 
 
@@ -6694,7 +12965,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   window.dispatchEvent(new Event('storage'));
+
+
+
+
+
+
+
+
 
 
 
@@ -6710,7 +12997,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     iframeRef.current.contentWindow?.postMessage({
+
+
+
+
+
+
+
+
 
 
 
@@ -6726,7 +13029,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       layout: currentLayout
+
+
+
+
+
+
+
+
 
 
 
@@ -6742,7 +13061,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   }
+
+
+
+
+
+
+
+
 
 
 
@@ -6758,6 +13093,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               }
 
 
@@ -6766,7 +13109,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             } catch (err) {
+
+
+
+
+
+
+
+
 
 
 
@@ -6782,6 +13141,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             }
 
 
@@ -6790,7 +13157,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           } else {
+
+
+
+
+
+
+
+
 
 
 
@@ -6806,6 +13189,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           }
 
 
@@ -6814,7 +13205,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -6830,7 +13237,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           if (arrayKey && arrayKey.startsWith('nested:')) {
+
+
+
+
+
+
+
+
 
 
 
@@ -6846,6 +13269,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             try {
 
 
@@ -6854,7 +13285,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+
+
+
+
+
+
+
+
 
 
 
@@ -6870,7 +13317,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               if (parentBlock && parentBlock.childrenBlocks) {
+
+
+
+
+
+
+
+
 
 
 
@@ -6886,7 +13349,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 if (index >= 0 && index < newChildren.length - 1) {
+
+
+
+
+
+
+
+
 
 
 
@@ -6902,7 +13381,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   newChildren[index] = newChildren[index + 1];
+
+
+
+
+
+
+
+
 
 
 
@@ -6918,7 +13413,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   parentBlock.childrenBlocks = newChildren;
+
+
+
+
+
+
+
+
 
 
 
@@ -6934,7 +13445,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
+
+
+
+
+
+
+
+
 
 
 
@@ -6950,7 +13477,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   if (iframeRef.current) {
+
+
+
+
+
+
+
+
 
 
 
@@ -6966,7 +13509,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       type: 'DEMETRA_UPDATE_LAYOUT',
+
+
+
+
+
+
+
+
 
 
 
@@ -6982,7 +13541,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     }, '*');
+
+
+
+
+
+
+
+
 
 
 
@@ -6998,7 +13573,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 }
+
+
+
+
+
+
+
+
 
 
 
@@ -7014,7 +13605,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             } catch (err) {
+
+
+
+
+
+
+
+
 
 
 
@@ -7030,6 +13637,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             }
 
 
@@ -7038,7 +13653,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           } else {
+
+
+
+
+
+
+
+
 
 
 
@@ -7054,6 +13685,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           }
 
 
@@ -7062,7 +13701,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -7078,7 +13733,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           if (id?.startsWith('gallery_')) {
+
+
+
+
+
+
+
+
 
 
 
@@ -7094,7 +13765,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             const newItems = { ...(currentLayout.items || {}) };
+
+
+
+
+
+
+
+
 
 
 
@@ -7110,7 +13797,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             updateLayout({ ...currentLayout, order: newOrder, items: newItems });
+
+
+
+
+
+
+
+
 
 
 
@@ -7126,7 +13829,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               setEditingKey(null);
+
+
+
+
+
+
+
+
 
 
 
@@ -7142,7 +13861,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             }
+
+
+
+
+
+
+
+
 
 
 
@@ -7158,7 +13893,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             const parentId = findParentBlockOfNested(id);
+
+
+
+
+
+
+
+
 
 
 
@@ -7174,7 +13925,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               try {
+
+
+
+
+
+
+
+
 
 
 
@@ -7190,7 +13957,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 const parentBlock = customBlocks[parentId] || {};
+
+
+
+
+
+
+
+
 
 
 
@@ -7206,7 +13989,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 customBlocks[parentId] = parentBlock;
+
+
+
+
+
+
+
+
 
 
 
@@ -7222,7 +14021,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 window.dispatchEvent(new Event('storage'));
+
+
+
+
+
+
+
+
 
 
 
@@ -7238,7 +14053,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   iframeRef.current.contentWindow?.postMessage({
+
+
+
+
+
+
+
+
 
 
 
@@ -7254,7 +14085,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     layout: currentLayout
+
+
+
+
+
+
+
+
 
 
 
@@ -7270,7 +14117,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 }
+
+
+
+
+
+
+
+
 
 
 
@@ -7286,7 +14149,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   setEditingKey(null);
+
+
+
+
+
+
+
+
 
 
 
@@ -7302,7 +14181,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 }
+
+
+
+
+
+
+
+
 
 
 
@@ -7318,7 +14213,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 console.error("Remove nested block error", err);
+
+
+
+
+
+
+
+
 
 
 
@@ -7334,7 +14245,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             }
+
+
+
+
+
+
+
+
 
 
 
@@ -7350,7 +14277,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             const prodId = id.replace('cat_', '');
+
+
+
+
+
+
+
+
 
 
 
@@ -7366,7 +14309,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             updateLayout({ ...currentLayout, order_catalog: newOrder });
+
+
+
+
+
+
+
+
 
 
 
@@ -7382,7 +14341,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               setEditingKey(null);
+
+
+
+
+
+
+
+
 
 
 
@@ -7398,7 +14373,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             }
+
+
+
+
+
+
+
+
 
 
 
@@ -7414,7 +14405,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             const srvId = id.replace('srv_', '');
+
+
+
+
+
+
+
+
 
 
 
@@ -7430,7 +14437,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             updateLayout({ ...currentLayout, order_services: newOrder });
+
+
+
+
+
+
+
+
 
 
 
@@ -7446,7 +14469,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               setEditingKey(null);
+
+
+
+
+
+
+
+
 
 
 
@@ -7462,6 +14501,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             }
 
 
@@ -7470,7 +14517,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           } else {
+
+
+
+
+
+
+
+
 
 
 
@@ -7486,6 +14549,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           }
 
 
@@ -7494,7 +14565,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -7510,7 +14597,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           const { blockType, targetId, arrayKey: arrKey } = e.data;
+
+
+
+
+
+
+
+
 
 
 
@@ -7526,7 +14629,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           const k = arrKey || 'order';
+
+
+
+
+
+
+
+
 
 
 
@@ -7542,7 +14661,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           // If target is a custom block, we nest it inside!
+
+
+
+
+
+
+
+
 
 
 
@@ -7558,7 +14693,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             const containerBlockId = k.replace('nested:', '');
+
+
+
+
+
+
+
+
 
 
 
@@ -7574,7 +14725,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+
+
+
+
+
+
+
+
 
 
 
@@ -7590,7 +14757,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               const newNestedId = `nested_${Date.now()}`;
+
+
+
+
+
+
+
+
 
 
 
@@ -7606,7 +14789,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 id: newNestedId,
+
+
+
+
+
+
+
+
 
 
 
@@ -7622,7 +14821,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               };
+
+
+
+
+
+
+
+
 
 
 
@@ -7638,7 +14853,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               const targetIndex = children.findIndex(c => c.id === targetId);
+
+
+
+
+
+
+
+
 
 
 
@@ -7654,7 +14885,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 children.splice(targetIndex, 0, newNestedBlock);
+
+
+
+
+
+
+
+
 
 
 
@@ -7670,6 +14917,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 children.push(newNestedBlock);
 
 
@@ -7678,7 +14933,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               }
+
+
+
+
+
+
+
+
 
 
 
@@ -7694,7 +14965,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               customBlocks[containerBlockId] = parentBlock;
+
+
+
+
+
+
+
+
 
 
 
@@ -7710,7 +14997,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               window.dispatchEvent(new Event('storage'));
+
+
+
+
+
+
+
+
 
 
 
@@ -7726,7 +15029,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 iframeRef.current.contentWindow?.postMessage({
+
+
+
+
+
+
+
+
 
 
 
@@ -7742,7 +15061,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   layout: currentLayout
+
+
+
+
+
+
+
+
 
 
 
@@ -7758,7 +15093,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               }
+
+
+
+
+
+
+
+
 
 
 
@@ -7774,7 +15125,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               setIsModalOpen(true);
+
+
+
+
+
+
+
+
 
 
 
@@ -7790,7 +15157,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             } catch (err) {
+
+
+
+
+
+
+
+
 
 
 
@@ -7806,7 +15189,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             }
+
+
+
+
+
+
+
+
 
 
 
@@ -7822,7 +15221,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           } else {
+
+
+
+
+
+
+
+
 
 
 
@@ -7838,7 +15253,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             if (isTargetCustom) {
+
+
+
+
+
+
+
+
 
 
 
@@ -7854,7 +15285,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+
+
+
+
+
+
+
+
 
 
 
@@ -7870,7 +15317,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               const newNestedBlock = {
+
+
+
+
+
+
+
+
 
 
 
@@ -7886,6 +15349,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 ...((defaultDataMap[type] || { type }))
 
 
@@ -7894,7 +15365,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               };
+
+
+
+
+
+
+
+
 
 
 
@@ -7910,7 +15397,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               const findAndInsert = (block: any): boolean => {
+
+
+
+
+
+
+
+
 
 
 
@@ -7926,7 +15429,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   if (block.type === 'container') {
+
+
+
+
+
+
+
+
 
 
 
@@ -7942,7 +15461,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   } else {
+
+
+
+
+
+
+
+
 
 
 
@@ -7958,7 +15493,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       id: `nested_orig_${Date.now()}`,
+
+
+
+
+
+
+
+
 
 
 
@@ -7974,7 +15525,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     };
+
+
+
+
+
+
+
+
 
 
 
@@ -7990,7 +15557,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     block.childrenBlocks = [originalChild, newNestedBlock];
+
+
+
+
+
+
+
+
 
 
 
@@ -8006,7 +15589,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     block.flexDirection = 'column';
+
+
+
+
+
+
+
+
 
 
 
@@ -8022,7 +15621,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     // Clear values that belong to leaf blocks so they don't render on the container wrapper
+
+
+
+
+
+
+
+
 
 
 
@@ -8038,7 +15653,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     delete block.subheading;
+
+
+
+
+
+
+
+
 
 
 
@@ -8054,7 +15685,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     delete block.label;
+
+
+
+
+
+
+
+
 
 
 
@@ -8070,7 +15717,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     delete block.src;
+
+
+
+
+
+
+
+
 
 
 
@@ -8086,6 +15749,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     delete block.col2;
 
 
@@ -8094,7 +15765,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   }
+
+
+
+
+
+
+
+
 
 
 
@@ -8110,7 +15797,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 }
+
+
+
+
+
+
+
+
 
 
 
@@ -8126,7 +15829,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   for (let i = 0; i < block.childrenBlocks.length; i++) {
+
+
+
+
+
+
+
+
 
 
 
@@ -8142,7 +15861,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     if (child.id === targetId) {
+
+
+
+
+
+
+
+
 
 
 
@@ -8158,7 +15893,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                         child.childrenBlocks = [...(child.childrenBlocks || []), newNestedBlock];
+
+
+
+
+
+
+
+
 
 
 
@@ -8174,7 +15925,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                         // Sibling insertion: insert right after child inside block.childrenBlocks
+
+
+
+
+
+
+
+
 
 
 
@@ -8190,7 +15957,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       }
+
+
+
+
+
+
+
+
 
 
 
@@ -8206,7 +15989,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     }
+
+
+
+
+
+
+
+
 
 
 
@@ -8222,6 +16021,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   }
 
 
@@ -8230,7 +16037,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 }
+
+
+
+
+
+
+
+
 
 
 
@@ -8246,7 +16069,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               };
+
+
+
+
+
+
+
+
 
 
 
@@ -8262,7 +16101,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               for (const key of Object.keys(customBlocks)) {
+
+
+
+
+
+
+
+
 
 
 
@@ -8278,7 +16133,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   const block = customBlocks[key];
+
+
+
+
+
+
+
+
 
 
 
@@ -8294,7 +16165,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     block.childrenBlocks = [...(block.childrenBlocks || []), newNestedBlock];
+
+
+
+
+
+
+
+
 
 
 
@@ -8310,7 +16197,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     const originalChild = {
+
+
+
+
+
+
+
+
 
 
 
@@ -8326,6 +16229,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       ...block
 
 
@@ -8334,7 +16245,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     };
+
+
+
+
+
+
+
+
 
 
 
@@ -8350,7 +16277,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       id: targetId,
+
+
+
+
+
+
+
+
 
 
 
@@ -8366,7 +16309,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       childrenBlocks: [originalChild, newNestedBlock],
+
+
+
+
+
+
+
+
 
 
 
@@ -8382,7 +16341,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       flexDirection: 'column',
+
+
+
+
+
+
+
+
 
 
 
@@ -8398,7 +16373,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     };
+
+
+
+
+
+
+
+
 
 
 
@@ -8414,7 +16405,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   found = true;
+
+
+
+
+
+
+
+
 
 
 
@@ -8430,7 +16437,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 }
+
+
+
+
+
+
+
+
 
 
 
@@ -8446,7 +16469,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   found = true;
+
+
+
+
+
+
+
+
 
 
 
@@ -8462,6 +16501,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 }
 
 
@@ -8470,7 +16517,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               }
+
+
+
+
+
+
+
+
 
 
 
@@ -8486,7 +16549,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
+
+
+
+
+
+
+
+
 
 
 
@@ -8502,7 +16581,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 if (iframeRef.current) {
+
+
+
+
+
+
+
+
 
 
 
@@ -8518,7 +16613,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     type: 'DEMETRA_UPDATE_LAYOUT',
+
+
+
+
+
+
+
+
 
 
 
@@ -8534,6 +16645,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   }, '*');
 
 
@@ -8542,7 +16661,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 }
+
+
+
+
+
+
+
+
 
 
 
@@ -8558,7 +16693,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 setIsModalOpen(true);
+
+
+
+
+
+
+
+
 
 
 
@@ -8574,6 +16725,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 return; // Done!
 
 
@@ -8582,7 +16741,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               }
+
+
+
+
+
+
+
+
 
 
 
@@ -8598,7 +16773,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               console.error("Failed to insert nested block inside target", err);
+
+
+
+
+
+
+
+
 
 
 
@@ -8614,6 +16805,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           
 
 
@@ -8622,7 +16821,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             } else {
+
+
+
+
+
+
+
+
 
 
 
@@ -8638,6 +16853,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             localStorage.setItem('demetra_custom_blocks', JSON.stringify(allCustomBlocks));
 
 
@@ -8646,7 +16869,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             window.dispatchEvent(new Event('storage'));
+
+
+
+
+
+
+
+
 
 
 
@@ -8662,7 +16901,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             if (targetId.startsWith('cat_')) targetSectionId = 'catalog';
+
+
+
+
+
+
+
+
 
 
 
@@ -8678,7 +16933,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             else if (targetId.startsWith('srv_') || targetId.startsWith('service-')) targetSectionId = 'services';
+
+
+
+
+
+
+
+
 
 
 
@@ -8694,7 +16965,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             else if (targetId.startsWith('btn_cta_')) targetSectionId = 'cta';
+
+
+
+
+
+
+
+
 
 
 
@@ -8710,7 +16997,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             const targetIndex = newOrder.indexOf(targetSectionId);
+
+
+
+
+
+
+
+
 
 
 
@@ -8726,7 +17029,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               newOrder.splice(targetIndex, 0, newId);
+
+
+
+
+
+
+
+
 
 
 
@@ -8742,6 +17061,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               newOrder.push(newId);
 
 
@@ -8750,7 +17077,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             }
+
+
+
+
+
+
+
+
 
 
 
@@ -8766,7 +17109,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               ...currentLayout,
+
+
+
+
+
+
+
+
 
 
 
@@ -8782,7 +17141,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             });
+
+
+
+
+
+
+
+
 
 
 
@@ -8798,7 +17173,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             setIsSettingsOpen(true);
+
+
+
+
+
+
+
+
 
 
 
@@ -8814,7 +17205,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             }
+
+
+
+
+
+
+
+
 
 
 
@@ -8830,7 +17237,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -8846,7 +17269,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           const { id: containerBlockId, blockType } = e.data;
+
+
+
+
+
+
+
+
 
 
 
@@ -8862,7 +17301,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+
+
+
+
+
+
+
+
 
 
 
@@ -8878,7 +17333,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             const newNestedBlock = {
+
+
+
+
+
+
+
+
 
 
 
@@ -8894,6 +17365,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               ...(defaultDataMap[blockType] || { type: blockType })
 
 
@@ -8902,7 +17381,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             };
+
+
+
+
+
+
+
+
 
 
 
@@ -8918,6 +17413,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               if (block.id === containerBlockId) {
 
 
@@ -8926,7 +17429,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 block.childrenBlocks = [...(block.childrenBlocks || []), newNestedBlock];
+
+
+
+
+
+
+
+
 
 
 
@@ -8942,7 +17461,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               }
+
+
+
+
+
+
+
+
 
 
 
@@ -8958,7 +17493,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 for (const child of block.childrenBlocks) {
+
+
+
+
+
+
+
+
 
 
 
@@ -8974,6 +17525,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 }
 
 
@@ -8982,7 +17541,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               }
+
+
+
+
+
+
+
+
 
 
 
@@ -8998,7 +17573,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             };
+
+
+
+
+
+
+
+
 
 
 
@@ -9014,7 +17605,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             for (const key of Object.keys(customBlocks)) {
+
+
+
+
+
+
+
+
 
 
 
@@ -9030,7 +17637,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 const block = customBlocks[key];
+
+
+
+
+
+
+
+
 
 
 
@@ -9046,7 +17669,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 found = true;
+
+
+
+
+
+
+
+
 
 
 
@@ -9062,7 +17701,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               }
+
+
+
+
+
+
+
+
 
 
 
@@ -9078,7 +17733,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 found = true;
+
+
+
+
+
+
+
+
 
 
 
@@ -9094,6 +17765,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               }
 
 
@@ -9102,7 +17781,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             }
+
+
+
+
+
+
+
+
 
 
 
@@ -9118,7 +17813,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               const parentBlock = customBlocks[containerBlockId] || { type: 'container' };
+
+
+
+
+
+
+
+
 
 
 
@@ -9134,6 +17845,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               customBlocks[containerBlockId] = parentBlock;
 
 
@@ -9142,7 +17861,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             }
+
+
+
+
+
+
+
+
 
 
 
@@ -9158,7 +17893,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             window.dispatchEvent(new Event('storage'));
+
+
+
+
+
+
+
+
 
 
 
@@ -9174,7 +17925,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             if (iframeRef.current) {
+
+
+
+
+
+
+
+
 
 
 
@@ -9190,7 +17957,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 type: 'DEMETRA_UPDATE_LAYOUT',
+
+
+
+
+
+
+
+
 
 
 
@@ -9206,6 +17989,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               }, '*');
 
 
@@ -9214,7 +18005,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             }
+
+
+
+
+
+
+
+
 
 
 
@@ -9230,7 +18037,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             setIsModalOpen(true);
+
+
+
+
+
+
+
+
 
 
 
@@ -9246,7 +18069,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           } catch (err) {
+
+
+
+
+
+
+
+
 
 
 
@@ -9262,6 +18101,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           }
 
 
@@ -9270,7 +18117,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -9286,6 +18149,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           updateLayout(e.data.layout);
 
 
@@ -9294,7 +18165,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -9310,6 +18197,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           setAddingBlockAfterContext({ id, index, arrayKey: arrayKey || 'order' });
 
 
@@ -9318,7 +18213,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -9334,7 +18245,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
            const { draggedId, targetId, arrayKey: arrKey } = e.data;
+
+
+
+
+
+
+
+
 
 
 
@@ -9350,7 +18277,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
              const parentId = arrKey.replace('nested:', '');
+
+
+
+
+
+
+
+
 
 
 
@@ -9366,7 +18309,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+
+
+
+
+
+
+
+
 
 
 
@@ -9382,7 +18341,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                if (parentBlock && parentBlock.childrenBlocks) {
+
+
+
+
+
+
+
+
 
 
 
@@ -9398,7 +18373,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                  const draggedIndex = newChildren.findIndex((c: any) => c.id === draggedId);
+
+
+
+
+
+
+
+
 
 
 
@@ -9414,7 +18405,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                  if (draggedIndex !== -1 && targetIndex !== -1) {
+
+
+
+
+
+
+
+
 
 
 
@@ -9430,7 +18437,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                    newChildren.splice(targetIndex, 0, draggedItem);
+
+
+
+
+
+
+
+
 
 
 
@@ -9446,7 +18469,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                    customBlocks[parentId] = parentBlock;
+
+
+
+
+
+
+
+
 
 
 
@@ -9462,7 +18501,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                    window.dispatchEvent(new Event('storage'));
+
+
+
+
+
+
+
+
 
 
 
@@ -9478,7 +18533,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                      iframeRef.current.contentWindow?.postMessage({
+
+
+
+
+
+
+
+
 
 
 
@@ -9494,7 +18565,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                        layout: currentLayout
+
+
+
+
+
+
+
+
 
 
 
@@ -9510,7 +18597,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                    }
+
+
+
+
+
+
+
+
 
 
 
@@ -9526,7 +18629,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                }
+
+
+
+
+
+
+
+
 
 
 
@@ -9542,6 +18661,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                console.error("Move nested error", err);
 
 
@@ -9550,7 +18677,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
              }
+
+
+
+
+
+
+
+
 
 
 
@@ -9566,7 +18709,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
              // ─── Read FRESH layout via ref – no stale closure! ───
+
+
+
+
+
+
+
+
 
 
 
@@ -9582,7 +18741,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
              const freshLayout = pageLayoutsRef.current[lk] || {};
+
+
+
+
+
+
+
+
 
 
 
@@ -9598,7 +18773,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                String(str).replace('cat_item_', '').replace('cat_', '').replace('srv_', '').replace('service-', 'service-').trim();
+
+
+
+
+
+
+
+
 
 
 
@@ -9614,7 +18805,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
              // arrKey from target is unreliable — if user drops on outer section wrapper
+
+
+
+
+
+
+
+
 
 
 
@@ -9630,7 +18837,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
              let k: string;
+
+
+
+
+
+
+
+
 
 
 
@@ -9646,7 +18869,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                k = 'order_catalog';
+
+
+
+
+
+
+
+
 
 
 
@@ -9662,7 +18901,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                k = 'order_gallery';
+
+
+
+
+
+
+
+
 
 
 
@@ -9678,6 +18933,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                k = 'order_services';
 
 
@@ -9686,7 +18949,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
              } else {
+
+
+
+
+
+
+
+
 
 
 
@@ -9702,7 +18981,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
              }
+
+
+
+
+
+
+
+
 
 
 
@@ -9718,7 +19013,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
              if (rawOrder.length === 0) {
+
+
+
+
+
+
+
+
 
 
 
@@ -9734,7 +19045,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                else if (k === 'order_services') rawOrder = ['service-1','service-2','service-3','service-4'];
+
+
+
+
+
+
+
+
 
 
 
@@ -9750,7 +19077,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
              }
+
+
+
+
+
+
+
+
 
 
 
@@ -9766,7 +19109,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
              // Strip cat_/srv_/gallery_ prefix from both sides for matching
+
+
+
+
+
+
+
+
 
 
 
@@ -9782,7 +19141,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                str.replace('cat_item_', '').replace('cat_', '').replace('gallery_', 'gallery_').replace('srv_', '').trim();
+
+
+
+
+
+
+
+
 
 
 
@@ -9798,7 +19173,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
              const cleanTgtId  = stripPrefix(String(targetId));
+
+
+
+
+
+
+
+
 
 
 
@@ -9814,7 +19205,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
              const di = newOrder.findIndex(x => stripPrefix(x) === cleanDragId);
+
+
+
+
+
+
+
+
 
 
 
@@ -9830,7 +19237,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
              console.log('[MOVE_BLOCK_TO] indices', { di, ti });
+
+
+
+
+
+
+
+
 
 
 
@@ -9846,7 +19269,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                const [movedItem] = newOrder.splice(di, 1);
+
+
+
+
+
+
+
+
 
 
 
@@ -9862,7 +19301,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                const updatedLayout = { ...freshLayout, [k]: newOrder };
+
+
+
+
+
+
+
+
 
 
 
@@ -9878,7 +19333,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                localStorage.setItem(`demetra_${lk}_layout`, JSON.stringify(updatedLayout));
+
+
+
+
+
+
+
+
 
 
 
@@ -9894,7 +19365,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                if (iframeRef.current?.contentWindow) {
+
+
+
+
+
+
+
+
 
 
 
@@ -9910,7 +19397,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                }
+
+
+
+
+
+
+
+
 
 
 
@@ -9926,7 +19429,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                setPageLayouts((prev: any) => ({ ...prev, [lk]: updatedLayout }));
+
+
+
+
+
+
+
+
 
 
 
@@ -9942,7 +19461,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
              } else {
+
+
+
+
+
+
+
+
 
 
 
@@ -9958,7 +19493,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
              }
+
+
+
+
+
+
+
+
 
 
 
@@ -9974,7 +19525,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -9990,6 +19557,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
            updateTranslation(currentLang, key, value);
 
 
@@ -9998,7 +19573,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -10014,7 +19605,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
            updateLayout({
+
+
+
+
+
+
+
+
 
 
 
@@ -10030,7 +19637,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
              styles: {
+
+
+
+
+
+
+
+
 
 
 
@@ -10046,7 +19669,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                [id]: { ...(currentLayout.styles?.[id] || {}), ...e.data.styles }
+
+
+
+
+
+
+
+
 
 
 
@@ -10062,7 +19701,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
            });
+
+
+
+
+
+
+
+
 
 
 
@@ -10078,6 +19733,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       }
 
 
@@ -10086,7 +19749,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     };
+
+
+
+
+
+
+
+
 
 
 
@@ -10102,6 +19781,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     return () => window.removeEventListener('message', handleMessage);
 
 
@@ -10110,7 +19797,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
+
+
+
+
+
+
+
+
 
 
 
@@ -10126,7 +19829,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   useEffect(() => {
+
+
+
+
+
+
+
+
 
 
 
@@ -10142,7 +19861,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       if (iframeRef.current && iframeRef.current.contentWindow) {
+
+
+
+
+
+
+
+
 
 
 
@@ -10158,6 +19893,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       }
 
 
@@ -10166,7 +19909,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     };
+
+
+
+
+
+
+
+
 
 
 
@@ -10182,7 +19941,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     return () => window.removeEventListener('storage', handleStorageEvent);
+
+
+
+
+
+
+
+
 
 
 
@@ -10198,7 +19973,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   useEffect(() => {
+
+
+
+
+
+
+
+
 
 
 
@@ -10214,7 +20005,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       if (!e.dataTransfer) return;
+
+
+
+
+
+
+
+
 
 
 
@@ -10230,7 +20037,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       if (data && data.includes('text/plain')) {
+
+
+
+
+
+
+
+
 
 
 
@@ -10246,6 +20069,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       }
 
 
@@ -10254,7 +20085,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     };
+
+
+
+
+
+
+
+
 
 
 
@@ -10270,7 +20117,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       if (!e.dataTransfer) return;
+
+
+
+
+
+
+
+
 
 
 
@@ -10286,7 +20149,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       if (!raw || !raw.startsWith('add_block:')) return;
+
+
+
+
+
+
+
+
 
 
 
@@ -10302,7 +20181,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       const type = raw.replace('add_block:', '');
+
+
+
+
+
+
+
+
 
 
 
@@ -10318,7 +20213,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         // Use a ref-stable reference so we always call the latest addCustomBlock
+
+
+
+
+
+
+
+
 
 
 
@@ -10334,7 +20245,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -10350,7 +20277,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     };
+
+
+
+
+
+
+
+
 
 
 
@@ -10366,7 +20309,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     document.addEventListener('drop', handleDocDrop);
+
+
+
+
+
+
+
+
 
 
 
@@ -10382,7 +20341,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       document.removeEventListener('dragover', handleDocDragOver);
+
+
+
+
+
+
+
+
 
 
 
@@ -10398,7 +20373,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     };
+
+
+
+
+
+
+
+
 
 
 
@@ -10414,7 +20405,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   }, []);
+
+
+
+
+
+
+
+
 
 
 
@@ -10430,7 +20437,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     if (iframeRef.current?.contentWindow) {
+
+
+
+
+
+
+
+
 
 
 
@@ -10446,7 +20469,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       iframeRef.current.contentWindow.postMessage({ type: 'DEMETRA_UPDATE_TRANSLATIONS', translations: allTranslations }, '*');
+
+
+
+
+
+
+
+
 
 
 
@@ -10462,7 +20501,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -10478,7 +20533,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   useEffect(() => {
+
+
+
+
+
+
+
+
 
 
 
@@ -10494,7 +20565,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     if (iframeRef.current?.contentWindow) {
+
+
+
+
+
+
+
+
 
 
 
@@ -10510,7 +20597,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -10526,7 +20629,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   return (
+
+
+
+
+
+
+
+
 
 
 
@@ -10542,7 +20661,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       {/* Top Floating Toolbar */}
+
+
+
+
+
+
+
+
 
 
 
@@ -10558,7 +20693,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -10574,6 +20725,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             {/* Sidebar toggle button inside the visual editor */}
 
 
@@ -10582,7 +20741,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             <button
+
+
+
+
+
+
+
+
 
 
 
@@ -10598,7 +20773,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -10614,7 +20805,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 color: isLibraryOpen ? '#00ff41' : '#aaa',
+
+
+
+
+
+
+
+
 
 
 
@@ -10630,7 +20837,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 padding: '0.5rem 1rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -10646,7 +20869,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 fontSize: '0.8rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -10662,7 +20901,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 cursor: 'pointer',
+
+
+
+
+
+
+
+
 
 
 
@@ -10678,7 +20933,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 alignItems: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -10694,7 +20965,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 transition: 'all 0.2s ease'
+
+
+
+
+
+
+
+
 
 
 
@@ -10710,7 +20997,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             >
+
+
+
+
+
+
+
+
 
 
 
@@ -10726,6 +21029,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               Библиотека блоков
 
 
@@ -10734,7 +21045,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             </button>
+
+
+
+
+
+
+
+
 
 
 
@@ -10750,7 +21077,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             <button
+
+
+
+
+
+
+
+
 
 
 
@@ -10766,7 +21109,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -10782,7 +21141,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 color: showDesignerGrid ? '#00ff41' : '#aaa',
+
+
+
+
+
+
+
+
 
 
 
@@ -10798,7 +21173,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 padding: '0.5rem 1rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -10814,7 +21205,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 fontSize: '0.8rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -10830,7 +21237,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 cursor: 'pointer',
+
+
+
+
+
+
+
+
 
 
 
@@ -10846,7 +21269,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 alignItems: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -10862,7 +21301,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 transition: 'all 0.2s ease'
+
+
+
+
+
+
+
+
 
 
 
@@ -10878,7 +21333,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             >
+
+
+
+
+
+
+
+
 
 
 
@@ -10894,7 +21365,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               Сетка
+
+
+
+
+
+
+
+
 
 
 
@@ -10910,7 +21397,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             <select 
+
+
+
+
+
+
+
+
 
 
 
@@ -10926,7 +21429,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                onChange={(e) => setPreviewRoute(e.target.value)}
+
+
+
+
+
+
+
+
 
 
 
@@ -10942,7 +21461,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             >
+
+
+
+
+
+
+
+
 
 
 
@@ -10958,7 +21493,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                  const name = p.name[currentLang] || p.name.ru;
+
+
+
+
+
+
+
+
 
 
 
@@ -10974,7 +21525,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                    <option key={p.id} value={p.path}>
+
+
+
+
+
+
+
+
 
 
 
@@ -10990,7 +21557,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                    </option>
+
+
+
+
+
+
+
+
 
 
 
@@ -11006,6 +21589,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                })}
 
 
@@ -11014,7 +21605,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             </select>
+
+
+
+
+
+
+
+
 
 
 
@@ -11030,76 +21637,161 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             {editingKey && (
+
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+
                 <div style={{ color: '#fff', fontSize: '0.8rem', background: '#222', padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid #333', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '800' }}>
+
                   <span style={{ color: '#888' }}>ID блока:</span>
+
                   <span style={{ color: '#00ff41' }}>{editingKey}</span>
+
                 </div>
+
                 <button
+
                   onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+
                   style={{
+
                     background: isSettingsOpen ? 'rgba(0, 255, 65, 0.1)' : '#222',
+
                     color: isSettingsOpen ? '#00ff41' : '#aaa',
+
                     border: isSettingsOpen ? '1px solid #00ff41' : '1px solid #444',
+
                     padding: '0.5rem 1rem',
+
                     borderRadius: '8px',
+
                     fontSize: '0.8rem',
+
                     fontWeight: '800',
+
                     cursor: 'pointer',
+
                     display: 'flex',
+
                     alignItems: 'center',
+
                     gap: '0.4rem',
+
                     transition: 'all 0.2s ease'
+
                   }}
+
                 >
+
                   <Settings2 size={14} />
+
                   {isSettingsOpen ? 'Скрыть настройки' : `Настройки (${editingKey})`}
+
                 </button>
+
                 <button
+
                   onClick={() => { setEditingKey(null); setIsSettingsOpen(false); }}
+
                   style={{
+
                     background: 'rgba(255, 75, 75, 0.1)',
+
                     color: '#ff4b4b',
+
                     border: '1px solid rgba(255, 75, 75, 0.2)',
+
                     padding: '0.5rem 0.8rem',
+
                     borderRadius: '8px',
+
                     fontSize: '0.8rem',
+
                     fontWeight: '800',
+
                     cursor: 'pointer',
+
                   }}
+
                   title="Сбросить выбор текущего блока"
+
                 >
+
                   Сбросить
+
                 </button>
+
                 <button
+
                   onClick={() => {
+
                     setIsModalOpen(true);
+
                     setModalActiveTab('library');
+
                   }}
+
                   style={{
+
                     background: '#00ff41',
+
                     color: '#000',
+
                     border: 'none',
+
                     padding: '0.5rem 1.25rem',
+
                     borderRadius: '8px',
+
                     fontSize: '0.8rem',
+
                     fontWeight: '900',
+
                     cursor: 'pointer',
+
                     display: 'flex',
+
                     alignItems: 'center',
+
                     gap: '0.4rem',
+
                     transition: 'all 0.2s ease',
+
                     boxShadow: '0 0 15px rgba(0, 255, 65, 0.3)'
+
                   }}
+
                   onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 0 25px rgba(0, 255, 65, 0.5)'; }}
+
                   onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 0 15px rgba(0, 255, 65, 0.3)'; }}
+
                 >
+
                   <PlusCircle size={14} />
+
                   ➕ ДОБАВИТЬ ЭЛЕМЕНТ
+
                 </button>
+
               </div>
+
             )}
+
+
+
+
+
+
+
+
 
 
 
@@ -11115,7 +21807,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
          <button onClick={handleSave} style={{ background: '#00ff41', color: '#000', border: 'none', padding: '0.75rem 2rem', borderRadius: '8px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '0 0 20px rgba(0, 255, 65, 0.2)' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -11131,6 +21839,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
          </button>
 
 
@@ -11139,7 +21855,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -11155,7 +21887,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       <div style={{ flex: 1, display: 'flex', position: 'relative', background: '#000', overflow: 'hidden' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -11171,7 +21919,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         <AnimatePresence>
+
+
+
+
+
+
+
+
 
 
 
@@ -11187,7 +21951,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             <motion.div
+
+
+
+
+
+
+
+
 
 
 
@@ -11203,7 +21983,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               animate={{ width: 340, opacity: 1 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -11219,6 +22015,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               transition={{ duration: 0.25, ease: 'easeInOut' }}
 
 
@@ -11227,7 +22031,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -11243,7 +22063,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 borderRight: '1px solid #222',
+
+
+
+
+
+
+
+
 
 
 
@@ -11259,7 +22095,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 flexDirection: 'column',
+
+
+
+
+
+
+
+
 
 
 
@@ -11275,7 +22127,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 overflow: 'hidden',
+
+
+
+
+
+
+
+
 
 
 
@@ -11291,6 +22159,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               }}
 
 
@@ -11299,7 +22175,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             >
+
+
+
+
+
+
+
+
 
 
 
@@ -11315,7 +22207,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                  {/* Header */}
+
+
+
+
+
+
+
+
 
 
 
@@ -11331,7 +22239,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                    <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -11347,7 +22271,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                      <p style={{ color: '#555', fontSize: '0.65rem', margin: '0.2rem 0 0 0' }}>Нажмите элемент для добавления</p>
+
+
+
+
+
+
+
+
 
 
 
@@ -11363,7 +22303,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                    <button 
+
+
+
+
+
+
+
+
 
 
 
@@ -11379,6 +22335,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                      style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
 
 
@@ -11387,7 +22351,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                    >
+
+
+
+
+
+
+
+
 
 
 
@@ -11403,6 +22383,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                    </button>
 
 
@@ -11411,7 +22399,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                  </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -11427,7 +22431,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                  <div style={{ position: 'relative', marginBottom: '1.25rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -11443,7 +22463,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                    <input
+
+
+
+
+
+
+
+
 
 
 
@@ -11459,7 +22495,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                      placeholder="Поиск блоков и элементов..."
+
+
+
+
+
+
+
+
 
 
 
@@ -11475,7 +22527,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                      onChange={(e) => setLibSearch(e.target.value)}
+
+
+
+
+
+
+
+
 
 
 
@@ -11491,7 +22559,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                        width: '100%',
+
+
+
+
+
+
+
+
 
 
 
@@ -11507,7 +22591,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                        border: '1px solid #222',
+
+
+
+
+
+
+
+
 
 
 
@@ -11523,7 +22623,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                        padding: '0.5rem 0.5rem 0.5rem 2.2rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -11539,7 +22655,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                        fontSize: '0.8rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -11555,7 +22687,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                        boxSizing: 'border-box'
+
+
+
+
+
+
+
+
 
 
 
@@ -11571,6 +22719,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                    />
 
 
@@ -11579,7 +22735,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                  </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -11595,7 +22767,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                  <div className="custom-scrollbar" style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -11611,6 +22799,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     {layoutKey === 'gallery' && (
 
 
@@ -11619,7 +22815,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -11635,7 +22847,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                          <button
+
+
+
+
+
+
+
+
 
 
 
@@ -11651,7 +22879,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                            style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -11667,7 +22911,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                              background: 'rgba(0, 255, 65, 0.05)',
+
+
+
+
+
+
+
+
 
 
 
@@ -11683,7 +22943,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                              borderRadius: '12px',
+
+
+
+
+
+
+
+
 
 
 
@@ -11699,7 +22975,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                              color: '#00ff41',
+
+
+
+
+
+
+
+
 
 
 
@@ -11715,7 +23007,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                              fontSize: '0.85rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -11731,7 +23039,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                              display: 'flex',
+
+
+
+
+
+
+
+
 
 
 
@@ -11747,7 +23071,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                              alignItems: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -11763,6 +23103,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                              transition: 'all 0.2s'
 
 
@@ -11771,7 +23119,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                            }}
+
+
+
+
+
+
+
+
 
 
 
@@ -11787,7 +23151,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                              setHoveredBlockId('gallery_add');
+
+
+
+
+
+
+
+
 
 
 
@@ -11803,7 +23183,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                            }}
+
+
+
+
+
+
+
+
 
 
 
@@ -11819,7 +23215,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                              setHoveredBlockId(null);
+
+
+
+
+
+
+
+
 
 
 
@@ -11835,7 +23247,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                            }}
+
+
+
+
+
+
+
+
 
 
 
@@ -11851,7 +23279,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                            <Plus size={24} />
+
+
+
+
+
+
+
+
 
 
 
@@ -11867,7 +23311,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                          </button>
+
+
+
+
+
+
+
+
 
 
 
@@ -11883,7 +23343,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     )}
+
+
+
+
+
+
+
+
 
 
 
@@ -11899,7 +23375,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     {layoutKey === 'home' && (
+
+
+
+
+
+
+
+
 
 
 
@@ -11915,7 +23407,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                          <div style={{ fontSize: '0.75rem', color: '#8e9196', fontWeight: '900', letterSpacing: '0.15em' }}>СЕКЦИИ СТРАНИЦЫ</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -11931,7 +23439,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                             {[
+
+
+
+
+
+
+
+
 
 
 
@@ -11947,7 +23471,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                               { id: 'marquee', title: 'Marquee (Инфо-строка)', desc: 'Бегущая строка с показателями', icon: <Zap size={16} /> },
+
+
+
+
+
+
+
+
 
 
 
@@ -11963,7 +23503,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                               { id: 'partnership', title: 'Partnership (Партнеры)', desc: 'Сетка логотипов партнеров', icon: <ExternalLink size={16} /> },
+
+
+
+
+
+
+
+
 
 
 
@@ -11979,7 +23535,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                               { id: 'cta', title: 'CTA (Обратная связь)', desc: 'Кнопки обратной связи', icon: <Phone size={16} /> }
+
+
+
+
+
+
+
+
 
 
 
@@ -11995,7 +23567,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                               const order = currentLayout.order || [];
+
+
+
+
+
+
+
+
 
 
 
@@ -12011,7 +23599,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                               const isAdded = order.includes(sec.id);
+
+
+
+
+
+
+
+
 
 
 
@@ -12027,7 +23631,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                               let statusText = 'Добавить';
+
+
+
+
+
+
+
+
 
 
 
@@ -12043,7 +23663,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                               let bg = 'rgba(0, 255, 65, 0.03)';
+
+
+
+
+
+
+
+
 
 
 
@@ -12059,7 +23695,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                               if (isAdded) {
+
+
+
+
+
+
+
+
 
 
 
@@ -12075,7 +23727,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                   statusText = 'Скрыт (Показать)';
+
+
+
+
+
+
+
+
 
 
 
@@ -12091,7 +23759,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                   bg = '#121214';
+
+
+
+
+
+
+
+
 
 
 
@@ -12107,7 +23791,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                   statusText = 'Активен';
+
+
+
+
+
+
+
+
 
 
 
@@ -12123,7 +23823,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                   bg = 'rgba(0, 255, 65, 0.08)';
+
+
+
+
+
+
+
+
 
 
 
@@ -12139,6 +23855,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                 }
 
 
@@ -12147,7 +23871,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                               }
+
+
+
+
+
+
+
+
 
 
 
@@ -12163,7 +23903,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                 <div
+
+
+
+
+
+
+
+
 
 
 
@@ -12179,7 +23935,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                   onClick={() => addMainSection(sec.id)}
+
+
+
+
+
+
+
+
 
 
 
@@ -12195,7 +23967,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                     background: bg,
+
+
+
+
+
+
+
+
 
 
 
@@ -12211,7 +23999,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                     borderRadius: '10px',
+
+
+
+
+
+
+
+
 
 
 
@@ -12227,7 +24031,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                     cursor: 'pointer',
+
+
+
+
+
+
+
+
 
 
 
@@ -12243,7 +24063,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                     display: 'flex',
+
+
+
+
+
+
+
+
 
 
 
@@ -12259,7 +24095,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                     alignItems: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -12275,7 +24127,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                   }}
+
+
+
+
+
+
+
+
 
 
 
@@ -12291,7 +24159,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                     setHoveredBlockId(sec.id);
+
+
+
+
+
+
+
+
 
 
 
@@ -12307,6 +24191,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                     e.currentTarget.style.background = 'rgba(0, 255, 65, 0.05)';
 
 
@@ -12315,7 +24207,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                   }}
+
+
+
+
+
+
+
+
 
 
 
@@ -12331,7 +24239,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                     setHoveredBlockId(null);
+
+
+
+
+
+
+
+
 
 
 
@@ -12347,7 +24271,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                     e.currentTarget.style.background = bg;
+
+
+
+
+
+
+
+
 
 
 
@@ -12363,7 +24303,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                 >
+
+
+
+
+
+
+
+
 
 
 
@@ -12379,7 +24335,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                     <div style={{ color: statusColor, display: 'flex', alignItems: 'center' }}>{sec.icon}</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -12395,7 +24367,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                       <div style={{ fontSize: '0.85rem', color: '#fff', fontWeight: '800' }}>{sec.title}</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -12411,6 +24399,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                     </div>
 
 
@@ -12419,7 +24415,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                   </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -12435,7 +24447,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                     {statusText}
+
+
+
+
+
+
+
+
 
 
 
@@ -12451,7 +24479,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                 </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -12467,7 +24511,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                             })}
+
+
+
+
+
+
+
+
 
 
 
@@ -12483,7 +24543,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -12499,7 +24575,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     {/* CUSTOM BLOCKS LIST */}
+
+
+
+
+
+
+
+
 
 
 
@@ -12515,6 +24607,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                        {/* Standard Elements */}
 
 
@@ -12523,7 +24623,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -12539,6 +24655,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
 
 
@@ -12547,7 +24671,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                              {[
+
+
+
+
+
+
+
+
 
 
 
@@ -12563,7 +24703,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                { id: 'text', title: 'Текст', icon: '¶', desc: 'Paragraph' },
+
+
+
+
+
+
+
+
 
 
 
@@ -12579,7 +24735,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                { id: 'card', title: 'Карточка', icon: '▭', desc: 'Bento Card' },
+
+
+
+
+
+
+
+
 
 
 
@@ -12595,7 +24767,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                { id: 'image_text', title: 'Фото+Текст', icon: '⊡', desc: 'Image & Text' },
+
+
+
+
+
+
+
+
 
 
 
@@ -12611,7 +24799,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                { id: 'divider', title: 'Разделитель', icon: '—', desc: 'Divider Line' },
+
+
+
+
+
+
+
+
 
 
 
@@ -12627,7 +24831,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                              ].filter(x => x.title.toLowerCase().includes(libSearch.toLowerCase()) || x.desc.toLowerCase().includes(libSearch.toLowerCase())).map(el => (
+
+
+
+
+
+
+
+
 
 
 
@@ -12643,7 +24863,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                  key={el.id}
+
+
+
+
+
+
+
+
 
 
 
@@ -12659,7 +24895,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                  draggable={true}
+
+
+
+
+
+
+
+
 
 
 
@@ -12675,7 +24927,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    e.dataTransfer.setData("text/plain", `add_block:${el.id}`);
+
+
+
+
+
+
+
+
 
 
 
@@ -12691,6 +24959,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    setIsDraggingFromLib(el.id);
 
 
@@ -12699,7 +24975,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                  }}
+
+
+
+
+
+
+
+
 
 
 
@@ -12715,7 +25007,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                  style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -12731,7 +25039,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    border: '1px solid #1e1e22',
+
+
+
+
+
+
+
+
 
 
 
@@ -12747,7 +25071,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    padding: '1rem 0.5rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -12763,7 +25103,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    cursor: 'pointer',
+
+
+
+
+
+
+
+
 
 
 
@@ -12779,7 +25135,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    display: 'flex',
+
+
+
+
+
+
+
+
 
 
 
@@ -12795,7 +25167,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    alignItems: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -12811,7 +25199,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                  }}
+
+
+
+
+
+
+
+
 
 
 
@@ -12827,7 +25231,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    setHoveredBlockId(el.id);
+
+
+
+
+
+
+
+
 
 
 
@@ -12843,7 +25263,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    e.currentTarget.style.background = 'rgba(0, 255, 65, 0.04)';
+
+
+
+
+
+
+
+
 
 
 
@@ -12859,7 +25295,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                  }}
+
+
+
+
+
+
+
+
 
 
 
@@ -12875,7 +25327,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    setHoveredBlockId(null);
+
+
+
+
+
+
+
+
 
 
 
@@ -12891,7 +25359,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    e.currentTarget.style.background = '#121214';
+
+
+
+
+
+
+
+
 
 
 
@@ -12907,7 +25391,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                  }}
+
+
+
+
+
+
+
+
 
 
 
@@ -12923,7 +25423,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                  <div style={{ fontSize: '1.4rem', color: '#00ff41', fontWeight: '800' }}>{el.icon}</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -12939,7 +25455,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                  <div style={{ fontSize: '0.65rem', color: '#a1a1aa' }}>{el.desc}</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -12955,7 +25487,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                              ))}
+
+
+
+
+
+
+
+
 
 
 
@@ -12971,7 +25519,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                        </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -12987,7 +25551,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -13003,7 +25583,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -13019,7 +25615,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                { id: 'shape_rect', title: 'Квадрат', icon: '■', desc: 'Rectangle Shape' },
+
+
+
+
+
+
+
+
 
 
 
@@ -13035,7 +25647,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                { id: 'shape_line', title: 'Линия', icon: '│', desc: 'Line Shape' }
+
+
+
+
+
+
+
+
 
 
 
@@ -13051,7 +25679,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                <button
+
+
+
+
+
+
+
+
 
 
 
@@ -13067,7 +25711,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                  onClick={() => addCustomBlock(el.id)}
+
+
+
+
+
+
+
+
 
 
 
@@ -13083,7 +25743,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                  onDragStart={(e) => {
+
+
+
+
+
+
+
+
 
 
 
@@ -13099,7 +25775,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    e.dataTransfer.effectAllowed = "copy";
+
+
+
+
+
+
+
+
 
 
 
@@ -13115,7 +25807,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                  }}
+
+
+
+
+
+
+
+
 
 
 
@@ -13131,7 +25839,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                  style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -13147,7 +25871,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    border: '1px solid #1e1e22',
+
+
+
+
+
+
+
+
 
 
 
@@ -13163,7 +25903,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    padding: '1rem 0.5rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -13179,7 +25935,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    cursor: 'pointer',
+
+
+
+
+
+
+
+
 
 
 
@@ -13195,7 +25967,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    display: 'flex',
+
+
+
+
+
+
+
+
 
 
 
@@ -13211,7 +25999,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    alignItems: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -13227,7 +26031,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                  }}
+
+
+
+
+
+
+
+
 
 
 
@@ -13243,7 +26063,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    setHoveredBlockId(el.id);
+
+
+
+
+
+
+
+
 
 
 
@@ -13259,7 +26095,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    e.currentTarget.style.background = 'rgba(0, 255, 65, 0.04)';
+
+
+
+
+
+
+
+
 
 
 
@@ -13275,7 +26127,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                  }}
+
+
+
+
+
+
+
+
 
 
 
@@ -13291,7 +26159,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    setHoveredBlockId(null);
+
+
+
+
+
+
+
+
 
 
 
@@ -13307,7 +26191,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                    e.currentTarget.style.background = '#121214';
+
+
+
+
+
+
+
+
 
 
 
@@ -13323,7 +26223,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                  }}
+
+
+
+
+
+
+
+
 
 
 
@@ -13339,7 +26255,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                  <div style={{ fontSize: '1.4rem', color: '#00ff41', fontWeight: '800' }}>{el.icon}</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -13355,7 +26287,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                                  <div style={{ fontSize: '0.65rem', color: '#a1a1aa' }}>{el.desc}</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -13371,6 +26319,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                              ))}
 
 
@@ -13379,7 +26335,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                           </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -13395,7 +26367,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -13411,7 +26399,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -13427,6 +26431,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           )}
 
 
@@ -13435,7 +26447,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         </AnimatePresence>
+
+
+
+
+
+
+
+
 
 
 
@@ -13451,7 +26479,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         <AnimatePresence>
+
+
+
+
+
+
+
+
 
 
 
@@ -13467,7 +26511,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             <motion.div
+
+
+
+
+
+
+
+
 
 
 
@@ -13483,7 +26543,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               animate={{ opacity: 1, x: 0, scale: 1 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -13499,6 +26575,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               transition={{ duration: 0.15 }}
 
 
@@ -13507,7 +26591,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -13523,7 +26623,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 left: isLibraryOpen ? '355px' : '65px',
+
+
+
+
+
+
+
+
 
 
 
@@ -13539,7 +26655,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 width: '320px',
+
+
+
+
+
+
+
+
 
 
 
@@ -13555,7 +26687,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 backdropFilter: 'blur(20px)',
+
+
+
+
+
+
+
+
 
 
 
@@ -13571,7 +26719,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 borderRadius: '16px',
+
+
+
+
+
+
+
+
 
 
 
@@ -13587,7 +26751,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 color: '#fff',
+
+
+
+
+
+
+
+
 
 
 
@@ -13603,7 +26783,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 boxShadow: '0 10px 40px rgba(0, 255, 65, 0.15), 0 0 100px rgba(0,0,0,0.8)',
+
+
+
+
+
+
+
+
 
 
 
@@ -13619,6 +26815,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               }}
 
 
@@ -13627,7 +26831,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             >
+
+
+
+
+
+
+
+
 
 
 
@@ -13643,7 +26863,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   <Info size={16} />
+
+
+
+
+
+
+
+
 
 
 
@@ -13659,7 +26895,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -13675,7 +26927,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   {getBlockHelp(hoveredBlockId).title}
+
+
+
+
+
+
+
+
 
 
 
@@ -13691,7 +26959,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                <p style={{ fontSize: '0.8rem', color: '#a1a1aa', margin: '0 0 1rem 0', lineHeight: '1.5' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -13707,7 +26991,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                </p>
+
+
+
+
+
+
+
+
 
 
 
@@ -13723,7 +27023,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   <div style={{ fontSize: '0.65rem', color: '#00ff41', fontWeight: '800', marginBottom: '0.5rem' }}>КАК НАСТРОИТЬ:</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -13739,7 +27055,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                      {getBlockHelp(hoveredBlockId).steps.map((step: string, i: number) => (
+
+
+
+
+
+
+
+
 
 
 
@@ -13755,7 +27087,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                      ))}
+
+
+
+
+
+
+
+
 
 
 
@@ -13771,7 +27119,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -13787,7 +27151,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           )}
+
+
+
+
+
+
+
+
 
 
 
@@ -13803,7 +27183,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         {/* Small Toggle Handle for Sidebar on the left edge */}
+
+
+
+
+
+
+
+
 
 
 
@@ -13819,7 +27215,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           <button
+
+
+
+
+
+
+
+
 
 
 
@@ -13835,7 +27247,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -13851,7 +27279,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               left: 0,
+
+
+
+
+
+
+
+
 
 
 
@@ -13867,7 +27311,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               transform: 'translateY(-50%)',
+
+
+
+
+
+
+
+
 
 
 
@@ -13883,7 +27343,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               border: '1px solid #333',
+
+
+
+
+
+
+
+
 
 
 
@@ -13899,7 +27375,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               color: '#00ff41',
+
+
+
+
+
+
+
+
 
 
 
@@ -13915,7 +27407,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               borderRadius: '0 20px 20px 0',
+
+
+
+
+
+
+
+
 
 
 
@@ -13931,7 +27439,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               zIndex: 5500,
+
+
+
+
+
+
+
+
 
 
 
@@ -13947,7 +27471,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               display: 'flex',
+
+
+
+
+
+
+
+
 
 
 
@@ -13963,7 +27503,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               justifyContent: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -13979,7 +27535,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             }}
+
+
+
+
+
+
+
+
 
 
 
@@ -13995,7 +27567,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             onMouseEnter={(e) => {
+
+
+
+
+
+
+
+
 
 
 
@@ -14011,6 +27599,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               e.currentTarget.style.boxShadow = '10px 0 30px rgba(0, 255, 65, 0.1)';
 
 
@@ -14019,7 +27615,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             }}
+
+
+
+
+
+
+
+
 
 
 
@@ -14035,7 +27647,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               e.currentTarget.style.background = '#1a1a1a';
+
+
+
+
+
+
+
+
 
 
 
@@ -14051,6 +27679,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             }}
 
 
@@ -14059,7 +27695,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           >
+
+
+
+
+
+
+
+
 
 
 
@@ -14075,6 +27727,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           </button>
 
 
@@ -14083,7 +27743,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         )}
+
+
+
+
+
+
+
+
 
 
 
@@ -14099,7 +27775,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         <div style={{ flex: 1, position: 'relative', background: '#000' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -14115,7 +27807,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               ref={iframeRef}
+
+
+
+
+
+
+
+
 
 
 
@@ -14131,7 +27839,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               style={{ width: '100%', height: '100%', border: 'none' }}
+
+
+
+
+
+
+
+
 
 
 
@@ -14147,7 +27871,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               onLoad={(e) => {
+
+
+
+
+
+
+
+
 
 
 
@@ -14163,7 +27903,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                  const win = (e.target as HTMLIFrameElement).contentWindow;
+
+
+
+
+
+
+
+
 
 
 
@@ -14179,6 +27935,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                  win?.postMessage({ type: 'DEMETRA_UPDATE_TRANSLATIONS', translations: allTranslations }, '*');
 
 
@@ -14187,7 +27951,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               }}
+
+
+
+
+
+
+
+
 
 
 
@@ -14203,7 +27983,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
            {/* Active drop overlay — receives drag events when dragging from library */}
+
+
+
+
+
+
+
+
 
 
 
@@ -14219,7 +28015,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
              <div
+
+
+
+
+
+
+
+
 
 
 
@@ -14235,7 +28047,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                  position: 'absolute', inset: 0,
+
+
+
+
+
+
+
+
 
 
 
@@ -14251,7 +28079,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                  border: '3px dashed rgba(0, 255, 65, 0.7)',
+
+
+
+
+
+
+
+
 
 
 
@@ -14267,7 +28111,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                  display: 'flex',
+
+
+
+
+
+
+
+
 
 
 
@@ -14283,7 +28143,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                  alignItems: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -14299,7 +28175,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                  gap: '1rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -14315,7 +28207,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                  zIndex: 9999,
+
+
+
+
+
+
+
+
 
 
 
@@ -14331,7 +28239,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                }}
+
+
+
+
+
+
+
+
 
 
 
@@ -14347,7 +28271,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                <div style={{ fontSize: '3rem', animation: 'pulse 1s infinite' }}>✦</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -14363,6 +28303,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                <div style={{ color: 'rgba(0,255,65,0.6)', fontSize: '0.85rem' }}>Наведите на блок, чтобы поместить внутрь него, или отпустите на пустом месте для добавления на страницу</div>
 
 
@@ -14371,7 +28319,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
              </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -14387,6 +28351,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         </div>
 
 
@@ -14395,7 +28367,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -14411,6 +28399,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       {editingKey && !isSettingsOpen && (
 
 
@@ -14419,7 +28415,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         <button
+
+
+
+
+
+
+
+
 
 
 
@@ -14435,7 +28447,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -14451,7 +28479,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             right: 0,
+
+
+
+
+
+
+
+
 
 
 
@@ -14467,7 +28511,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             transform: 'translateY(-50%)',
+
+
+
+
+
+
+
+
 
 
 
@@ -14483,7 +28543,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             border: '1px solid #333',
+
+
+
+
+
+
+
+
 
 
 
@@ -14499,7 +28575,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             color: '#00ff41',
+
+
+
+
+
+
+
+
 
 
 
@@ -14515,6 +28607,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             borderRadius: '20px 0 0 20px',
 
 
@@ -14523,7 +28623,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             cursor: 'pointer',
+
+
+
+
+
+
+
+
 
 
 
@@ -14539,7 +28655,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             boxShadow: '-10px 0 30px rgba(0,0,0,0.5)',
+
+
+
+
+
+
+
+
 
 
 
@@ -14555,6 +28687,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             alignItems: 'center',
 
 
@@ -14563,7 +28703,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             justifyContent: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -14579,7 +28735,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           }}
+
+
+
+
+
+
+
+
 
 
 
@@ -14595,7 +28767,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           onMouseEnter={(e) => {
+
+
+
+
+
+
+
+
 
 
 
@@ -14611,6 +28799,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             e.currentTarget.style.boxShadow = '-10px 0 30px rgba(0, 255, 65, 0.1)';
 
 
@@ -14619,7 +28815,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           }}
+
+
+
+
+
+
+
+
 
 
 
@@ -14635,7 +28847,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             e.currentTarget.style.background = '#1a1a1a';
+
+
+
+
+
+
+
+
 
 
 
@@ -14651,6 +28879,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           }}
 
 
@@ -14659,7 +28895,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         >
+
+
+
+
+
+
+
+
 
 
 
@@ -14675,6 +28927,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         </button>
 
 
@@ -14683,7 +28943,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       )}
+
+
+
+
+
+
+
+
 
 
 
@@ -14699,7 +28975,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       <AnimatePresence>
+
+
+
+
+
+
+
+
 
 
 
@@ -14715,7 +29007,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           <motion.div 
+
+
+
+
+
+
+
+
 
 
 
@@ -14731,6 +29039,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             style={{ position: 'fixed', top: 0, right: 0, width: '480px', height: '100vh', background: '#0a0a0a', borderLeft: '1px solid #333', zIndex: 6000, padding: '2.5rem', boxShadow: '-20px 0 50px rgba(0,0,0,0.5)', overflowY: 'auto' }}
 
 
@@ -14739,7 +29055,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           >
+
+
+
+
+
+
+
+
 
 
 
@@ -14755,7 +29087,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 <h3 style={{ fontSize: '0.7rem', color: '#00ff41', fontWeight: '900', letterSpacing: '0.2em' }}>BLOCK: {editingKey.toUpperCase()}</h3>
+
+
+
+
+
+
+
+
 
 
 
@@ -14771,7 +29119,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                    <button 
+
+
+
+
+
+
+
+
 
 
 
@@ -14787,7 +29151,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                      style={{ background: 'rgba(255, 75, 75, 0.1)', border: '1px solid rgba(255, 75, 75, 0.2)', color: '#ff4b4b', padding: '0.4rem 0.8rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '800', cursor: 'pointer' }}
+
+
+
+
+
+
+
+
 
 
 
@@ -14803,7 +29183,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                    >
+
+
+
+
+
+
+
+
 
 
 
@@ -14819,7 +29215,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                    </button>
+
+
+
+
+
+
+
+
 
 
 
@@ -14835,6 +29247,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 </div>
 
 
@@ -14843,7 +29263,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
              </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -14859,13 +29295,35 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   ? <CustomBlockEditor 
+
                       blockId={editingKey} 
+
                       onOpenLibrary={() => {
+
                         setIsModalOpen(true);
+
                         setModalActiveTab('library');
+
                       }}
+
                     />
+
+
+
+
+
+
+
+
 
 
 
@@ -14881,7 +29339,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               }
+
+
+
+
+
+
+
+
 
 
 
@@ -14897,7 +29371,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 APPLY SETTINGS
+
+
+
+
+
+
+
+
 
 
 
@@ -14913,7 +29403,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           </motion.div>
+
+
+
+
+
+
+
+
 
 
 
@@ -14929,7 +29435,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       </AnimatePresence>
+
+
+
+
+
+
+
+
 
 
 
@@ -14945,7 +29467,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       <AnimatePresence>
+
+
+
+
+
+
+
+
 
 
 
@@ -14961,7 +29499,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           <motion.div
+
+
+
+
+
+
+
+
 
 
 
@@ -14977,7 +29531,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             animate={{ opacity: 1 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -14993,7 +29563,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -15009,7 +29595,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               top: 0,
+
+
+
+
+
+
+
+
 
 
 
@@ -15025,7 +29627,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               width: '100vw',
+
+
+
+
+
+
+
+
 
 
 
@@ -15041,7 +29659,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               background: 'rgba(0, 0, 0, 0.85)',
+
+
+
+
+
+
+
+
 
 
 
@@ -15057,7 +29691,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               zIndex: 8000,
+
+
+
+
+
+
+
+
 
 
 
@@ -15073,7 +29723,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               alignItems: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -15089,7 +29755,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             }}
+
+
+
+
+
+
+
+
 
 
 
@@ -15105,6 +29787,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           >
 
 
@@ -15113,7 +29803,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             <motion.div
+
+
+
+
+
+
+
+
 
 
 
@@ -15129,7 +29835,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               animate={{ scale: 1, y: 0 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -15145,7 +29867,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -15161,7 +29899,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 maxWidth: '95vw',
+
+
+
+
+
+
+
+
 
 
 
@@ -15177,6 +29931,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 maxHeight: '90vh',
 
 
@@ -15185,7 +29947,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 background: '#0d0d0e',
+
+
+
+
+
+
+
+
 
 
 
@@ -15201,7 +29979,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 borderRadius: '24px',
+
+
+
+
+
+
+
+
 
 
 
@@ -15217,7 +30011,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 flexDirection: 'column',
+
+
+
+
+
+
+
+
 
 
 
@@ -15233,6 +30043,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 overflow: 'hidden',
 
 
@@ -15241,7 +30059,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               }}
+
+
+
+
+
+
+
+
 
 
 
@@ -15257,7 +30091,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             >
+
+
+
+
+
+
+
+
 
 
 
@@ -15273,7 +30123,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               <div style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -15289,6 +30155,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 borderBottom: '1px solid #1a1b1e',
 
 
@@ -15297,7 +30171,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 display: 'flex',
+
+
+
+
+
+
+
+
 
 
 
@@ -15313,7 +30203,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 alignItems: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -15329,6 +30235,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               }}>
 
 
@@ -15337,7 +30251,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -15353,7 +30283,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     <span style={{ fontSize: '0.65rem', background: 'rgba(0,255,65,0.08)', color: '#00ff41', border: '1px solid rgba(0,255,65,0.2)', padding: '0.25rem 0.5rem', borderRadius: '4px', fontWeight: '900', letterSpacing: '0.05em' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -15369,7 +30315,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     </span>
+
+
+
+
+
+
+
+
 
 
 
@@ -15385,7 +30347,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       Настройки элемента: <span style={{ color: '#aaa' }}>{editingKey}</span>
+
+
+
+
+
+
+
+
 
 
 
@@ -15401,7 +30379,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -15417,7 +30411,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 <button
+
+
+
+
+
+
+
+
 
 
 
@@ -15433,7 +30443,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -15449,7 +30475,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     border: '1px solid #333',
+
+
+
+
+
+
+
+
 
 
 
@@ -15465,7 +30507,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     width: '36px',
+
+
+
+
+
+
+
+
 
 
 
@@ -15481,7 +30539,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     borderRadius: '50%',
+
+
+
+
+
+
+
+
 
 
 
@@ -15497,7 +30571,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     alignItems: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -15513,7 +30603,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     cursor: 'pointer',
+
+
+
+
+
+
+
+
 
 
 
@@ -15529,7 +30635,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   }}
+
+
+
+
+
+
+
+
 
 
 
@@ -15545,6 +30667,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   onMouseLeave={(e) => { e.currentTarget.style.color = '#888'; e.currentTarget.style.borderColor = '#333'; }}
 
 
@@ -15553,7 +30683,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 >
+
+
+
+
+
+
+
+
 
 
 
@@ -15569,6 +30715,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 </button>
 
 
@@ -15577,7 +30731,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -15593,6 +30763,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               <div style={{
 
 
@@ -15601,7 +30779,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 display: 'flex',
+
+
+
+
+
+
+
+
 
 
 
@@ -15617,7 +30811,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 borderBottom: '1px solid #1a1b1e',
+
+
+
+
+
+
+
+
 
 
 
@@ -15633,6 +30843,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               }}>
 
 
@@ -15641,7 +30859,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 {[
+
+
+
+
+
+
+
+
 
 
 
@@ -15657,7 +30891,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   { id: 'media', label: '🖼️ Изображения & Видео' },
+
+
+
+
+
+
+
+
 
 
 
@@ -15673,7 +30923,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   { id: 'effects', label: '✨ Эффекты & Фон' },
+
+
+
+
+
+
+
+
 
 
 
@@ -15689,7 +30955,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   { id: 'library', label: '➕ Добавить элемент' }
+
+
+
+
+
+
+
+
 
 
 
@@ -15705,7 +30987,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   <button
+
+
+
+
+
+
+
+
 
 
 
@@ -15721,6 +31019,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     onClick={() => setModalActiveTab(tab.id as any)}
 
 
@@ -15729,7 +31035,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -15745,7 +31067,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       background: 'none',
+
+
+
+
+
+
+
+
 
 
 
@@ -15761,7 +31099,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       borderBottom: modalActiveTab === tab.id ? '2px solid #00ff41' : '2px solid transparent',
+
+
+
+
+
+
+
+
 
 
 
@@ -15777,7 +31131,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       fontWeight: '800',
+
+
+
+
+
+
+
+
 
 
 
@@ -15793,7 +31163,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       cursor: 'pointer',
+
+
+
+
+
+
+
+
 
 
 
@@ -15809,6 +31195,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       display: 'flex',
 
 
@@ -15817,7 +31211,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       alignItems: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -15833,7 +31243,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     }}
+
+
+
+
+
+
+
+
 
 
 
@@ -15849,6 +31275,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     onMouseLeave={(e) => { if (modalActiveTab !== tab.id) e.currentTarget.style.color = '#6c6f75'; }}
 
 
@@ -15857,7 +31291,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   >
+
+
+
+
+
+
+
+
 
 
 
@@ -15873,7 +31323,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   </button>
+
+
+
+
+
+
+
+
 
 
 
@@ -15889,7 +31355,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -15905,7 +31387,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               <div style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -15921,7 +31419,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 padding: '2rem 2.5rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -15937,7 +31451,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 background: '#0d0d0e'
+
+
+
+
+
+
+
+
 
 
 
@@ -15953,21 +31483,45 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 <ModalBodyContent 
+
+
 
                   editingKey={editingKey}
 
+
+
                   modalActiveTab={modalActiveTab}
+
+
 
                   currentLayout={currentLayout}
 
+
+
                   updateLayout={updateLayout}
+
+
 
                   allTranslations={allTranslations}
 
+
+
                   updateTranslation={updateTranslation}
 
+
+
                   addNestedElementToBlock={addNestedElementToBlock}
+
+
 
                 />
 
@@ -15977,7 +31531,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -15993,7 +31563,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               <div style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -16009,7 +31595,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 borderTop: '1px solid #1a1b1e',
+
+
+
+
+
+
+
+
 
 
 
@@ -16025,7 +31627,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 display: 'flex',
+
+
+
+
+
+
+
+
 
 
 
@@ -16041,7 +31659,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 gap: '1rem'
+
+
+
+
+
+
+
+
 
 
 
@@ -16057,7 +31691,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 <button
+
+
+
+
+
+
+
+
 
 
 
@@ -16073,7 +31723,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -16089,7 +31755,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     border: '1px solid #2a2b2f',
+
+
+
+
+
+
+
+
 
 
 
@@ -16105,6 +31787,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     padding: '0.85rem 2rem',
 
 
@@ -16113,7 +31803,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     borderRadius: '12px',
+
+
+
+
+
+
+
+
 
 
 
@@ -16129,7 +31835,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     fontSize: '0.9rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -16145,6 +31867,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     transition: '0.2s'
 
 
@@ -16153,7 +31883,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   }}
+
+
+
+
+
+
+
+
 
 
 
@@ -16169,6 +31915,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   onMouseLeave={(e) => e.currentTarget.style.background = '#141416'}
 
 
@@ -16177,7 +31931,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 >
+
+
+
+
+
+
+
+
 
 
 
@@ -16193,6 +31963,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 </button>
 
 
@@ -16201,7 +31979,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 <button
+
+
+
+
+
+
+
+
 
 
 
@@ -16217,7 +32011,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -16233,7 +32043,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     border: 'none',
+
+
+
+
+
+
+
+
 
 
 
@@ -16249,7 +32075,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     padding: '0.85rem 2.5rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -16265,7 +32107,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     fontWeight: '900',
+
+
+
+
+
+
+
+
 
 
 
@@ -16281,7 +32139,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     cursor: 'pointer',
+
+
+
+
+
+
+
+
 
 
 
@@ -16297,6 +32171,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     transition: '0.2s'
 
 
@@ -16305,7 +32187,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   }}
+
+
+
+
+
+
+
+
 
 
 
@@ -16321,6 +32219,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   onMouseLeave={(e) => e.currentTarget.style.boxShadow = '0 0 30px rgba(0, 255, 65, 0.25)'}
 
 
@@ -16329,7 +32235,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 >
+
+
+
+
+
+
+
+
 
 
 
@@ -16345,7 +32267,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 </button>
+
+
+
+
+
+
+
+
 
 
 
@@ -16361,7 +32299,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             </motion.div>
+
+
+
+
+
+
+
+
 
 
 
@@ -16377,6 +32331,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
         )}
 
 
@@ -16385,7 +32347,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       </AnimatePresence>
+
+
+
+
+
+
+
+
 
 
 
@@ -16401,7 +32379,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       <AnimatePresence>
+
+
+
+
+
+
+
+
 
 
 
@@ -16417,7 +32411,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           <motion.div
+
+
+
+
+
+
+
+
 
 
 
@@ -16433,7 +32443,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             animate={{ opacity: 1 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -16449,7 +32475,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -16465,7 +32507,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               top: 0,
+
+
+
+
+
+
+
+
 
 
 
@@ -16481,7 +32539,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               width: '100vw',
+
+
+
+
+
+
+
+
 
 
 
@@ -16497,7 +32571,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               background: 'rgba(0, 0, 0, 0.85)',
+
+
+
+
+
+
+
+
 
 
 
@@ -16513,7 +32603,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               display: 'flex',
+
+
+
+
+
+
+
+
 
 
 
@@ -16529,7 +32635,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               justifyContent: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -16545,7 +32667,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             }}
+
+
+
+
+
+
+
+
 
 
 
@@ -16561,7 +32699,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             <motion.div
+
+
+
+
+
+
+
+
 
 
 
@@ -16577,7 +32731,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               animate={{ scale: 1, y: 0 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -16593,7 +32763,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -16609,7 +32795,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 border: '1px solid #1a1b1e',
+
+
+
+
+
+
+
+
 
 
 
@@ -16625,7 +32827,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 padding: '2.5rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -16641,7 +32859,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 boxShadow: '0 30px 70px rgba(0, 0, 0, 0.8)',
+
+
+
+
+
+
+
+
 
 
 
@@ -16657,7 +32891,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 flexDirection: 'column',
+
+
+
+
+
+
+
+
 
 
 
@@ -16673,7 +32923,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               }}
+
+
+
+
+
+
+
+
 
 
 
@@ -16689,7 +32955,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -16705,7 +32987,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 <button
+
+
+
+
+
+
+
+
 
 
 
@@ -16721,7 +33019,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   style={{ background: 'none', border: 'none', color: '#6c6f75', cursor: 'pointer' }}
+
+
+
+
+
+
+
+
 
 
 
@@ -16737,7 +33051,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   <X size={20} />
+
+
+
+
+
+
+
+
 
 
 
@@ -16753,7 +33083,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -16769,7 +33115,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 {[
+
+
+
+
+
+
+
+
 
 
 
@@ -16785,7 +33147,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   { type: 'text', name: '📄 Текст / Описание', desc: 'Абзац с форматированным текстом' },
+
+
+
+
+
+
+
+
 
 
 
@@ -16801,7 +33179,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   { type: 'card', name: '🎴 Карточка с фото', desc: 'Сетка карточек с описанием' },
+
+
+
+
+
+
+
+
 
 
 
@@ -16817,7 +33211,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   { type: 'divider', name: '➖ Разделитель', desc: 'Элегантная градиентная линия' }
+
+
+
+
+
+
+
+
 
 
 
@@ -16833,6 +33243,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   <button
 
 
@@ -16841,7 +33259,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     key={opt.type}
+
+
+
+
+
+
+
+
 
 
 
@@ -16857,7 +33291,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -16873,7 +33323,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       border: '1px solid #1a1b1e',
+
+
+
+
+
+
+
+
 
 
 
@@ -16889,7 +33355,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       padding: '1rem 1.25rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -16905,7 +33387,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       fontSize: '0.9rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -16921,7 +33419,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       cursor: 'pointer',
+
+
+
+
+
+
+
+
 
 
 
@@ -16937,7 +33451,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       transition: 'all 0.2s',
+
+
+
+
+
+
+
+
 
 
 
@@ -16953,7 +33483,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       flexDirection: 'column',
+
+
+
+
+
+
+
+
 
 
 
@@ -16969,7 +33515,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     }}
+
+
+
+
+
+
+
+
 
 
 
@@ -16985,7 +33547,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       e.currentTarget.style.borderColor = '#00ff41';
+
+
+
+
+
+
+
+
 
 
 
@@ -17001,7 +33579,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     }}
+
+
+
+
+
+
+
+
 
 
 
@@ -17017,7 +33611,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       e.currentTarget.style.borderColor = '#1a1b1e';
+
+
+
+
+
+
+
+
 
 
 
@@ -17033,7 +33643,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     }}
+
+
+
+
+
+
+
+
 
 
 
@@ -17049,7 +33675,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     <span style={{ color: '#fff' }}>{opt.name}</span>
+
+
+
+
+
+
+
+
 
 
 
@@ -17065,7 +33707,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   </button>
+
+
+
+
+
+
+
+
 
 
 
@@ -17081,6 +33739,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               </div>
 
 
@@ -17089,7 +33755,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               <button
+
+
+
+
+
+
+
+
 
 
 
@@ -17105,7 +33787,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -17121,7 +33819,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   background: '#1a1b1e',
+
+
+
+
+
+
+
+
 
 
 
@@ -17137,7 +33851,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   color: '#6c6f75',
+
+
+
+
+
+
+
+
 
 
 
@@ -17153,7 +33883,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   borderRadius: '12px',
+
+
+
+
+
+
+
+
 
 
 
@@ -17169,7 +33915,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   fontWeight: '700',
+
+
+
+
+
+
+
+
 
 
 
@@ -17185,7 +33947,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   transition: '0.2s'
+
+
+
+
+
+
+
+
 
 
 
@@ -17201,7 +33979,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 onMouseEnter={(e) => e.currentTarget.style.background = '#25262b'}
+
+
+
+
+
+
+
+
 
 
 
@@ -17217,7 +34011,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               >
+
+
+
+
+
+
+
+
 
 
 
@@ -17233,7 +34043,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               </button>
+
+
+
+
+
+
+
+
 
 
 
@@ -17249,7 +34075,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           </motion.div>
+
+
+
+
+
+
+
+
 
 
 
@@ -17265,7 +34107,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       </AnimatePresence>
+
+
+
+
+
+
+
+
 
 
 
@@ -17281,7 +34139,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       <AnimatePresence>
+
+
+
+
+
+
+
+
 
 
 
@@ -17297,7 +34171,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           <motion.div
+
+
+
+
+
+
+
+
 
 
 
@@ -17313,7 +34203,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             animate={{ opacity: 1 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -17329,7 +34235,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -17345,7 +34267,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               top: 0,
+
+
+
+
+
+
+
+
 
 
 
@@ -17361,7 +34299,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               width: '100vw',
+
+
+
+
+
+
+
+
 
 
 
@@ -17377,7 +34331,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               background: 'rgba(0, 0, 0, 0.85)',
+
+
+
+
+
+
+
+
 
 
 
@@ -17393,7 +34363,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               display: 'flex',
+
+
+
+
+
+
+
+
 
 
 
@@ -17409,7 +34395,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               justifyContent: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -17425,6 +34427,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             }}
 
 
@@ -17433,7 +34443,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           >
+
+
+
+
+
+
+
+
 
 
 
@@ -17449,7 +34475,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               initial={{ scale: 0.9, y: 20 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -17465,6 +34507,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               exit={{ scale: 0.9, y: 20 }}
 
 
@@ -17473,7 +34523,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -17489,7 +34555,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 border: '1px solid #1a1b1e',
+
+
+
+
+
+
+
+
 
 
 
@@ -17505,7 +34587,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 padding: '2.5rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -17521,7 +34619,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 boxShadow: '0 30px 70px rgba(0, 0, 0, 0.8)',
+
+
+
+
+
+
+
+
 
 
 
@@ -17537,7 +34651,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 flexDirection: 'column',
+
+
+
+
+
+
+
+
 
 
 
@@ -17553,6 +34683,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               }}
 
 
@@ -17561,7 +34699,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
             >
+
+
+
+
+
+
+
+
 
 
 
@@ -17577,7 +34731,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 <h3 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: '900', letterSpacing: '0.05em' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -17593,7 +34763,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     ? 'ДОБАВИТЬ ЭЛЕМЕНТ В КОНТЕЙНЕР' 
+
+
+
+
+
+
+
+
 
 
 
@@ -17609,6 +34795,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 </h3>
 
 
@@ -17617,7 +34811,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 <button
+
+
+
+
+
+
+
+
 
 
 
@@ -17633,6 +34843,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   style={{ background: 'none', border: 'none', color: '#6c6f75', cursor: 'pointer' }}
 
 
@@ -17641,7 +34859,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 >
+
+
+
+
+
+
+
+
 
 
 
@@ -17657,6 +34891,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 </button>
 
 
@@ -17665,7 +34907,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -17681,7 +34939,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 {(addingBlockAfterContext.arrayKey.startsWith('nested:')
+
+
+
+
+
+
+
+
 
 
 
@@ -17697,7 +34971,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       { type: 'heading', name: '📝 Заголовок', desc: 'Заголовок с подзаголовком' },
+
+
+
+
+
+
+
+
 
 
 
@@ -17713,7 +35003,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       { type: 'button', name: '🎯 Кнопка действия', desc: 'Интерактивная кнопка со ссылкой' },
+
+
+
+
+
+
+
+
 
 
 
@@ -17729,7 +35035,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       { type: 'image_text', name: '🖼️ Медиа-блок', desc: 'Фото/Видео слева и текст справа' },
+
+
+
+
+
+
+
+
 
 
 
@@ -17745,7 +35067,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       { type: 'shape_rect', name: '🟩 Фигура: Квадрат', desc: 'Прямоугольная плашка с фоном/картинкой' },
+
+
+
+
+
+
+
+
 
 
 
@@ -17761,6 +35099,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       { type: 'shape_line', name: '➖ Фигура: Линия', desc: 'Декоративная разделительная линия' }
 
 
@@ -17769,7 +35115,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     ]
+
+
+
+
+
+
+
+
 
 
 
@@ -17785,7 +35147,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       { type: 'container', name: '🔲 Контейнер', desc: 'Свободная область для вложенных элементов и фигур' },
+
+
+
+
+
+
+
+
 
 
 
@@ -17801,7 +35179,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       { type: 'text', name: '📄 Текст', desc: 'Информационный текстовый блок' },
+
+
+
+
+
+
+
+
 
 
 
@@ -17817,7 +35211,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       { type: 'card', name: '🎴 Bento Карточка', desc: 'Карточка с картинкой, текстом и ссылкой' },
+
+
+
+
+
+
+
+
 
 
 
@@ -17833,7 +35243,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       { type: 'cta_banner', name: '📣 Промо-баннер', desc: 'Акцентный блок обратной связи с кнопкой' },
+
+
+
+
+
+
+
+
 
 
 
@@ -17849,7 +35275,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     ]
+
+
+
+
+
+
+
+
 
 
 
@@ -17865,7 +35307,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   <button
+
+
+
+
+
+
+
+
 
 
 
@@ -17881,6 +35339,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     onClick={() => handleSelectBlockAfterType(opt.type)}
 
 
@@ -17889,7 +35355,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -17905,7 +35387,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       border: '1px solid #1a1b1e',
+
+
+
+
+
+
+
+
 
 
 
@@ -17921,6 +35419,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       padding: '1rem 1.25rem',
 
 
@@ -17929,7 +35435,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       borderRadius: '12px',
+
+
+
+
+
+
+
+
 
 
 
@@ -17945,6 +35467,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       fontWeight: '700',
 
 
@@ -17953,7 +35483,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       cursor: 'pointer',
+
+
+
+
+
+
+
+
 
 
 
@@ -17969,7 +35515,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       transition: 'all 0.2s',
+
+
+
+
+
+
+
+
 
 
 
@@ -17985,7 +35547,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       flexDirection: 'column',
+
+
+
+
+
+
+
+
 
 
 
@@ -18001,7 +35579,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     }}
+
+
+
+
+
+
+
+
 
 
 
@@ -18017,7 +35611,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       e.currentTarget.style.borderColor = '#00ff41';
+
+
+
+
+
+
+
+
 
 
 
@@ -18033,7 +35643,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     }}
+
+
+
+
+
+
+
+
 
 
 
@@ -18049,7 +35675,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                       e.currentTarget.style.borderColor = '#1a1b1e';
+
+
+
+
+
+
+
+
 
 
 
@@ -18065,6 +35707,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     }}
 
 
@@ -18073,7 +35723,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   >
+
+
+
+
+
+
+
+
 
 
 
@@ -18089,7 +35755,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                     <span style={{ fontSize: '0.7rem', color: '#6c6f75', fontWeight: 'normal' }}>{opt.desc}</span>
+
+
+
+
+
+
+
+
 
 
 
@@ -18105,7 +35787,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 ))}
+
+
+
+
+
+
+
+
 
 
 
@@ -18121,7 +35819,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               <button
+
+
+
+
+
+
+
+
 
 
 
@@ -18137,7 +35851,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -18153,7 +35883,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   background: '#1a1b1e',
+
+
+
+
+
+
+
+
 
 
 
@@ -18169,7 +35915,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   color: '#6c6f75',
+
+
+
+
+
+
+
+
 
 
 
@@ -18185,6 +35947,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   borderRadius: '12px',
 
 
@@ -18193,7 +35963,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   cursor: 'pointer',
+
+
+
+
+
+
+
+
 
 
 
@@ -18209,7 +35995,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                   fontSize: '0.9rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -18225,7 +36027,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -18241,6 +36059,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
                 onMouseLeave={(e) => e.currentTarget.style.background = '#1a1b1e'}
 
 
@@ -18249,7 +36075,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               >
+
+
+
+
+
+
+
+
 
 
 
@@ -18265,7 +36107,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
               </button>
+
+
+
+
+
+
+
+
 
 
 
@@ -18281,7 +36139,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
           </motion.div>
+
+
+
+
+
+
+
+
 
 
 
@@ -18297,7 +36171,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
       </AnimatePresence>
+
+
+
+
+
+
+
+
 
 
 
@@ -18313,6 +36203,14 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
   );
 
 
@@ -18321,7 +36219,23 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -18337,39 +36251,87 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
 
 
 
+
+
+
+
+
+
+
+
 function ModalBodyContent({ 
+
+
 
   editingKey, 
 
+
+
   modalActiveTab, 
+
+
 
   currentLayout, 
 
+
+
   updateLayout, 
+
+
 
   allTranslations, 
 
+
+
   updateTranslation,
+
+
 
   addNestedElementToBlock
 
+
+
 }: { 
+
+
 
   editingKey: string; 
 
+
+
   modalActiveTab: 'content' | 'media' | 'scaling' | 'effects' | 'actions' | 'library'; 
+
+
 
   currentLayout: any; 
 
+
+
   updateLayout: any; 
+
+
 
   allTranslations: any; 
 
+
+
   updateTranslation: any; 
+
+
 
   addNestedElementToBlock: (parentBlockId: string, type: string) => void;
 
+
+
 }) {
+
+
+
+
+
+
+
+
 
 
 
@@ -18385,7 +36347,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
   const [selectedSlideId, setSelectedSlideId] = useState<string | null>(null);
+
+
+
+
+
+
+
+
 
 
 
@@ -18401,7 +36379,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
   const parentKey = isNestedBlock ? findParentBlockOfNested(editingKey) : null;
+
+
+
+
+
+
+
+
 
 
 
@@ -18417,7 +36411,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
   const isGalleryItem = editingKey.startsWith('gallery_');
+
+
+
+
+
+
+
+
 
 
 
@@ -18433,7 +36443,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     background: '#111',
+
+
+
+
+
+
+
+
 
 
 
@@ -18449,7 +36475,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     padding: '0.75rem 1rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -18465,7 +36507,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     fontSize: '0.9rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -18481,7 +36539,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     outline: 'none',
+
+
+
+
+
+
+
+
 
 
 
@@ -18497,6 +36571,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     boxSizing: 'border-box'
 
 
@@ -18505,7 +36587,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -18521,7 +36619,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     <label style={{ fontSize: '0.7rem', color: '#00ff41', fontWeight: '800', letterSpacing: '0.05em', marginBottom: '0.4rem', display: 'block' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -18537,6 +36651,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     </label>
 
 
@@ -18545,7 +36667,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
   );
+
+
+
+
+
+
+
+
 
 
 
@@ -18561,7 +36699,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
   if (modalActiveTab === 'library') {
+
+
+
+
+
+
+
+
 
 
 
@@ -18577,7 +36731,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       { type: 'heading', name: '📝 Заголовок', desc: 'Заголовок с подзаголовком' },
+
+
+
+
+
+
+
+
 
 
 
@@ -18593,7 +36763,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       { type: 'button', name: '🎯 Кнопка действия', desc: 'Интерактивная кнопка со ссылкой' },
+
+
+
+
+
+
+
+
 
 
 
@@ -18609,7 +36795,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       { type: 'image_text', name: '🖼️ Медиа-блок', desc: 'Фото/Видео слева и текст справа' },
+
+
+
+
+
+
+
+
 
 
 
@@ -18625,7 +36827,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     ];
+
+
+
+
+
+
+
+
 
 
 
@@ -18641,7 +36859,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -18657,7 +36891,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <h4 style={{ margin: '0 0 0.5rem 0', color: '#fff', fontSize: '1rem', fontWeight: '800' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -18673,7 +36923,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           </h4>
+
+
+
+
+
+
+
+
 
 
 
@@ -18689,7 +36955,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             Выберите элемент ниже, чтобы добавить его внутрь текущего блока. Если блок еще не является контейнером, он автоматически преобразуется в контейнер.
+
+
+
+
+
+
+
+
 
 
 
@@ -18705,7 +36987,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -18721,7 +37019,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -18737,7 +37051,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <button
+
+
+
+
+
+
+
+
 
 
 
@@ -18753,7 +37083,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               onClick={() => addNestedElementToBlock(editingKey, opt.type)}
+
+
+
+
+
+
+
+
 
 
 
@@ -18769,7 +37115,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 background: '#141416',
+
+
+
+
+
+
+
+
 
 
 
@@ -18785,7 +37147,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 color: '#fff',
+
+
+
+
+
+
+
+
 
 
 
@@ -18801,7 +37179,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 borderRadius: '16px',
+
+
+
+
+
+
+
+
 
 
 
@@ -18817,7 +37211,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 fontWeight: '800',
+
+
+
+
+
+
+
+
 
 
 
@@ -18833,7 +37243,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 textAlign: 'left',
+
+
+
+
+
+
+
+
 
 
 
@@ -18849,7 +37275,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 display: 'flex',
+
+
+
+
+
+
+
+
 
 
 
@@ -18865,7 +37307,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 gap: '0.35rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -18881,7 +37339,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               }}
+
+
+
+
+
+
+
+
 
 
 
@@ -18897,7 +37371,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 e.currentTarget.style.borderColor = '#00ff41';
+
+
+
+
+
+
+
+
 
 
 
@@ -18913,7 +37403,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 e.currentTarget.style.transform = 'translateY(-2px)';
+
+
+
+
+
+
+
+
 
 
 
@@ -18929,7 +37435,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               }}
+
+
+
+
+
+
+
+
 
 
 
@@ -18945,7 +37467,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 e.currentTarget.style.borderColor = '#1a1b1e';
+
+
+
+
+
+
+
+
 
 
 
@@ -18961,7 +37499,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 e.currentTarget.style.transform = 'translateY(0)';
+
+
+
+
+
+
+
+
 
 
 
@@ -18977,6 +37531,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               }}
 
 
@@ -18985,7 +37547,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             >
+
+
+
+
+
+
+
+
 
 
 
@@ -19001,7 +37579,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <span style={{ fontSize: '0.75rem', color: '#6c6f75', fontWeight: 'normal' }}>{opt.desc}</span>
+
+
+
+
+
+
+
+
 
 
 
@@ -19017,7 +37611,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           ))}
+
+
+
+
+
+
+
+
 
 
 
@@ -19033,7 +37643,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -19049,7 +37675,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
   }
+
+
+
+
+
+
+
+
 
 
 
@@ -19065,7 +37707,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
   if (modalActiveTab === 'scaling') {
+
+
+
+
+
+
+
+
 
 
 
@@ -19081,7 +37739,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     const setStyleVal = (key: string, val: any) => {
+
+
+
+
+
+
+
+
 
 
 
@@ -19097,7 +37771,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         ...currentLayout,
+
+
+
+
+
+
+
+
 
 
 
@@ -19113,7 +37803,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           ...(currentLayout.styles || {}),
+
+
+
+
+
+
+
+
 
 
 
@@ -19129,7 +37835,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -19145,7 +37867,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     };
+
+
+
+
+
+
+
+
 
 
 
@@ -19161,7 +37899,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       if (cssVal === undefined) return fallback;
+
+
+
+
+
+
+
+
 
 
 
@@ -19177,7 +37931,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       const num = parseInt(cssVal, 10);
+
+
+
+
+
+
+
+
 
 
 
@@ -19193,7 +37963,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     };
+
+
+
+
+
+
+
+
 
 
 
@@ -19209,7 +37995,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     const padBottom = getNumVal(s.paddingBottom, 48);
+
+
+
+
+
+
+
+
 
 
 
@@ -19225,7 +38027,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     const padRight = getNumVal(s.paddingRight, 0);
+
+
+
+
+
+
+
+
 
 
 
@@ -19241,7 +38059,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     const margBottom = getNumVal(s.marginBottom, 0);
+
+
+
+
+
+
+
+
 
 
 
@@ -19257,7 +38091,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     const opacity = getNumVal(s.opacity === undefined ? 1 : s.opacity, 1) * 100;
+
+
+
+
+
+
+
+
 
 
 
@@ -19273,7 +38123,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     if (s.transform && s.transform.includes('scale')) {
+
+
+
+
+
+
+
+
 
 
 
@@ -19289,7 +38155,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       if (match && match[1]) scaleVal = parseFloat(match[1]) || 1;
+
+
+
+
+
+
+
+
 
 
 
@@ -19305,7 +38187,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     return (
+
+
+
+
+
+
+
+
 
 
 
@@ -19321,6 +38219,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
 
@@ -19329,7 +38235,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -19345,7 +38267,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -19361,7 +38299,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               value={scaleVal} 
+
+
+
+
+
+
+
+
 
 
 
@@ -19377,7 +38331,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               style={{ width: '100%', accentColor: '#00ff41', cursor: 'pointer' }}
+
+
+
+
+
+
+
+
 
 
 
@@ -19393,6 +38363,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           </div>
 
 
@@ -19401,7 +38379,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -19417,7 +38411,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -19433,7 +38443,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 type="range" min="0" max="120" 
+
+
+
+
+
+
+
+
 
 
 
@@ -19449,7 +38475,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 onChange={e => setStyleVal('paddingTop', `${e.target.value}px`)} 
+
+
+
+
+
+
+
+
 
 
 
@@ -19465,6 +38507,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               />
 
 
@@ -19473,7 +38523,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -19489,7 +38555,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 value={padBottom} 
+
+
+
+
+
+
+
+
 
 
 
@@ -19505,7 +38587,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 style={{ flex: 1, accentColor: '#00ff41', cursor: 'pointer' }}
+
+
+
+
+
+
+
+
 
 
 
@@ -19521,7 +38619,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -19537,7 +38651,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -19553,7 +38683,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -19569,7 +38715,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 type="range" min="0" max="80" 
+
+
+
+
+
+
+
+
 
 
 
@@ -19585,7 +38747,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 onChange={e => setStyleVal('paddingLeft', `${e.target.value}px`)} 
+
+
+
+
+
+
+
+
 
 
 
@@ -19601,6 +38779,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               />
 
 
@@ -19609,7 +38795,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -19625,7 +38827,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 value={padRight} 
+
+
+
+
+
+
+
+
 
 
 
@@ -19641,7 +38859,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 style={{ flex: 1, accentColor: '#00ff41', cursor: 'pointer' }}
+
+
+
+
+
+
+
+
 
 
 
@@ -19657,7 +38891,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -19673,7 +38923,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -19689,7 +38955,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -19705,7 +38987,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 type="range" min="0" max="60" 
+
+
+
+
+
+
+
+
 
 
 
@@ -19721,7 +39019,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 onChange={e => setStyleVal('marginTop', `${e.target.value}px`)} 
+
+
+
+
+
+
+
+
 
 
 
@@ -19737,6 +39051,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               />
 
 
@@ -19745,7 +39067,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -19761,7 +39099,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 value={margBottom} 
+
+
+
+
+
+
+
+
 
 
 
@@ -19777,7 +39131,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 style={{ flex: 1, accentColor: '#00ff41', cursor: 'pointer' }}
+
+
+
+
+
+
+
+
 
 
 
@@ -19793,7 +39163,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -19809,7 +39195,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -19825,7 +39227,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -19841,7 +39259,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -19857,7 +39291,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               value={borderRadius} 
+
+
+
+
+
+
+
+
 
 
 
@@ -19873,7 +39323,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               style={{ width: '100%', accentColor: '#00ff41', cursor: 'pointer' }}
+
+
+
+
+
+
+
+
 
 
 
@@ -19889,6 +39355,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           </div>
 
 
@@ -19897,7 +39371,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -19913,7 +39403,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -19929,7 +39435,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               value={opacity} 
+
+
+
+
+
+
+
+
 
 
 
@@ -19945,7 +39467,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               style={{ width: '100%', accentColor: '#00ff41', cursor: 'pointer' }}
+
+
+
+
+
+
+
+
 
 
 
@@ -19961,6 +39499,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           </div>
 
 
@@ -19969,7 +39515,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -19985,6 +39547,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.25rem' }}>
 
 
@@ -19993,7 +39563,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -20009,7 +39595,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 id="hideOnMobile"
+
+
+
+
+
+
+
+
 
 
 
@@ -20025,7 +39627,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 onChange={e => setStyleVal('hideOnMobile', e.target.checked)} 
+
+
+
+
+
+
+
+
 
 
 
@@ -20041,7 +39659,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               />
+
+
+
+
+
+
+
+
 
 
 
@@ -20057,7 +39691,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 Скрыть на мобильных (class="responsive-hide")
+
+
+
+
+
+
+
+
 
 
 
@@ -20073,7 +39723,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -20089,7 +39755,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -20105,7 +39787,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <select 
+
+
+
+
+
+
+
+
 
 
 
@@ -20121,7 +39819,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               onChange={e => setStyleVal('gridColumn', e.target.value)} 
+
+
+
+
+
+
+
+
 
 
 
@@ -20137,7 +39851,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             >
+
+
+
+
+
+
+
+
 
 
 
@@ -20153,7 +39883,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <option value="span 10">83% Ширина (10 колонок)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -20169,7 +39915,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <option value="span 6">50% Ширина (6 колонок)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -20185,7 +39947,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <option value="span 3">25% Ширина (3 колонки)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -20201,6 +39979,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           </div>
 
 
@@ -20209,7 +39995,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -20225,7 +40027,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <select 
+
+
+
+
+
+
+
+
 
 
 
@@ -20241,7 +40059,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               onChange={e => setStyleVal('gridRow', e.target.value)} 
+
+
+
+
+
+
+
+
 
 
 
@@ -20257,7 +40091,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             >
+
+
+
+
+
+
+
+
 
 
 
@@ -20273,7 +40123,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <option value="span 2">2 Ряда (Высокая)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -20289,7 +40155,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <option value="span 4">4 Ряда</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -20305,7 +40187,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -20321,7 +40219,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -20337,7 +40251,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <select 
+
+
+
+
+
+
+
+
 
 
 
@@ -20353,7 +40283,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               onChange={e => setStyleVal('position', e.target.value)} 
+
+
+
+
+
+
+
+
 
 
 
@@ -20369,7 +40315,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             >
+
+
+
+
+
+
+
+
 
 
 
@@ -20385,7 +40347,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <option value="absolute">Свободное (Absolute - как в Figma)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -20401,7 +40379,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             </select>
+
+
+
+
+
+
+
+
 
 
 
@@ -20417,7 +40411,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -20433,7 +40443,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -20449,7 +40475,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               value={s.zIndex || ''} 
+
+
+
+
+
+
+
+
 
 
 
@@ -20465,7 +40507,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               placeholder="10" 
+
+
+
+
+
+
+
+
 
 
 
@@ -20481,6 +40539,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             />
 
 
@@ -20489,7 +40555,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -20505,6 +40587,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <>
 
 
@@ -20513,7 +40603,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -20529,6 +40635,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <input 
 
 
@@ -20537,7 +40651,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   type="text" 
+
+
+
+
+
+
+
+
 
 
 
@@ -20553,7 +40683,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   onChange={e => setStyleVal('left', e.target.value)} 
+
+
+
+
+
+
+
+
 
 
 
@@ -20569,7 +40715,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   style={inputStyle} 
+
+
+
+
+
+
+
+
 
 
 
@@ -20585,6 +40747,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               </div>
 
 
@@ -20593,7 +40763,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -20609,7 +40795,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -20625,7 +40827,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   value={s.top || ''} 
+
+
+
+
+
+
+
+
 
 
 
@@ -20641,7 +40859,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   placeholder="50px или 10%" 
+
+
+
+
+
+
+
+
 
 
 
@@ -20657,6 +40891,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 />
 
 
@@ -20665,7 +40907,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -20681,6 +40939,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           )}
 
 
@@ -20689,7 +40955,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -20705,6 +40987,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <div style={{ display: 'flex', gap: '0.75rem' }}>
 
 
@@ -20713,7 +41003,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -20729,7 +41035,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 value={s.backgroundColor || '#0d0d0e'} 
+
+
+
+
+
+
+
+
 
 
 
@@ -20745,7 +41067,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 style={{ width: '42px', height: '42px', border: '1px solid #333', borderRadius: '8px', cursor: 'pointer', background: 'none', padding: 0 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -20761,6 +41099,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <input 
 
 
@@ -20769,7 +41115,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 type="text" 
+
+
+
+
+
+
+
+
 
 
 
@@ -20785,7 +41147,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 onChange={e => setStyleVal('background', e.target.value)} 
+
+
+
+
+
+
+
+
 
 
 
@@ -20801,7 +41179,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 style={inputStyle}
+
+
+
+
+
+
+
+
 
 
 
@@ -20817,7 +41211,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -20833,7 +41243,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -20849,6 +41275,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     );
 
 
@@ -20857,7 +41291,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
   }
+
+
+
+
+
+
+
+
 
 
 
@@ -20873,7 +41323,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
   if (modalActiveTab === 'effects') {
+
+
+
+
+
+
+
+
 
 
 
@@ -20889,7 +41355,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     const setStyleVal = (key: string, val: any) => {
+
+
+
+
+
+
+
+
 
 
 
@@ -20905,7 +41387,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         ...currentLayout,
+
+
+
+
+
+
+
+
 
 
 
@@ -20921,7 +41419,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           ...(currentLayout.styles || {}),
+
+
+
+
+
+
+
+
 
 
 
@@ -20937,7 +41451,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -20953,7 +41483,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     };
+
+
+
+
+
+
+
+
 
 
 
@@ -20969,6 +41515,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
 
@@ -20977,7 +41531,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: '#111', padding: '1rem', borderRadius: '12px', border: '1px solid #222' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -20993,7 +41563,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -21009,7 +41595,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <p style={{ margin: 0, color: '#888', fontSize: '0.75rem' }}>Настройте визуальные фильтры, тени и размытие для выделенного блока.</p>
+
+
+
+
+
+
+
+
 
 
 
@@ -21025,7 +41627,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -21041,7 +41659,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -21057,7 +41691,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <input type="text" value={s.backdropFilter || ''} onChange={e => setStyleVal('backdropFilter', e.target.value)} placeholder="blur(10px)" style={inputStyle} />
+
+
+
+
+
+
+
+
 
 
 
@@ -21073,7 +41723,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -21089,7 +41755,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <input type="text" value={s.boxShadow || ''} onChange={e => setStyleVal('boxShadow', e.target.value)} placeholder="0 10px 20px rgba(0,0,0,0.5)" style={inputStyle} />
+
+
+
+
+
+
+
+
 
 
 
@@ -21105,7 +41787,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -21121,7 +41819,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <input type="text" value={s.transform || ''} onChange={e => setStyleVal('transform', e.target.value)} placeholder="scale(1.05) rotate(5deg)" style={inputStyle} />
+
+
+
+
+
+
+
+
 
 
 
@@ -21137,7 +41851,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -21153,7 +41883,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <input type="text" value={s.filter || ''} onChange={e => setStyleVal('filter', e.target.value)} placeholder="grayscale(100%) blur(2px)" style={inputStyle} />
+
+
+
+
+
+
+
+
 
 
 
@@ -21169,7 +41915,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -21185,6 +41947,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     );
 
 
@@ -21193,7 +41963,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
   }
+
+
+
+
+
+
+
+
 
 
 
@@ -21209,7 +41995,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
   if (modalActiveTab === 'actions') {
+
+
+
+
+
+
+
+
 
 
 
@@ -21225,7 +42027,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     const setLinkVal = (key: string, val: any) => {
+
+
+
+
+
+
+
+
 
 
 
@@ -21241,7 +42059,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         ...currentLayout,
+
+
+
+
+
+
+
+
 
 
 
@@ -21257,7 +42091,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           ...(currentLayout.links || {}),
+
+
+
+
+
+
+
+
 
 
 
@@ -21273,7 +42123,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -21289,7 +42155,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     };
+
+
+
+
+
+
+
+
 
 
 
@@ -21305,7 +42187,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -21321,6 +42219,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div style={{ fontSize: '1.5rem' }}>⚡</div>
 
 
@@ -21329,7 +42235,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -21345,7 +42267,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <p style={{ margin: 0, color: '#888', fontSize: '0.75rem' }}>Привяжите открытие модального окна или скрипт к этому элементу.</p>
+
+
+
+
+
+
+
+
 
 
 
@@ -21361,7 +42299,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -21377,7 +42331,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -21393,7 +42363,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <input type="text" value={l.modalId || ''} onChange={e => setLinkVal('modalId', e.target.value)} placeholder="Введи ID модалки (напр. 'contact_modal')" style={inputStyle} />
+
+
+
+
+
+
+
+
 
 
 
@@ -21409,6 +42395,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           </div>
 
 
@@ -21417,7 +42411,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -21433,7 +42443,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <input type="text" value={l.href || ''} onChange={e => setLinkVal('href', e.target.value)} placeholder="/catalog или https://..." style={inputStyle} />
+
+
+
+
+
+
+
+
 
 
 
@@ -21449,7 +42475,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -21465,7 +42507,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <input type="text" value={l.className || ''} onChange={e => setLinkVal('className', e.target.value)} placeholder="my-custom-trigger" style={inputStyle} />
+
+
+
+
+
+
+
+
 
 
 
@@ -21481,7 +42539,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -21497,6 +42571,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     );
 
 
@@ -21505,7 +42587,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
   }
+
+
+
+
+
+
+
+
 
 
 
@@ -21521,7 +42619,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
   if (modalActiveTab === 'media') {
+
+
+
+
+
+
+
+
 
 
 
@@ -21537,7 +42651,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     let currentVideo = '';
+
+
+
+
+
+
+
+
 
 
 
@@ -21553,7 +42683,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     const presets = [
+
+
+
+
+
+
+
+
 
 
 
@@ -21569,7 +42715,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       { url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80', name: 'Автоматика / Монитор' },
+
+
+
+
+
+
+
+
 
 
 
@@ -21585,7 +42747,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       { url: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80', name: 'Ленты / Логистика' },
+
+
+
+
+
+
+
+
 
 
 
@@ -21601,7 +42779,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       { url: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80', name: 'Склад труб / Прокат' },
+
+
+
+
+
+
+
+
 
 
 
@@ -21617,7 +42811,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     if (isCustomBlock) {
+
+
+
+
+
+
+
+
 
 
 
@@ -21633,7 +42843,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+
+
+
+
+
+
+
+
 
 
 
@@ -21649,7 +42875,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         const parentData = customBlocks[targetKey] || {};
+
+
+
+
+
+
+
+
 
 
 
@@ -21665,6 +42907,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           ? (parentData.childrenBlocks || []).find((c: any) => c.id === editingKey) || {}
 
 
@@ -21673,7 +42923,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           : parentData;
+
+
+
+
+
+
+
+
 
 
 
@@ -21689,7 +42955,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         currentVideo = data.videoSrc || '';
+
+
+
+
+
+
+
+
 
 
 
@@ -21705,7 +42987,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       } catch {}
+
+
+
+
+
+
+
+
 
 
 
@@ -21721,7 +43019,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       const item = currentLayout.items?.[editingKey] || {};
+
+
+
+
+
+
+
+
 
 
 
@@ -21737,7 +43051,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       currentVideo = item.src || '';
+
+
+
+
+
+
+
+
 
 
 
@@ -21753,7 +43083,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     } else {
+
+
+
+
+
+
+
+
 
 
 
@@ -21769,7 +43115,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       currentVideo = currentLayout.videos?.[`${editingKey}_video`] || '';
+
+
+
+
+
+
+
+
 
 
 
@@ -21785,7 +43147,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -21801,7 +43179,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       if (isCustomBlock) {
+
+
+
+
+
+
+
+
 
 
 
@@ -21817,7 +43211,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+
+
+
+
+
+
+
+
 
 
 
@@ -21833,7 +43243,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           const parentData = customBlocks[targetKey] || {};
+
+
+
+
+
+
+
+
 
 
 
@@ -21849,7 +43275,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             parentData.childrenBlocks = (parentData.childrenBlocks || []).map((c: any) => 
+
+
+
+
+
+
+
+
 
 
 
@@ -21865,6 +43307,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             );
 
 
@@ -21873,7 +43323,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           } else {
+
+
+
+
+
+
+
+
 
 
 
@@ -21889,7 +43355,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             parentData.videoSrc = vidUrl;
+
+
+
+
+
+
+
+
 
 
 
@@ -21905,7 +43387,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           }
+
+
+
+
+
+
+
+
 
 
 
@@ -21921,7 +43419,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
+
+
+
+
+
+
+
+
 
 
 
@@ -21937,7 +43451,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         } catch {}
+
+
+
+
+
+
+
+
 
 
 
@@ -21953,7 +43483,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         const item = currentLayout.items?.[editingKey] || {};
+
+
+
+
+
+
+
+
 
 
 
@@ -21969,7 +43515,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           ...currentLayout,
+
+
+
+
+
+
+
+
 
 
 
@@ -21985,7 +43547,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             ...(currentLayout.items || {}),
+
+
+
+
+
+
+
+
 
 
 
@@ -22001,6 +43579,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           }
 
 
@@ -22009,7 +43595,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         });
+
+
+
+
+
+
+
+
 
 
 
@@ -22025,6 +43627,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         updateLayout({
 
 
@@ -22033,7 +43643,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           ...currentLayout,
+
+
+
+
+
+
+
+
 
 
 
@@ -22049,7 +43675,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           videos: { ...(currentLayout.videos || {}), [`${editingKey}_video`]: vidUrl },
+
+
+
+
+
+
+
+
 
 
 
@@ -22065,7 +43707,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         });
+
+
+
+
+
+
+
+
 
 
 
@@ -22081,6 +43739,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     };
 
 
@@ -22089,7 +43755,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     return (
+
+
+
+
+
+
+
+
 
 
 
@@ -22105,7 +43787,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -22121,7 +43819,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -22137,6 +43851,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.25rem' }}>
 
 
@@ -22145,7 +43867,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <button
+
+
+
+
+
+
+
+
 
 
 
@@ -22161,6 +43899,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   style={{
 
 
@@ -22169,7 +43915,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     flex: 1, padding: '0.75rem', borderRadius: '10px', border: '1px solid',
+
+
+
+
+
+
+
+
 
 
 
@@ -22185,7 +43947,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     background: !isVideoType ? 'rgba(0,255,65,0.08)' : '#111',
+
+
+
+
+
+
+
+
 
 
 
@@ -22201,7 +43979,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     fontWeight: '800', cursor: 'pointer'
+
+
+
+
+
+
+
+
 
 
 
@@ -22217,7 +44011,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 >
+
+
+
+
+
+
+
+
 
 
 
@@ -22233,6 +44043,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 </button>
 
 
@@ -22241,7 +44059,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <button
+
+
+
+
+
+
+
+
 
 
 
@@ -22257,7 +44091,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -22273,7 +44123,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     borderColor: isVideoType ? '#00ff41' : '#333',
+
+
+
+
+
+
+
+
 
 
 
@@ -22289,7 +44155,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     color: isVideoType ? '#00ff41' : '#888',
+
+
+
+
+
+
+
+
 
 
 
@@ -22305,6 +44187,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   }}
 
 
@@ -22313,7 +44203,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 >
+
+
+
+
+
+
+
+
 
 
 
@@ -22329,7 +44235,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 </button>
+
+
+
+
+
+
+
+
 
 
 
@@ -22345,7 +44267,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -22361,7 +44299,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -22377,6 +44331,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.25rem' }}>
 
 
@@ -22385,7 +44347,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -22401,7 +44379,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     onChange={e => updateMedia(e.target.value, currentVideo, false)}
+
+
+
+
+
+
+
+
 
 
 
@@ -22417,7 +44411,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     style={{ ...inputStyle, flex: 1, margin: 0 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -22433,7 +44443,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   <label style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -22449,7 +44475,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     padding: '0.75rem 1.25rem', borderRadius: '10px', background: '#111',
+
+
+
+
+
+
+
+
 
 
 
@@ -22465,6 +44507,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s', alignSelf: 'stretch'
 
 
@@ -22473,7 +44523,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -22489,6 +44555,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <input
 
 
@@ -22497,7 +44571,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       type="file"
+
+
+
+
+
+
+
+
 
 
 
@@ -22513,7 +44603,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       style={{ display: 'none' }}
+
+
+
+
+
+
+
+
 
 
 
@@ -22529,7 +44635,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         const file = e.target.files?.[0];
+
+
+
+
+
+
+
+
 
 
 
@@ -22545,6 +44667,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         const reader = new FileReader();
 
 
@@ -22553,7 +44683,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         reader.onload = (event) => {
+
+
+
+
+
+
+
+
 
 
 
@@ -22569,7 +44715,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           img.onload = () => {
+
+
+
+
+
+
+
+
 
 
 
@@ -22585,7 +44747,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                             const maxH = 1200;
+
+
+
+
+
+
+
+
 
 
 
@@ -22601,7 +44779,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                             let h = img.height;
+
+
+
+
+
+
+
+
 
 
 
@@ -22617,7 +44811,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                               if (w > h) {
+
+
+
+
+
+
+
+
 
 
 
@@ -22633,7 +44843,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                                 w = maxW;
+
+
+
+
+
+
+
+
 
 
 
@@ -22649,7 +44875,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                                 w = Math.round((w * maxH) / h);
+
+
+
+
+
+
+
+
 
 
 
@@ -22665,6 +44907,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                               }
 
 
@@ -22673,7 +44923,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                             }
+
+
+
+
+
+
+
+
 
 
 
@@ -22689,7 +44955,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                             canvas.width = w;
+
+
+
+
+
+
+
+
 
 
 
@@ -22705,7 +44987,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                             const ctx = canvas.getContext('2d');
+
+
+
+
+
+
+
+
 
 
 
@@ -22721,7 +45019,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                               ctx.drawImage(img, 0, 0, w, h);
+
+
+
+
+
+
+
+
 
 
 
@@ -22737,7 +45051,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                               updateMedia(compressedBase64, currentVideo, false);
+
+
+
+
+
+
+
+
 
 
 
@@ -22753,7 +45083,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           };
+
+
+
+
+
+
+
+
 
 
 
@@ -22769,7 +45115,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         };
+
+
+
+
+
+
+
+
 
 
 
@@ -22785,7 +45147,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       }}
+
+
+
+
+
+
+
+
 
 
 
@@ -22801,7 +45179,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   </label>
+
+
+
+
+
+
+
+
 
 
 
@@ -22817,6 +45211,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               </div>
 
 
@@ -22825,7 +45227,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             ) : (
+
+
+
+
+
+
+
+
 
 
 
@@ -22841,7 +45259,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 {labelStyle('Ссылка на видео или Загрузка файла')}
+
+
+
+
+
+
+
+
 
 
 
@@ -22857,7 +45291,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -22873,7 +45323,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     onChange={e => updateMedia(currentImg, e.target.value, true)}
+
+
+
+
+
+
+
+
 
 
 
@@ -22889,6 +45355,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     style={{ ...inputStyle, flex: 1, margin: 0 }}
 
 
@@ -22897,7 +45371,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   />
+
+
+
+
+
+
+
+
 
 
 
@@ -22913,7 +45403,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -22929,7 +45435,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     border: '1px solid #333', color: '#fff', fontWeight: 'bold', fontSize: '0.85rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -22945,7 +45467,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -22961,7 +45499,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <input
+
+
+
+
+
+
+
+
 
 
 
@@ -22977,7 +45531,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       accept="video/*"
+
+
+
+
+
+
+
+
 
 
 
@@ -22993,7 +45563,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       onChange={(e) => {
+
+
+
+
+
+
+
+
 
 
 
@@ -23009,7 +45595,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         if (!file) return;
+
+
+
+
+
+
+
+
 
 
 
@@ -23025,7 +45627,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           alert("Файл слишком большой! Максимальный размер видео для сохранения в браузере - 2MB. Для больших видео загрузите их на YouTube/хостинг и укажите ссылку.");
+
+
+
+
+
+
+
+
 
 
 
@@ -23041,7 +45659,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         }
+
+
+
+
+
+
+
+
 
 
 
@@ -23057,7 +45691,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         reader.onload = (event) => {
+
+
+
+
+
+
+
+
 
 
 
@@ -23073,7 +45723,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         };
+
+
+
+
+
+
+
+
 
 
 
@@ -23089,7 +45755,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       }}
+
+
+
+
+
+
+
+
 
 
 
@@ -23105,6 +45787,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   </label>
 
 
@@ -23113,7 +45803,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -23129,7 +45835,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   ⚠️ Загрузка видео с устройства ограничена объемом хранилища браузера (макс. 2МБ). Рекомендуется использовать YouTube.
+
+
+
+
+
+
+
+
 
 
 
@@ -23145,6 +45867,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               </div>
 
 
@@ -23153,7 +45883,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             )}
+
+
+
+
+
+
+
+
 
 
 
@@ -23169,7 +45915,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               {labelStyle('Предпросмотр медиафайла')}
+
+
+
+
+
+
+
+
 
 
 
@@ -23185,7 +45947,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 width: '100%', height: '180px', borderRadius: '14px', border: '1px solid #333',
+
+
+
+
+
+
+
+
 
 
 
@@ -23201,6 +45979,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 overflow: 'hidden', marginTop: '0.4rem', position: 'relative'
 
 
@@ -23209,7 +45995,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -23225,7 +46027,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   currentVideo ? (
+
+
+
+
+
+
+
+
 
 
 
@@ -23241,7 +46059,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       <span>🎥 Видео готово к фоновому воспроизведению</span>
+
+
+
+
+
+
+
+
 
 
 
@@ -23257,6 +46091,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     </div>
 
 
@@ -23265,7 +46107,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   ) : (
+
+
+
+
+
+
+
+
 
 
 
@@ -23281,6 +46139,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   )
 
 
@@ -23289,7 +46155,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 ) : (
+
+
+
+
+
+
+
+
 
 
 
@@ -23305,6 +46187,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <img src={currentImg} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
 
 
@@ -23313,7 +46203,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   ) : (
+
+
+
+
+
+
+
+
 
 
 
@@ -23329,7 +46235,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   )
+
+
+
+
+
+
+
+
 
 
 
@@ -23345,7 +46267,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -23361,7 +46299,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -23377,7 +46331,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             {labelStyle('Быстрый выбор промышленных фото (Галерея)')}
+
+
+
+
+
+
+
+
 
 
 
@@ -23393,7 +46363,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginTop: '0.5rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -23409,7 +46395,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -23425,7 +46427,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <div
+
+
+
+
+
+
+
+
 
 
 
@@ -23441,6 +46459,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   onClick={() => updateMedia(p.url, currentVideo, isVideoType)}
 
 
@@ -23449,7 +46475,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -23465,6 +46507,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     cursor: 'pointer', position: 'relative', height: '100px', transition: 'all 0.2s'
 
 
@@ -23473,7 +46523,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   }}
+
+
+
+
+
+
+
+
 
 
 
@@ -23489,6 +46555,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   onMouseLeave={e => e.currentTarget.style.transform = 'none'}
 
 
@@ -23497,7 +46571,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 >
+
+
+
+
+
+
+
+
 
 
 
@@ -23513,7 +46603,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   <div style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -23529,7 +46635,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     padding: '0.4rem', fontSize: '0.65rem', color: '#fff', fontWeight: '800', textAlign: 'center'
+
+
+
+
+
+
+
+
 
 
 
@@ -23545,7 +46667,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -23561,7 +46699,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -23577,7 +46731,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -23593,6 +46763,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     );
 
 
@@ -23601,7 +46779,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
   }
+
+
+
+
+
+
+
+
 
 
 
@@ -23617,7 +46811,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
   if (modalActiveTab === 'content') {
+
+
+
+
+
+
+
+
 
 
 
@@ -23633,6 +46843,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       const defaultSlides = [
 
 
@@ -23641,7 +46859,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         { 
+
+
+
+
+
+
+
+
 
 
 
@@ -23657,7 +46891,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           img: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80", 
+
+
+
+
+
+
+
+
 
 
 
@@ -23673,7 +46923,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           mediaType: "image", 
+
+
+
+
+
+
+
+
 
 
 
@@ -23689,7 +46955,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           subtitleKey: 'hero_title_2', 
+
+
+
+
+
+
+
+
 
 
 
@@ -23705,7 +46987,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         },
+
+
+
+
+
+
+
+
 
 
 
@@ -23721,7 +47019,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           id: "slide_2", 
+
+
+
+
+
+
+
+
 
 
 
@@ -23737,7 +47051,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           video: "", 
+
+
+
+
+
+
+
+
 
 
 
@@ -23753,7 +47083,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           titleKey: 'hero_title_3', 
+
+
+
+
+
+
+
+
 
 
 
@@ -23769,6 +47115,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           descKey: 'hero_subtitle_2' 
 
 
@@ -23777,7 +47131,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -23793,7 +47163,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       const getLayoutSlides = () => {
+
+
+
+
+
+
+
+
 
 
 
@@ -23809,7 +47195,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           ? currentLayout.slides
+
+
+
+
+
+
+
+
 
 
 
@@ -23825,7 +47227,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       };
+
+
+
+
+
+
+
+
 
 
 
@@ -23841,7 +47259,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       const intervalVal = currentLayout.slideInterval !== undefined ? currentLayout.slideInterval : 8000;
+
+
+
+
+
+
+
+
 
 
 
@@ -23857,7 +47291,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       const activeSlide = slides.find((s: any) => s.id === activeSlideId) || slides[0];
+
+
+
+
+
+
+
+
 
 
 
@@ -23873,7 +47323,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       const updateSlideField = (slideId: string, fieldKey: string, val: any) => {
+
+
+
+
+
+
+
+
 
 
 
@@ -23889,7 +47355,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           slide.id === slideId ? { ...slide, [fieldKey]: val } : slide
+
+
+
+
+
+
+
+
 
 
 
@@ -23905,7 +47387,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         updateLayout({
+
+
+
+
+
+
+
+
 
 
 
@@ -23921,7 +47419,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           slides: updatedSlides
+
+
+
+
+
+
+
+
 
 
 
@@ -23937,7 +47451,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       };
+
+
+
+
+
+
+
+
 
 
 
@@ -23953,7 +47483,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         if (slides.length <= 1) {
+
+
+
+
+
+
+
+
 
 
 
@@ -23969,6 +47515,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           return;
 
 
@@ -23977,7 +47531,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -23993,7 +47563,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         if (!confirmDelete) return;
+
+
+
+
+
+
+
+
 
 
 
@@ -24009,7 +47595,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         if (activeSlideId === slideId) {
+
+
+
+
+
+
+
+
 
 
 
@@ -24025,7 +47627,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           const nextIndex = remainingIndex === 0 ? 1 : remainingIndex - 1;
+
+
+
+
+
+
+
+
 
 
 
@@ -24041,7 +47659,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             setSelectedSlideId(slides[nextIndex].id);
+
+
+
+
+
+
+
+
 
 
 
@@ -24057,7 +47691,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -24073,7 +47723,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           ...currentLayout,
+
+
+
+
+
+
+
+
 
 
 
@@ -24089,6 +47755,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         });
 
 
@@ -24097,7 +47771,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       };
+
+
+
+
+
+
+
+
 
 
 
@@ -24113,7 +47803,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         const newIndex = direction === 'up' ? index - 1 : index + 1;
+
+
+
+
+
+
+
+
 
 
 
@@ -24129,7 +47835,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         const updatedSlides = [...slides];
+
+
+
+
+
+
+
+
 
 
 
@@ -24145,7 +47867,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         updatedSlides[index] = updatedSlides[newIndex];
+
+
+
+
+
+
+
+
 
 
 
@@ -24161,7 +47899,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         updateLayout({
+
+
+
+
+
+
+
+
 
 
 
@@ -24177,7 +47931,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           slides: updatedSlides
+
+
+
+
+
+
+
+
 
 
 
@@ -24193,7 +47963,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       };
+
+
+
+
+
+
+
+
 
 
 
@@ -24209,7 +47995,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         const newSlideId = `slide_${Date.now()}`;
+
+
+
+
+
+
+
+
 
 
 
@@ -24225,6 +48027,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         const newSubtitleKey = `hero_slide_subtitle_${newSlideId}`;
 
 
@@ -24233,7 +48043,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         const newDescKey = `hero_slide_desc_${newSlideId}`;
+
+
+
+
+
+
+
+
 
 
 
@@ -24249,7 +48075,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         updateTranslation('ru', newSubtitleKey, 'Качество и надежность');
+
+
+
+
+
+
+
+
 
 
 
@@ -24265,7 +48107,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         updateTranslation('kk', newTitleKey, 'Жаңа өндірістік жоба');
+
+
+
+
+
+
+
+
 
 
 
@@ -24281,7 +48139,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         updateTranslation('kk', newDescKey, 'Жаңа жобаның немесе жабдықтың қысқаша сипаттамасы.');
+
+
+
+
+
+
+
+
 
 
 
@@ -24297,7 +48171,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         updateTranslation('en', newSubtitleKey, 'Quality and Reliability');
+
+
+
+
+
+
+
+
 
 
 
@@ -24313,6 +48203,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         const newSlide = {
 
 
@@ -24321,7 +48219,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           id: newSlideId,
+
+
+
+
+
+
+
+
 
 
 
@@ -24337,7 +48251,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           video: "",
+
+
+
+
+
+
+
+
 
 
 
@@ -24353,7 +48283,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           titleKey: newTitleKey,
+
+
+
+
+
+
+
+
 
 
 
@@ -24369,7 +48315,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           descKey: newDescKey
+
+
+
+
+
+
+
+
 
 
 
@@ -24385,6 +48347,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         updateLayout({
 
 
@@ -24393,7 +48363,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           ...currentLayout,
+
+
+
+
+
+
+
+
 
 
 
@@ -24409,7 +48395,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         });
+
+
+
+
+
+
+
+
 
 
 
@@ -24425,7 +48427,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       };
+
+
+
+
+
+
+
+
 
 
 
@@ -24441,7 +48459,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         const slideToDuplicate = slides.find((s: any) => s.id === slideId);
+
+
+
+
+
+
+
+
 
 
 
@@ -24457,7 +48491,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         const newSlideId = `slide_${Date.now()}`;
+
+
+
+
+
+
+
+
 
 
 
@@ -24473,7 +48523,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         const newSubtitleKey = `hero_slide_subtitle_${newSlideId}`;
+
+
+
+
+
+
+
+
 
 
 
@@ -24489,7 +48555,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         (['ru', 'kk', 'en'] as const).forEach(l => {
+
+
+
+
+
+
+
+
 
 
 
@@ -24505,7 +48587,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           updateTranslation(l, newSubtitleKey, allTranslations[l]?.[slideToDuplicate.subtitleKey] || '');
+
+
+
+
+
+
+
+
 
 
 
@@ -24521,7 +48619,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         });
+
+
+
+
+
+
+
+
 
 
 
@@ -24537,7 +48651,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           ...slideToDuplicate,
+
+
+
+
+
+
+
+
 
 
 
@@ -24553,7 +48683,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           titleKey: newTitleKey,
+
+
+
+
+
+
+
+
 
 
 
@@ -24569,6 +48715,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           descKey: newDescKey
 
 
@@ -24577,7 +48731,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         };
+
+
+
+
+
+
+
+
 
 
 
@@ -24593,7 +48763,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         for (const s of slides) {
+
+
+
+
+
+
+
+
 
 
 
@@ -24609,7 +48795,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           if (s.id === slideId) {
+
+
+
+
+
+
+
+
 
 
 
@@ -24625,7 +48827,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           }
+
+
+
+
+
+
+
+
 
 
 
@@ -24641,6 +48859,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         updateLayout({
 
 
@@ -24649,7 +48875,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           ...currentLayout,
+
+
+
+
+
+
+
+
 
 
 
@@ -24665,7 +48907,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         });
+
+
+
+
+
+
+
+
 
 
 
@@ -24681,7 +48939,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       };
+
+
+
+
+
+
+
+
 
 
 
@@ -24697,7 +48971,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         const file = e.target.files?.[0];
+
+
+
+
+
+
+
+
 
 
 
@@ -24713,7 +49003,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         const reader = new FileReader();
+
+
+
+
+
+
+
+
 
 
 
@@ -24729,7 +49035,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           const dataUrl = ev.target?.result as string;
+
+
+
+
+
+
+
+
 
 
 
@@ -24745,7 +49067,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             updateSlideField(slideId, 'img', dataUrl);
+
+
+
+
+
+
+
+
 
 
 
@@ -24761,7 +49099,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         };
+
+
+
+
+
+
+
+
 
 
 
@@ -24777,6 +49131,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       };
 
 
@@ -24785,7 +49147,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       return (
+
+
+
+
+
+
+
+
 
 
 
@@ -24801,7 +49179,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           {/* TOP PANEL: Global Slider Configuration (Interval & Buttons) */}
+
+
+
+
+
+
+
+
 
 
 
@@ -24817,7 +49211,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             background: '#111', 
+
+
+
+
+
+
+
+
 
 
 
@@ -24833,7 +49243,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             borderRadius: '16px', 
+
+
+
+
+
+
+
+
 
 
 
@@ -24849,7 +49275,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+
+
+
+
+
+
+
+
 
 
 
@@ -24865,7 +49307,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <h4 style={{ margin: '0 0 1.25rem 0', fontSize: '0.85rem', color: '#00ff41', fontWeight: '900', letterSpacing: '0.05em' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -24881,7 +49339,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             </h4>
+
+
+
+
+
+
+
+
 
 
 
@@ -24897,7 +49371,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -24913,7 +49403,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -24929,7 +49435,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   value={intervalVal}
+
+
+
+
+
+
+
+
 
 
 
@@ -24945,7 +49467,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   style={inputStyle}
+
+
+
+
+
+
+
+
 
 
 
@@ -24961,7 +49499,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   max={60000}
+
+
+
+
+
+
+
+
 
 
 
@@ -24977,7 +49531,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 />
+
+
+
+
+
+
+
+
 
 
 
@@ -24993,7 +49563,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -25009,6 +49595,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <input
 
 
@@ -25017,7 +49611,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   type="text"
+
+
+
+
+
+
+
+
 
 
 
@@ -25033,6 +49643,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   onChange={e => updateLayout({
 
 
@@ -25041,7 +49659,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     ...currentLayout,
+
+
+
+
+
+
+
+
 
 
 
@@ -25057,7 +49691,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   })}
+
+
+
+
+
+
+
+
 
 
 
@@ -25073,6 +49723,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 />
 
 
@@ -25081,7 +49739,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -25097,7 +49771,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 {labelStyle('Кнопка 2 (Услуги) - Ссылка')}
+
+
+
+
+
+
+
+
 
 
 
@@ -25113,7 +49803,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   type="text"
+
+
+
+
+
+
+
+
 
 
 
@@ -25129,7 +49835,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   onChange={e => updateLayout({
+
+
+
+
+
+
+
+
 
 
 
@@ -25145,7 +49867,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     links: { ...(currentLayout.links || {}), btn_hero_services: e.target.value }
+
+
+
+
+
+
+
+
 
 
 
@@ -25161,7 +49899,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   style={inputStyle}
+
+
+
+
+
+
+
+
 
 
 
@@ -25177,6 +49931,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               </div>
 
 
@@ -25185,7 +49947,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -25201,7 +49979,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #222', paddingTop: '1rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -25217,7 +50011,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <span style={{ fontSize: '0.75rem', color: '#888', fontWeight: '800' }}>ЯЗЫК КНОПОК:</span>
+
+
+
+
+
+
+
+
 
 
 
@@ -25233,7 +50043,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   {(['ru', 'kk', 'en'] as const).map(l => (
+
+
+
+
+
+
+
+
 
 
 
@@ -25249,7 +50075,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       key={l}
+
+
+
+
+
+
+
+
 
 
 
@@ -25265,7 +50107,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -25281,7 +50139,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         background: activeLang === l ? '#00ff41' : '#222',
+
+
+
+
+
+
+
+
 
 
 
@@ -25297,7 +50171,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         fontWeight: '900', fontSize: '0.7rem', cursor: 'pointer', transition: '0.2s'
+
+
+
+
+
+
+
+
 
 
 
@@ -25313,7 +50203,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     >
+
+
+
+
+
+
+
+
 
 
 
@@ -25329,7 +50235,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     </button>
+
+
+
+
+
+
+
+
 
 
 
@@ -25345,6 +50267,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 </div>
 
 
@@ -25353,7 +50283,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -25369,7 +50315,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <div style={{ flex: 1 }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -25385,7 +50347,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     type="text"
+
+
+
+
+
+
+
+
 
 
 
@@ -25401,7 +50379,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     onChange={e => updateTranslation(activeLang, 'btn_catalog', e.target.value)}
+
+
+
+
+
+
+
+
 
 
 
@@ -25417,7 +50411,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     style={{ ...inputStyle, padding: '0.5rem 0.75rem', fontSize: '0.8rem' }}
+
+
+
+
+
+
+
+
 
 
 
@@ -25433,7 +50443,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -25449,6 +50475,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   <input
 
 
@@ -25457,7 +50491,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     type="text"
+
+
+
+
+
+
+
+
 
 
 
@@ -25473,7 +50523,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     onChange={e => updateTranslation(activeLang, 'btn_services', e.target.value)}
+
+
+
+
+
+
+
+
 
 
 
@@ -25489,7 +50555,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     style={{ ...inputStyle, padding: '0.5rem 0.75rem', fontSize: '0.8rem' }}
+
+
+
+
+
+
+
+
 
 
 
@@ -25505,7 +50587,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -25521,6 +50619,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             </div>
 
 
@@ -25529,7 +50635,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -25545,7 +50667,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -25561,7 +50699,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -25577,7 +50731,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 🖥️ НАСТРОЙКА СЛАЙДОВ ({slides.length})
+
+
+
+
+
+
+
+
 
 
 
@@ -25593,7 +50763,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <button
+
+
+
+
+
+
+
+
 
 
 
@@ -25609,7 +50795,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -25625,7 +50827,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   border: '1px solid #00ff41',
+
+
+
+
+
+
+
+
 
 
 
@@ -25641,7 +50859,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   padding: '0.5rem 1rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -25657,7 +50891,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   fontSize: '0.8rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -25673,7 +50923,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   cursor: 'pointer',
+
+
+
+
+
+
+
+
 
 
 
@@ -25689,7 +50955,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   alignItems: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -25705,7 +50987,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   transition: 'all 0.2s'
+
+
+
+
+
+
+
+
 
 
 
@@ -25721,7 +51019,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               >
+
+
+
+
+
+
+
+
 
 
 
@@ -25737,6 +51051,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               </button>
 
 
@@ -25745,7 +51067,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -25761,7 +51099,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <div style={{ 
+
+
+
+
+
+
+
+
 
 
 
@@ -25777,7 +51131,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               gap: '1rem', 
+
+
+
+
+
+
+
+
 
 
 
@@ -25793,7 +51163,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               paddingBottom: '0.75rem', 
+
+
+
+
+
+
+
+
 
 
 
@@ -25809,7 +51195,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -25825,7 +51227,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 const isActive = slide.id === activeSlide?.id;
+
+
+
+
+
+
+
+
 
 
 
@@ -25841,7 +51259,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 return (
+
+
+
+
+
+
+
+
 
 
 
@@ -25857,7 +51291,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     key={slide.id}
+
+
+
+
+
+
+
+
 
 
 
@@ -25873,7 +51323,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -25889,7 +51355,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       width: '180px',
+
+
+
+
+
+
+
+
 
 
 
@@ -25905,7 +51387,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       border: isActive ? '2px solid #00ff41' : '1px solid #2a2b2f',
+
+
+
+
+
+
+
+
 
 
 
@@ -25921,7 +51419,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       padding: '0.75rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -25937,6 +51451,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       position: 'relative',
 
 
@@ -25945,7 +51467,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       display: 'flex',
+
+
+
+
+
+
+
+
 
 
 
@@ -25961,7 +51499,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       gap: '0.5rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -25977,7 +51531,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       boxShadow: isActive ? '0 0 15px rgba(0, 255, 65, 0.15)' : 'none'
+
+
+
+
+
+
+
+
 
 
 
@@ -25993,7 +51563,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   >
+
+
+
+
+
+
+
+
 
 
 
@@ -26009,7 +51595,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <div style={{ 
+
+
+
+
+
+
+
+
 
 
 
@@ -26025,7 +51627,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       height: '80px', 
+
+
+
+
+
+
+
+
 
 
 
@@ -26041,6 +51659,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       background: '#070708', 
 
 
@@ -26049,7 +51675,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       overflow: 'hidden', 
+
+
+
+
+
+
+
+
 
 
 
@@ -26065,7 +51707,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       display: 'flex',
+
+
+
+
+
+
+
+
 
 
 
@@ -26081,7 +51739,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       justifyContent: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -26097,7 +51771,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -26113,7 +51803,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         <div style={{ color: '#00ff41', fontSize: '0.65rem', fontWeight: 'bold', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -26129,7 +51835,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -26145,6 +51867,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         <img src={slide.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
 
 
@@ -26153,7 +51883,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       ) : (
+
+
+
+
+
+
+
+
 
 
 
@@ -26169,7 +51915,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       )}
+
+
+
+
+
+
+
+
 
 
 
@@ -26185,7 +51947,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       <span style={{ 
+
+
+
+
+
+
+
+
 
 
 
@@ -26201,7 +51979,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         top: '4px', 
+
+
+
+
+
+
+
+
 
 
 
@@ -26217,7 +52011,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         background: 'rgba(0,0,0,0.75)', 
+
+
+
+
+
+
+
+
 
 
 
@@ -26233,7 +52043,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         fontSize: '0.6rem', 
+
+
+
+
+
+
+
+
 
 
 
@@ -26249,7 +52075,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         padding: '0.15rem 0.4rem', 
+
+
+
+
+
+
+
+
 
 
 
@@ -26265,7 +52107,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         border: isActive ? '1px solid #00ff41' : '1px solid #333'
+
+
+
+
+
+
+
+
 
 
 
@@ -26281,7 +52139,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         #{index + 1}
+
+
+
+
+
+
+
+
 
 
 
@@ -26297,7 +52171,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -26313,7 +52203,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <div style={{ 
+
+
+
+
+
+
+
+
 
 
 
@@ -26329,7 +52235,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       color: isActive ? '#fff' : '#888', 
+
+
+
+
+
+
+
+
 
 
 
@@ -26345,7 +52267,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       whiteSpace: 'nowrap', 
+
+
+
+
+
+
+
+
 
 
 
@@ -26361,6 +52299,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       textOverflow: 'ellipsis' 
 
 
@@ -26369,7 +52315,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -26385,7 +52347,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -26401,7 +52379,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <div 
+
+
+
+
+
+
+
+
 
 
 
@@ -26417,7 +52411,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         display: 'flex', 
+
+
+
+
+
+
+
+
 
 
 
@@ -26433,7 +52443,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         alignItems: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -26449,7 +52475,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         borderTop: '1px solid #222',
+
+
+
+
+
+
+
+
 
 
 
@@ -26465,7 +52507,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       }}
+
+
+
+
+
+
+
+
 
 
 
@@ -26481,7 +52539,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     >
+
+
+
+
+
+
+
+
 
 
 
@@ -26497,7 +52571,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         <button
+
+
+
+
+
+
+
+
 
 
 
@@ -26513,6 +52603,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           disabled={index === 0}
 
 
@@ -26521,7 +52619,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -26537,7 +52651,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                             width: '22px', height: '22px', borderRadius: '4px', cursor: index === 0 ? 'not-allowed' : 'pointer',
+
+
+
+
+
+
+
+
 
 
 
@@ -26553,6 +52683,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           }}
 
 
@@ -26561,7 +52699,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         >
+
+
+
+
+
+
+
+
 
 
 
@@ -26577,6 +52731,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         </button>
 
 
@@ -26585,7 +52747,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         <button
+
+
+
+
+
+
+
+
 
 
 
@@ -26601,6 +52779,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           disabled={index === slides.length - 1}
 
 
@@ -26609,7 +52795,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -26625,7 +52827,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                             width: '22px', height: '22px', borderRadius: '4px', cursor: index === slides.length - 1 ? 'not-allowed' : 'pointer',
+
+
+
+
+
+
+
+
 
 
 
@@ -26641,6 +52859,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           }}
 
 
@@ -26649,7 +52875,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         >
+
+
+
+
+
+
+
+
 
 
 
@@ -26665,6 +52907,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         </button>
 
 
@@ -26673,7 +52923,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -26689,7 +52955,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         <button
+
+
+
+
+
+
+
+
 
 
 
@@ -26705,6 +52987,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           title="Дублировать слайд"
 
 
@@ -26713,7 +53003,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -26729,7 +53035,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                             width: '22px', height: '22px', borderRadius: '4px', cursor: 'pointer',
+
+
+
+
+
+
+
+
 
 
 
@@ -26745,6 +53067,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           }}
 
 
@@ -26753,7 +53083,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         >
+
+
+
+
+
+
+
+
 
 
 
@@ -26769,6 +53115,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         </button>
 
 
@@ -26777,7 +53131,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         <button
+
+
+
+
+
+
+
+
 
 
 
@@ -26793,6 +53163,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           title="Удалить слайд"
 
 
@@ -26801,7 +53179,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -26817,7 +53211,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                             width: '22px', height: '22px', borderRadius: '4px', cursor: 'pointer',
+
+
+
+
+
+
+
+
 
 
 
@@ -26833,6 +53243,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           }}
 
 
@@ -26841,7 +53259,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         >
+
+
+
+
+
+
+
+
 
 
 
@@ -26857,7 +53291,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         </button>
+
+
+
+
+
+
+
+
 
 
 
@@ -26873,6 +53323,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     </div>
 
 
@@ -26881,7 +53339,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -26897,7 +53371,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               })}
+
+
+
+
+
+
+
+
 
 
 
@@ -26913,7 +53403,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <div 
+
+
+
+
+
+
+
+
 
 
 
@@ -26929,7 +53435,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -26945,7 +53467,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   width: '180px',
+
+
+
+
+
+
+
+
 
 
 
@@ -26961,7 +53499,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   borderRadius: '12px',
+
+
+
+
+
+
+
+
 
 
 
@@ -26977,7 +53531,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   cursor: 'pointer',
+
+
+
+
+
+
+
+
 
 
 
@@ -26993,7 +53563,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   flexDirection: 'column',
+
+
+
+
+
+
+
+
 
 
 
@@ -27009,7 +53595,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   justifyContent: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -27025,7 +53627,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   height: '136px',
+
+
+
+
+
+
+
+
 
 
 
@@ -27041,7 +53659,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   color: '#888',
+
+
+
+
+
+
+
+
 
 
 
@@ -27057,6 +53691,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 }}
 
 
@@ -27065,7 +53707,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               >
+
+
+
+
+
+
+
+
 
 
 
@@ -27081,7 +53739,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <span style={{ fontSize: '0.75rem', fontWeight: '800' }}>Новый слайд</span>
+
+
+
+
+
+
+
+
 
 
 
@@ -27097,7 +53771,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -27113,7 +53803,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             {activeSlide && (
+
+
+
+
+
+
+
+
 
 
 
@@ -27129,7 +53835,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 background: '#141416', 
+
+
+
+
+
+
+
+
 
 
 
@@ -27145,7 +53867,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 borderRadius: '16px', 
+
+
+
+
+
+
+
+
 
 
 
@@ -27161,7 +53899,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 display: 'grid',
+
+
+
+
+
+
+
+
 
 
 
@@ -27177,7 +53931,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 gap: '2rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -27193,7 +53963,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -27209,7 +53995,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -27225,7 +54027,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <h5 style={{ margin: 0, color: '#fff', fontSize: '0.8rem', fontWeight: '900' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -27241,6 +54059,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     </h5>
 
 
@@ -27249,7 +54075,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -27265,7 +54107,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -27281,6 +54139,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.25rem' }}>
 
 
@@ -27289,7 +54155,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       <button
+
+
+
+
+
+
+
+
 
 
 
@@ -27305,6 +54187,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         style={{
 
 
@@ -27313,7 +54203,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           flex: 1, padding: '0.6rem', borderRadius: '8px', border: '1px solid',
+
+
+
+
+
+
+
+
 
 
 
@@ -27329,7 +54235,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           background: activeSlide.mediaType !== 'video' ? 'rgba(0,255,65,0.08)' : '#111',
+
+
+
+
+
+
+
+
 
 
 
@@ -27345,7 +54267,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           fontWeight: '800', cursor: 'pointer', fontSize: '0.75rem', transition: '0.2s'
+
+
+
+
+
+
+
+
 
 
 
@@ -27361,7 +54299,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       >
+
+
+
+
+
+
+
+
 
 
 
@@ -27377,7 +54331,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       </button>
+
+
+
+
+
+
+
+
 
 
 
@@ -27393,7 +54363,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         onClick={() => updateSlideField(activeSlide.id, 'mediaType', 'video')}
+
+
+
+
+
+
+
+
 
 
 
@@ -27409,7 +54395,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           flex: 1, padding: '0.6rem', borderRadius: '8px', border: '1px solid',
+
+
+
+
+
+
+
+
 
 
 
@@ -27425,7 +54427,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           background: activeSlide.mediaType === 'video' ? 'rgba(0,255,65,0.08)' : '#111',
+
+
+
+
+
+
+
+
 
 
 
@@ -27441,7 +54459,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           fontWeight: '800', cursor: 'pointer', fontSize: '0.75rem', transition: '0.2s'
+
+
+
+
+
+
+
+
 
 
 
@@ -27457,7 +54491,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       >
+
+
+
+
+
+
+
+
 
 
 
@@ -27473,7 +54523,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       </button>
+
+
+
+
+
+
+
+
 
 
 
@@ -27489,7 +54555,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -27505,7 +54587,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   {activeSlide.mediaType !== 'video' ? (
+
+
+
+
+
+
+
+
 
 
 
@@ -27521,7 +54619,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -27537,7 +54651,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -27553,7 +54683,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           value={activeSlide.img || ''} 
+
+
+
+
+
+
+
+
 
 
 
@@ -27569,7 +54715,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           placeholder="https://... или путь к файлу" 
+
+
+
+
+
+
+
+
 
 
 
@@ -27585,6 +54747,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         />
 
 
@@ -27593,7 +54763,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -27609,7 +54795,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -27625,7 +54827,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           type="file" 
+
+
+
+
+
+
+
+
 
 
 
@@ -27641,7 +54859,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           id={`slide-file-upload-${activeSlide.id}`} 
+
+
+
+
+
+
+
+
 
 
 
@@ -27657,7 +54891,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           onChange={e => handleSlideFileUpload(e, activeSlide.id)}
+
+
+
+
+
+
+
+
 
 
 
@@ -27673,7 +54923,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         <button
+
+
+
+
+
+
+
+
 
 
 
@@ -27689,7 +54955,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -27705,7 +54987,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                             padding: '0.6rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -27721,7 +55019,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                             border: '1px solid #333',
+
+
+
+
+
+
+
+
 
 
 
@@ -27737,7 +55051,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                             color: '#ccc',
+
+
+
+
+
+
+
+
 
 
 
@@ -27753,7 +55083,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                             fontSize: '0.75rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -27769,7 +55115,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                             display: 'flex',
+
+
+
+
+
+
+
+
 
 
 
@@ -27785,7 +55147,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                             justifyContent: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -27801,7 +55179,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                             transition: 'all 0.2s'
+
+
+
+
+
+
+
+
 
 
 
@@ -27817,7 +55211,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         >
+
+
+
+
+
+
+
+
 
 
 
@@ -27833,7 +55243,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         </button>
+
+
+
+
+
+
+
+
 
 
 
@@ -27849,7 +55275,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -27865,7 +55307,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -27881,7 +55339,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -27897,7 +55371,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         value={activeSlide.video || ''} 
+
+
+
+
+
+
+
+
 
 
 
@@ -27913,7 +55403,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         placeholder="Direct mp4 URL или YouTube ссылка" 
+
+
+
+
+
+
+
+
 
 
 
@@ -27929,6 +55435,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       />
 
 
@@ -27937,7 +55451,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -27953,6 +55483,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   {/* Media Preview Window */}
 
 
@@ -27961,7 +55499,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -27977,7 +55531,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <div style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -27993,7 +55563,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       background: '#070708', display: 'flex', alignItems: 'center', justifyContent: 'center',
+
+
+
+
+
+
+
+
 
 
 
@@ -28009,7 +55595,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -28025,7 +55627,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         activeSlide.video ? (
+
+
+
+
+
+
+
+
 
 
 
@@ -28041,7 +55659,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                             <span>🎥 Видео готово к фоновому показу</span>
+
+
+
+
+
+
+
+
 
 
 
@@ -28057,6 +55691,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           </div>
 
 
@@ -28065,7 +55707,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         ) : (
+
+
+
+
+
+
+
+
 
 
 
@@ -28081,7 +55739,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         )
+
+
+
+
+
+
+
+
 
 
 
@@ -28097,7 +55771,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         activeSlide.img ? (
+
+
+
+
+
+
+
+
 
 
 
@@ -28113,7 +55803,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         ) : (
+
+
+
+
+
+
+
+
 
 
 
@@ -28129,7 +55835,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         )
+
+
+
+
+
+
+
+
 
 
 
@@ -28145,7 +55867,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -28161,7 +55899,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -28177,7 +55931,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -28193,7 +55963,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #222', paddingBottom: '0.75rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -28209,7 +55995,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       📝 ТЕКСТ СЛАЙДА (ЛОКАЛИЗАЦИЯ)
+
+
+
+
+
+
+
+
 
 
 
@@ -28225,7 +56027,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <div style={{ display: 'flex', gap: '0.35rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -28241,7 +56059,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         <button
+
+
+
+
+
+
+
+
 
 
 
@@ -28257,7 +56091,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           onClick={() => setActiveLang(l)}
+
+
+
+
+
+
+
+
 
 
 
@@ -28273,7 +56123,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                             padding: '0.25rem 0.6rem', borderRadius: '4px', border: 'none',
+
+
+
+
+
+
+
+
 
 
 
@@ -28289,7 +56155,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                             color: activeLang === l ? '#000' : '#888',
+
+
+
+
+
+
+
+
 
 
 
@@ -28305,6 +56187,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                           }}
 
 
@@ -28313,7 +56203,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         >
+
+
+
+
+
+
+
+
 
 
 
@@ -28329,7 +56235,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         </button>
+
+
+
+
+
+
+
+
 
 
 
@@ -28345,6 +56267,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     </div>
 
 
@@ -28353,7 +56283,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -28369,6 +56315,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 
 
@@ -28377,7 +56331,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -28393,6 +56363,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       <input
 
 
@@ -28401,7 +56379,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         type="text"
+
+
+
+
+
+
+
+
 
 
 
@@ -28417,7 +56411,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         onChange={e => updateTranslation(activeLang, activeSlide.subtitleKey, e.target.value)}
+
+
+
+
+
+
+
+
 
 
 
@@ -28433,7 +56443,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         style={{ ...inputStyle, padding: '0.55rem 0.8rem', fontSize: '0.85rem' }}
+
+
+
+
+
+
+
+
 
 
 
@@ -28449,6 +56475,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     </div>
 
 
@@ -28457,7 +56491,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -28473,7 +56523,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       <input
+
+
+
+
+
+
+
+
 
 
 
@@ -28489,7 +56555,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         value={allTranslations[activeLang]?.[activeSlide.titleKey] || ''}
+
+
+
+
+
+
+
+
 
 
 
@@ -28505,7 +56587,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         placeholder="Например: Промышленное оборудование"
+
+
+
+
+
+
+
+
 
 
 
@@ -28521,7 +56619,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       />
+
+
+
+
+
+
+
+
 
 
 
@@ -28537,7 +56651,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -28553,7 +56683,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       <textarea
+
+
+
+
+
+
+
+
 
 
 
@@ -28569,7 +56715,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         onChange={e => updateTranslation(activeLang, activeSlide.descKey, e.target.value)}
+
+
+
+
+
+
+
+
 
 
 
@@ -28585,7 +56747,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                         style={{ ...inputStyle, minHeight: '80px', padding: '0.55rem 0.8rem', fontSize: '0.85rem', resize: 'vertical' }}
+
+
+
+
+
+
+
+
 
 
 
@@ -28601,7 +56779,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -28617,7 +56811,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -28633,7 +56843,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             )}
+
+
+
+
+
+
+
+
 
 
 
@@ -28649,7 +56875,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -28665,7 +56907,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -28681,7 +56939,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       const targetKey = isNestedBlock ? parentKey! : editingKey;
+
+
+
+
+
+
+
+
 
 
 
@@ -28697,7 +56971,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       try {
+
+
+
+
+
+
+
+
 
 
 
@@ -28713,7 +57003,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         const parentData = customBlocks[targetKey] || { type: 'heading' };
+
+
+
+
+
+
+
+
 
 
 
@@ -28729,7 +57035,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           ? (parentData.childrenBlocks || []).find((c: any) => c.id === editingKey) || { type: 'heading' }
+
+
+
+
+
+
+
+
 
 
 
@@ -28745,7 +57067,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       } catch {}
+
+
+
+
+
+
+
+
 
 
 
@@ -28761,7 +57099,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         try {
+
+
+
+
+
+
+
+
 
 
 
@@ -28777,7 +57131,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           const parentData = customBlocks[targetKey] || {};
+
+
+
+
+
+
+
+
 
 
 
@@ -28793,7 +57163,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             parentData.childrenBlocks = (parentData.childrenBlocks || []).map((c: any) => 
+
+
+
+
+
+
+
+
 
 
 
@@ -28809,6 +57195,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             );
 
 
@@ -28817,7 +57211,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           } else {
+
+
+
+
+
+
+
+
 
 
 
@@ -28833,7 +57243,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           }
+
+
+
+
+
+
+
+
 
 
 
@@ -28849,7 +57275,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
+
+
+
+
+
+
+
+
 
 
 
@@ -28865,6 +57307,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         } catch {}
 
 
@@ -28873,7 +57323,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       };
+
+
+
+
+
+
+
+
 
 
 
@@ -28889,7 +57355,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         try {
+
+
+
+
+
+
+
+
 
 
 
@@ -28905,7 +57387,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           const parentData = customBlocks[targetKey] || {};
+
+
+
+
+
+
+
+
 
 
 
@@ -28921,7 +57419,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             parentData.childrenBlocks = (parentData.childrenBlocks || []).map((c: any) => 
+
+
+
+
+
+
+
+
 
 
 
@@ -28937,7 +57451,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             );
+
+
+
+
+
+
+
+
 
 
 
@@ -28953,6 +57483,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             parentData.type = t;
 
 
@@ -28961,7 +57499,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           }
+
+
+
+
+
+
+
+
 
 
 
@@ -28977,7 +57531,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
+
+
+
+
+
+
+
+
 
 
 
@@ -28993,6 +57563,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         } catch {}
 
 
@@ -29001,7 +57579,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       };
+
+
+
+
+
+
+
+
 
 
 
@@ -29017,7 +57611,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         const keyWithLang = `${fieldName}_${activeLang}`;
+
+
+
+
+
+
+
+
 
 
 
@@ -29033,7 +57643,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         return (
+
+
+
+
+
+
+
+
 
 
 
@@ -29049,7 +57675,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             {labelStyle(`${label} (${activeLang.toUpperCase()})`)}
+
+
+
+
+
+
+
+
 
 
 
@@ -29065,7 +57707,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <textarea 
+
+
+
+
+
+
+
+
 
 
 
@@ -29081,7 +57739,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 onChange={e => updateCustomField(keyWithLang, e.target.value)} 
+
+
+
+
+
+
+
+
 
 
 
@@ -29097,7 +57771,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               />
+
+
+
+
+
+
+
+
 
 
 
@@ -29113,6 +57803,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <input 
 
 
@@ -29121,7 +57819,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 type="text" 
+
+
+
+
+
+
+
+
 
 
 
@@ -29137,7 +57851,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 onChange={e => updateCustomField(keyWithLang, e.target.value)} 
+
+
+
+
+
+
+
+
 
 
 
@@ -29153,7 +57883,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               />
+
+
+
+
+
+
+
+
 
 
 
@@ -29169,7 +57915,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -29185,7 +57947,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       };
+
+
+
+
+
+
+
+
 
 
 
@@ -29201,7 +57979,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -29217,7 +58011,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <div style={{ display: 'flex', gap: '0.5rem', background: '#111', padding: '0.25rem', borderRadius: '8px', border: '1px solid #222' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -29233,7 +58043,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <button
+
+
+
+
+
+
+
+
 
 
 
@@ -29249,7 +58075,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   onClick={() => setActiveLang(l)}
+
+
+
+
+
+
+
+
 
 
 
@@ -29265,7 +58107,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     padding: '0.4rem 1rem', borderRadius: '6px', border: 'none',
+
+
+
+
+
+
+
+
 
 
 
@@ -29281,7 +58139,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     color: activeLang === l ? '#000' : '#888',
+
+
+
+
+
+
+
+
 
 
 
@@ -29297,6 +58171,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   }}
 
 
@@ -29305,7 +58187,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 >
+
+
+
+
+
+
+
+
 
 
 
@@ -29321,7 +58219,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 </button>
+
+
+
+
+
+
+
+
 
 
 
@@ -29337,7 +58251,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -29353,7 +58283,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <span style={{ fontSize: '0.75rem', color: '#666', fontWeight: 'bold' }}>ТИП БЛОКА:</span>
+
+
+
+
+
+
+
+
 
 
 
@@ -29369,7 +58315,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 value={data.type || 'heading'}
+
+
+
+
+
+
+
+
 
 
 
@@ -29385,6 +58347,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 style={{ ...inputStyle, width: '200px', padding: '0.5rem 1rem' }}
 
 
@@ -29393,7 +58363,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               >
+
+
+
+
+
+
+
+
 
 
 
@@ -29409,7 +58395,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <option value="text">Текст (Простой)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -29425,7 +58427,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <option value="two_col">Две колонки</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -29441,7 +58459,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <option value="cta_banner">Промо-баннер (CTA)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -29457,7 +58491,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <option value="container">Контейнер (Группировка/Сетка)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -29473,6 +58523,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             </div>
 
 
@@ -29481,7 +58539,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -29497,7 +58571,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           {(data.type === 'heading' || data.type === 'cta_banner' || data.type === 'image_text') && customInp('Надпись над заголовком', 'subheading')}
+
+
+
+
+
+
+
+
 
 
 
@@ -29513,7 +58603,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           {(data.type !== 'divider' && data.type !== 'button' && data.type !== 'container') && customInp('Описание / Основной текст', 'body', true)}
+
+
+
+
+
+
+
+
 
 
 
@@ -29529,7 +58635,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -29545,7 +58667,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               {customInp('Правая колонка', 'col2', true)}
+
+
+
+
+
+
+
+
 
 
 
@@ -29561,7 +58699,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           )}
+
+
+
+
+
+
+
+
 
 
 
@@ -29577,7 +58731,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -29593,7 +58763,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <div style={{ display: 'grid', gap: '0.4rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -29609,7 +58795,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -29625,7 +58827,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   onChange={e => updateCustomField('href', e.target.value)} 
+
+
+
+
+
+
+
+
 
 
 
@@ -29641,7 +58859,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   style={inputStyle}
+
+
+
+
+
+
+
+
 
 
 
@@ -29657,7 +58891,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -29673,7 +58923,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           )}
+
+
+
+
+
+
+
+
 
 
 
@@ -29689,7 +58955,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <div style={{ display: 'grid', gap: '1rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -29705,6 +58987,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 {labelStyle('Расположение фото / видео')}
 
 
@@ -29713,7 +59003,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <select
+
+
+
+
+
+
+
+
 
 
 
@@ -29729,7 +59035,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   onChange={e => updateCustomField('mediaPosition', e.target.value)}
+
+
+
+
+
+
+
+
 
 
 
@@ -29745,7 +59067,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 >
+
+
+
+
+
+
+
+
 
 
 
@@ -29761,7 +59099,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   <option value="right">Справа (текст слева)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -29777,7 +59131,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -29793,7 +59163,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <div style={{ display: 'grid', gap: '0.4rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -29809,7 +59195,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   <select
+
+
+
+
+
+
+
+
 
 
 
@@ -29825,7 +59227,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     onChange={e => updateCustomField('mediaAspect', e.target.value)}
+
+
+
+
+
+
+
+
 
 
 
@@ -29841,7 +59259,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   >
+
+
+
+
+
+
+
+
 
 
 
@@ -29857,7 +59291,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <option value="4/3">Стандартный (4:3)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -29873,7 +59323,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <option value="21/9">Кинематографичный (21:9)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -29889,6 +59355,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   </select>
 
 
@@ -29897,7 +59371,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -29913,7 +59403,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   {labelStyle('Масштабирование фото')}
+
+
+
+
+
+
+
+
 
 
 
@@ -29929,7 +59435,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     value={data.mediaFit || 'cover'}
+
+
+
+
+
+
+
+
 
 
 
@@ -29945,7 +59467,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     style={inputStyle}
+
+
+
+
+
+
+
+
 
 
 
@@ -29961,7 +59499,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <option value="cover">Заполнение (Обрезать)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -29977,7 +59531,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <option value="fill">Растянуть</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -29993,7 +59563,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -30009,6 +59595,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             </div>
 
 
@@ -30017,7 +59611,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           )}
+
+
+
+
+
+
+
+
 
 
 
@@ -30033,7 +59643,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <div style={{ display: 'grid', gap: '1rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -30049,7 +59675,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 {labelStyle('Расположение фото / видео')}
+
+
+
+
+
+
+
+
 
 
 
@@ -30065,7 +59707,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   value={data.mediaPosition || 'top'}
+
+
+
+
+
+
+
+
 
 
 
@@ -30081,7 +59739,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   style={inputStyle}
+
+
+
+
+
+
+
+
 
 
 
@@ -30097,7 +59771,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   <option value="top">Сверху (текст снизу)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -30113,7 +59803,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 </select>
+
+
+
+
+
+
+
+
 
 
 
@@ -30129,6 +59835,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
 
 
@@ -30137,7 +59851,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <div style={{ display: 'grid', gap: '0.4rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -30153,7 +59883,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   <select
+
+
+
+
+
+
+
+
 
 
 
@@ -30169,7 +59915,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     onChange={e => updateCustomField('mediaAspect', e.target.value)}
+
+
+
+
+
+
+
+
 
 
 
@@ -30185,7 +59947,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   >
+
+
+
+
+
+
+
+
 
 
 
@@ -30201,7 +59979,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <option value="16/9">Широкоформатный (16:9)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -30217,7 +60011,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <option value="1/1">Квадратный (1:1)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -30233,6 +60043,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   </select>
 
 
@@ -30241,7 +60059,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -30257,6 +60091,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   {labelStyle('Масштабирование фото')}
 
 
@@ -30265,7 +60107,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   <select
+
+
+
+
+
+
+
+
 
 
 
@@ -30281,7 +60139,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     onChange={e => updateCustomField('mediaFit', e.target.value)}
+
+
+
+
+
+
+
+
 
 
 
@@ -30297,7 +60171,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   >
+
+
+
+
+
+
+
+
 
 
 
@@ -30313,7 +60203,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <option value="contain">Вписать целиком</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -30329,7 +60235,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   </select>
+
+
+
+
+
+
+
+
 
 
 
@@ -30345,7 +60267,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -30361,7 +60299,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           )}
+
+
+
+
+
+
+
+
 
 
 
@@ -30377,7 +60331,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <div style={{ display: 'grid', gap: '1.5rem', background: '#141416', padding: '1.5rem', borderRadius: '14px', border: '1px solid #222' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -30393,6 +60363,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
 
 
@@ -30401,7 +60379,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -30417,7 +60411,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   <select
+
+
+
+
+
+
+
+
 
 
 
@@ -30433,7 +60443,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     onChange={e => updateCustomField('displayType', e.target.value)}
+
+
+
+
+
+
+
+
 
 
 
@@ -30449,7 +60475,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   >
+
+
+
+
+
+
+
+
 
 
 
@@ -30465,7 +60507,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <option value="flex">Flexbox (В ряд / В колонку)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -30481,7 +60539,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -30497,7 +60571,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -30513,7 +60603,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <select
+
+
+
+
+
+
+
+
 
 
 
@@ -30529,7 +60635,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       onChange={e => updateCustomField('flexDirection', e.target.value)}
+
+
+
+
+
+
+
+
 
 
 
@@ -30545,7 +60667,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     >
+
+
+
+
+
+
+
+
 
 
 
@@ -30561,7 +60699,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       <option value="row">В ряд (Горизонтально)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -30577,6 +60731,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   </div>
 
 
@@ -30585,7 +60747,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 ) : (
+
+
+
+
+
+
+
+
 
 
 
@@ -30601,7 +60779,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     {labelStyle('Количество колонок сетки')}
+
+
+
+
+
+
+
+
 
 
 
@@ -30617,7 +60811,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       value={data.cols || 12}
+
+
+
+
+
+
+
+
 
 
 
@@ -30633,7 +60843,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       style={inputStyle}
+
+
+
+
+
+
+
+
 
 
 
@@ -30649,7 +60875,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       <option value={12}>12 колонок (Гибкая Figma-сетка)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -30665,7 +60907,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       <option value={3}>3 колонки</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -30681,7 +60939,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                       <option value={1}>1 колонка (Вертикально)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -30697,7 +60971,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -30713,7 +61003,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -30729,7 +61035,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -30745,7 +61067,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   <select
+
+
+
+
+
+
+
+
 
 
 
@@ -30761,7 +61099,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     onChange={e => updateCustomField('gap', e.target.value)}
+
+
+
+
+
+
+
+
 
 
 
@@ -30777,7 +61131,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   >
+
+
+
+
+
+
+
+
 
 
 
@@ -30793,7 +61163,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <option value="0.5rem">Очень узкий (8px)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -30809,7 +61195,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <option value="1.5rem">Средний (24px)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -30825,7 +61227,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <option value="3rem">Широкий (48px)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -30841,7 +61259,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -30857,7 +61291,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   {labelStyle('Выравнивание по вертикали (Align)')}
+
+
+
+
+
+
+
+
 
 
 
@@ -30873,7 +61323,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     value={data.alignItems || 'stretch'}
+
+
+
+
+
+
+
+
 
 
 
@@ -30889,7 +61355,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     style={inputStyle}
+
+
+
+
+
+
+
+
 
 
 
@@ -30905,7 +61387,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <option value="stretch">Растянуть (Stretch)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -30921,7 +61419,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     <option value="flex-start">По верху (Start)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -30937,7 +61451,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   </select>
+
+
+
+
+
+
+
+
 
 
 
@@ -30953,6 +61483,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               </div>
 
 
@@ -30961,7 +61499,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -30977,7 +61531,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -30993,7 +61563,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -31009,7 +61595,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       const item = currentLayout.items?.[editingKey] || {};
+
+
+
+
+
+
+
+
 
 
 
@@ -31025,7 +61627,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         updateLayout({
+
+
+
+
+
+
+
+
 
 
 
@@ -31041,7 +61659,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           items: {
+
+
+
+
+
+
+
+
 
 
 
@@ -31057,7 +61691,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             [editingKey]: {
+
+
+
+
+
+
+
+
 
 
 
@@ -31073,7 +61723,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               [l]: {
+
+
+
+
+
+
+
+
 
 
 
@@ -31089,7 +61755,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 [fieldKey]: val
+
+
+
+
+
+
+
+
 
 
 
@@ -31105,6 +61787,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             }
 
 
@@ -31113,7 +61803,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           }
+
+
+
+
+
+
+
+
 
 
 
@@ -31129,7 +61835,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       };
+
+
+
+
+
+
+
+
 
 
 
@@ -31145,7 +61867,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -31161,7 +61899,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             {(['ru', 'kk', 'en'] as const).map(l => (
+
+
+
+
+
+
+
+
 
 
 
@@ -31177,7 +61931,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 key={l}
+
+
+
+
+
+
+
+
 
 
 
@@ -31193,7 +61963,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -31209,7 +61995,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   background: activeLang === l ? '#00ff41' : 'transparent',
+
+
+
+
+
+
+
+
 
 
 
@@ -31225,7 +62027,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   fontWeight: '900', fontSize: '0.75rem', cursor: 'pointer', transition: '0.2s'
+
+
+
+
+
+
+
+
 
 
 
@@ -31241,7 +62059,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               >
+
+
+
+
+
+
+
+
 
 
 
@@ -31257,7 +62091,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               </button>
+
+
+
+
+
+
+
+
 
 
 
@@ -31273,7 +62123,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -31289,7 +62155,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             <div style={{ display: 'grid', gap: '0.4rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -31305,7 +62187,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -31321,7 +62219,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 value={item[activeLang]?.title || ''} 
+
+
+
+
+
+
+
+
 
 
 
@@ -31337,7 +62251,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 placeholder="Введите название..."
+
+
+
+
+
+
+
+
 
 
 
@@ -31353,6 +62283,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               />
 
 
@@ -31361,7 +62299,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -31377,7 +62331,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               {labelStyle(`Описание медиафайла (${activeLang.toUpperCase()})`)}
+
+
+
+
+
+
+
+
 
 
 
@@ -31393,7 +62363,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 value={item[activeLang]?.desc || ''} 
+
+
+
+
+
+
+
+
 
 
 
@@ -31409,7 +62395,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 placeholder="Введите подробное описание..."
+
+
+
+
+
+
+
+
 
 
 
@@ -31425,7 +62427,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               />
+
+
+
+
+
+
+
+
 
 
 
@@ -31441,6 +62459,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           </div>
 
 
@@ -31449,7 +62475,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -31465,7 +62507,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -31481,7 +62539,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       if (editingKey === 'hero') return key.startsWith('hero_') || key === 'btn_catalog' || key === 'btn_services';
+
+
+
+
+
+
+
+
 
 
 
@@ -31497,7 +62571,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       if (editingKey === 'services') return key.startsWith('srv_');
+
+
+
+
+
+
+
+
 
 
 
@@ -31513,7 +62603,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       if (editingKey === 'reviews') return key.startsWith('reviews_') || key.startsWith('review_');
+
+
+
+
+
+
+
+
 
 
 
@@ -31529,7 +62635,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       if (editingKey === 'faq') return key.startsWith('faq_');
+
+
+
+
+
+
+
+
 
 
 
@@ -31545,6 +62667,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       return key.toLowerCase().includes(editingKey.toLowerCase());
 
 
@@ -31553,7 +62683,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     });
+
+
+
+
+
+
+
+
 
 
 
@@ -31569,6 +62715,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
     return (
 
 
@@ -31577,7 +62731,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -31593,7 +62763,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           <div style={{ display: 'flex', gap: '0.5rem', background: '#111', padding: '0.25rem', borderRadius: '8px', border: '1px solid #222' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -31609,7 +62795,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               <button
+
+
+
+
+
+
+
+
 
 
 
@@ -31625,7 +62827,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 onClick={() => setActiveLang(l)}
+
+
+
+
+
+
+
+
 
 
 
@@ -31641,7 +62859,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   padding: '0.4rem 1rem', borderRadius: '6px', border: 'none',
+
+
+
+
+
+
+
+
 
 
 
@@ -31657,7 +62891,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   color: activeLang === l ? '#000' : '#888',
+
+
+
+
+
+
+
+
 
 
 
@@ -31673,7 +62923,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 }}
+
+
+
+
+
+
+
+
 
 
 
@@ -31689,7 +62955,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 {l.toUpperCase()}
+
+
+
+
+
+
+
+
 
 
 
@@ -31705,6 +62987,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             ))}
 
 
@@ -31713,7 +63003,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -31729,7 +63035,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             Найдено полей: {displayKeys.length}
+
+
+
+
+
+
+
+
 
 
 
@@ -31745,7 +63067,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -31761,7 +63099,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
         <div style={{ display: 'grid', gap: '1.5rem', maxHeight: '380px', overflowY: 'auto', paddingRight: '0.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -31777,7 +63131,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             const val = allTranslations[activeLang]?.[k] || '';
+
+
+
+
+
+
+
+
 
 
 
@@ -31793,7 +63163,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
             return (
+
+
+
+
+
+
+
+
 
 
 
@@ -31809,7 +63195,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -31825,7 +63227,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   <span style={{ fontSize: '0.6rem', color: '#555', fontFamily: 'monospace' }}>KEY: {k}</span>
+
+
+
+
+
+
+
+
 
 
 
@@ -31841,7 +63259,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 {isMultiline ? (
+
+
+
+
+
+
+
+
 
 
 
@@ -31857,6 +63291,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     value={val}
 
 
@@ -31865,7 +63307,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     onChange={e => updateTranslation(activeLang, k, e.target.value)}
+
+
+
+
+
+
+
+
 
 
 
@@ -31881,6 +63339,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   />
 
 
@@ -31889,7 +63355,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                 ) : (
+
+
+
+
+
+
+
+
 
 
 
@@ -31905,7 +63387,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     type="text"
+
+
+
+
+
+
+
+
 
 
 
@@ -31921,7 +63419,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                     onChange={e => updateTranslation(activeLang, k, e.target.value)}
+
+
+
+
+
+
+
+
 
 
 
@@ -31937,7 +63451,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
                   />
+
+
+
+
+
+
+
+
 
 
 
@@ -31953,7 +63483,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -31969,7 +63515,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
           })}
+
+
+
+
+
+
+
+
 
 
 
@@ -31985,7 +63547,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -32001,7 +63579,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
   }
+
+
+
+
+
+
+
+
 
 
 
@@ -32017,7 +63611,23 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -32033,6 +63643,14 @@ function ModalBodyContent({
 
 
 
+
+
+
+
+
+
+
+
 function DashboardOverview({ windowWidth, t }: any) {
 
 
@@ -32041,7 +63659,23 @@ function DashboardOverview({ windowWidth, t }: any) {
 
 
 
+
+
+
+
+
+
+
+
   return (
+
+
+
+
+
+
+
+
 
 
 
@@ -32057,7 +63691,23 @@ function DashboardOverview({ windowWidth, t }: any) {
 
 
 
+
+
+
+
+
+
+
+
       {[
+
+
+
+
+
+
+
+
 
 
 
@@ -32073,7 +63723,23 @@ function DashboardOverview({ windowWidth, t }: any) {
 
 
 
+
+
+
+
+
+
+
+
         { label: t.admin_services, value: '12', icon: <Truck />, color: '#0066ff' },
+
+
+
+
+
+
+
+
 
 
 
@@ -32089,7 +63755,23 @@ function DashboardOverview({ windowWidth, t }: any) {
 
 
 
+
+
+
+
+
+
+
+
       ].map((stat, i) => (
+
+
+
+
+
+
+
+
 
 
 
@@ -32105,7 +63787,23 @@ function DashboardOverview({ windowWidth, t }: any) {
 
 
 
+
+
+
+
+
+
+
+
           <div style={{ padding: '1.25rem', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', color: stat.color }}>{stat.icon}</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -32121,7 +63819,23 @@ function DashboardOverview({ windowWidth, t }: any) {
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -32137,7 +63851,23 @@ function DashboardOverview({ windowWidth, t }: any) {
 
 
 
+
+
+
+
+
+
+
+
     </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -32153,7 +63883,23 @@ function DashboardOverview({ windowWidth, t }: any) {
 
 
 
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -32169,6 +63915,14 @@ function PageEditor({ allTranslations, updateTranslation, currentLang, windowWid
 
 
 
+
+
+
+
+
+
+
+
   const [search, setSearch] = useState('');
 
 
@@ -32177,7 +63931,23 @@ function PageEditor({ allTranslations, updateTranslation, currentLang, windowWid
 
 
 
+
+
+
+
+
+
+
+
   return (
+
+
+
+
+
+
+
+
 
 
 
@@ -32193,7 +63963,23 @@ function PageEditor({ allTranslations, updateTranslation, currentLang, windowWid
 
 
 
+
+
+
+
+
+
+
+
        <div style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -32209,6 +63995,14 @@ function PageEditor({ allTranslations, updateTranslation, currentLang, windowWid
 
 
 
+
+
+
+
+
+
+
+
           <input placeholder="Filter keys..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ background: '#111', border: '1px solid #333', padding: '1rem', borderRadius: '12px', color: '#fff', width: '300px' }} />
 
 
@@ -32217,7 +64011,23 @@ function PageEditor({ allTranslations, updateTranslation, currentLang, windowWid
 
 
 
+
+
+
+
+
+
+
+
        </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -32233,7 +64043,23 @@ function PageEditor({ allTranslations, updateTranslation, currentLang, windowWid
 
 
 
+
+
+
+
+
+
+
+
           {Object.entries(allTranslations[currentLang]).filter(([k]) => k.includes(search)).map(([k, v]: any) => (
+
+
+
+
+
+
+
+
 
 
 
@@ -32249,7 +64075,23 @@ function PageEditor({ allTranslations, updateTranslation, currentLang, windowWid
 
 
 
+
+
+
+
+
+
+
+
                 <label style={{ fontSize: '0.6rem', color: '#00ff41', fontWeight: '900' }}>{k.toUpperCase()}</label>
+
+
+
+
+
+
+
+
 
 
 
@@ -32265,6 +64107,14 @@ function PageEditor({ allTranslations, updateTranslation, currentLang, windowWid
 
 
 
+
+
+
+
+
+
+
+
              </div>
 
 
@@ -32273,7 +64123,23 @@ function PageEditor({ allTranslations, updateTranslation, currentLang, windowWid
 
 
 
+
+
+
+
+
+
+
+
           ))}
+
+
+
+
+
+
+
+
 
 
 
@@ -32289,7 +64155,23 @@ function PageEditor({ allTranslations, updateTranslation, currentLang, windowWid
 
 
 
+
+
+
+
+
+
+
+
     </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -32305,7 +64187,23 @@ function PageEditor({ allTranslations, updateTranslation, currentLang, windowWid
 
 
 
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -32321,7 +64219,23 @@ function ProductManager({ products, setProducts, currentLang, categories, window
 
 
 
+
+
+
+
+
+
+
+
   const updateProduct = (id: number, field: string, value: string) => {
+
+
+
+
+
+
+
+
 
 
 
@@ -32337,7 +64251,23 @@ function ProductManager({ products, setProducts, currentLang, categories, window
 
 
 
+
+
+
+
+
+
+
+
       if (p.id === id) {
+
+
+
+
+
+
+
+
 
 
 
@@ -32353,7 +64283,23 @@ function ProductManager({ products, setProducts, currentLang, categories, window
 
 
 
+
+
+
+
+
+
+
+
         if (['title', 'desc', 'category'].includes(field)) { updated[currentLang][field] = value; } else { updated[field] = value; }
+
+
+
+
+
+
+
+
 
 
 
@@ -32369,6 +64315,14 @@ function ProductManager({ products, setProducts, currentLang, categories, window
 
 
 
+
+
+
+
+
+
+
+
       }
 
 
@@ -32377,7 +64331,23 @@ function ProductManager({ products, setProducts, currentLang, categories, window
 
 
 
+
+
+
+
+
+
+
+
       return p;
+
+
+
+
+
+
+
+
 
 
 
@@ -32393,6 +64363,14 @@ function ProductManager({ products, setProducts, currentLang, categories, window
 
 
 
+
+
+
+
+
+
+
+
   };
 
 
@@ -32401,7 +64379,23 @@ function ProductManager({ products, setProducts, currentLang, categories, window
 
 
 
+
+
+
+
+
+
+
+
   return (
+
+
+
+
+
+
+
+
 
 
 
@@ -32417,7 +64411,23 @@ function ProductManager({ products, setProducts, currentLang, categories, window
 
 
 
+
+
+
+
+
+
+
+
       {products.map((product: any) => (
+
+
+
+
+
+
+
+
 
 
 
@@ -32433,7 +64443,23 @@ function ProductManager({ products, setProducts, currentLang, categories, window
 
 
 
+
+
+
+
+
+
+
+
       ))}
+
+
+
+
+
+
+
+
 
 
 
@@ -32449,6 +64475,14 @@ function ProductManager({ products, setProducts, currentLang, categories, window
 
 
 
+
+
+
+
+
+
+
+
   );
 
 
@@ -32457,7 +64491,23 @@ function ProductManager({ products, setProducts, currentLang, categories, window
 
 
 
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -32473,6 +64523,14 @@ function ServicesManager({ allTranslations, updateTranslation, currentLang, wind
 
 
 
+
+
+
+
+
+
+
+
   return <div style={{ padding: '4rem', background: '#0a0a0a', border: '1px solid #222', borderRadius: '24px', textAlign: 'center' }}>Services are managed via Visual Builder.</div>;
 
 
@@ -32481,7 +64539,23 @@ function ServicesManager({ allTranslations, updateTranslation, currentLang, wind
 
 
 
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -32497,6 +64571,14 @@ function GlobalSettings({ allTranslations, updateTranslation, currentLang, windo
 
 
 
+
+
+
+
+
+
+
+
   return (
 
 
@@ -32505,7 +64587,23 @@ function GlobalSettings({ allTranslations, updateTranslation, currentLang, windo
 
 
 
+
+
+
+
+
+
+
+
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -32521,7 +64619,23 @@ function GlobalSettings({ allTranslations, updateTranslation, currentLang, windo
 
 
 
+
+
+
+
+
+
+
+
     </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -32537,7 +64651,23 @@ function GlobalSettings({ allTranslations, updateTranslation, currentLang, windo
 
 
 
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -32553,7 +64683,23 @@ function SettingField({ label, val, onChange }: any) {
 
 
 
+
+
+
+
+
+
+
+
   return (
+
+
+
+
+
+
+
+
 
 
 
@@ -32569,6 +64715,14 @@ function SettingField({ label, val, onChange }: any) {
 
 
 
+
+
+
+
+
+
+
+
   );
 
 
@@ -32577,7 +64731,23 @@ function SettingField({ label, val, onChange }: any) {
 
 
 
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -32593,7 +64763,23 @@ function SettingField({ label, val, onChange }: any) {
 
 
 
+
+
+
+
+
+
+
+
 const BLOCK_TYPES = [
+
+
+
+
+
+
+
+
 
 
 
@@ -32609,7 +64795,23 @@ const BLOCK_TYPES = [
 
 
 
+
+
+
+
+
+
+
+
   { id: 'text',       label: 'Текст',            icon: '¶' },
+
+
+
+
+
+
+
+
 
 
 
@@ -32625,7 +64827,23 @@ const BLOCK_TYPES = [
 
 
 
+
+
+
+
+
+
+
+
   { id: 'button',     label: 'Кнопка',           icon: '↗' },
+
+
+
+
+
+
+
+
 
 
 
@@ -32641,7 +64859,23 @@ const BLOCK_TYPES = [
 
 
 
+
+
+
+
+
+
+
+
   { id: 'two_col',    label: '2 Колонки',        icon: '⫿' },
+
+
+
+
+
+
+
+
 
 
 
@@ -32657,7 +64891,23 @@ const BLOCK_TYPES = [
 
 
 
+
+
+
+
+
+
+
+
   { id: 'cta_banner', label: 'CTA Баннер',       icon: '★' },
+
+
+
+
+
+
+
+
 
 
 
@@ -32673,7 +64923,23 @@ const BLOCK_TYPES = [
 
 
 
+
+
+
+
+
+
+
+
 function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpenLibrary?: () => void }) {
+
+
+
+
+
+
+
+
 
 
 
@@ -32689,7 +64955,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
     try {
+
+
+
+
+
+
+
+
 
 
 
@@ -32705,7 +64987,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
       return all[blockId] || { type: 'heading' };
+
+
+
+
+
+
+
+
 
 
 
@@ -32721,7 +65019,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -32737,7 +65051,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
     const next = { ...data, [key]: val };
+
+
+
+
+
+
+
+
 
 
 
@@ -32753,6 +65083,14 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
     setCustomBlock(blockId, next);
 
 
@@ -32761,7 +65099,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -32777,7 +65131,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
     const next = { ...data, type };
+
+
+
+
+
+
+
+
 
 
 
@@ -32793,6 +65163,14 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
     setCustomBlock(blockId, next);
 
 
@@ -32801,7 +65179,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -32817,7 +65211,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
     background: '#111', border: '1px solid #333', padding: '0.75rem 1rem',
+
+
+
+
+
+
+
+
 
 
 
@@ -32833,7 +65243,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
     width: '100%', boxSizing: 'border-box', ...style
+
+
+
+
+
+
+
+
 
 
 
@@ -32849,7 +65275,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
   const lbl = (text: string) => (
+
+
+
+
+
+
+
+
 
 
 
@@ -32865,7 +65307,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
   );
+
+
+
+
+
+
+
+
 
 
 
@@ -32881,6 +65339,14 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
     <div style={{ display: 'grid', gap: '0.4rem' }}>
 
 
@@ -32889,7 +65355,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
       {lbl(label)}
+
+
+
+
+
+
+
+
 
 
 
@@ -32905,7 +65387,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
         ? <textarea value={data[key] || ''} onChange={e => update(key, e.target.value)} placeholder={placeholder}
+
+
+
+
+
+
+
+
 
 
 
@@ -32921,7 +65419,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
         : <input value={data[key] || ''} onChange={e => update(key, e.target.value)} placeholder={placeholder}
+
+
+
+
+
+
+
+
 
 
 
@@ -32937,7 +65451,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -32953,7 +65483,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
   );
+
+
+
+
+
+
+
+
 
 
 
@@ -32969,32 +65515,73 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
       {onOpenLibrary && (
+
         <button
+
           onClick={onOpenLibrary}
+
           style={{
+
             background: 'rgba(0, 255, 65, 0.08)',
+
             color: '#00ff41',
+
             border: '1px solid rgba(0, 255, 65, 0.3)',
+
             padding: '0.75rem',
+
             borderRadius: '8px',
+
             fontWeight: '800',
+
             fontSize: '0.8rem',
+
             cursor: 'pointer',
+
             display: 'flex',
+
             alignItems: 'center',
+
             justifyContent: 'center',
+
             gap: '0.5rem',
+
             width: '100%',
+
             transition: 'all 0.2s'
+
           }}
+
           onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(0, 255, 65, 0.15)'; e.currentTarget.style.borderColor = '#00ff41'; }}
+
           onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(0, 255, 65, 0.08)'; e.currentTarget.style.borderColor = 'rgba(0, 255, 65, 0.3)'; }}
+
         >
+
           <PlusCircle size={14} /> ➕ ДОБАВИТЬ ЭЛЕМЕНТ ВНУТРЬ БЛОКА
+
         </button>
+
       )}
+
+
+
+
+
+
+
+
 
 
 
@@ -33010,7 +65597,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
       <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -33026,7 +65629,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginTop: '0.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -33042,7 +65661,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
             <button key={bt.id} onClick={() => selectType(bt.id)} style={{
+
+
+
+
+
+
+
+
 
 
 
@@ -33058,7 +65693,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
               borderColor: data.type === bt.id ? '#00ff41' : '#333',
+
+
+
+
+
+
+
+
 
 
 
@@ -33074,7 +65725,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
               color: data.type === bt.id ? '#00ff41' : '#888',
+
+
+
+
+
+
+
+
 
 
 
@@ -33090,7 +65757,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
               display: 'flex', alignItems: 'center', gap: '0.5rem'
+
+
+
+
+
+
+
+
 
 
 
@@ -33106,7 +65789,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
               <span style={{ fontSize: '1rem' }}>{bt.icon}</span> {bt.label}
+
+
+
+
+
+
+
+
 
 
 
@@ -33122,7 +65821,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
           ))}
+
+
+
+
+
+
+
+
 
 
 
@@ -33138,7 +65853,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -33154,7 +65885,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
       {/* Alignment */}
+
+
+
+
+
+
+
+
 
 
 
@@ -33170,7 +65917,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
         {lbl('ВЫРАВНИВАНИЕ')}
+
+
+
+
+
+
+
+
 
 
 
@@ -33186,7 +65949,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
           {(['left','center','right'] as const).map(a => (
+
+
+
+
+
+
+
+
 
 
 
@@ -33202,7 +65981,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
               flex: 1, padding: '0.6rem', borderRadius: '6px', border: '1px solid',
+
+
+
+
+
+
+
+
 
 
 
@@ -33218,7 +66013,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
               background: data.align === a ? 'rgba(0,255,65,0.08)' : '#111',
+
+
+
+
+
+
+
+
 
 
 
@@ -33234,7 +66045,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
               fontSize: '0.75rem', fontWeight: '800', cursor: 'pointer'
+
+
+
+
+
+
+
+
 
 
 
@@ -33250,7 +66077,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
           ))}
+
+
+
+
+
+
+
+
 
 
 
@@ -33266,7 +66109,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -33282,7 +66141,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
       {(data.type === 'heading' || data.type === 'cta_banner' || data.type === 'image_text') && field('НАДПИСЬ НАД ЗАГОЛОВКОМ', 'subheading', 'НАШИ УСЛУГИ')}
+
+
+
+
+
+
+
+
 
 
 
@@ -33298,7 +66173,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
       {(data.type !== 'divider' && data.type !== 'button') && field('ОПИСАНИЕ / ТЕКСТ', 'body', 'Введите текст...', true)}
+
+
+
+
+
+
+
+
 
 
 
@@ -33314,7 +66205,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
       {data.type === 'two_col' && field('ПРАВАЯ КОЛОНКА', 'col2', 'Текст справа...', true)}
+
+
+
+
+
+
+
+
 
 
 
@@ -33330,7 +66237,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
       {(data.type === 'button' || data.type === 'card' || data.type === 'cta_banner' || data.type === 'image_text') && field('ТЕКСТ КНОПКИ / ССЫЛКИ', 'label', 'Узнать больше')}
+
+
+
+
+
+
+
+
 
 
 
@@ -33346,7 +66269,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
       {/* Accent / bg */}
+
+
+
+
+
+
+
+
 
 
 
@@ -33362,7 +66301,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
         <div style={{ display: 'grid', gap: '0.4rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -33378,7 +66333,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
           <input type="color" value={data.accent || '#008f24'} onChange={e => update('accent', e.target.value)}
+
+
+
+
+
+
+
+
 
 
 
@@ -33394,7 +66365,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -33410,7 +66397,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
           {lbl('ЦВЕТ ФОНА (CSS)')}
+
+
+
+
+
+
+
+
 
 
 
@@ -33426,7 +66429,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
             style={inp()} />
+
+
+
+
+
+
+
+
 
 
 
@@ -33442,7 +66461,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -33458,6 +66493,14 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
   );
 
 
@@ -33466,7 +66509,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -33482,7 +66541,23 @@ function CustomBlockEditor({ blockId, onOpenLibrary }: { blockId: string; onOpen
 
 
 
+
+
+
+
+
+
+
+
 function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) {
+
+
+
+
+
+
+
+
 
 
 
@@ -33498,7 +66573,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
     updateLayout({
+
+
+
+
+
+
+
+
 
 
 
@@ -33514,7 +66605,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
       styles: {
+
+
+
+
+
+
+
+
 
 
 
@@ -33530,7 +66637,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
         [editingKey]: { ...(currentLayout.styles?.[editingKey] || {}), [key]: val }
+
+
+
+
+
+
+
+
 
 
 
@@ -33546,6 +66669,14 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
     });
 
 
@@ -33554,7 +66685,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -33570,7 +66717,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
   const inp: React.CSSProperties = { background: '#111', border: '1px solid #333', padding: '1rem', color: '#fff', fontSize: '0.9rem', borderRadius: '8px', outline: 'none', width: '100%', boxSizing: 'border-box' };
+
+
+
+
+
+
+
+
 
 
 
@@ -33586,7 +66749,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
   if (editingKey.startsWith('gallery_')) {
+
+
+
+
+
+
+
+
 
 
 
@@ -33602,7 +66781,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
     const updateItem = (fieldKey: string, val: any) => {
+
+
+
+
+
+
+
+
 
 
 
@@ -33618,7 +66813,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
         ...currentLayout,
+
+
+
+
+
+
+
+
 
 
 
@@ -33634,7 +66845,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           ...(currentLayout.items || {}),
+
+
+
+
+
+
+
+
 
 
 
@@ -33650,7 +66877,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
             ...item,
+
+
+
+
+
+
+
+
 
 
 
@@ -33666,7 +66909,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           }
+
+
+
+
+
+
+
+
 
 
 
@@ -33682,6 +66941,14 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
       });
 
 
@@ -33690,7 +66957,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
     };
+
+
+
+
+
+
+
+
 
 
 
@@ -33706,7 +66989,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
       updateLayout({
+
+
+
+
+
+
+
+
 
 
 
@@ -33722,7 +67021,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
         items: {
+
+
+
+
+
+
+
+
 
 
 
@@ -33738,7 +67053,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           [editingKey]: {
+
+
+
+
+
+
+
+
 
 
 
@@ -33754,7 +67085,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
             [langCode]: {
+
+
+
+
+
+
+
+
 
 
 
@@ -33770,7 +67117,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
               [fieldKey]: val
+
+
+
+
+
+
+
+
 
 
 
@@ -33786,7 +67149,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           }
+
+
+
+
+
+
+
+
 
 
 
@@ -33802,6 +67181,14 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
       });
 
 
@@ -33810,7 +67197,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
     };
+
+
+
+
+
+
+
+
 
 
 
@@ -33826,7 +67229,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -33842,7 +67261,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
         <div style={{ display: 'grid', gap: '0.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -33858,7 +67293,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           <select 
+
+
+
+
+
+
+
+
 
 
 
@@ -33874,7 +67325,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
             onChange={e => updateItem('type', e.target.value)} 
+
+
+
+
+
+
+
+
 
 
 
@@ -33890,7 +67357,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           >
+
+
+
+
+
+
+
+
 
 
 
@@ -33906,7 +67389,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
             <option value="video">Видео (Video)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -33922,6 +67421,14 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
         </div>
 
 
@@ -33930,7 +67437,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
         <div style={{ display: 'grid', gap: '0.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -33946,7 +67469,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -33962,7 +67501,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
             onChange={e => updateItem('src', e.target.value)} 
+
+
+
+
+
+
+
+
 
 
 
@@ -33978,7 +67533,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
             style={inp} 
+
+
+
+
+
+
+
+
 
 
 
@@ -33994,7 +67565,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -34010,7 +67597,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           {lbl('КАТЕГОРИЯ')}
+
+
+
+
+
+
+
+
 
 
 
@@ -34026,7 +67629,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
             value={item.category || 'production'} 
+
+
+
+
+
+
+
+
 
 
 
@@ -34042,7 +67661,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
             style={{ ...inp, appearance: 'none' as any }}
+
+
+
+
+
+
+
+
 
 
 
@@ -34058,7 +67693,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
             <option value="production">Производство</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -34074,7 +67725,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
             <option value="equipment">Оборудование</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -34090,6 +67757,14 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           </select>
 
 
@@ -34098,7 +67773,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -34114,7 +67805,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
         {/* Translation Fields */}
+
+
+
+
+
+
+
+
 
 
 
@@ -34130,7 +67837,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           <div style={{ color: '#aaa', fontSize: '0.7rem', fontWeight: 'bold' }}>НАЗВАНИЕ (RU)</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -34146,7 +67869,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           <div style={{ color: '#aaa', fontSize: '0.7rem', fontWeight: 'bold' }}>НАЗВАНИЕ (KK)</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -34162,7 +67901,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           <div style={{ color: '#aaa', fontSize: '0.7rem', fontWeight: 'bold' }}>НАЗВАНИЕ (EN)</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -34178,7 +67933,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -34194,7 +67965,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           <div style={{ color: '#aaa', fontSize: '0.7rem', fontWeight: 'bold' }}>ОПИСАНИЕ (RU)</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -34210,7 +67997,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           <div style={{ color: '#aaa', fontSize: '0.7rem', fontWeight: 'bold' }}>ОПИСАНИЕ (KK)</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -34226,7 +68029,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           <div style={{ color: '#aaa', fontSize: '0.7rem', fontWeight: 'bold' }}>ОПИСАНИЕ (EN)</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -34242,6 +68061,14 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
         </div>
 
 
@@ -34250,7 +68077,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
         <button 
+
+
+
+
+
+
+
+
 
 
 
@@ -34266,7 +68109,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
              const newOrder = (currentLayout.order || []).filter((x: string) => x !== editingKey);
+
+
+
+
+
+
+
+
 
 
 
@@ -34282,7 +68141,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
              delete newItems[editingKey];
+
+
+
+
+
+
+
+
 
 
 
@@ -34298,6 +68173,14 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
              if (onClose) onClose();
 
 
@@ -34306,7 +68189,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           }}
+
+
+
+
+
+
+
+
 
 
 
@@ -34322,7 +68221,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
             marginTop: '1.5rem', 
+
+
+
+
+
+
+
+
 
 
 
@@ -34338,7 +68253,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
             background: 'rgba(255, 75, 75, 0.1)', 
+
+
+
+
+
+
+
+
 
 
 
@@ -34354,7 +68285,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
             color: '#ff4b4b', 
+
+
+
+
+
+
+
+
 
 
 
@@ -34370,7 +68317,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
             fontWeight: '800', 
+
+
+
+
+
+
+
+
 
 
 
@@ -34386,6 +68349,14 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           }}
 
 
@@ -34394,7 +68365,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
         >
+
+
+
+
+
+
+
+
 
 
 
@@ -34410,6 +68397,14 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
         </button>
 
 
@@ -34418,7 +68413,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -34434,7 +68445,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
   }
+
+
+
+
+
+
+
+
 
 
 
@@ -34450,7 +68477,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
     <div style={{ display: 'grid', gap: '0.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -34466,7 +68509,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
       <input value={s[key] || ''} onChange={e => setStyle(key, e.target.value)} placeholder={ph} style={inp} />
+
+
+
+
+
+
+
+
 
 
 
@@ -34482,6 +68541,14 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
   );
 
 
@@ -34490,7 +68557,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
   return (
+
+
+
+
+
+
+
+
 
 
 
@@ -34506,7 +68589,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
       {row('ВЕРТИКАЛЬНЫЕ ОТСТУПЫ', 'padding', '6rem 0')}
+
+
+
+
+
+
+
+
 
 
 
@@ -34522,7 +68621,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
       {row('СКРУГЛЕНИЕ УГЛОВ', 'borderRadius', '16px')}
+
+
+
+
+
+
+
+
 
 
 
@@ -34538,7 +68653,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
       {row('МАСШТАБ', 'transform', 'scale(1)')}
+
+
+
+
+
+
+
+
 
 
 
@@ -34554,7 +68685,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
       <div style={{ paddingTop: '1.5rem', borderTop: '1px solid #222', display: 'grid', gap: '0.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -34570,7 +68717,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
         <input
+
+
+
+
+
+
+
+
 
 
 
@@ -34586,7 +68749,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           onChange={e => updateLayout({ ...currentLayout, images: { ...(currentLayout.images || {}), [`${editingKey}_img`]: e.target.value } })}
+
+
+
+
+
+
+
+
 
 
 
@@ -34602,7 +68781,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           style={inp}
+
+
+
+
+
+
+
+
 
 
 
@@ -34618,7 +68813,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -34634,7 +68845,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
         <div style={{ paddingTop: '1.5rem', borderTop: '1px solid #222', display: 'grid', gap: '1rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -34650,7 +68877,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           <select value={s.gridColumn || 'span 1'} onChange={e => setStyle('gridColumn', e.target.value)} style={{ ...inp, appearance: 'none' as any }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -34666,7 +68909,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
             <option value="span 2">Широкий (2 кол.)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -34682,7 +68941,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           </select>
+
+
+
+
+
+
+
+
 
 
 
@@ -34698,7 +68973,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           <select value={s.gridRow || 'span 1'} onChange={e => setStyle('gridRow', e.target.value)} style={{ ...inp, appearance: 'none' as any }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -34714,7 +69005,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
             <option value="span 2">Высокая (2 ряда)</option>
+
+
+
+
+
+
+
+
 
 
 
@@ -34730,6 +69037,14 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
         </div>
 
 
@@ -34738,7 +69053,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
       )}
+
+
+
+
+
+
+
+
 
 
 
@@ -34754,7 +69085,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
         <div style={{ paddingTop: '1.5rem', borderTop: '1px solid #222', display: 'grid', gap: '0.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -34770,7 +69117,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
           <input
+
+
+
+
+
+
+
+
 
 
 
@@ -34786,7 +69149,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
             onChange={e => updateLayout({ ...currentLayout, links: { ...(currentLayout.links || {}), [editingKey]: e.target.value } })}
+
+
+
+
+
+
+
+
 
 
 
@@ -34802,7 +69181,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
             style={inp}
+
+
+
+
+
+
+
+
 
 
 
@@ -34818,7 +69213,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -34834,7 +69245,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
     </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -34850,7 +69277,23 @@ function StyleEditor({ editingKey, currentLayout, updateLayout, onClose }: any) 
 
 
 
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -34866,7 +69309,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
   const [newPageNameRu, setNewPageNameRu] = useState('');
+
+
+
+
+
+
+
+
 
 
 
@@ -34882,7 +69341,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
   const [newPageNameEn, setNewPageNameEn] = useState('');
+
+
+
+
+
+
+
+
 
 
 
@@ -34898,7 +69373,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
   const [editingPageId, setEditingPageId] = useState<string | null>(null);
+
+
+
+
+
+
+
+
 
 
 
@@ -34914,7 +69405,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
   const [editNameKk, setEditNameKk] = useState('');
+
+
+
+
+
+
+
+
 
 
 
@@ -34930,7 +69437,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
   const [editPath, setEditPath] = useState('');
+
+
+
+
+
+
+
+
 
 
 
@@ -34946,7 +69469,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     if (!newPageNameRu.trim() || !newPagePath.trim()) {
+
+
+
+
+
+
+
+
 
 
 
@@ -34962,6 +69501,14 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
       return;
 
 
@@ -34970,7 +69517,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -34986,7 +69549,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     let path = newPagePath.trim();
+
+
+
+
+
+
+
+
 
 
 
@@ -35002,6 +69581,14 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
       path = '/' + path;
 
 
@@ -35010,7 +69597,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -35026,7 +69629,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     const slug = path.replace('/', '').toLowerCase() || 'home';
+
+
+
+
+
+
+
+
 
 
 
@@ -35042,7 +69661,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
       alert('Страница с таким путем или идентификатором уже существует.');
+
+
+
+
+
+
+
+
 
 
 
@@ -35058,7 +69693,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -35074,7 +69725,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
       id: slug,
+
+
+
+
+
+
+
+
 
 
 
@@ -35090,7 +69757,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
       name: {
+
+
+
+
+
+
+
+
 
 
 
@@ -35106,7 +69789,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
         kk: newPageNameKk.trim() || newPageNameRu.trim(),
+
+
+
+
+
+
+
+
 
 
 
@@ -35122,7 +69821,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -35138,7 +69853,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     const updated = [...pages, newPage];
+
+
+
+
+
+
+
+
 
 
 
@@ -35154,7 +69885,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     localStorage.setItem('demetra_pages_list', JSON.stringify(updated));
+
+
+
+
+
+
+
+
 
 
 
@@ -35170,7 +69917,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     const newLayout = { order: [], hidden: [], styles: {}, images: {} };
+
+
+
+
+
+
+
+
 
 
 
@@ -35186,7 +69949,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     localStorage.setItem(`demetra_${slug}_layout`, JSON.stringify(newLayout));
+
+
+
+
+
+
+
+
 
 
 
@@ -35202,7 +69981,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     window.dispatchEvent(new Event('storage'));
+
+
+
+
+
+
+
+
 
 
 
@@ -35218,7 +70013,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     setNewPageNameRu('');
+
+
+
+
+
+
+
+
 
 
 
@@ -35234,7 +70045,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     setNewPageNameEn('');
+
+
+
+
+
+
+
+
 
 
 
@@ -35250,7 +70077,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -35266,7 +70109,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     setEditingPageId(p.id);
+
+
+
+
+
+
+
+
 
 
 
@@ -35282,7 +70141,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     setEditNameKk(p.name.kk);
+
+
+
+
+
+
+
+
 
 
 
@@ -35298,6 +70173,14 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     setEditPath(p.path);
 
 
@@ -35306,7 +70189,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -35322,7 +70221,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     const updated = pages.map((p: any) => {
+
+
+
+
+
+
+
+
 
 
 
@@ -35338,7 +70253,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
         return {
+
+
+
+
+
+
+
+
 
 
 
@@ -35354,7 +70285,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
           path: p.isSystem ? p.path : editPath,
+
+
+
+
+
+
+
+
 
 
 
@@ -35370,7 +70317,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
             ru: editNameRu,
+
+
+
+
+
+
+
+
 
 
 
@@ -35386,7 +70349,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
             en: editNameEn
+
+
+
+
+
+
+
+
 
 
 
@@ -35402,7 +70381,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
         };
+
+
+
+
+
+
+
+
 
 
 
@@ -35418,7 +70413,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
       return p;
+
+
+
+
+
+
+
+
 
 
 
@@ -35434,7 +70445,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     setPages(updated);
+
+
+
+
+
+
+
+
 
 
 
@@ -35450,7 +70477,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     window.dispatchEvent(new Event('storage'));
+
+
+
+
+
+
+
+
 
 
 
@@ -35466,7 +70509,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -35482,7 +70541,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     if (p.isSystem) return;
+
+
+
+
+
+
+
+
 
 
 
@@ -35498,7 +70573,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
       const updated = pages.filter((item: any) => item.id !== p.id);
+
+
+
+
+
+
+
+
 
 
 
@@ -35514,7 +70605,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
       localStorage.setItem('demetra_pages_list', JSON.stringify(updated));
+
+
+
+
+
+
+
+
 
 
 
@@ -35530,7 +70637,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
       localStorage.removeItem(`demetra_${p.id}_layout`);
+
+
+
+
+
+
+
+
 
 
 
@@ -35546,7 +70669,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
         const next = { ...prev };
+
+
+
+
+
+
+
+
 
 
 
@@ -35562,7 +70701,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
         return next;
+
+
+
+
+
+
+
+
 
 
 
@@ -35578,7 +70733,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
       window.dispatchEvent(new Event('storage'));
+
+
+
+
+
+
+
+
 
 
 
@@ -35594,7 +70765,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -35610,7 +70797,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -35626,7 +70829,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
       <div style={{ background: '#0a0a0a', padding: '3rem', borderRadius: '32px', border: '1px solid #222', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -35642,7 +70861,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
           <PlusCircle size={22} /> СОЗДАТЬ СТРАНИЦУ
+
+
+
+
+
+
+
+
 
 
 
@@ -35658,6 +70893,14 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
         <div style={{ display: 'grid', gap: '1.25rem' }}>
 
 
@@ -35666,7 +70909,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
           <div style={{ display: 'grid', gap: '0.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -35682,7 +70941,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
             <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -35698,7 +70973,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
               onChange={(e) => {
+
+
+
+
+
+
+
+
 
 
 
@@ -35714,7 +71005,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                 // Auto generate path if empty
+
+
+
+
+
+
+
+
 
 
 
@@ -35730,7 +71037,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                   const slug = e.target.value.toLowerCase()
+
+
+
+
+
+
+
+
 
 
 
@@ -35746,7 +71069,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                     .trim()
+
+
+
+
+
+
+
+
 
 
 
@@ -35762,7 +71101,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                   setNewPagePath('/' + slug);
+
+
+
+
+
+
+
+
 
 
 
@@ -35778,7 +71133,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
               }} 
+
+
+
+
+
+
+
+
 
 
 
@@ -35794,7 +71165,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
               style={{ background: '#111', border: '1px solid #222', padding: '1.25rem', borderRadius: '12px', color: '#fff', fontSize: '1rem', outline: 'none' }} 
+
+
+
+
+
+
+
+
 
 
 
@@ -35810,6 +71197,14 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
           </div>
 
 
@@ -35818,7 +71213,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
           <div style={{ display: 'grid', gap: '0.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -35834,7 +71245,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
             <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -35850,7 +71277,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
               onChange={(e) => setNewPageNameKk(e.target.value)} 
+
+
+
+
+
+
+
+
 
 
 
@@ -35866,7 +71309,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
               style={{ background: '#111', border: '1px solid #222', padding: '1.25rem', borderRadius: '12px', color: '#fff', fontSize: '1rem', outline: 'none' }} 
+
+
+
+
+
+
+
+
 
 
 
@@ -35882,6 +71341,14 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
           </div>
 
 
@@ -35890,7 +71357,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
           <div style={{ display: 'grid', gap: '0.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -35906,7 +71389,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
             <input 
+
+
+
+
+
+
+
+
 
 
 
@@ -35922,7 +71421,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
               onChange={(e) => setNewPageNameEn(e.target.value)} 
+
+
+
+
+
+
+
+
 
 
 
@@ -35938,7 +71453,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
               style={{ background: '#111', border: '1px solid #222', padding: '1.25rem', borderRadius: '12px', color: '#fff', fontSize: '1rem', outline: 'none' }} 
+
+
+
+
+
+
+
+
 
 
 
@@ -35954,7 +71485,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
           </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -35970,7 +71517,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
             <label style={{ fontSize: '0.7rem', color: '#888', fontWeight: '900' }}>URL ПУТЬ (должен начинаться с /)</label>
+
+
+
+
+
+
+
+
 
 
 
@@ -35986,7 +71549,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
               value={newPagePath} 
+
+
+
+
+
+
+
+
 
 
 
@@ -36002,7 +71581,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
               placeholder="/contacts"
+
+
+
+
+
+
+
+
 
 
 
@@ -36018,7 +71613,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
             />
+
+
+
+
+
+
+
+
 
 
 
@@ -36034,7 +71645,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -36050,7 +71677,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
           onClick={handleCreatePage}
+
+
+
+
+
+
+
+
 
 
 
@@ -36066,7 +71709,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
         >
+
+
+
+
+
+
+
+
 
 
 
@@ -36082,6 +71741,14 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
         </button>
 
 
@@ -36090,7 +71757,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -36106,7 +71789,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
       <div style={{ background: '#0a0a0a', padding: '3rem', borderRadius: '32px', border: '1px solid #222', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -36122,7 +71821,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxHeight: '550px', overflowY: 'auto', paddingRight: '0.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -36138,7 +71853,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
             const isEditing = editingPageId === p.id;
+
+
+
+
+
+
+
+
 
 
 
@@ -36154,7 +71885,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
               <div key={p.id} style={{ background: '#111', border: '1px solid #222', borderRadius: '16px', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -36170,7 +71917,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                   <div style={{ display: 'grid', gap: '1rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -36186,7 +71949,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                       <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -36202,7 +71981,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                         <input value={editNameRu} onChange={e => setEditNameRu(e.target.value)} style={{ background: '#000', border: '1px solid #333', padding: '0.5rem', borderRadius: '6px', color: '#fff', width: '100%' }} />
+
+
+
+
+
+
+
+
 
 
 
@@ -36218,7 +72013,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                       <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -36234,7 +72045,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                         <input value={editNameKk} onChange={e => setEditNameKk(e.target.value)} style={{ background: '#000', border: '1px solid #333', padding: '0.5rem', borderRadius: '6px', color: '#fff', width: '100%' }} />
+
+
+
+
+
+
+
+
 
 
 
@@ -36250,7 +72077,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                     </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -36266,7 +72109,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                       <div>
+
+
+
+
+
+
+
+
 
 
 
@@ -36282,6 +72141,14 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                         <input value={editNameEn} onChange={e => setEditNameEn(e.target.value)} style={{ background: '#000', border: '1px solid #333', padding: '0.5rem', borderRadius: '6px', color: '#fff', width: '100%' }} />
 
 
@@ -36290,7 +72157,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                       </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -36306,7 +72189,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                         <label style={{ fontSize: '0.6rem', color: '#666', fontWeight: '900' }}>ПУТЬ</label>
+
+
+
+
+
+
+
+
 
 
 
@@ -36322,6 +72221,14 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                       </div>
 
 
@@ -36330,7 +72237,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                     </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -36346,7 +72269,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                       <button onClick={() => handleSaveEdit(p.id)} style={{ background: '#00ff41', color: '#000', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', fontWeight: '800', cursor: 'pointer', fontSize: '0.8rem' }}>Сохранить</button>
+
+
+
+
+
+
+
+
 
 
 
@@ -36362,6 +72301,14 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                     </div>
 
 
@@ -36370,7 +72317,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                   </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -36386,7 +72349,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -36402,7 +72381,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+
+
+
+
+
+
+
+
 
 
 
@@ -36418,7 +72413,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                         {p.isSystem && (
+
+
+
+
+
+
+
+
 
 
 
@@ -36434,7 +72445,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                         )}
+
+
+
+
+
+
+
+
 
 
 
@@ -36450,6 +72477,14 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                       <div style={{ fontSize: '0.8rem', color: '#00ff41', fontWeight: '700', marginTop: '0.25rem' }}>{p.path}</div>
 
 
@@ -36458,7 +72493,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                     </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -36474,7 +72525,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                       <button 
+
+
+
+
+
+
+
+
 
 
 
@@ -36490,7 +72557,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                         style={{ background: '#222', border: 'none', color: '#aaa', padding: '0.5rem', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+
+
+
+
+
+
+
+
 
 
 
@@ -36506,7 +72589,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                       >
+
+
+
+
+
+
+
+
 
 
 
@@ -36522,7 +72621,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                       </button>
+
+
+
+
+
+
+
+
 
 
 
@@ -36538,7 +72653,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                         <button 
+
+
+
+
+
+
+
+
 
 
 
@@ -36554,7 +72685,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                           style={{ background: 'rgba(255,0,0,0.1)', border: 'none', color: '#ff4b4b', padding: '0.5rem', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+
+
+
+
+
+
+
+
 
 
 
@@ -36570,7 +72717,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                         >
+
+
+
+
+
+
+
+
 
 
 
@@ -36586,7 +72749,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                         </button>
+
+
+
+
+
+
+
+
 
 
 
@@ -36602,7 +72781,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                     </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -36618,7 +72813,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
                 )}
+
+
+
+
+
+
+
+
 
 
 
@@ -36634,7 +72845,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
             );
+
+
+
+
+
+
+
+
 
 
 
@@ -36650,7 +72877,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -36666,7 +72909,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
     </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -36682,7 +72941,23 @@ function PagesManager({ pages, setPages, pageLayouts, setPageLayouts, t, lang }:
 
 
 
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
