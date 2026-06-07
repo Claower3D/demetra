@@ -148,47 +148,13 @@ export default function Layout() {
           </Link>
 
           <nav className="nav-links">
-            <div 
-              className="nav-item"
-              onMouseEnter={() => setActiveDropdown('about')}
-              onMouseLeave={() => setActiveDropdown(null)}
-              style={{ position: 'relative' }}
-            >
-              <Link to="/about" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                {pages.find(p => p.id === 'about')?.name[lang as 'ru' | 'kk' | 'en'] || t.nav_about} <ChevronDown size={14} />
-              </Link>
-              
-              <AnimatePresence>
-                {activeDropdown === 'about' && (
-                  <motion.div 
-                    initial="hidden"
-                    animate="visible"
-                    exit="hidden"
-                    variants={dropdownVariants}
-                    style={{
-                      position: 'absolute',
-                      top: '100%',
-                      left: 0,
-                      background: 'var(--surface)',
-                      border: '1px solid var(--border)',
-                      borderRadius: '8px',
-                      padding: '1rem',
-                      minWidth: '200px',
-                      boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
-                      zIndex: 100
-                    }}
-                  >
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                      <Link to="/pay" className="nav-link">{t.nav_pay}</Link>
-                      <Link to="/partner" className="nav-link">{t.nav_partner}</Link>
-                      <Link to="/reviews" className="nav-link">{t.nav_reviews}</Link>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {pages.filter(p => p.id !== 'home' && p.id !== 'about').map(p => {
+            <Link to="/about" className="nav-link">{t.nav_about}</Link>
+            <Link to="/catalog" className="nav-link">{t.nav_catalog}</Link>
+            <Link to="/services" className="nav-link">{t.nav_service}</Link>
+            <Link to="/partner" className="nav-link">{t.nav_partner}</Link>
+            <Link to="/gallery" className="nav-link">{t.nav_gallery}</Link>
+            <Link to="/contacts" className="nav-link">{t.nav_contact}</Link>
+            {pages.filter(p => !p.isSystem).map(p => {
               const label = p.name[lang as 'ru' | 'kk' | 'en'] || p.name.ru;
               return (
                 <Link key={p.id} to={p.path} className="nav-link">
@@ -252,8 +218,13 @@ export default function Layout() {
               }}
             >
               <div className="container" style={{ padding: '2rem 0', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <Link to="/about" className="nav-link">{pages.find(p => p.id === 'about')?.name[lang as 'ru' | 'kk' | 'en'] || t.nav_about}</Link>
-                {pages.filter(p => p.id !== 'home' && p.id !== 'about').map(p => {
+                <Link to="/about" className="nav-link">{t.nav_about}</Link>
+                <Link to="/catalog" className="nav-link">{t.nav_catalog}</Link>
+                <Link to="/services" className="nav-link">{t.nav_service}</Link>
+                <Link to="/partner" className="nav-link">{t.nav_partner}</Link>
+                <Link to="/gallery" className="nav-link">{t.nav_gallery}</Link>
+                <Link to="/contacts" className="nav-link">{t.nav_contact}</Link>
+                {pages.filter(p => !p.isSystem).map(p => {
                   const label = p.name[lang as 'ru' | 'kk' | 'en'] || p.name.ru;
                   return (
                     <Link key={p.id} to={p.path} className="nav-link">
@@ -288,8 +259,13 @@ export default function Layout() {
             <div>
               <h4 style={{ color: 'var(--foreground)', marginBottom: '1.5rem' }}>{t.footer_nav}</h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                <Link to="/about" className="nav-link">{pages.find(p => p.id === 'about')?.name[lang as 'ru' | 'kk' | 'en'] || t.nav_about}</Link>
-                {pages.filter(p => p.id !== 'home' && p.id !== 'about').map(p => {
+                <Link to="/about" className="nav-link">{t.nav_about}</Link>
+                <Link to="/catalog" className="nav-link">{t.nav_catalog}</Link>
+                <Link to="/services" className="nav-link">{t.nav_service}</Link>
+                <Link to="/partner" className="nav-link">{t.nav_partner}</Link>
+                <Link to="/gallery" className="nav-link">{t.nav_gallery}</Link>
+                <Link to="/contacts" className="nav-link">{t.nav_contact}</Link>
+                {pages.filter(p => !p.isSystem).map(p => {
                   const label = p.name[lang as 'ru' | 'kk' | 'en'] || p.name.ru;
                   return (
                     <Link key={p.id} to={p.path} className="nav-link">
