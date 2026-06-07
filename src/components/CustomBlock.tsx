@@ -20,6 +20,8 @@ export interface CustomBlockData {
   mediaType?: 'image' | 'video';
   videoSrc?: string;
   mediaPosition?: string;
+  mediaAspect?: string;
+  mediaFit?: string;
   childrenBlocks?: CustomBlockData[];
   displayType?: 'grid' | 'flex';
   cols?: number;
@@ -217,47 +219,67 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
 
     case 'card':
       const cardMediaPosition = data.mediaPosition || 'top';
+      const cardMediaAspect = data.mediaAspect || 'auto';
+      const cardMediaFit = (data.mediaFit || 'cover') as any;
+      const cardHeight = cardMediaAspect === 'auto' ? '260px' : undefined;
+
       const cardMediaElement = (
-        data.mediaType === 'video' && data.videoSrc ? (
-          <div style={{ width: '100%', height: '260px', position: 'relative', overflow: 'hidden' }}>
-            {data.videoSrc.includes('youtube.com') || data.videoSrc.includes('youtu.be') ? (
-              (() => {
-                let embedId = '';
-                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-                const match = data.videoSrc.match(regExp);
-                if (match && match[2].length === 11) embedId = match[2];
-                return embedId ? (
-                  <iframe
-                    src={`https://www.youtube.com/embed/${embedId}?autoplay=1&mute=1&loop=1&playlist=${embedId}&controls=0`}
-                    style={{ width: '100%', height: '100%', border: 'none' }}
-                    title="Card Video"
-                  />
-                ) : null;
-              })()
-            ) : (
-              <video src={data.videoSrc} autoPlay loop muted playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            )}
-          </div>
-        ) : (
-          data.src ? (
-            <img src={data.src} alt="" style={{ width: '100%', height: '260px', objectFit: 'cover', display: 'block' }} />
+        <div
+          className={isBuilder ? "builder-media-hoverable" : ""}
+          onClick={isBuilder ? (e) => {
+            e.stopPropagation();
+            window.parent.postMessage({ type: 'DEMETRA_BUILDER', action: 'OPEN_MODAL', id: id, tab: 'media' }, '*');
+          } : undefined}
+          style={{ width: '100%', height: cardHeight, aspectRatio: cardMediaAspect === 'auto' ? undefined : cardMediaAspect, position: 'relative', overflow: 'hidden' }}
+        >
+          {data.mediaType === 'video' && data.videoSrc ? (
+            <div style={{ width: '100%', height: '100%', position: 'relative', overflow: 'hidden' }}>
+              {data.videoSrc.includes('youtube.com') || data.videoSrc.includes('youtu.be') ? (
+                (() => {
+                  let embedId = '';
+                  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                  const match = data.videoSrc.match(regExp);
+                  if (match && match[2].length === 11) embedId = match[2];
+                  return embedId ? (
+                    <iframe
+                      src={`https://www.youtube.com/embed/${embedId}?autoplay=1&mute=1&loop=1&playlist=${embedId}&controls=0`}
+                      style={{ width: '100%', height: '100%', border: 'none' }}
+                      title="Card Video"
+                    />
+                  ) : null;
+                })()
+              ) : (
+                <video src={data.videoSrc} autoPlay loop muted playsInline style={{ width: '100%', height: '100%', objectFit: cardMediaFit }} />
+              )}
+            </div>
           ) : (
-            isBuilder ? (
-              <div style={{
-                width: '100%', height: '260px', background: 'rgba(255,255,255,0.02)',
-                borderBottom: '1.5px dashed var(--border)', display: 'flex', flexDirection: 'column',
-                alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: 'var(--text-muted)'
-              }}>
-                <span style={{ fontSize: '2rem' }}>🖼️</span>
-                <span style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>Добавь фото или видео</span>
-              </div>
-            ) : null
-          )
-        )
+            data.src ? (
+              <img src={data.src} alt="" style={{ width: '100%', height: '100%', objectFit: cardMediaFit, display: 'block' }} />
+            ) : (
+              isBuilder ? (
+                <div style={{
+                  width: '100%', height: '100%', minHeight: '260px', background: 'rgba(255,255,255,0.02)',
+                  borderBottom: '1.5px dashed var(--border)', display: 'flex', flexDirection: 'column',
+                  alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: 'var(--text-muted)'
+                }}>
+                  <span style={{ fontSize: '2rem' }}>🖼️</span>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>Добавь фото или видео</span>
+                </div>
+              ) : null
+            )
+          )}
+        </div>
       );
 
       const cardTextElement = (
-        <div style={{ padding: '2.5rem' }}>
+        <div 
+          className={isBuilder ? "builder-text-hoverable" : ""}
+          onClick={isBuilder ? (e) => {
+            e.stopPropagation();
+            window.parent.postMessage({ type: 'DEMETRA_BUILDER', action: 'OPEN_MODAL', id: id, tab: 'content' }, '*');
+          } : undefined}
+          style={{ padding: '2.5rem' }}
+        >
           {label && (
             <h3 style={{ fontSize: '1.5rem', fontWeight: '900', marginBottom: '1rem', color: 'var(--foreground)' }}>
               {label}
@@ -298,7 +320,15 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
 
     case 'two_col':
       return (
-        <div {...wrapperProps} style={{ ...wrapperProps.style, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start' }}>
+        <div 
+          {...wrapperProps} 
+          className={`${wrapperProps.className || ''} ${isBuilder ? "builder-text-hoverable" : ""}`}
+          onClick={isBuilder ? (e) => {
+            e.stopPropagation();
+            window.parent.postMessage({ type: 'DEMETRA_BUILDER', action: 'OPEN_MODAL', id: id, tab: 'content' }, '*');
+          } : undefined}
+          style={{ ...wrapperProps.style, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start' }}
+        >
           <p style={{ fontSize: '1.1rem', lineHeight: 1.8, color: 'var(--text-muted)', margin: 0, whiteSpace: 'pre-wrap' }}>
             {col1 || 'Левая колонка...'}
           </p>
@@ -310,48 +340,66 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
 
     case 'image_text':
       const mediaPosition = data.mediaPosition || 'left';
+      const mediaAspect = data.mediaAspect || '16/9';
+      const mediaFit = (data.mediaFit || 'cover') as any;
+
       const mediaElement = (
-        data.mediaType === 'video' && data.videoSrc ? (
-          <div style={{ width: '100%', borderRadius: 'var(--radius)', aspectRatio: '16/9', overflow: 'hidden', position: 'relative' }}>
-            {data.videoSrc.includes('youtube.com') || data.videoSrc.includes('youtu.be') ? (
-              (() => {
-                let embedId = '';
-                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-                const match = data.videoSrc.match(regExp);
-                if (match && match[2].length === 11) embedId = match[2];
-                return embedId ? (
-                  <iframe
-                    src={`https://www.youtube.com/embed/${embedId}?autoplay=1&mute=1&loop=1&playlist=${embedId}&controls=0`}
-                    style={{ width: '100%', height: '100%', border: 'none' }}
-                    title="Block Video"
-                  />
-                ) : null;
-              })()
-            ) : (
-              <video src={data.videoSrc} autoPlay loop muted playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            )}
-          </div>
-        ) : (
-          data.src ? (
-            <img src={data.src} alt="" style={{ width: '100%', borderRadius: 'var(--radius)', display: 'block', aspectRatio: '16/9', objectFit: 'cover' }} />
+        <div
+          className={isBuilder ? "builder-media-hoverable" : ""}
+          onClick={isBuilder ? (e) => {
+            e.stopPropagation();
+            window.parent.postMessage({ type: 'DEMETRA_BUILDER', action: 'OPEN_MODAL', id: id, tab: 'media' }, '*');
+          } : undefined}
+          style={{ width: '100%', borderRadius: 'var(--radius)', aspectRatio: mediaAspect === 'auto' ? undefined : mediaAspect, height: mediaAspect === 'auto' ? '400px' : undefined, overflow: 'hidden', position: 'relative' }}
+        >
+          {data.mediaType === 'video' && data.videoSrc ? (
+            <div style={{ width: '100%', height: '100%', position: 'relative', overflow: 'hidden' }}>
+              {data.videoSrc.includes('youtube.com') || data.videoSrc.includes('youtu.be') ? (
+                (() => {
+                  let embedId = '';
+                  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                  const match = data.videoSrc.match(regExp);
+                  if (match && match[2].length === 11) embedId = match[2];
+                  return embedId ? (
+                    <iframe
+                      src={`https://www.youtube.com/embed/${embedId}?autoplay=1&mute=1&loop=1&playlist=${embedId}&controls=0`}
+                      style={{ width: '100%', height: '100%', border: 'none' }}
+                      title="Block Video"
+                    />
+                  ) : null;
+                })()
+              ) : (
+                <video src={data.videoSrc} autoPlay loop muted playsInline style={{ width: '100%', height: '100%', objectFit: mediaFit }} />
+              )}
+            </div>
           ) : (
-            isBuilder ? (
-              <div style={{
-                width: '100%', aspectRatio: '16/9', background: 'rgba(255,255,255,0.02)',
-                border: '1.5px dashed var(--border)', borderRadius: 'var(--radius)',
-                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                gap: '0.5rem', color: 'var(--text-muted)'
-              }}>
-                <span style={{ fontSize: '2rem' }}>🖼️</span>
-                <span style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>Добавь фото или видео</span>
-              </div>
-            ) : null
-          )
-        )
+            data.src ? (
+              <img src={data.src} alt="" style={{ width: '100%', height: '100%', display: 'block', objectFit: mediaFit }} />
+            ) : (
+              isBuilder ? (
+                <div style={{
+                  width: '100%', height: '100%', minHeight: '260px', background: 'rgba(255,255,255,0.02)',
+                  border: '1.5px dashed var(--border)', borderRadius: 'var(--radius)',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  gap: '0.5rem', color: 'var(--text-muted)'
+                }}>
+                  <span style={{ fontSize: '2rem' }}>🖼️</span>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>Добавь фото или видео</span>
+                </div>
+              ) : null
+            )
+          )}
+        </div>
       );
 
       const textElement = (
-        <div>
+        <div 
+          className={isBuilder ? "builder-text-hoverable" : ""}
+          onClick={isBuilder ? (e) => {
+            e.stopPropagation();
+            window.parent.postMessage({ type: 'DEMETRA_BUILDER', action: 'OPEN_MODAL', id: id, tab: 'content' }, '*');
+          } : undefined}
+        >
           {heading && <h3 style={{ fontSize: '2rem', fontWeight: '900', marginBottom: '1.5rem', color: 'var(--foreground)' }}>{heading}</h3>}
           {body && <p style={{ color: 'var(--text-muted)', lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>{body}</p>}
           {data.href && label && (

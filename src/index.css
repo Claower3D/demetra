@@ -1013,3 +1013,73 @@ body.light-theme select:focus {
     padding: 2rem !important;
   }
 }
+
+/* Builder Clickable Overlays */
+body.builder-mode .builder-media-hoverable {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: 2px solid transparent;
+}
+body.builder-mode .builder-media-hoverable:hover {
+  outline: 2px solid #00ff41;
+  box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+}
+body.builder-mode .builder-media-hoverable::after {
+  content: '🖼️ Настроить медиа';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #00ff41;
+  color: #000;
+  font-family: var(--font-space), sans-serif;
+  font-size: 0.7rem;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 6px;
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0,255,65,0.4);
+}
+body.builder-mode .builder-media-hoverable:hover::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+body.builder-mode .builder-text-hoverable {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: 2px solid transparent;
+  padding: 4px;
+  border-radius: 4px;
+}
+body.builder-mode .builder-text-hoverable:hover {
+  outline: 2px solid #00ff41;
+}
+body.builder-mode .builder-text-hoverable::after {
+  content: '✏️ Редактировать текст';
+  position: absolute;
+  top: -25px;
+  left: 10px;
+  background: #00ff41;
+  color: #000;
+  font-family: var(--font-space), sans-serif;
+  font-size: 0.7rem;
+  font-weight: 900;
+  padding: 2px 8px;
+  border-radius: 4px;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0,255,65,0.4);
+}
+body.builder-mode .builder-text-hoverable:hover::after {
+  opacity: 1;
+  transform: translateY(0);
+}
