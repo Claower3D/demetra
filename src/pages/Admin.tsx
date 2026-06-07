@@ -144,6 +144,39 @@ const findParentBlockOfNested = (nestedId: string) => {
 
 };
 
+const compressAndGetBase64 = (file: File, callback: (base64: string) => void) => {
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    const img = new Image();
+    img.onload = () => {
+      const maxW = 1200;
+      const maxH = 1200;
+      let w = img.width;
+      let h = img.height;
+      if (w > maxW || h > maxH) {
+        if (w > h) {
+          h = Math.round((h * maxW) / w);
+          w = maxW;
+        } else {
+          w = Math.round((w * maxH) / h);
+          h = maxH;
+        }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0, w, h);
+        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.8);
+        callback(compressedBase64);
+      }
+    };
+    img.src = event.target?.result as string;
+  };
+  reader.readAsDataURL(file);
+};
+
 export const defaultDataMap: Record<string, any> = {
 
   heading: { type: 'heading', heading: 'Впиши заголовок...', subheading: 'Раздел', body: 'Впиши описание...' },
@@ -8998,6 +9031,9 @@ function ProductManager({ products, setProducts, currentLang, categories, window
   const [newDescKk, setNewDescKk] = useState('');
   const [newDescEn, setNewDescEn] = useState('');
 
+  // File input ref for new product
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   // Active language tab for editing each product in the list (dictionary map of product ID to language)
   const [productLangMap, setProductLangMap] = useState<Record<number | string, 'ru' | 'kk' | 'en'>>({});
 
@@ -9107,9 +9143,13 @@ function ProductManager({ products, setProducts, currentLang, categories, window
         <div style={{ display: 'grid', gap: '1.25rem' }}>
           {/* Image URL */}
           <div style={{ display: 'grid', gap: '0.5rem' }}>
-            <label style={{ fontSize: '0.75rem', color: '#a1a1aa', fontWeight: '900', letterSpacing: '0.05em' }}>URL ИЗОБРАЖЕНИЯ</label>
+            <label style={{ fontSize: '0.75rem', color: '#a1a1aa', fontWeight: '900', letterSpacing: '0.05em' }}>URL ИЗОБРАЖЕНИЯ / ЗАГРУЗКА</label>
             <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-              <div style={{ width: '60px', height: '60px', borderRadius: '8px', background: '#09090b', border: '1px solid #27272a', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <div 
+                onClick={() => fileInputRef.current?.click()}
+                style={{ width: '60px', height: '60px', borderRadius: '8px', background: '#09090b', border: '1px solid #27272a', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer' }}
+                title="Кликните для выбора изображения с устройства"
+              >
                 {newImage ? (
                   <img src={newImage} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/100?text=Error'; }} />
                 ) : (
@@ -9117,13 +9157,36 @@ function ProductManager({ products, setProducts, currentLang, categories, window
                 )}
               </div>
               <input 
+                type="file" 
+                ref={fileInputRef} 
+                accept="image/*" 
+                style={{ display: 'none' }} 
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    compressAndGetBase64(file, (base64) => {
+                      setNewImage(base64);
+                    });
+                  }
+                }} 
+              />
+              <input 
                 value={newImage} 
                 onChange={(e) => setNewImage(e.target.value)}
-                placeholder="https://example.com/image.jpg"
+                placeholder="Вставьте ссылку или выберите файл..."
                 style={{ background: '#09090b', border: '1px solid #27272a', padding: '0.75rem 1rem', borderRadius: '12px', color: '#ffffff', fontSize: '0.95rem', outline: 'none', transition: 'border-color 0.2s', flex: 1 }} 
                 onFocus={(e) => e.target.style.borderColor = 'var(--admin-accent)'}
                 onBlur={(e) => e.target.style.borderColor = '#27272a'}
               />
+              <button 
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                style={{ background: '#09090b', border: '1px solid #27272a', color: '#fff', padding: '0.75rem 1rem', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.9rem', transition: 'all 0.2s' }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--admin-accent)'; (e.currentTarget as HTMLElement).style.background = '#18181b'; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = '#27272a'; (e.currentTarget as HTMLElement).style.background = '#09090b'; }}
+              >
+                Обзор
+              </button>
             </div>
           </div>
 
@@ -9244,13 +9307,37 @@ function ProductManager({ products, setProducts, currentLang, categories, window
                       <img src={product.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/200?text=No+Image'; }} />
                       <button 
                         onClick={() => handleDeleteProduct(product.id)}
-                        style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(239, 68, 68, 0.9)', color: '#fff', border: 'none', borderRadius: '8px', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background 0.2s' }}
+                        style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(239, 68, 68, 0.9)', color: '#fff', border: 'none', borderRadius: '8px', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background 0.2s', zIndex: 10 }}
                         onMouseEnter={(e) => e.currentTarget.style.background = '#ef4444'}
                         onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.9)'}
                         title="Удалить товар"
                       >
                         <Trash2 size={16} />
                       </button>
+                      <button 
+                        onClick={() => {
+                          document.getElementById(`file-input-${product.id}`)?.click();
+                        }}
+                        style={{ position: 'absolute', bottom: '10px', right: '10px', background: 'rgba(0, 0, 0, 0.75)', color: '#fff', border: '1px solid #333', borderRadius: '8px', padding: '0.4rem 0.8rem', display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 'bold', zIndex: 10, transition: 'all 0.2s' }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(0, 0, 0, 0.9)'; e.currentTarget.style.borderColor = 'var(--admin-accent)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(0, 0, 0, 0.75)'; e.currentTarget.style.borderColor = '#333'; }}
+                      >
+                        <ImageIcon size={14} /> Загрузить
+                      </button>
+                      <input 
+                        id={`file-input-${product.id}`}
+                        type="file" 
+                        accept="image/*" 
+                        style={{ display: 'none' }} 
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            compressAndGetBase64(file, (base64) => {
+                              updateProductField(product.id, 'image', base64);
+                            });
+                          }
+                        }} 
+                      />
                     </div>
                     <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                       <label style={{ fontSize: '0.65rem', color: '#a1a1aa', fontWeight: '900', letterSpacing: '0.05em' }}>URL КАРТИНКИ</label>
