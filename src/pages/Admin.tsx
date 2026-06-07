@@ -835,6 +835,125 @@ function TildaEditor({ pages, pageLayouts, setPageLayouts, allTranslations, upda
           const k = arrKey || 'order';
           const newId = `new_block_${Date.now()}`;
 
+          // If target is a custom block, we nest it inside!
+          const isTargetCustom = targetId.startsWith('new_block_') || targetId.startsWith('nested_');
+          
+          if (isTargetCustom) {
+            try {
+              const customBlocks = JSON.parse(localStorage.getItem('demetra_custom_blocks') || '{}');
+              const newNestedId = `nested_${Date.now()}`;
+              const newNestedBlock = {
+                id: newNestedId,
+                ...((defaultDataMap[type] || { type }))
+              };
+
+              // Helper function to find and modify the target block inside the blocks tree recursively
+              const findAndInsert = (block: any): boolean => {
+                if (block.id === targetId) {
+                  if (block.type === 'container') {
+                    block.childrenBlocks = [...(block.childrenBlocks || []), newNestedBlock];
+                  } else {
+                    const originalChild = {
+                      id: `nested_orig_${Date.now()}`,
+                      ...block
+                    };
+                    block.type = 'container';
+                    block.childrenBlocks = [originalChild, newNestedBlock];
+                    block.displayType = 'flex';
+                    block.flexDirection = 'column';
+                    block.gap = '1.5rem';
+                    // Clear values that belong to leaf blocks so they don't render on the container wrapper
+                    delete block.heading;
+                    delete block.subheading;
+                    delete block.body;
+                    delete block.label;
+                    delete block.href;
+                    delete block.src;
+                    delete block.col1;
+                    delete block.col2;
+                  }
+                  return true;
+                }
+
+                if (Array.isArray(block.childrenBlocks)) {
+                  for (let i = 0; i < block.childrenBlocks.length; i++) {
+                    const child = block.childrenBlocks[i];
+                    if (child.id === targetId) {
+                      if (child.type === 'container') {
+                        child.childrenBlocks = [...(child.childrenBlocks || []), newNestedBlock];
+                      } else {
+                        const originalChild = {
+                          id: `nested_orig_${Date.now()}`,
+                          ...child
+                        };
+                        const updatedChild = {
+                          id: targetId,
+                          type: 'container',
+                          childrenBlocks: [originalChild, newNestedBlock],
+                          displayType: 'flex',
+                          flexDirection: 'column',
+                          gap: '1.5rem'
+                        };
+                        block.childrenBlocks[i] = updatedChild;
+                      }
+                      return true;
+                    }
+                    if (findAndInsert(child)) return true;
+                  }
+                }
+                return false;
+              };
+
+              let found = false;
+              for (const key of Object.keys(customBlocks)) {
+                if (key === targetId) {
+                  const block = customBlocks[key];
+                  if (block.type === 'container') {
+                    block.childrenBlocks = [...(block.childrenBlocks || []), newNestedBlock];
+                  } else {
+                    const originalChild = {
+                      id: `nested_orig_${Date.now()}`,
+                      ...block
+                    };
+                    customBlocks[key] = {
+                      id: targetId,
+                      type: 'container',
+                      childrenBlocks: [originalChild, newNestedBlock],
+                      displayType: 'flex',
+                      flexDirection: 'column',
+                      gap: '1.5rem'
+                    };
+                  }
+                  found = true;
+                  break;
+                }
+                if (findAndInsert(customBlocks[key])) {
+                  found = true;
+                  break;
+                }
+              }
+
+              if (found) {
+                localStorage.setItem('demetra_custom_blocks', JSON.stringify(customBlocks));
+                window.dispatchEvent(new Event('storage'));
+                
+                if (iframeRef.current) {
+                  iframeRef.current.contentWindow?.postMessage({
+                    type: 'DEMETRA_UPDATE_LAYOUT',
+                    layout: currentLayout
+                  }, '*');
+                }
+                
+                setEditingKey(newNestedId);
+                setIsModalOpen(true);
+                setModalActiveTab('content');
+                return; // Done!
+              }
+            } catch (err) {
+              console.error("Failed to insert nested block inside target", err);
+            }
+          }
+
           if (k.startsWith('nested:')) {
             const containerBlockId = k.replace('nested:', '');
             try {
