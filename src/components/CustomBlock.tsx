@@ -124,7 +124,7 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
 
   const links = layoutLinks[id] || {};
   const isBuilder = window.self !== window.top;
-  
+
   const handleClick = (e: React.MouseEvent) => {
     if (isBuilder) return; // Don't trigger links in builder
     if (links.modalId) {
@@ -433,7 +433,7 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
       const alignItems = data.alignItems || 'stretch';
 
       return (
-        <div 
+        <div
           {...wrapperProps}
           onDragOver={handleContainerDragOver}
           onDragLeave={handleContainerDragLeave}
@@ -446,13 +446,13 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
             gap: gap,
             alignItems: alignItems,
             minHeight: isBuilder ? '120px' : 'auto',
-            border: isBuilder 
-              ? (isOverContainer ? '2px dashed #00ff41' : '1.5px dashed rgba(0, 255, 65, 0.25)') 
+            border: isBuilder
+              ? (isOverContainer ? '2px dashed #00ff41' : '1.5px dashed rgba(0, 255, 65, 0.25)')
               : 'none',
             padding: isBuilder ? '2.5rem' : '1rem 0',
             borderRadius: 'var(--radius)',
-            background: isBuilder 
-              ? (isOverContainer ? 'rgba(0, 255, 65, 0.05)' : 'rgba(255,255,255,0.01)') 
+            background: isBuilder
+              ? (isOverContainer ? 'rgba(0, 255, 65, 0.05)' : 'rgba(255,255,255,0.01)')
               : bg,
             position: 'relative',
             boxShadow: (isBuilder && isOverContainer) ? '0 0 25px rgba(0, 255, 65, 0.25)' : 'none',
@@ -493,9 +493,9 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
             const gridRow = childStyle.gridRow || 'auto';
 
             return (
-              <div 
-                key={child.id} 
-                style={{ 
+              <div
+                key={child.id}
+                style={{
                   position: 'relative',
                   gridColumn: displayType === 'grid' ? gridColumn : undefined,
                   gridRow: displayType === 'grid' ? gridRow : undefined,
@@ -505,11 +505,11 @@ export default function CustomBlock({ id, data }: { id: string; data: CustomBloc
                 }}
               >
                 {isBuilder ? (
-                  <BuilderWrapper 
-                    id={child.id || ''} 
-                    index={index} 
-                    isFirst={index === 0} 
-                    isLast={index === children.length - 1} 
+                  <BuilderWrapper
+                    id={child.id || ''}
+                    index={index}
+                    isFirst={index === 0}
+                    isLast={index === children.length - 1}
                     isBuilder={isBuilder}
                     arrayKey={"nested:" + id}
                   >

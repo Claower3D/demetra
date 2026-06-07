@@ -29,30 +29,51 @@ export default function Home() {
     images: {}
   });
 
-  const slides = [
-    { 
-      img: layout?.images?.hero_1 || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80", 
-      titleKey: 'hero_title_1', 
-      subtitleKey: 'hero_title_2', 
-      descKey: 'hero_subtitle' 
-    },
-    { 
-      img: layout?.images?.hero_2 || "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80", 
-      titleKey: 'hero_title_3', 
-      subtitleKey: 'hero_badge', 
-      descKey: 'hero_subtitle' 
-    }
-  ];
+  const slides = Array.isArray(layout?.slides) && layout.slides.length > 0
+    ? layout.slides.map((slide: any) => ({
+        ...slide,
+        titleKey: slide.titleKey || `hero_slide_title_${slide.id}`,
+        subtitleKey: slide.subtitleKey || `hero_slide_subtitle_${slide.id}`,
+        descKey: slide.descKey || `hero_slide_desc_${slide.id}`,
+        img: slide.img || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80"
+      }))
+    : [
+        { 
+          id: "slide_1",
+          img: layout?.images?.hero_1 || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80", 
+          video: "",
+          mediaType: "image",
+          titleKey: 'hero_title_1', 
+          subtitleKey: 'hero_title_2', 
+          descKey: 'hero_subtitle' 
+        },
+        { 
+          id: "slide_2",
+          img: layout?.images?.hero_2 || "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80", 
+          video: "",
+          mediaType: "image",
+          titleKey: 'hero_title_3', 
+          subtitleKey: 'hero_title_4', 
+          descKey: 'hero_subtitle_2' 
+        }
+      ];
+
+  const intervalTime = parseInt(layout?.slideInterval) || 8000;
 
   useEffect(() => {
     const handleScroll = () => setYParallax(window.scrollY * 0.5);
     window.addEventListener('scroll', handleScroll);
-    const timer = setInterval(() => setCurrentSlide(prev => (prev + 1) % slides.length), 8000);
+    const timer = setInterval(() => {
+      setCurrentSlide(prev => {
+        if (slides.length === 0) return 0;
+        return (prev + 1) % slides.length;
+      });
+    }, intervalTime);
     return () => {
       window.removeEventListener('scroll', handleScroll);
       clearInterval(timer);
     };
-  }, [slides.length]);
+  }, [slides.length, intervalTime]);
 
   const defaultCatalogOrder = productsData.slice(0, 5).map(p => p.id);
   const catalogOrder = Array.isArray(layout?.order_catalog) ? layout.order_catalog : defaultCatalogOrder;
@@ -79,7 +100,32 @@ export default function Home() {
           <section key="hero" style={{ height: '100vh', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', ...blockStyle, width: '100%', transform: 'none', margin: '0 auto' }}>
             <AnimatePresence mode="wait">
               <motion.div key={currentSlide} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.5 }} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', overflow: 'hidden' }}>
-                {layout?.mediaTypes?.hero_type === 'video' && layout?.videos?.hero_video ? (
+                {slides[currentSlide]?.mediaType === 'video' && slides[currentSlide]?.video ? (
+                  slides[currentSlide].video.includes('youtube.com') || slides[currentSlide].video.includes('youtu.be') ? (
+                    (() => {
+                      let embedId = '';
+                      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                      const match = slides[currentSlide].video.match(regExp);
+                      if (match && match[2].length === 11) embedId = match[2];
+                      return embedId ? (
+                        <iframe
+                          src={`https://www.youtube.com/embed/${embedId}?autoplay=1&mute=1&loop=1&playlist=${embedId}&controls=0&showinfo=0&rel=0&enablejsapi=1`}
+                          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none', pointerEvents: 'none', transform: 'scale(1.35)', filter: 'brightness(0.35)' }}
+                          title="Background Video"
+                        />
+                      ) : null;
+                    })()
+                  ) : (
+                    <video
+                      src={slides[currentSlide].video}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.35)' }}
+                    />
+                  )
+                ) : layout?.mediaTypes?.hero_type === 'video' && layout?.videos?.hero_video ? (
                   layout.videos.hero_video.includes('youtube.com') || layout.videos.hero_video.includes('youtu.be') ? (
                     (() => {
                       let embedId = '';
@@ -105,7 +151,7 @@ export default function Home() {
                     />
                   )
                 ) : (
-                  <motion.img style={{ width: '100%', height: '120%', objectFit: 'cover', filter: 'brightness(0.35)', y: yParallax }} src={slides[currentSlide].img} />
+                  <motion.img style={{ width: '100%', height: '120%', objectFit: 'cover', filter: 'brightness(0.35)', y: yParallax }} src={slides[currentSlide]?.img} />
                 )}
               </motion.div>
             </AnimatePresence>
@@ -113,22 +159,46 @@ export default function Home() {
             <div className="container hero-container" style={{ position: 'relative', zIndex: 10 }}>
               <div style={{ maxWidth: '1000px' }}>
                 <AnimatePresence mode="wait">
-                  <motion.div key={currentSlide} initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 50 }} transition={{ duration: 0.8 }}>
-                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem', color: 'var(--primary)', fontWeight: '800', fontSize: '0.8rem', letterSpacing: '0.3em', textTransform: 'uppercase' }}><Zap size={18} /> <InlineEdit tKey="hero_badge" /></div>
-                    <h1 style={{ fontSize: 'clamp(3rem, 10vw, 8rem)', lineHeight: '0.85', marginBottom: '2rem' }}><InlineEdit tKey={slides[currentSlide].titleKey} /> <br/><span style={{ color: 'var(--primary)' }}><InlineEdit tKey={slides[currentSlide].subtitleKey} /></span></h1>
-                    <p style={{ fontSize: '1.4rem', color: 'var(--text-muted)', maxWidth: '700px', marginBottom: '4rem', lineHeight: '1.6' }}><InlineEdit tKey={slides[currentSlide].descKey} /></p>
-                    <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-                      <BuilderWrapper id="btn_hero_catalog" isBuilder={isBuilder}>
-                        <Link to={layout?.links?.btn_hero_catalog || "/catalog"} className="btn-primary" style={{ padding: '1.5rem 3rem', ...(layout?.styles?.btn_hero_catalog || {}) }}><InlineEdit tKey="btn_catalog" /> <ChevronRight size={20} /></Link>
-                      </BuilderWrapper>
-                      <BuilderWrapper id="btn_hero_services" isBuilder={isBuilder}>
-                        <Link to={layout?.links?.btn_hero_services || "/services"} className="btn-outline" style={{ padding: '1.5rem 3rem', ...(layout?.styles?.btn_hero_services || {}) }}><InlineEdit tKey="btn_services" /></Link>
-                      </BuilderWrapper>
-                    </div>
-                  </motion.div>
+                  {slides.length > 0 && slides[currentSlide] && (
+                    <motion.div key={currentSlide} initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 50 }} transition={{ duration: 0.8 }}>
+                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem', color: 'var(--primary)', fontWeight: '800', fontSize: '0.8rem', letterSpacing: '0.3em', textTransform: 'uppercase' }}><Zap size={18} /> <InlineEdit tKey="hero_badge" /></div>
+                      <h1 style={{ fontSize: 'clamp(3rem, 10vw, 8rem)', lineHeight: '0.85', marginBottom: '2rem' }}><InlineEdit tKey={slides[currentSlide].titleKey} /> <br/><span style={{ color: 'var(--primary)' }}><InlineEdit tKey={slides[currentSlide].subtitleKey} /></span></h1>
+                      <p style={{ fontSize: '1.4rem', color: 'var(--text-muted)', maxWidth: '700px', marginBottom: '4rem', lineHeight: '1.6' }}><InlineEdit tKey={slides[currentSlide].descKey} /></p>
+                      <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+                        <BuilderWrapper id="btn_hero_catalog" isBuilder={isBuilder}>
+                          <Link to={layout?.links?.btn_hero_catalog || "/catalog"} className="btn-primary" style={{ padding: '1.5rem 3rem', ...(layout?.styles?.btn_hero_catalog || {}) }}><InlineEdit tKey="btn_catalog" /> <ChevronRight size={20} /></Link>
+                        </BuilderWrapper>
+                        <BuilderWrapper id="btn_hero_services" isBuilder={isBuilder}>
+                          <Link to={layout?.links?.btn_hero_services || "/services"} className="btn-outline" style={{ padding: '1.5rem 3rem', ...(layout?.styles?.btn_hero_services || {}) }}><InlineEdit tKey="btn_services" /></Link>
+                        </BuilderWrapper>
+                      </div>
+                    </motion.div>
+                  )}
                 </AnimatePresence>
               </div>
             </div>
+            {/* Slide Indicators / Dots */}
+            {slides.length > 1 && (
+              <div style={{ position: 'absolute', bottom: '3rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '0.75rem', zIndex: 12 }}>
+                {slides.map((_: any, idx: number) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentSlide(idx)}
+                    style={{
+                      width: '12px',
+                      height: '12px',
+                      borderRadius: '50%',
+                      background: currentSlide === idx ? 'var(--primary)' : 'rgba(255, 255, 255, 0.3)',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: 0,
+                      transition: 'all 0.3s ease'
+                    }}
+                    title={`Slide ${idx + 1}`}
+                  />
+                ))}
+              </div>
+            )}
           </section>
         );
         break;

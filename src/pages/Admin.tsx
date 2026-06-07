@@ -2171,6 +2171,7 @@ function ModalBodyContent({
   updateTranslation: any; 
 }) {
   const [activeLang, setActiveLang] = useState<'ru' | 'kk' | 'en'>('ru');
+  const [selectedSlideId, setSelectedSlideId] = useState<string | null>(null);
   const isNestedBlock = editingKey.startsWith('nested_');
   const parentKey = isNestedBlock ? findParentBlockOfNested(editingKey) : null;
   const isCustomBlock = editingKey.startsWith('new_block_') || isNestedBlock;
@@ -2718,6 +2719,685 @@ function ModalBodyContent({
 
   // 3. CONTENT & TRANSLATIONS TAB
   if (modalActiveTab === 'content') {
+    if (editingKey === 'hero') {
+      const defaultSlides = [
+        { 
+          id: "slide_1", 
+          img: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80", 
+          video: "", 
+          mediaType: "image", 
+          titleKey: 'hero_title_1', 
+          subtitleKey: 'hero_title_2', 
+          descKey: 'hero_subtitle' 
+        },
+        { 
+          id: "slide_2", 
+          img: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80", 
+          video: "", 
+          mediaType: "image", 
+          titleKey: 'hero_title_3', 
+          subtitleKey: 'hero_title_4', 
+          descKey: 'hero_subtitle_2' 
+        }
+      ];
+
+      const getLayoutSlides = () => {
+        return Array.isArray(currentLayout.slides) && currentLayout.slides.length > 0
+          ? currentLayout.slides
+          : defaultSlides;
+      };
+
+      const slides = getLayoutSlides();
+      const intervalVal = currentLayout.slideInterval !== undefined ? currentLayout.slideInterval : 8000;
+
+      const activeSlideId = selectedSlideId || (slides.length > 0 ? slides[0].id : null);
+      const activeSlide = slides.find((s: any) => s.id === activeSlideId) || slides[0];
+      const activeSlideIndex = slides.findIndex((s: any) => s.id === activeSlide?.id);
+
+      const updateSlideField = (slideId: string, fieldKey: string, val: any) => {
+        const updatedSlides = slides.map((slide: any) => 
+          slide.id === slideId ? { ...slide, [fieldKey]: val } : slide
+        );
+        updateLayout({
+          ...currentLayout,
+          slides: updatedSlides
+        });
+      };
+
+      const deleteSlide = (slideId: string) => {
+        if (slides.length <= 1) {
+          alert("Нельзя удалить последний слайд. В слайдере должен быть хотя бы один слайд.");
+          return;
+        }
+
+        const confirmDelete = window.confirm("Вы уверены, что хотите удалить этот слайд?");
+        if (!confirmDelete) return;
+
+        const updatedSlides = slides.filter((slide: any) => slide.id !== slideId);
+        
+        if (activeSlideId === slideId) {
+          const remainingIndex = slides.findIndex((s: any) => s.id === slideId);
+          const nextIndex = remainingIndex === 0 ? 1 : remainingIndex - 1;
+          if (slides[nextIndex]) {
+            setSelectedSlideId(slides[nextIndex].id);
+          }
+        }
+
+        updateLayout({
+          ...currentLayout,
+          slides: updatedSlides
+        });
+      };
+
+      const moveSlide = (index: number, direction: 'up' | 'down') => {
+        const newIndex = direction === 'up' ? index - 1 : index + 1;
+        if (newIndex < 0 || newIndex >= slides.length) return;
+        const updatedSlides = [...slides];
+        const temp = updatedSlides[index];
+        updatedSlides[index] = updatedSlides[newIndex];
+        updatedSlides[newIndex] = temp;
+        updateLayout({
+          ...currentLayout,
+          slides: updatedSlides
+        });
+      };
+
+      const addSlide = () => {
+        const newSlideId = `slide_${Date.now()}`;
+        const newTitleKey = `hero_slide_title_${newSlideId}`;
+        const newSubtitleKey = `hero_slide_subtitle_${newSlideId}`;
+        const newDescKey = `hero_slide_desc_${newSlideId}`;
+        
+        updateTranslation('ru', newTitleKey, 'Новый промышленный проект');
+        updateTranslation('ru', newSubtitleKey, 'Качество и надежность');
+        updateTranslation('ru', newDescKey, 'Краткое описание нового проекта или оборудования.');
+
+        updateTranslation('kk', newTitleKey, 'Жаңа өндірістік жоба');
+        updateTranslation('kk', newSubtitleKey, 'Сапа мен сенімділік');
+        updateTranslation('kk', newDescKey, 'Жаңа жобаның немесе жабдықтың қысқаша сипаттамасы.');
+
+        updateTranslation('en', newTitleKey, 'New Industrial Project');
+        updateTranslation('en', newSubtitleKey, 'Quality and Reliability');
+        updateTranslation('en', newDescKey, 'Short description of the new project or equipment.');
+
+        const newSlide = {
+          id: newSlideId,
+          img: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80",
+          video: "",
+          mediaType: "image",
+          titleKey: newTitleKey,
+          subtitleKey: newSubtitleKey,
+          descKey: newDescKey
+        };
+
+        updateLayout({
+          ...currentLayout,
+          slides: [...slides, newSlide]
+        });
+        setSelectedSlideId(newSlideId);
+      };
+
+      const duplicateSlide = (slideId: string) => {
+        const slideToDuplicate = slides.find((s: any) => s.id === slideId);
+        if (!slideToDuplicate) return;
+        
+        const newSlideId = `slide_${Date.now()}`;
+        const newTitleKey = `hero_slide_title_${newSlideId}`;
+        const newSubtitleKey = `hero_slide_subtitle_${newSlideId}`;
+        const newDescKey = `hero_slide_desc_${newSlideId}`;
+        
+        (['ru', 'kk', 'en'] as const).forEach(l => {
+          updateTranslation(l, newTitleKey, allTranslations[l]?.[slideToDuplicate.titleKey] || '');
+          updateTranslation(l, newSubtitleKey, allTranslations[l]?.[slideToDuplicate.subtitleKey] || '');
+          updateTranslation(l, newDescKey, allTranslations[l]?.[slideToDuplicate.descKey] || '');
+        });
+        
+        const newSlide = {
+          ...slideToDuplicate,
+          id: newSlideId,
+          titleKey: newTitleKey,
+          subtitleKey: newSubtitleKey,
+          descKey: newDescKey
+        };
+        
+        const updatedSlides = [];
+        for (const s of slides) {
+          updatedSlides.push(s);
+          if (s.id === slideId) {
+            updatedSlides.push(newSlide);
+          }
+        }
+        
+        updateLayout({
+          ...currentLayout,
+          slides: updatedSlides
+        });
+        setSelectedSlideId(newSlideId);
+      };
+
+      const handleSlideFileUpload = (e: React.ChangeEvent<HTMLInputElement>, slideId: string) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const dataUrl = ev.target?.result as string;
+          if (dataUrl) {
+            updateSlideField(slideId, 'img', dataUrl);
+          }
+        };
+        reader.readAsDataURL(file);
+      };
+
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          {/* TOP PANEL: Global Slider Configuration (Interval & Buttons) */}
+          <div style={{ 
+            background: '#111', 
+            padding: '1.5rem', 
+            borderRadius: '16px', 
+            border: '1px solid #222',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+          }}>
+            <h4 style={{ margin: '0 0 1.25rem 0', fontSize: '0.85rem', color: '#00ff41', fontWeight: '900', letterSpacing: '0.05em' }}>
+              ⚙️ ГЛОБАЛЬНЫЕ НАСТРОЙКИ СЛАЙДЕРА И КНОПОК ОБЛОЖКИ
+            </h4>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr', gap: '1.5rem', alignItems: 'end', marginBottom: '1.5rem' }}>
+              <div>
+                {labelStyle('Интервал смены слайдов (мс)')}
+                <input 
+                  type="number"
+                  value={intervalVal}
+                  onChange={e => updateLayout({ ...currentLayout, slideInterval: parseInt(e.target.value) || 8000 })}
+                  style={inputStyle}
+                  min={1000}
+                  max={60000}
+                  step={1000}
+                />
+              </div>
+              <div>
+                {labelStyle('Кнопка 1 (Каталог) - Ссылка')}
+                <input
+                  type="text"
+                  value={currentLayout.links?.btn_hero_catalog || '/catalog'}
+                  onChange={e => updateLayout({
+                    ...currentLayout,
+                    links: { ...(currentLayout.links || {}), btn_hero_catalog: e.target.value }
+                  })}
+                  style={inputStyle}
+                />
+              </div>
+              <div>
+                {labelStyle('Кнопка 2 (Услуги) - Ссылка')}
+                <input
+                  type="text"
+                  value={currentLayout.links?.btn_hero_services || '/services'}
+                  onChange={e => updateLayout({
+                    ...currentLayout,
+                    links: { ...(currentLayout.links || {}), btn_hero_services: e.target.value }
+                  })}
+                  style={inputStyle}
+                />
+              </div>
+            </div>
+
+            {/* Language Selection for Global Buttons */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #222', paddingTop: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <span style={{ fontSize: '0.75rem', color: '#888', fontWeight: '800' }}>ЯЗЫК КНОПОК:</span>
+                <div style={{ display: 'flex', gap: '0.35rem' }}>
+                  {(['ru', 'kk', 'en'] as const).map(l => (
+                    <button
+                      key={l}
+                      onClick={() => setActiveLang(l)}
+                      style={{
+                        padding: '0.3rem 0.75rem', borderRadius: '6px', border: 'none',
+                        background: activeLang === l ? '#00ff41' : '#222',
+                        color: activeLang === l ? '#000' : '#888',
+                        fontWeight: '900', fontSize: '0.7rem', cursor: 'pointer', transition: '0.2s'
+                      }}
+                    >
+                      {l.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '1.5rem', flex: 1, marginLeft: '2rem' }}>
+                <div style={{ flex: 1 }}>
+                  <input
+                    type="text"
+                    value={allTranslations[activeLang]?.['btn_catalog'] || ''}
+                    onChange={e => updateTranslation(activeLang, 'btn_catalog', e.target.value)}
+                    placeholder="Текст кнопки 1"
+                    style={{ ...inputStyle, padding: '0.5rem 0.75rem', fontSize: '0.8rem' }}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <input
+                    type="text"
+                    value={allTranslations[activeLang]?.['btn_services'] || ''}
+                    onChange={e => updateTranslation(activeLang, 'btn_services', e.target.value)}
+                    placeholder="Текст кнопки 2"
+                    style={{ ...inputStyle, padding: '0.5rem 0.75rem', fontSize: '0.8rem' }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* MAIN GRID: Slide List Carousel & Details Editor */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            
+            {/* CAROUSEL SLIDE SELECTOR ROW */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h4 style={{ margin: 0, fontSize: '0.85rem', color: '#fff', fontWeight: '900', letterSpacing: '0.05em' }}>
+                🖥️ НАСТРОЙКА СЛАЙДОВ ({slides.length})
+              </h4>
+              <button
+                onClick={addSlide}
+                style={{
+                  background: 'rgba(0, 255, 65, 0.1)',
+                  border: '1px solid #00ff41',
+                  color: '#00ff41',
+                  padding: '0.5rem 1rem',
+                  borderRadius: '8px',
+                  fontSize: '0.8rem',
+                  fontWeight: '800',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <Plus size={14} /> Добавить слайд
+              </button>
+            </div>
+
+            {/* Horizontal Slide Thumbnails */}
+            <div style={{ 
+              display: 'flex', 
+              gap: '1rem', 
+              overflowX: 'auto', 
+              paddingBottom: '0.75rem', 
+              scrollBehavior: 'smooth' 
+            }}>
+              {slides.map((slide: any, index: number) => {
+                const isActive = slide.id === activeSlide?.id;
+                const slideTitle = allTranslations[activeLang]?.[slide.titleKey] || allTranslations['ru']?.[slide.titleKey] || '';
+                
+                return (
+                  <div 
+                    key={slide.id}
+                    onClick={() => setSelectedSlideId(slide.id)}
+                    style={{
+                      flexShrink: 0,
+                      width: '180px',
+                      background: isActive ? '#141416' : '#0d0d0e',
+                      border: isActive ? '2px solid #00ff41' : '1px solid #2a2b2f',
+                      borderRadius: '12px',
+                      padding: '0.75rem',
+                      cursor: 'pointer',
+                      position: 'relative',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.5rem',
+                      transition: 'all 0.2s',
+                      boxShadow: isActive ? '0 0 15px rgba(0, 255, 65, 0.15)' : 'none'
+                    }}
+                  >
+                    {/* Thumbnail Preview */}
+                    <div style={{ 
+                      width: '100%', 
+                      height: '80px', 
+                      borderRadius: '8px', 
+                      background: '#070708', 
+                      overflow: 'hidden', 
+                      position: 'relative',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: '1px solid #222'
+                    }}>
+                      {slide.mediaType === 'video' ? (
+                        <div style={{ color: '#00ff41', fontSize: '0.65rem', fontWeight: 'bold', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem' }}>
+                          <span>🎥 Видео</span>
+                        </div>
+                      ) : slide.img ? (
+                        <img src={slide.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        <span style={{ color: '#444', fontSize: '0.6rem' }}>Нет медиа</span>
+                      )}
+                      
+                      {/* Slide Badge */}
+                      <span style={{ 
+                        position: 'absolute', 
+                        top: '4px', 
+                        left: '4px', 
+                        background: 'rgba(0,0,0,0.75)', 
+                        color: isActive ? '#00ff41' : '#fff', 
+                        fontSize: '0.6rem', 
+                        fontWeight: '900', 
+                        padding: '0.15rem 0.4rem', 
+                        borderRadius: '4px',
+                        border: isActive ? '1px solid #00ff41' : '1px solid #333'
+                      }}>
+                        #{index + 1}
+                      </span>
+                    </div>
+
+                    {/* Slide title / text */}
+                    <div style={{ 
+                      fontSize: '0.75rem', 
+                      color: isActive ? '#fff' : '#888', 
+                      fontWeight: '800', 
+                      whiteSpace: 'nowrap', 
+                      overflow: 'hidden', 
+                      textOverflow: 'ellipsis' 
+                    }}>
+                      {slideTitle || `Слайд #${index + 1}`}
+                    </div>
+
+                    {/* Quick sorting and deletion bar */}
+                    <div 
+                      style={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between', 
+                        alignItems: 'center',
+                        marginTop: 'auto',
+                        borderTop: '1px solid #222',
+                        paddingTop: '0.4rem'
+                      }}
+                      onClick={e => e.stopPropagation()}
+                    >
+                      <div style={{ display: 'flex', gap: '0.25rem' }}>
+                        <button
+                          onClick={() => moveSlide(index, 'up')}
+                          disabled={index === 0}
+                          style={{
+                            background: '#222', border: 'none', color: index === 0 ? '#444' : '#aaa',
+                            width: '22px', height: '22px', borderRadius: '4px', cursor: index === 0 ? 'not-allowed' : 'pointer',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center'
+                          }}
+                        >
+                          <MoveUp size={11} />
+                        </button>
+                        <button
+                          onClick={() => moveSlide(index, 'down')}
+                          disabled={index === slides.length - 1}
+                          style={{
+                            background: '#222', border: 'none', color: index === slides.length - 1 ? '#444' : '#aaa',
+                            width: '22px', height: '22px', borderRadius: '4px', cursor: index === slides.length - 1 ? 'not-allowed' : 'pointer',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center'
+                          }}
+                        >
+                          <MoveDown size={11} />
+                        </button>
+                      </div>
+
+                      <div style={{ display: 'flex', gap: '0.25rem' }}>
+                        <button
+                          onClick={() => duplicateSlide(slide.id)}
+                          title="Дублировать слайд"
+                          style={{
+                            background: 'rgba(0, 255, 65, 0.05)', border: 'none', color: '#00ff41',
+                            width: '22px', height: '22px', borderRadius: '4px', cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center'
+                          }}
+                        >
+                          <Copy size={11} />
+                        </button>
+                        <button
+                          onClick={() => deleteSlide(slide.id)}
+                          title="Удалить слайд"
+                          style={{
+                            background: 'rgba(255, 75, 75, 0.1)', border: 'none', color: '#ff4b4b',
+                            width: '22px', height: '22px', borderRadius: '4px', cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center'
+                          }}
+                        >
+                          <Trash2 size={11} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+              
+              {/* Dotted Add Button Card at the end */}
+              <div 
+                onClick={addSlide}
+                style={{
+                  flexShrink: 0,
+                  width: '180px',
+                  border: '2px dashed #333',
+                  borderRadius: '12px',
+                  padding: '0.75rem',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  height: '136px',
+                  boxSizing: 'border-box',
+                  color: '#888',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <PlusCircle size={28} />
+                <span style={{ fontSize: '0.75rem', fontWeight: '800' }}>Новый слайд</span>
+              </div>
+            </div>
+
+            {/* DETAILED ACTIVE SLIDE EDITOR CONTAINER */}
+            {activeSlide && (
+              <div style={{ 
+                background: '#141416', 
+                border: '1px solid #222', 
+                borderRadius: '16px', 
+                padding: '1.75rem',
+                display: 'grid',
+                gridTemplateColumns: '1.2fr 1.8fr',
+                gap: '2rem',
+                boxShadow: '0 8px 30px rgba(0,0,0,0.3)'
+              }}>
+                
+                {/* COLUMN 1: Media Panel */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h5 style={{ margin: 0, color: '#fff', fontSize: '0.8rem', fontWeight: '900' }}>
+                      🖼️ МЕДИА СЛАЙДА #{activeSlideIndex + 1}
+                    </h5>
+                  </div>
+                  
+                  {/* Image/Video Toggle Buttons */}
+                  <div>
+                    {labelStyle('Тип фонового контента')}
+                    <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.25rem' }}>
+                      <button
+                        onClick={() => updateSlideField(activeSlide.id, 'mediaType', 'image')}
+                        style={{
+                          flex: 1, padding: '0.6rem', borderRadius: '8px', border: '1px solid',
+                          borderColor: activeSlide.mediaType !== 'video' ? '#00ff41' : '#333',
+                          background: activeSlide.mediaType !== 'video' ? 'rgba(0,255,65,0.08)' : '#111',
+                          color: activeSlide.mediaType !== 'video' ? '#00ff41' : '#888',
+                          fontWeight: '800', cursor: 'pointer', fontSize: '0.75rem', transition: '0.2s'
+                        }}
+                      >
+                        🖼️ Фотография
+                      </button>
+                      <button
+                        onClick={() => updateSlideField(activeSlide.id, 'mediaType', 'video')}
+                        style={{
+                          flex: 1, padding: '0.6rem', borderRadius: '8px', border: '1px solid',
+                          borderColor: activeSlide.mediaType === 'video' ? '#00ff41' : '#333',
+                          background: activeSlide.mediaType === 'video' ? 'rgba(0,255,65,0.08)' : '#111',
+                          color: activeSlide.mediaType === 'video' ? '#00ff41' : '#888',
+                          fontWeight: '800', cursor: 'pointer', fontSize: '0.75rem', transition: '0.2s'
+                        }}
+                      >
+                        🎥 Видео
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* File Upload / Link Inputs */}
+                  {activeSlide.mediaType !== 'video' ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      <div>
+                        {labelStyle('Ссылка на фото')}
+                        <input 
+                          type="text" 
+                          value={activeSlide.img || ''} 
+                          onChange={e => updateSlideField(activeSlide.id, 'img', e.target.value)}
+                          placeholder="https://... или путь к файлу" 
+                          style={{ ...inputStyle, padding: '0.5rem 0.75rem', fontSize: '0.8rem' }}
+                        />
+                      </div>
+                      
+                      {/* Direct Base64 File Uploader */}
+                      <div>
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          id={`slide-file-upload-${activeSlide.id}`} 
+                          style={{ display: 'none' }} 
+                          onChange={e => handleSlideFileUpload(e, activeSlide.id)}
+                        />
+                        <button
+                          onClick={() => document.getElementById(`slide-file-upload-${activeSlide.id}`)?.click()}
+                          style={{
+                            width: '100%',
+                            padding: '0.6rem',
+                            background: '#222',
+                            border: '1px solid #333',
+                            borderRadius: '8px',
+                            color: '#ccc',
+                            fontWeight: '800',
+                            fontSize: '0.75rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '0.5rem',
+                            transition: 'all 0.2s'
+                          }}
+                        >
+                          📁 Загрузить с компьютера
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      {labelStyle('Ссылка на видео')}
+                      <input 
+                        type="text" 
+                        value={activeSlide.video || ''} 
+                        onChange={e => updateSlideField(activeSlide.id, 'video', e.target.value)}
+                        placeholder="Direct mp4 URL или YouTube ссылка" 
+                        style={{ ...inputStyle, padding: '0.5rem 0.75rem', fontSize: '0.8rem' }}
+                      />
+                    </div>
+                  )}
+
+                  {/* Media Preview Window */}
+                  <div>
+                    {labelStyle('Предпросмотр')}
+                    <div style={{
+                      width: '100%', height: '120px', borderRadius: '10px', border: '1px solid #333',
+                      background: '#070708', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      overflow: 'hidden', marginTop: '0.25rem', position: 'relative'
+                    }}>
+                      {activeSlide.mediaType === 'video' ? (
+                        activeSlide.video ? (
+                          <div style={{ color: '#00ff41', fontSize: '0.7rem', fontWeight: 'bold', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem', padding: '0.5rem', textAlign: 'center' }}>
+                            <span>🎥 Видео готово к фоновому показу</span>
+                            <span style={{ fontSize: '0.6rem', color: '#666', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '180px', whiteSpace: 'nowrap' }}>{activeSlide.video}</span>
+                          </div>
+                        ) : (
+                          <span style={{ color: '#555', fontSize: '0.75rem' }}>Видео не выбрано</span>
+                        )
+                      ) : (
+                        activeSlide.img ? (
+                          <img src={activeSlide.img} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        ) : (
+                          <span style={{ color: '#555', fontSize: '0.75rem' }}>Изображение не выбрано</span>
+                        )
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* COLUMN 2: Multilingual Text Content Panel */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  
+                  {/* Local Tabs for Language Editing */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #222', paddingBottom: '0.75rem' }}>
+                    <h5 style={{ margin: 0, color: '#fff', fontSize: '0.8rem', fontWeight: '900' }}>
+                      📝 ТЕКСТ СЛАЙДА (ЛОКАЛИЗАЦИЯ)
+                    </h5>
+                    <div style={{ display: 'flex', gap: '0.35rem' }}>
+                      {(['ru', 'kk', 'en'] as const).map(l => (
+                        <button
+                          key={l}
+                          onClick={() => setActiveLang(l)}
+                          style={{
+                            padding: '0.25rem 0.6rem', borderRadius: '4px', border: 'none',
+                            background: activeLang === l ? '#00ff41' : '#222',
+                            color: activeLang === l ? '#000' : '#888',
+                            fontWeight: '900', fontSize: '0.65rem', cursor: 'pointer', transition: '0.2s'
+                          }}
+                        >
+                          {l.toUpperCase()}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Input Fields */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div>
+                      {labelStyle(`Маленький лейбл (${activeLang.toUpperCase()})`)}
+                      <input
+                        type="text"
+                        value={allTranslations[activeLang]?.[activeSlide.subtitleKey] || ''}
+                        onChange={e => updateTranslation(activeLang, activeSlide.subtitleKey, e.target.value)}
+                        placeholder="Например: Новинка"
+                        style={{ ...inputStyle, padding: '0.55rem 0.8rem', fontSize: '0.85rem' }}
+                      />
+                    </div>
+
+                    <div>
+                      {labelStyle(`Заголовок (${activeLang.toUpperCase()})`)}
+                      <input
+                        type="text"
+                        value={allTranslations[activeLang]?.[activeSlide.titleKey] || ''}
+                        onChange={e => updateTranslation(activeLang, activeSlide.titleKey, e.target.value)}
+                        placeholder="Например: Промышленное оборудование"
+                        style={{ ...inputStyle, padding: '0.55rem 0.8rem', fontSize: '0.85rem' }}
+                      />
+                    </div>
+
+                    <div>
+                      {labelStyle(`Описание слайда (${activeLang.toUpperCase()})`)}
+                      <textarea
+                        value={allTranslations[activeLang]?.[activeSlide.descKey] || ''}
+                        onChange={e => updateTranslation(activeLang, activeSlide.descKey, e.target.value)}
+                        placeholder="Краткое описание преимуществ..."
+                        style={{ ...inputStyle, minHeight: '80px', padding: '0.55rem 0.8rem', fontSize: '0.85rem', resize: 'vertical' }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
     if (isCustomBlock) {
       const targetKey = isNestedBlock ? parentKey! : editingKey;
       let data: any = {};
