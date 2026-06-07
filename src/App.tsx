@@ -75,14 +75,28 @@ function App() {
     const defaultPages = ['home', 'catalog', 'services', 'about', 'contacts', 'partner', 'gallery'];
     const currentPages = getPagesList();
     const allPageIds = Array.from(new Set([...defaultPages, ...currentPages.map(p => p.id)]));
+
+    // Clean up any contaminated layouts (e.g. catalog that has home's 'hero' block order)
+    const nonHomeIds = allPageIds.filter(id => id !== 'home');
+    nonHomeIds.forEach(id => {
+      try {
+        const saved = localStorage.getItem(`demetra_${id}_layout`);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && Array.isArray(parsed.order) && parsed.order.includes('hero')) {
+            console.warn(`Clearing contaminated layout for ${id}`);
+            localStorage.removeItem(`demetra_${id}_layout`);
+          }
+        }
+      } catch {}
+    });
     
     allPageIds.forEach(id => {
       fetch(`/api/layout/${id}`)
         .then(r => r.json())
         .then(data => {
-          if (data) {
+          if (data && typeof data === 'object') {
             localStorage.setItem(`demetra_${id}_layout`, JSON.stringify(data));
-            window.dispatchEvent(new Event('storage'));
           }
         })
         .catch(e => console.warn(`Could not load layout for ${id} from backend:`, e));

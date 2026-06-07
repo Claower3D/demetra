@@ -8,6 +8,11 @@ export function useBuilderLayout(pageKey: string, defaultLayout: any) {
       const saved = localStorage.getItem(`demetra_${pageKey}_layout`);
       if (saved && saved !== 'undefined') {
         const parsed = JSON.parse(saved);
+        // Guard: if this is NOT the home page but layout has home's hero block, discard it
+        if (parsed && pageKey !== 'home' && Array.isArray(parsed.order) && parsed.order.includes('hero')) {
+          localStorage.removeItem(`demetra_${pageKey}_layout`);
+          return defaultLayout;
+        }
         return parsed || defaultLayout;
       }
     } catch (e) {
@@ -21,7 +26,14 @@ export function useBuilderLayout(pageKey: string, defaultLayout: any) {
     try {
       const saved = localStorage.getItem(`demetra_${pageKey}_layout`);
       if (saved && saved !== 'undefined') {
-        setLayout(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        // Guard: discard contaminated layouts
+        if (parsed && pageKey !== 'home' && Array.isArray(parsed.order) && parsed.order.includes('hero')) {
+          localStorage.removeItem(`demetra_${pageKey}_layout`);
+          setLayout(defaultLayout);
+        } else {
+          setLayout(parsed || defaultLayout);
+        }
       } else {
         setLayout(defaultLayout);
       }
