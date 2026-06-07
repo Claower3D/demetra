@@ -68,9 +68,13 @@ export default function Layout() {
   }, []);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // Smooth scroll-to-top after brief delay so exit animation finishes first
+    const timer = setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 80);
     setMobileMenuOpen(false);
     setActiveDropdown(null);
+    return () => clearTimeout(timer);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -269,7 +273,18 @@ export default function Layout() {
       </BuilderWrapper>
 
       <main style={{ flex: 1, position: 'relative', zIndex: 1 }}>
-        <Outlet />
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.22, ease: 'easeInOut' }}
+            style={{ willChange: 'opacity, transform' }}
+          >
+            <Outlet />
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       <BuilderWrapper id="footer" isBuilder={isBuilder}>
