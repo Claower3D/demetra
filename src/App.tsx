@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { LangProvider } from './LangContext';
 import { ThemeProvider } from './ThemeContext';
 import Layout from './components/Layout';
@@ -170,11 +170,20 @@ function App() {
 
   const customPages = pages.filter(p => !p.isSystem);
 
+function RouteLogger() {
+  const location = useLocation();
+  React.useEffect(() => {
+    console.error("ROUTE_CHANGED_TO: " + location.pathname);
+  }, [location.pathname]);
+  return null;
+}
+
   return (
     <ErrorBoundary>
       <ThemeProvider>
         <LangProvider>
           <BrowserRouter>
+            <RouteLogger />
             <Routes>
               <Route path="/" element={<Layout />}>
                 <Route index element={<Home />} />
