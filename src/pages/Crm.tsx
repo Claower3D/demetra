@@ -35,6 +35,8 @@ interface Lead {
   prepayment?: number;
   intermediate_payment?: number;
   is_shift_ended?: boolean;
+  updated_at?: string;
+  rejection_reason?: string;
 }
 
 const catalogCategories = [
@@ -202,6 +204,8 @@ export default function Crm() {
   const [newChatComment, setNewChatComment] = useState('');
   const [editStatus, setEditStatus] = useState<Lead['status']>('new');
   const [editAssignedTo, setEditAssignedTo] = useState('');
+  const [editRejectionReason, setEditRejectionReason] = useState('');
+  const [isRejecting, setIsRejecting] = useState(false);
 
   useEffect(() => {
     if (selectedLead) {
@@ -225,6 +229,8 @@ export default function Crm() {
       setNewChatComment('');
       setEditStatus(selectedLead.status || 'new');
       setEditAssignedTo(selectedLead.assigned_to || '');
+      setEditRejectionReason(selectedLead.rejection_reason || '');
+      setIsRejecting(false);
     }
   }, [selectedLead]);
   
@@ -3278,6 +3284,7 @@ export default function Crm() {
                       let color = 'rgba(255, 255, 255, 0.3)';
                       let border = '1px solid rgba(255, 255, 255, 0.1)';
                       let bg = 'transparent';
+                      let label = stage.label;
 
                       if (isActive) {
                         if (editStatus === 'completed') {
@@ -3288,6 +3295,7 @@ export default function Crm() {
                           color = '#ef4444';
                           border = '1px solid #ef4444';
                           bg = 'rgba(239, 68, 68, 0.1)';
+                          label = editRejectionReason ? `Отказ: ${editRejectionReason}` : 'Отказ';
                         } else {
                           color = '#3b82f6';
                           border = '1px solid #3b82f6';
@@ -3313,7 +3321,7 @@ export default function Crm() {
                             transition: '0.2s'
                           }}>
                             {isPast && <Check size={12} />}
-                            {stage.label}
+                            {label}
                           </div>
                           {idx < stages.length - 1 && (
                             <div style={{
@@ -3337,58 +3345,126 @@ export default function Crm() {
                   opacity: isShiftEnded ? 0.4 : 1,
                   pointerEvents: isShiftEnded ? 'none' : 'auto'
                 }}>
-                  {/* Transition actions */}
-                  {editStatus === 'new' && (
-                    <button
-                      onClick={() => {
-                        setEditStatus('processing');
-                        setEditAssignedTo(currentUser.name);
-                        setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] ${currentUser.name} принял заявку в работу.`);
-                      }}
-                      style={{
-                        background: '#00ff41',
-                        border: 'none',
-                        borderRadius: '8px',
-                        color: '#000',
-                        padding: '0.5rem 1rem',
-                        fontWeight: '900',
-                        fontSize: '0.8rem',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.35rem'
-                      }}
-                    >
-                      <CheckCircle2 size={14} /> Принять в работу
-                    </button>
-                  )}
-
-                  {editStatus !== 'completed' && editStatus !== 'rejected' && (
+                  {isRejecting ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '12px', padding: '0.4rem 0.8rem' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#ef4444' }}>Причина отказа:</span>
+                      <select
+                        value={editRejectionReason}
+                        onChange={(e) => setEditRejectionReason(e.target.value)}
+                        style={{
+                          background: '#0f0f15',
+                          border: '1px solid rgba(255,255,255,0.1)',
+                          borderRadius: '6px',
+                          color: '#fff',
+                          fontSize: '0.75rem',
+                          padding: '0.2rem 0.4rem',
+                          outline: 'none',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <option value="">-- Выберите --</option>
+                        <option value="Высокая цена">Высокая цена</option>
+                        <option value="Ушли к конкурентам">Ушли к конкурентам</option>
+                        <option value="Не устраивают сроки">Не устраивают сроки</option>
+                        <option value="Передумали делать">Передумали делать</option>
+                        <option value="Некорректные контакты / Сбой">Некорректные контакты / Сбой</option>
+                        <option value="Другое (указать в комментарии)">Другое (указать в комментарии)</option>
+                      </select>
+                      <button
+                        onClick={() => {
+                          if (!editRejectionReason) {
+                            alert('Пожалуйста, выберите причину отказа!');
+                            return;
+                          }
+                          setEditStatus('rejected');
+                          setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] Отказ по сделке. Причина: ${editRejectionReason}`);
+                          setIsRejecting(false);
+                        }}
+                        style={{
+                          background: '#ef4444',
+                          color: '#fff',
+                          border: 'none',
+                          borderRadius: '6px',
+                          padding: '0.2rem 0.6rem',
+                          fontSize: '0.75rem',
+                          fontWeight: '800',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Ок
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsRejecting(false);
+                          setEditRejectionReason('');
+                        }}
+                        style={{
+                          background: 'none',
+                          border: '1px solid rgba(255,255,255,0.2)',
+                          color: '#fff',
+                          borderRadius: '6px',
+                          padding: '0.2rem 0.4rem',
+                          fontSize: '0.75rem',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Отмена
+                      </button>
+                    </div>
+                  ) : (
                     <>
-                      <span style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255, 255, 255, 0.4)', textTransform: 'uppercase' }}>
-                        Передать:
-                      </span>
-
-                      {editStatus !== 'manager_op' && (
+                      {/* Transition actions */}
+                      {editStatus === 'new' && (
                         <button
                           onClick={() => {
-                            setEditStatus('manager_op');
-                            setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] Заявка передана в отдел Менеджера ОП.`);
+                            setEditStatus('processing');
+                            setEditAssignedTo(currentUser.name);
+                            setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] ${currentUser.name} принял заявку в работу.`);
                           }}
                           style={{
-                            background: 'rgba(59, 130, 246, 0.1)',
-                            border: '1px solid rgba(59, 130, 246, 0.3)',
+                            background: '#00ff41',
+                            border: 'none',
                             borderRadius: '8px',
-                            color: '#3b82f6',
-                            padding: '0.4rem 0.8rem',
-                            fontWeight: '800',
-                            fontSize: '0.75rem',
-                            cursor: 'pointer'
+                            color: '#000',
+                            padding: '0.5rem 1rem',
+                            fontWeight: '900',
+                            fontSize: '0.8rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.35rem'
                           }}
                         >
-                          Менеджеру ОП
+                          <CheckCircle2 size={14} /> Принять в работу
                         </button>
                       )}
+
+                      {editStatus !== 'completed' && editStatus !== 'rejected' && (
+                        <>
+                          <span style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255, 255, 255, 0.4)', textTransform: 'uppercase' }}>
+                            Передать:
+                          </span>
+
+                          {editStatus !== 'manager_op' && (
+                            <button
+                              onClick={() => {
+                                setEditStatus('manager_op');
+                                setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] Заявка передана в отдел Менеджера ОП.`);
+                              }}
+                              style={{
+                                background: 'rgba(59, 130, 246, 0.1)',
+                                border: '1px solid rgba(59, 130, 246, 0.3)',
+                                borderRadius: '8px',
+                                color: '#3b82f6',
+                                padding: '0.4rem 0.8rem',
+                                fontWeight: '800',
+                                fontSize: '0.75rem',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              Менеджеру ОП
+                            </button>
+                          )}
 
                       {editStatus !== 'rop' && (
                         <button
@@ -3534,8 +3610,10 @@ export default function Crm() {
                       Вернуть в работу
                     </button>
                   )}
-                </div>
-              </div>
+                </>
+              )}
+            </div>
+          </div>
 
               {/* Scrollable Layout Body */}
               <div style={{
@@ -3953,7 +4031,9 @@ export default function Crm() {
                       intermediate_payment: editIntermediatePayment,
                       is_shift_ended: isShiftEnded,
                       status: editStatus,
-                      assigned_to: editAssignedTo
+                      assigned_to: editAssignedTo,
+                      rejection_reason: editRejectionReason,
+                      updated_at: new Date().toISOString()
                     });
                   }}
                   style={{

@@ -39,6 +39,8 @@ type Lead struct {
 	Prepayment            float64   `json:"prepayment"`
 	IntermediatePayment   float64   `json:"intermediate_payment"`
 	IsShiftEnded          bool      `json:"is_shift_ended"`
+	UpdatedAt             time.Time `json:"updated_at"`
+	RejectionReason       string    `json:"rejection_reason"`
 }
 
 type CRMUser struct {
@@ -825,6 +827,55 @@ func main() {
 
 		fileServer.ServeHTTP(w, r)
 	})
+
+	// Background task to auto-escalate inactive leads to "dozhim" after 10 minutes
+	go func() {
+		ticker := time.NewTicker(30 * time.Second)
+		defer ticker.Stop()
+		for range ticker.C {
+			fileMutex.Lock()
+			filePath := filepath.Join(dataDir, "crm_leads.json")
+			if _, err := os.Stat(filePath); err == nil {
+				data, err := os.ReadFile(filePath)
+				if err == nil {
+					var leads []Lead
+					if err := json.Unmarshal(data, &leads); err == nil {
+						modified := false
+						now := time.Now()
+						for i := range leads {
+							l := &leads[i]
+							// Only process active states (not completed, rejected, or already dozhim)
+							if l.Status != "completed" && l.Status != "rejected" && l.Status != "dozhim" {
+								lastActive := l.CreatedAt
+								if !l.UpdatedAt.IsZero() {
+									lastActive = l.UpdatedAt
+								}
+								if now.Sub(lastActive) > 10*time.Minute {
+									l.Status = "dozhim"
+									l.UpdatedAt = now
+									logMsg := fmt.Sprintf("[%s] Авто-система: Заявка автоматически переведена в Дожим из-за отсутствия активности в течение 10 минут.", now.Format("15:04"))
+									if l.Comments != "" {
+										l.Comments += "\n" + logMsg
+									} else {
+										l.Comments = logMsg
+									}
+									modified = true
+									log.Printf("Lead %s auto-escalated to dozhim due to inactivity.", l.ID)
+								}
+							}
+						}
+						if modified {
+							newData, err := json.MarshalIndent(leads, "", "  ")
+							if err == nil {
+								os.WriteFile(filePath, newData, 0644)
+							}
+						}
+					}
+				}
+			}
+			fileMutex.Unlock()
+		}
+	}()
 
 	log.Printf("Go Backend Server starting on port %s", port)
 	if err := http.ListenAndServe("0.0.0.0:"+port, nil); err != nil {
