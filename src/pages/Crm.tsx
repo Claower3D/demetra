@@ -23,7 +23,68 @@ interface Lead {
   source: string;
   assigned_to: string;
   comments: string;
+  city?: string;
+  category?: string;
+  product?: string;
+  address?: string;
+  cost_price?: number;
+  extra_expense?: number;
+  master_commission?: number;
+  bank_commission?: number;
+  installment_commission?: number;
+  prepayment?: number;
+  intermediate_payment?: number;
+  is_shift_ended?: boolean;
 }
+
+const catalogCategories = [
+  'Конвейерные ленты',
+  'Стыковка и ремонт',
+  'Футеровка барабанов',
+  'Запасные части конвейера',
+  'Очистители лент'
+];
+
+const catalogProducts: Record<string, string[]> = {
+  'Конвейерные ленты': [
+    'Лента резинотканевая многопрокладочная ГОСТ 20-85',
+    'Лента шевронная рифленая (Chevron)',
+    'Лента шахтная трудногорючая (1.2Ш / 2Ш)',
+    'Лента теплостойкая (до 200°С)',
+    'Лента морозостойкая (до -60°С)'
+  ],
+  'Сстыковка и ремонт': [
+    'Метод горячей вулканизации',
+    'Метод холодной вулканизации (клей TRS-2002)',
+    'Механические соединители (заклепочные / болтовые)',
+    'Ремонт продольных порезов полотна'
+  ],
+  'Стыковка и ремонт': [
+    'Метод горячей вулканизации',
+    'Метод холодной вулканизации (клей TRS-2002)',
+    'Механические соединители (заклепочные / болтовые)',
+    'Ремонт продольных порезов полотна'
+  ],
+  'Футеровка барабанов': [
+    'Резиновая футеровка с ромбовидным профилем',
+    'Резинокерамическая футеровка (повышенный износ)',
+    'Футеровка полиуретановыми пластинами',
+    'Напыляемая футеровка барабанов'
+  ],
+  'Запасные части конвейера': [
+    'Ролики конвейерные (демпфирующие / амортизирующие)',
+    'Роликоопоры (желобчатые / плоские / центрирующие)',
+    'Барабаны приводные и натяжные',
+    'Муфты соединительные и мотор-редукторы'
+  ],
+  'Очистители лент': [
+    'Первичный грубый очиститель ленты (скребок H-типа)',
+    'Вторичный тонкий очиститель ленты (полиуретановый)',
+    'Плужковый очиститель внутренней ветви',
+    'Скребки полиуретановые запасные'
+  ]
+};
+
 
 // CRM User interface matching Go backend
 interface CRMUser {
@@ -120,6 +181,48 @@ export default function Crm() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+
+  // Local edit states for the extended lead edit modal
+  const [editName, setEditName] = useState('');
+  const [editPhone, setEditPhone] = useState('');
+  const [editCity, setEditCity] = useState('Астана');
+  const [editCategory, setEditCategory] = useState('');
+  const [editProduct, setEditProduct] = useState('');
+  const [editAddress, setEditAddress] = useState('');
+  const [editComments, setEditComments] = useState('');
+  const [editPrice, setEditPrice] = useState(0);
+  const [editCostPrice, setEditCostPrice] = useState(0);
+  const [editExtraExpense, setEditExtraExpense] = useState(0);
+  const [editMasterCommission, setEditMasterCommission] = useState(0);
+  const [editBankCommission, setEditBankCommission] = useState(0);
+  const [editInstallmentCommission, setEditInstallmentCommission] = useState(0);
+  const [editPrepayment, setEditPrepayment] = useState(0);
+  const [editIntermediatePayment, setEditIntermediatePayment] = useState(0);
+  const [isShiftEnded, setIsShiftEnded] = useState(false);
+  const [newChatComment, setNewChatComment] = useState('');
+
+  useEffect(() => {
+    if (selectedLead) {
+      setEditName(selectedLead.name || '');
+      setEditPhone(selectedLead.phone || '');
+      setEditCity(selectedLead.city || 'Астана');
+      const cat = selectedLead.category || catalogCategories[0];
+      setEditCategory(cat);
+      setEditProduct(selectedLead.product || (catalogProducts[cat] && catalogProducts[cat][0]) || '');
+      setEditAddress(selectedLead.address || '');
+      setEditComments(selectedLead.comments || '');
+      setEditPrice(selectedLead.amount || 0);
+      setEditCostPrice(selectedLead.cost_price || 0);
+      setEditExtraExpense(selectedLead.extra_expense || 0);
+      setEditMasterCommission(selectedLead.master_commission || 0);
+      setEditBankCommission(selectedLead.bank_commission || 0);
+      setEditInstallmentCommission(selectedLead.installment_commission || 0);
+      setEditPrepayment(selectedLead.prepayment || 0);
+      setEditIntermediatePayment(selectedLead.intermediate_payment || 0);
+      setIsShiftEnded(selectedLead.is_shift_ended || false);
+      setNewChatComment('');
+    }
+  }, [selectedLead]);
   
   // Chat Active State
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
@@ -447,6 +550,20 @@ export default function Crm() {
           amount: amount !== undefined ? amount : l.amount,
           comments: comments !== undefined ? comments : l.comments,
           assigned_to: assignedTo !== undefined ? assignedTo : l.assigned_to
+        };
+      }
+      return l;
+    });
+    saveLeadsData(updated);
+    setIsEditModalOpen(false);
+  };
+
+  const handleUpdateLead = (leadId: string, updatedLeadData: Partial<Lead>) => {
+    const updated = leads.map(l => {
+      if (l.id === leadId) {
+        return {
+          ...l,
+          ...updatedLeadData
         };
       }
       return l;
@@ -3053,7 +3170,7 @@ export default function Crm() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: '2rem'
+              padding: '1rem'
             }}
           >
             <motion.div 
@@ -3064,111 +3181,492 @@ export default function Crm() {
                 background: '#0f0f15',
                 border: '1px solid rgba(0, 255, 65, 0.15)',
                 borderRadius: '24px',
-                width: '100%',
-                maxWidth: '550px',
-                padding: '2.5rem',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.8)'
+                width: '95vw',
+                maxWidth: '1200px',
+                height: '90vh',
+                maxHeight: '850px',
+                display: 'flex',
+                flexDirection: 'column',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.8)',
+                overflow: 'hidden'
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: '900' }}>Обработка заявки № {selectedLead.id.split('_')[1] || selectedLead.id}</h3>
-                <button onClick={() => setIsEditModalOpen(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }}><X size={20} /></button>
+              {/* Modal Header */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '1.5rem 2rem',
+                borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                background: 'rgba(255, 255, 255, 0.01)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                  <h3 style={{ margin: 0, fontSize: '1.35rem', fontWeight: '900', letterSpacing: '-0.02em', color: '#fff' }}>
+                    Карточка сделки № {selectedLead.id.split('_')[1] || selectedLead.id}
+                  </h3>
+                  {/* Shift Mode Toggle */}
+                  <button 
+                    onClick={() => setIsShiftEnded(!isShiftEnded)}
+                    style={{
+                      background: isShiftEnded ? 'rgba(239, 68, 68, 0.1)' : 'rgba(0, 255, 65, 0.1)',
+                      border: `1px solid ${isShiftEnded ? 'rgba(239, 68, 68, 0.3)' : 'rgba(0, 255, 65, 0.3)'}`,
+                      borderRadius: '30px',
+                      color: isShiftEnded ? '#ef4444' : '#00ff41',
+                      padding: '0.4rem 1rem',
+                      fontSize: '0.8rem',
+                      fontWeight: '800',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      transition: '0.2s'
+                    }}
+                  >
+                    <span style={{
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      background: isShiftEnded ? '#ef4444' : '#00ff41',
+                      display: 'inline-block'
+                    }} />
+                    {isShiftEnded ? 'Смена окончена' : 'Смена активна'}
+                  </button>
+                </div>
+                <button onClick={() => setIsEditModalOpen(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }}>
+                  <X size={24} />
+                </button>
               </div>
 
-              <div style={{ display: 'grid', gap: '1.5rem' }}>
-                {/* Client info */}
-                <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1.25rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.03)' }}>
-                  <div style={{ fontWeight: '800', fontSize: '1.1rem', marginBottom: '0.5rem' }}>{selectedLead.name}</div>
-                  <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', display: 'grid', gap: '0.25rem' }}>
-                    <span>📞 {selectedLead.phone}</span>
-                    <span>✉️ {selectedLead.email || 'Нет почты'}</span>
-                    <span>🌐 Откуда: {selectedLead.source}</span>
-                  </div>
-                  <div style={{ fontSize: '0.85rem', marginTop: '1rem', padding: '0.75rem', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', color: 'rgba(255,255,255,0.8)' }}>
-                    <strong>Сообщение:</strong> {selectedLead.message}
-                  </div>
-                </div>
-
-                <form onSubmit={(e) => {
-                  e.preventDefault();
-                  const fd = new FormData(e.currentTarget);
-                  handleUpdateLeadStatus(
-                    selectedLead.id,
-                    fd.get('status') as any,
-                    parseFloat(fd.get('amount') as string) || 0,
-                    fd.get('comments') as string,
-                    fd.get('assigned_to') as string
-                  );
-                }} style={{ display: 'grid', gap: '1.25rem' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                    <div style={{ display: 'grid', gap: '0.4rem' }}>
-                      <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Статус сделки</label>
-                      <select 
-                        name="status" 
-                        defaultValue={selectedLead.status}
-                        style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none', cursor: 'pointer' }}
-                      >
-                        <option value="new">Новая</option>
-                        <option value="processing">В работе</option>
-                        <option value="dozhim">Дожим</option>
-                        <option value="manager_op">Менеджер ОП</option>
-                        <option value="rop">РОП</option>
-                        <option value="financier">Финансист</option>
-                        <option value="completed">Выполнена успешно</option>
-                        <option value="rejected">Отклонена / Отказ</option>
-                      </select>
-                    </div>
-
-                    <div style={{ display: 'grid', gap: '0.4rem' }}>
-                      <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Бюджет сделки (₸)</label>
-                      <input 
-                        type="number" 
-                        name="amount" 
-                        defaultValue={selectedLead.amount} 
-                        style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none' }} 
-                      />
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'grid', gap: '0.4rem' }}>
-                    <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Ответственный менеджер</label>
-                    <select 
-                      name="assigned_to" 
-                      defaultValue={selectedLead.assigned_to}
-                      style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none', cursor: 'pointer' }}
-                    >
-                      {users.map(u => (
-                        <option key={u.id} value={u.name}>{u.name} ({u.role})</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div style={{ display: 'grid', gap: '0.4rem' }}>
-                    <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Рабочие комментарии</label>
-                    <textarea 
-                      name="comments" 
-                      rows={3} 
-                      defaultValue={selectedLead.comments}
-                      style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none', resize: 'none' }} 
+              {/* Scrollable Layout Body */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: windowWidth >= 968 ? '1.1fr 1.3fr' : '1fr',
+                gap: '2rem',
+                padding: '2rem',
+                overflowY: 'auto',
+                flex: 1
+              }}>
+                {/* Left Column: Form Parameters */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '0.5rem', fontWeight: '800', textTransform: 'uppercase' }}>
+                      Имя клиента
+                    </label>
+                    <input 
+                      type="text" 
+                      value={editName}
+                      disabled={isShiftEnded}
+                      onChange={(e) => setEditName(e.target.value)}
+                      required
+                      style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', color: '#fff', padding: '0.75rem', boxSizing: 'border-box' }}
                     />
                   </div>
 
-                  <button 
-                    type="submit" 
-                    style={{ 
-                      background: '#00ff41', 
-                      color: '#000', 
-                      border: 'none', 
-                      padding: '1rem', 
-                      borderRadius: '12px', 
-                      fontWeight: '900', 
-                      cursor: 'pointer',
-                      marginTop: '0.5rem'
-                    }}
-                  >
-                    Сохранить изменения
-                  </button>
-                </form>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '1rem' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '0.5rem', fontWeight: '800', textTransform: 'uppercase' }}>
+                        Телефон
+                      </label>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <input 
+                          type="text" 
+                          value={editPhone}
+                          disabled={isShiftEnded}
+                          onChange={(e) => setEditPhone(e.target.value)}
+                          required
+                          style={{ flex: 1, background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', color: '#fff', padding: '0.75rem', boxSizing: 'border-box' }}
+                        />
+                        <button 
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard.writeText(editPhone);
+                            alert('Телефон скопирован: ' + editPhone);
+                          }}
+                          style={{
+                            background: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            borderRadius: '8px',
+                            color: '#fff',
+                            padding: '0 1rem',
+                            fontWeight: '700',
+                            cursor: 'pointer',
+                            fontSize: '0.8rem'
+                          }}
+                        >
+                          копировать
+                        </button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '0.5rem', fontWeight: '800', textTransform: 'uppercase' }}>
+                        Город
+                      </label>
+                      <select 
+                        value={editCity}
+                        disabled={isShiftEnded}
+                        onChange={(e) => setEditCity(e.target.value)}
+                        style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', color: '#fff', padding: '0.75rem', outline: 'none' }}
+                      >
+                        <option value="Астана">Астана</option>
+                        <option value="Алматы">Алматы</option>
+                        <option value="Караганда">Караганда</option>
+                        <option value="Шымкент">Шымкент</option>
+                        <option value="Атырау">Атырау</option>
+                        <option value="Усть-Каменогорск">Усть-Каменогорск</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '0.5rem', fontWeight: '800', textTransform: 'uppercase' }}>
+                        Направление (Категория)
+                      </label>
+                      <select 
+                        value={editCategory}
+                        disabled={isShiftEnded}
+                        onChange={(e) => {
+                          const cat = e.target.value;
+                          setEditCategory(cat);
+                          const products = catalogProducts[cat] || [];
+                          if (products.length > 0) {
+                            setEditProduct(products[0]);
+                          }
+                        }}
+                        style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', color: '#fff', padding: '0.75rem', outline: 'none' }}
+                      >
+                        {catalogCategories.map(c => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '0.5rem', fontWeight: '800', textTransform: 'uppercase' }}>
+                        Услуга / Товар
+                      </label>
+                      <select 
+                        value={editProduct}
+                        disabled={isShiftEnded}
+                        onChange={(e) => setEditProduct(e.target.value)}
+                        style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', color: '#fff', padding: '0.75rem', outline: 'none' }}
+                      >
+                        {(catalogProducts[editCategory] || []).map(p => (
+                          <option key={p} value={p}>{p}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '0.5rem', fontWeight: '800', textTransform: 'uppercase' }}>
+                      Точный адрес (Улица, Дом, Квартира)
+                    </label>
+                    <input 
+                      type="text" 
+                      value={editAddress}
+                      disabled={isShiftEnded}
+                      onChange={(e) => setEditAddress(e.target.value)}
+                      placeholder="Улица Ленина, д. 15, кв. 42"
+                      style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', color: '#fff', padding: '0.75rem', boxSizing: 'border-box' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '0.5rem', fontWeight: '800', textTransform: 'uppercase' }}>
+                      Особые комментарии (Причина обращения)
+                    </label>
+                    <textarea 
+                      value={editComments}
+                      disabled={isShiftEnded}
+                      onChange={(e) => setEditComments(e.target.value)}
+                      rows={3}
+                      style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', color: '#fff', padding: '0.75rem', boxSizing: 'border-box', resize: 'none' }}
+                    />
+                  </div>
+
+                  {/* Attached files block */}
+                  <div style={{ marginTop: '0.5rem' }}>
+                    <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '0.5rem', fontWeight: '800', textTransform: 'uppercase' }}>
+                      Прикрепленные файлы
+                    </label>
+                    <div style={{ padding: '1.25rem', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '12px', background: 'rgba(0,0,0,0.2)', textAlign: 'center' }}>
+                      <span style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.4)', display: 'block', marginBottom: '0.5rem' }}>Нет прикрепленных файлов</span>
+                      <button 
+                        type="button"
+                        disabled={isShiftEnded}
+                        onClick={() => alert('Функция загрузки файлов доступна в полной версии.')}
+                        style={{
+                          background: 'rgba(255,255,255,0.04)',
+                          border: '1px solid rgba(255,255,255,0.1)',
+                          borderRadius: '8px',
+                          color: '#fff',
+                          padding: '0.5rem 1rem',
+                          fontSize: '0.8rem',
+                          cursor: isShiftEnded ? 'not-allowed' : 'pointer'
+                        }}
+                      >
+                        + Прикрепить файл (фото, чертеж)
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Column: Financial Data Cards & Chat */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  {/* Warning Block if Shift is Ended */}
+                  {isShiftEnded && (
+                    <div style={{
+                      background: 'rgba(239, 68, 68, 0.08)',
+                      border: '1px solid rgba(239, 68, 68, 0.25)',
+                      borderRadius: '16px',
+                      padding: '1.25rem',
+                      display: 'flex',
+                      gap: '0.75rem',
+                      alignItems: 'flex-start',
+                      color: '#ef4444',
+                      fontSize: '0.85rem',
+                      fontWeight: '700',
+                      lineHeight: '1.4'
+                    }}>
+                      <AlertCircle size={20} style={{ flexShrink: 0, marginTop: '2px' }} />
+                      <div>
+                        ВАША СМЕНА ОКОНЧЕНА (ИЛИ ВЫХОДНОЙ)<br />
+                        <span style={{ fontWeight: '400', color: 'rgba(239,68,68,0.8)' }}>
+                          Все рабочие действия, калькуляторы и кнопки в карточке заблокированы до начала вашей следующей смены по графику.
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Financial Data Card Title */}
+                  <div style={{ background: '#07070a', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '20px', padding: '1.5rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                      <span style={{ fontSize: '1rem', fontWeight: '900', color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <DollarSign size={18} style={{ color: '#00ff41' }} /> Финансовые данные карточки
+                      </span>
+                      <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)' }}>
+                        Удержания всего: <strong style={{ color: '#ef4444' }}>0 ₸</strong>
+                      </span>
+                    </div>
+
+                    {/* calculations variables */}
+                    {(() => {
+                      const vat = Math.round(editPrice * 0.12);
+                      const netAmount = editPrice - vat;
+                      const totalCost = editCostPrice + editExtraExpense;
+                      const netProfit = netAmount - totalCost - editMasterCommission - editBankCommission - editInstallmentCommission;
+                      const rest = editPrice - editPrepayment - editIntermediatePayment;
+
+                      const renderFinancialCard = (title: string, value: number, isEditable: boolean, bgColor: string, borderColor: string, textColor: string, setter?: (v: number) => void, subtext?: string) => {
+                        return (
+                          <div style={{
+                            background: bgColor,
+                            border: `1px solid ${borderColor}`,
+                            borderRadius: '16px',
+                            padding: '1rem',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            minHeight: '85px',
+                            boxSizing: 'border-box'
+                          }}>
+                            <div style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>{title}</div>
+                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.25rem' }}>
+                              {isEditable && setter ? (
+                                <input 
+                                  type="number"
+                                  value={value || 0}
+                                  disabled={isShiftEnded}
+                                  onChange={(e) => setter(parseInt(e.target.value) || 0)}
+                                  style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    color: textColor,
+                                    fontSize: '1.25rem',
+                                    fontWeight: '900',
+                                    width: '100%',
+                                    outline: 'none',
+                                    padding: 0,
+                                    margin: 0
+                                  }}
+                                />
+                              ) : (
+                                <span style={{ fontSize: '1.25rem', fontWeight: '900', color: textColor }}>
+                                  {value.toLocaleString('ru-RU')}
+                                </span>
+                              )}
+                              <span style={{ fontSize: '0.9rem', color: textColor, fontWeight: '700' }}>₸</span>
+                            </div>
+                            {subtext && <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.35)', marginTop: '0.2rem' }}>{subtext}</div>}
+                          </div>
+                        );
+                      };
+
+                      return (
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem' }}>
+                          {renderFinancialCard('Цена продажи', editPrice, true, 'rgba(0, 255, 65, 0.04)', 'rgba(0, 255, 65, 0.2)', '#00ff41', setEditPrice, 'итого клиенту')}
+                          {renderFinancialCard('Очищенная сумма', netAmount, false, 'rgba(59, 130, 246, 0.04)', 'rgba(59, 130, 246, 0.2)', '#3b82f6', undefined, 'после налогов/комиссий')}
+                          {renderFinancialCard('Себестоимость', editCostPrice, true, 'rgba(255, 255, 255, 0.02)', 'rgba(255, 255, 255, 0.1)', '#fff', setEditCostPrice, 'базовая себестоимость')}
+                          
+                          {renderFinancialCard('Доп. расход', editExtraExpense, true, 'rgba(245, 158, 11, 0.04)', 'rgba(245, 158, 11, 0.2)', '#f59e0b', setEditExtraExpense, 'в себестоимости, без наценки')}
+                          {renderFinancialCard('Комиссия мастеру', editMasterCommission, true, 'rgba(245, 158, 11, 0.04)', 'rgba(245, 158, 11, 0.2)', '#f59e0b', setEditMasterCommission, 'доля/выплата мастеру')}
+                          {renderFinancialCard('Прибыль очищенная', netProfit, false, 'rgba(0, 255, 65, 0.04)', 'rgba(0, 255, 65, 0.2)', '#00ff41', undefined, 'после С/С, мастера и банка')}
+                          
+                          {renderFinancialCard('Налоги всего', vat, false, 'rgba(239, 68, 68, 0.04)', 'rgba(239, 68, 68, 0.2)', '#ef4444', undefined, 'налог + налог с НДС')}
+                          {renderFinancialCard('НДС (12%)', vat, false, 'rgba(139, 92, 246, 0.04)', 'rgba(139, 92, 246, 0.2)', '#8b5cf6', undefined, '12% при оплате с НДС')}
+                          {renderFinancialCard('Комиссия банка', editBankCommission, true, 'rgba(255, 255, 255, 0.02)', 'rgba(255, 255, 255, 0.1)', '#fff', setEditBankCommission, 'если есть комиссии')}
+                          
+                          {renderFinancialCard('Комиссия рассрочки', editInstallmentCommission, true, 'rgba(255, 255, 255, 0.02)', 'rgba(255, 255, 255, 0.1)', '#fff', setEditInstallmentCommission, 'процент рассрочки')}
+                          {renderFinancialCard('Предоплата', editPrepayment, true, 'rgba(59, 130, 246, 0.04)', 'rgba(59, 130, 246, 0.2)', '#3b82f6', setEditPrepayment, 'первый платеж')}
+                          {renderFinancialCard('Промежуточная', editIntermediatePayment, true, 'rgba(59, 130, 246, 0.04)', 'rgba(59, 130, 246, 0.2)', '#3b82f6', setEditIntermediatePayment, 'средний платеж')}
+                          
+                          {renderFinancialCard('Остаток', rest, false, 'rgba(59, 130, 246, 0.04)', 'rgba(59, 130, 246, 0.2)', '#3b82f6', undefined, 'к оплате позже')}
+                        </div>
+                      );
+                    })()}
+                  </div>
+
+                  {/* ЧАТ ПО ЗАЯВКЕ */}
+                  <div style={{ background: '#07070a', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '20px', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1, minHeight: '220px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '0.85rem', fontWeight: '900', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase' }}>
+                        Чат по заявке
+                      </span>
+                      <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)' }}>
+                        События и лог
+                      </span>
+                    </div>
+
+                    <div style={{
+                      flex: 1,
+                      overflowY: 'auto',
+                      maxHeight: '200px',
+                      background: 'rgba(0,0,0,0.2)',
+                      borderRadius: '12px',
+                      padding: '1rem',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.75rem'
+                    }}>
+                      <div style={{ fontSize: '0.8rem', padding: '0.75rem', background: 'rgba(0,0,0,0.3)', borderLeft: '3px solid #3b82f6', borderRadius: '4px', color: 'rgba(255,255,255,0.7)' }}>
+                        <div style={{ color: '#3b82f6', fontWeight: '800', marginBottom: '0.25rem', fontSize: '0.75rem' }}>⇄ Система • 00:27</div>
+                        Система: Автоматическая передача менеджеру ОП не выполнена. В сети нет Менеджеров ОП для города «{editCity}» по услуге «{editProduct}»! Проверьте графики или настройки профилей в админке. (bot_webhook_new_lead)
+                      </div>
+                      <div style={{ fontSize: '0.8rem', padding: '0.75rem', background: 'rgba(0,0,0,0.3)', borderLeft: '3px solid #00ff41', borderRadius: '4px', color: 'rgba(255,255,255,0.7)' }}>
+                        <div style={{ color: '#00ff41', fontWeight: '800', marginBottom: '0.25rem', fontSize: '0.75rem' }}>✓ Система • 00:28</div>
+                        Система: Заявка успешно импортирована из источника {selectedLead.source}.
+                      </div>
+                      {editComments && (
+                        <div style={{ fontSize: '0.8rem', padding: '0.75rem', background: 'rgba(0,0,0,0.3)', borderLeft: '3px solid #f59e0b', borderRadius: '4px', color: 'rgba(255,255,255,0.7)' }}>
+                          <div style={{ color: '#f59e0b', fontWeight: '800', marginBottom: '0.25rem', fontSize: '0.75rem' }}>✎ Комментарий • {new Date(selectedLead.created_at).toLocaleDateString()}</div>
+                          {editComments}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Chat input box */}
+                    <div style={{ display: 'flex', gap: '0.5rem', marginTop: 'auto' }}>
+                      <input 
+                        type="text" 
+                        placeholder={isShiftEnded ? 'Комментарии заблокированы (Смена окончена)' : 'Напишите комментарий к заявке...'}
+                        disabled={isShiftEnded}
+                        value={newChatComment}
+                        onChange={(e) => setNewChatComment(e.target.value)}
+                        style={{
+                          flex: 1,
+                          background: 'rgba(0,0,0,0.3)',
+                          border: '1px solid rgba(255,255,255,0.08)',
+                          borderRadius: '8px',
+                          color: '#fff',
+                          padding: '0.75rem',
+                          outline: 'none',
+                          fontSize: '0.85rem'
+                        }}
+                      />
+                      <button 
+                        type="button"
+                        disabled={isShiftEnded || !newChatComment}
+                        onClick={() => {
+                          setEditComments(editComments + (editComments ? '\n' : '') + newChatComment);
+                          setNewChatComment('');
+                        }}
+                        style={{
+                          background: '#00ff41',
+                          border: 'none',
+                          borderRadius: '8px',
+                          color: '#000',
+                          padding: '0 1.25rem',
+                          fontWeight: '800',
+                          cursor: (isShiftEnded || !newChatComment) ? 'not-allowed' : 'pointer'
+                        }}
+                      >
+                        <Send size={16} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Modal Footer Actions */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                gap: '1rem',
+                padding: '1.5rem 2rem',
+                borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+                background: 'rgba(255, 255, 255, 0.01)'
+              }}>
+                <button 
+                  onClick={() => setIsEditModalOpen(false)}
+                  style={{
+                    background: 'none',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '12px',
+                    color: '#fff',
+                    padding: '0.75rem 1.5rem',
+                    fontWeight: '700',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Отмена
+                </button>
+                <button 
+                  disabled={isShiftEnded}
+                  onClick={() => {
+                    handleUpdateLead(selectedLead.id, {
+                      name: editName,
+                      phone: editPhone,
+                      city: editCity,
+                      category: editCategory,
+                      product: editProduct,
+                      address: editAddress,
+                      comments: editComments,
+                      amount: editPrice,
+                      cost_price: editCostPrice,
+                      extra_expense: editExtraExpense,
+                      master_commission: editMasterCommission,
+                      bank_commission: editBankCommission,
+                      installment_commission: editInstallmentCommission,
+                      prepayment: editPrepayment,
+                      intermediate_payment: editIntermediatePayment,
+                      is_shift_ended: isShiftEnded
+                    });
+                  }}
+                  style={{
+                    background: '#00ff41',
+                    color: '#000',
+                    border: 'none',
+                    padding: '0.75rem 2rem',
+                    borderRadius: '12px',
+                    fontWeight: '900',
+                    cursor: isShiftEnded ? 'not-allowed' : 'pointer',
+                    opacity: isShiftEnded ? 0.5 : 1
+                  }}
+                >
+                  Сохранить изменения
+                </button>
               </div>
             </motion.div>
           </motion.div>

@@ -16,17 +16,29 @@ import (
 
 // CRM Structures
 type Lead struct {
-	ID         string    `json:"id"`
-	Name       string    `json:"name"`
-	Phone      string    `json:"phone"`
-	Email      string    `json:"email"`
-	Message    string    `json:"message"`
-	Status     string    `json:"status"` // new, processing, completed, rejected
-	CreatedAt  time.Time `json:"created_at"`
-	Amount     float64   `json:"amount"`
-	Source     string    `json:"source"`
-	AssignedTo string    `json:"assigned_to"`
-	Comments   string    `json:"comments"`
+	ID                    string    `json:"id"`
+	Name                  string    `json:"name"`
+	Phone                 string    `json:"phone"`
+	Email                 string    `json:"email"`
+	Message               string    `json:"message"`
+	Status                string    `json:"status"` // new, processing, completed, rejected
+	CreatedAt             time.Time `json:"created_at"`
+	Amount                float64   `json:"amount"`
+	Source                string    `json:"source"`
+	AssignedTo            string    `json:"assigned_to"`
+	Comments              string    `json:"comments"`
+	City                  string    `json:"city"`
+	Category              string    `json:"category"`
+	Product               string    `json:"product"`
+	Address               string    `json:"address"`
+	CostPrice             float64   `json:"cost_price"`
+	ExtraExpense          float64   `json:"extra_expense"`
+	MasterCommission      float64   `json:"master_commission"`
+	BankCommission        float64   `json:"bank_commission"`
+	InstallmentCommission float64   `json:"installment_commission"`
+	Prepayment            float64   `json:"prepayment"`
+	IntermediatePayment   float64   `json:"intermediate_payment"`
+	IsShiftEnded          bool      `json:"is_shift_ended"`
 }
 
 type CRMUser struct {
