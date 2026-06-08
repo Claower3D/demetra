@@ -1119,7 +1119,8 @@ export default function Crm() {
         padding: windowWidth >= 1024 ? '3rem 4rem' : '1.5rem 1rem',
         paddingTop: windowWidth >= 1024 ? '3rem' : '5rem',
         minHeight: '100vh',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        minWidth: 0
       }}>
         {loading ? (
           <div style={{ height: '70vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', color: '#00ff41' }}>
@@ -1890,7 +1891,10 @@ export default function Crm() {
                         overflowX: 'auto', 
                         paddingBottom: '1.5rem',
                         minHeight: '650px',
-                        scrollbarWidth: 'thin'
+                        scrollbarWidth: 'thin',
+                        width: '100%',
+                        maxWidth: '100%',
+                        boxSizing: 'border-box'
                       }}
                     >
                       {[

@@ -1091,6 +1091,9 @@ body.builder-mode .builder-text-hoverable:hover::after {
   overflow-x: auto;
   padding-bottom: 1.5rem;
   min-height: 650px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .kanban-board-container::-webkit-scrollbar {
