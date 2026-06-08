@@ -34,6 +34,16 @@ body.light-theme {
   box-sizing: border-box;
 }
 
+select option {
+  background-color: #0d0d0d !important;
+  color: #ffffff !important;
+}
+
+body.light-theme select option {
+  background-color: #ffffff !important;
+  color: #0a0a0a !important;
+}
+
 a {
   text-decoration: none;
   color: inherit;
