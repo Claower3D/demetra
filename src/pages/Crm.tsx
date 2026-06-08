@@ -51,7 +51,7 @@ interface CRMChat {
 
 export interface CRMRolePermission {
   role: 'admin' | 'manager' | 'specialist' | 'auditor';
-  allowed_tabs: ('dashboard' | 'analytics' | 'leads' | 'clients' | 'chats' | 'users' | 'products' | 'services' | 'builder' | 'content' | 'pages' | 'settings' | 'assistant')[];
+  allowed_tabs: ('dashboard' | 'analytics' | 'leads' | 'clients' | 'chats' | 'users' | 'accounting' | 'products' | 'services' | 'builder' | 'content' | 'pages' | 'settings' | 'assistant')[];
 }
 
 export default function Crm() {
@@ -60,7 +60,7 @@ export default function Crm() {
   });
   const [passwordInput, setPasswordInput] = useState('');
   const [authError, setAuthError] = useState('');
-  const [activeSection, setActiveSection] = useState<'dashboard' | 'analytics' | 'leads' | 'clients' | 'chats' | 'users' | 'products' | 'services' | 'builder' | 'content' | 'pages' | 'settings' | 'assistant'>(() => {
+  const [activeSection, setActiveSection] = useState<'dashboard' | 'analytics' | 'leads' | 'clients' | 'chats' | 'users' | 'accounting' | 'products' | 'services' | 'builder' | 'content' | 'pages' | 'settings' | 'assistant'>(() => {
     const saved = localStorage.getItem('demetra_crm_current_user');
     if (saved) {
       try {
@@ -82,6 +82,19 @@ export default function Crm() {
   // View States
   const [viewMode, setViewMode] = useState<'table' | 'kanban'>('kanban');
   const [usersSubTab, setUsersSubTab] = useState<'employees' | 'permissions'>('employees');
+
+  // Accounting State
+  const [accOrderNumber, setAccOrderNumber] = useState('001');
+  const [accDate, setAccDate] = useState(new Date().toISOString().split('T')[0]);
+  const [accClientName, setAccClientName] = useState('');
+  const [accClientBin, setAccClientBin] = useState('');
+  const [accService, setAccService] = useState('');
+  const [accQuantity, setAccQuantity] = useState(1);
+  const [accPriceWithoutVat, setAccPriceWithoutVat] = useState(50000);
+  const [accPaymentMethod, setAccPaymentMethod] = useState('безналичные');
+  const [accResult, setAccResult] = useState<{ pdf: string; csv: string } | null>(null);
+  const [accLoading, setAccLoading] = useState(false);
+  const [accError, setAccError] = useState('');
 
   // Responsive States
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -321,13 +334,27 @@ export default function Crm() {
 
     const savedPermissions = localStorage.getItem('demetra_mock_permissions');
     if (savedPermissions) {
-      setPermissions(JSON.parse(savedPermissions));
+      try {
+        const parsed = JSON.parse(savedPermissions);
+        const updated = parsed.map((p: any) => {
+          if (!p.allowed_tabs.includes('accounting')) {
+            if (p.role === 'admin' || p.role === 'manager' || p.role === 'auditor') {
+              return { ...p, allowed_tabs: [...p.allowed_tabs, 'accounting'] };
+            }
+          }
+          return p;
+        });
+        setPermissions(updated);
+        localStorage.setItem('demetra_mock_permissions', JSON.stringify(updated));
+      } catch (e) {
+        localStorage.removeItem('demetra_mock_permissions');
+      }
     } else {
       const mockPermissions: CRMRolePermission[] = [
-        { role: 'admin', allowed_tabs: ['analytics', 'leads', 'clients', 'chats', 'users'] },
-        { role: 'manager', allowed_tabs: ['analytics', 'leads', 'clients', 'chats'] },
+        { role: 'admin', allowed_tabs: ['analytics', 'leads', 'clients', 'chats', 'users', 'accounting'] },
+        { role: 'manager', allowed_tabs: ['analytics', 'leads', 'clients', 'chats', 'accounting'] },
         { role: 'specialist', allowed_tabs: ['leads', 'chats'] },
-        { role: 'auditor', allowed_tabs: ['analytics', 'leads'] }
+        { role: 'auditor', allowed_tabs: ['analytics', 'leads', 'accounting'] }
       ];
       setPermissions(mockPermissions);
       localStorage.setItem('demetra_mock_permissions', JSON.stringify(mockPermissions));
@@ -1021,7 +1048,8 @@ export default function Crm() {
             { id: 'leads', label: 'Список заявок / заказов', icon: <FileText size={18} />, badge: leads.filter(l => l.status === 'new').length },
             { id: 'clients', label: 'Управление клиентами', icon: <Users size={18} /> },
             { id: 'chats', label: 'История переписки', icon: <MessageSquare size={18} />, badge: chats.length },
-            { id: 'users', label: 'Настройка пользователей', icon: <Shield size={18} /> }
+            { id: 'users', label: 'Настройка пользователей', icon: <Shield size={18} /> },
+            { id: 'accounting', label: 'Чеки и бухгалтерия', icon: <DollarSign size={18} /> }
           ].filter(item => {
             const allowedTabs = permissions.find(p => p.role === currentUser.role)?.allowed_tabs || [];
             if (item.id === 'dashboard') {
@@ -1145,10 +1173,10 @@ export default function Crm() {
                       Главная панель
                     </div>
                     <h1 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.8rem)', fontWeight: '900', color: '#fff', lineHeight: 1.1, margin: 0 }}>
-                      ВЫБЕРИТЕ РАЗДЕЛ ДЛЯ УПРАВЛЕНИЯ
+                      УПРАВЛЕНИЕ РАЗДЕЛАМИ CRM
                     </h1>
                     <p style={{ color: 'rgba(255,255,255,0.4)', marginTop: '0.75rem', fontSize: '1rem', margin: 0 }}>
-                      Нажмите на плитку чтобы открыть нужный раздел администрирования.
+                      Нажмите на плитку, чтобы перейти в соответствующий рабочий раздел системы.
                     </p>
                   </div>
 
@@ -1160,88 +1188,70 @@ export default function Crm() {
                   }}>
                     {[
                       {
-                        id: 'products',
-                        icon: <Package size={36} />,
+                        id: 'leads',
+                        icon: <FileText size={36} />,
+                        accent: '#ff4b4b',
+                        label: 'Список заявок / заказов',
+                        sublabel: 'Канбан-воронка',
+                        count: leads.length,
+                        countLabel: 'заявок',
+                        desc: 'Управление поступающими обращениями клиентов, этапами сделок и бюджетами.',
+                        action: 'Открыть воронку →'
+                      },
+                      {
+                        id: 'clients',
+                        icon: <Users size={36} />,
+                        accent: '#00bfff',
+                        label: 'Управление клиентами',
+                        sublabel: 'База контактов',
+                        count: getClientsList().length,
+                        countLabel: 'клиентов',
+                        desc: 'Единый реестр клиентов, детальные карточки, история сделок и статусы лояльности.',
+                        action: 'Открыть базу →'
+                      },
+                      {
+                        id: 'analytics',
+                        icon: <BarChart3 size={36} />,
                         accent: '#00ff41',
-                        label: 'Продукция',
-                        sublabel: 'Каталог товаров',
-                        count: productCount,
-                        countLabel: 'позиций',
-                        desc: 'Добавляйте, редактируйте и удаляйте товары. Назначайте категории и фото.',
-                        action: 'Управление →',
-                        target: '/admin?tab=products'
+                        label: 'Аналитика и статистика',
+                        sublabel: 'Финансовые показатели',
+                        count: Math.round(stats.totalRevenue).toLocaleString('ru-RU'),
+                        countLabel: '₸ оборот',
+                        desc: 'Контроль доходов, конверсии, среднего чека и графики динамики продаж.',
+                        action: 'Смотреть графики →'
                       },
                       {
-                        id: 'services',
-                        icon: <Truck size={36} />,
-                        accent: '#3b82f6',
-                        label: 'Услуги',
-                        sublabel: 'Список услуг',
-                        count: serviceCount,
-                        countLabel: 'услуг',
-                        desc: 'Управляйте описанием услуг, изображениями, видео и переводами.',
-                        action: 'Управление →',
-                        target: '/admin?tab=services'
-                      },
-                      {
-                        id: 'builder',
-                        icon: <LayoutDashboard size={36} />,
-                        accent: '#a855f7',
-                        label: 'Visual Builder',
-                        sublabel: 'Конструктор страниц',
-                        count: pageCount,
-                        countLabel: 'страниц',
-                        desc: 'Перетаскивайте блоки, добавляйте медиа и настраивайте каждую страницу сайта.',
-                        action: 'Открыть Builder →',
-                        target: '/admin?tab=builder'
-                      },
-                      {
-                        id: 'content',
-                        icon: <Globe size={36} />,
-                        accent: '#f59e0b',
-                        label: 'Контент',
-                        sublabel: 'Тексты и переводы',
-                        count: 3,
-                        countLabel: 'языка',
-                        desc: 'Редактируйте все тексты сайта на русском, казахском и английском языках.',
-                        action: 'Редактировать →',
-                        target: '/admin?tab=content'
-                      },
-                      {
-                        id: 'pages',
-                        icon: <ImageIcon size={36} />,
-                        accent: '#ec4899',
-                        label: 'Страницы',
-                        sublabel: 'Структура сайта',
-                        count: pageCount,
-                        countLabel: 'страниц',
-                        desc: 'Управляйте порядком блоков, скрывайте секции и настраивайте мета-данные.',
-                        action: 'Управление →',
-                        target: '/admin?tab=pages'
-                      },
-                      {
-                        id: 'settings',
-                        icon: <Settings size={36} />,
-                        accent: '#6b7280',
-                        label: 'Настройки',
-                        sublabel: 'Глобальные параметры',
-                        count: null,
-                        countLabel: '',
-                        desc: 'Название компании, цвета, логотип, контактная информация и SEO.',
-                        action: 'Настроить →',
-                        target: '/admin?tab=settings'
-                      },
-                      {
-                        id: 'assistant',
+                        id: 'chats',
                         icon: <MessageSquare size={36} />,
-                        accent: '#22d3ee',
-                        label: 'DEMETRA_ASSISTANT',
-                        sublabel: 'Настройки чат-бота',
+                        accent: '#a855f7',
+                        label: 'История переписки',
+                        sublabel: 'Диалоги с клиентами',
+                        count: chats.length,
+                        countLabel: 'диалогов',
+                        desc: 'Онлайн-чат, интеграции с мессенджерами и история переписок.',
+                        action: 'Открыть чаты →'
+                      },
+                      {
+                        id: 'users',
+                        icon: <Shield size={36} />,
+                        accent: '#f59e0b',
+                        label: 'Аккаунты сотрудников',
+                        sublabel: 'Настройка ролей',
+                        count: users.length,
+                        countLabel: 'аккаунтов',
+                        desc: 'Редактирование прав доступа менеджеров, создание видимости определенных вкладок.',
+                        action: 'Настроить роли →'
+                      },
+                      {
+                        id: 'accounting',
+                        icon: <DollarSign size={36} />,
+                        accent: '#ec4899',
+                        label: 'Чеки и бухгалтерия',
+                        sublabel: 'Antygravity ТОО (НДС 12%)',
                         count: null,
                         countLabel: '',
-                        desc: 'Приветствие, FAQ, авто-ответы, телефон поддержки и имя ассистента.',
-                        action: 'Настроить ассистента →',
-                        target: '/admin?tab=assistant'
+                        desc: 'Генерация профессиональных PDF-чеков, Актов выполненных работ и CSV для 1С.',
+                        action: 'Открыть генератор →'
                       }
                     ].map((tile) => (
                       <div
@@ -2632,6 +2642,389 @@ export default function Crm() {
                       </div>
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* ACCOUNTING SECTION */}
+              {activeSection === 'accounting' && (
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
+                    <div>
+                      <h1 style={{ fontSize: '2.5rem', fontWeight: '900', letterSpacing: '-0.02em', margin: '0 0 0.5rem' }}>Чеки и бухгалтерия</h1>
+                      <p style={{ color: 'rgba(255,255,255,0.5)', margin: 0 }}>Автоматизация учета для ТОО "Antygravity" (Общий режим налогообложения, НДС 12%)</p>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: windowWidth >= 1150 ? '1.2fr 1fr' : '1fr', gap: '2rem' }}>
+                    {/* Left Column: Form */}
+                    <div style={{ background: '#0f0f15', border: '1px solid #1f1f2e', borderRadius: '24px', padding: '2rem' }}>
+                      <h3 style={{ fontSize: '1.2rem', fontWeight: '800', marginBottom: '1.5rem', color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <DollarSign size={20} style={{ color: '#ec4899' }} /> Параметры заказа
+                      </h3>
+
+                      {(() => {
+                        const completedLeads = leads.filter(l => l.status === 'completed' || l.status === 'processing');
+                        if (completedLeads.length === 0) return null;
+                        return (
+                          <div style={{ marginBottom: '2rem', padding: '1rem', background: 'rgba(236, 72, 153, 0.04)', border: '1px solid rgba(236, 72, 153, 0.15)', borderRadius: '12px' }}>
+                            <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.5rem', fontWeight: '700' }}>
+                              Заполнить на основе завершенной сделки CRM:
+                            </label>
+                            <select 
+                              onChange={(e) => {
+                                const lead = leads.find(l => l.id === e.target.value);
+                                if (!lead) return;
+                                setAccClientName(lead.name);
+                                setAccService(lead.message ? lead.message.slice(0, 80) : 'Услуги и поставка оборудования');
+                                
+                                const totalAmount = lead.amount || 0;
+                                const priceWithoutVat = Math.round(totalAmount / 1.12);
+                                setAccPriceWithoutVat(priceWithoutVat);
+                                setAccQuantity(1);
+                                
+                                try {
+                                  const dateStr = new Date(lead.created_at).toISOString().split('T')[0];
+                                  setAccDate(dateStr);
+                                } catch (err) {
+                                  setAccDate(new Date().toISOString().split('T')[0]);
+                                }
+                              }}
+                              defaultValue=""
+                              style={{ width: '100%', background: '#070709', border: '1px solid #1f1f2e', borderRadius: '8px', color: '#fff', padding: '0.6rem 0.8rem', outline: 'none', fontSize: '0.85rem' }}
+                            >
+                              <option value="" disabled>-- Выберите сделку --</option>
+                              {completedLeads.map(l => (
+                                <option key={l.id} value={l.id}>
+                                  {l.name} — {l.amount.toLocaleString('ru-RU')} ₸ ({l.message ? l.message.slice(0, 30) + '...' : 'Без описания'})
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        );
+                      })()}
+
+                      <form 
+                        onSubmit={async (e) => {
+                          e.preventDefault();
+                          setAccLoading(true);
+                          setAccError('');
+                          setAccResult(null);
+                          try {
+                            const payload = {
+                              order_number: accOrderNumber,
+                              date: accDate,
+                              client_name: accClientName,
+                              client_bin: accClientBin,
+                              service: accService,
+                              quantity: accQuantity,
+                              price_without_vat: accPriceWithoutVat,
+                              payment_method: accPaymentMethod
+                            };
+                            
+                            const res = await fetch('/api/crm/accounting/generate', {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json'
+                              },
+                              body: JSON.stringify(payload)
+                            });
+                            
+                            if (!res.ok) {
+                              const txt = await res.text();
+                              throw new Error(txt || 'Ошибка при генерации файлов');
+                            }
+                            
+                            const data = await res.json();
+                            if (data.success) {
+                              setAccResult({ pdf: data.pdf, csv: data.csv });
+                            } else {
+                              throw new Error('Не удалось сгенерировать документы.');
+                            }
+                          } catch (err: any) {
+                            setAccError(err.message || 'Произошла непредвиденная ошибка');
+                          } finally {
+                            setAccLoading(false);
+                          }
+                        }}
+                        style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}
+                      >
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '1rem' }}>
+                          <div>
+                            <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.35rem', fontWeight: '700' }}>Номер заказа (№)</label>
+                            <input 
+                              type="text" 
+                              value={accOrderNumber} 
+                              onChange={(e) => setAccOrderNumber(e.target.value)}
+                              required
+                              style={{ width: '100%', background: '#070709', border: '1px solid #1f1f2e', borderRadius: '8px', color: '#fff', padding: '0.75rem', boxSizing: 'border-box' }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.35rem', fontWeight: '700' }}>Дата совершения оборота</label>
+                            <input 
+                              type="date" 
+                              value={accDate} 
+                              onChange={(e) => setAccDate(e.target.value)}
+                              required
+                              style={{ width: '100%', background: '#070709', border: '1px solid #1f1f2e', borderRadius: '8px', color: '#fff', padding: '0.75rem', boxSizing: 'border-box' }}
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.35rem', fontWeight: '700' }}>Наименование клиента (ФИО / ТОО)</label>
+                          <input 
+                            type="text" 
+                            value={accClientName} 
+                            onChange={(e) => setAccClientName(e.target.value)}
+                            placeholder="ТОО Компания"
+                            required
+                            style={{ width: '100%', background: '#070709', border: '1px solid #1f1f2e', borderRadius: '8px', color: '#fff', padding: '0.75rem', boxSizing: 'border-box' }}
+                          />
+                        </div>
+
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.35rem', fontWeight: '700' }}>БИН / ИИН клиента (12 цифр)</label>
+                          <input 
+                            type="text" 
+                            value={accClientBin} 
+                            onChange={(e) => setAccClientBin(e.target.value)}
+                            placeholder="123456789012"
+                            required
+                            maxLength={12}
+                            style={{ width: '100%', background: '#070709', border: '1px solid #1f1f2e', borderRadius: '8px', color: '#fff', padding: '0.75rem', boxSizing: 'border-box' }}
+                          />
+                        </div>
+
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.35rem', fontWeight: '700' }}>Описание услуги или товара</label>
+                          <input 
+                            type="text" 
+                            value={accService} 
+                            onChange={(e) => setAccService(e.target.value)}
+                            placeholder="Услуги стыковки резинотканевой ленты"
+                            required
+                            style={{ width: '100%', background: '#070709', border: '1px solid #1f1f2e', borderRadius: '8px', color: '#fff', padding: '0.75rem', boxSizing: 'border-box' }}
+                          />
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '1rem' }}>
+                          <div>
+                            <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.35rem', fontWeight: '700' }}>Количество</label>
+                            <input 
+                              type="number" 
+                              value={accQuantity} 
+                              onChange={(e) => setAccQuantity(parseInt(e.target.value) || 1)}
+                              min={1}
+                              required
+                              style={{ width: '100%', background: '#070709', border: '1px solid #1f1f2e', borderRadius: '8px', color: '#fff', padding: '0.75rem', boxSizing: 'border-box' }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.35rem', fontWeight: '700' }}>Цена без НДС (₸)</label>
+                            <input 
+                              type="number" 
+                              value={accPriceWithoutVat} 
+                              onChange={(e) => setAccPriceWithoutVat(parseInt(e.target.value) || 0)}
+                              min={0}
+                              required
+                              style={{ width: '100%', background: '#070709', border: '1px solid #1f1f2e', borderRadius: '8px', color: '#fff', padding: '0.75rem', boxSizing: 'border-box' }}
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.35rem', fontWeight: '700' }}>Способ оплаты</label>
+                          <select 
+                            value={accPaymentMethod} 
+                            onChange={(e) => setAccPaymentMethod(e.target.value)}
+                            style={{ width: '100%', background: '#070709', border: '1px solid #1f1f2e', borderRadius: '8px', color: '#fff', padding: '0.75rem', outline: 'none' }}
+                          >
+                            <option value="безналичные">Безналичный расчет (банк)</option>
+                            <option value="наличные">Наличные средства</option>
+                            <option value="карта">Банковская карта</option>
+                          </select>
+                        </div>
+
+                        <button 
+                          type="submit" 
+                          disabled={accLoading}
+                          style={{
+                            background: '#ec4899',
+                            color: '#fff',
+                            border: 'none',
+                            borderRadius: '12px',
+                            padding: '1rem',
+                            fontWeight: '800',
+                            fontSize: '1rem',
+                            cursor: accLoading ? 'not-allowed' : 'pointer',
+                            marginTop: '1rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '0.5rem',
+                            transition: '0.2s'
+                          }}
+                          onMouseEnter={(e) => { if (!accLoading) e.currentTarget.style.background = '#d946ef'; }}
+                          onMouseLeave={(e) => { if (!accLoading) e.currentTarget.style.background = '#ec4899'; }}
+                        >
+                          {accLoading ? (
+                            <>
+                              <RefreshCw size={18} className="animate-spin" />
+                              <span>Генерация документов...</span>
+                            </>
+                          ) : (
+                            <>
+                              <FileText size={18} />
+                              <span>Сгенерировать PDF + CSV</span>
+                            </>
+                          )}
+                        </button>
+
+                        {accError && (
+                          <div style={{ color: '#ff4b4b', background: 'rgba(255,75,75,0.08)', padding: '0.75rem', borderRadius: '8px', fontSize: '0.85rem', border: '1px solid rgba(255,75,75,0.2)' }}>
+                            {accError}
+                          </div>
+                        )}
+                      </form>
+                    </div>
+
+                    {/* Right Column: Calculations Preview & Download Panel */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                      {/* Calculations Panel */}
+                      <div style={{ background: '#0f0f15', border: '1px solid #1f1f2e', borderRadius: '24px', padding: '2rem' }}>
+                        <h3 style={{ fontSize: '1.2rem', fontWeight: '800', marginBottom: '1.5rem', color: '#fff' }}>
+                          Расчет налогов и регламентов (РК)
+                        </h3>
+
+                        {(() => {
+                          try {
+                            const dt = new Date(accDate);
+                            if (isNaN(dt.getTime())) return <p style={{ color: 'rgba(255,255,255,0.3)' }}>Введите корректную дату и цену для расчета.</p>;
+                            const year = dt.getFullYear();
+                            const month = dt.getMonth() + 1;
+                            const quarter = Math.floor((month - 1) / 3) + 1;
+                            
+                            let vatDeadline = '';
+                            if (quarter === 1) vatDeadline = `15.05.${year}`;
+                            else if (quarter === 2) vatDeadline = `15.08.${year}`;
+                            else if (quarter === 3) vatDeadline = `15.11.${year}`;
+                            else vatDeadline = `15.02.${year + 1}`;
+                            
+                            const esfDate = new Date(dt.getTime() + 15 * 24 * 60 * 60 * 1000);
+                            const esfDeadline = `${String(esfDate.getDate()).padStart(2, '0')}.${String(esfDate.getMonth() + 1).padStart(2, '0')}.${esfDate.getFullYear()}`;
+                            
+                            const amountWithoutVat = accQuantity * accPriceWithoutVat;
+                            const vatAmount = amountWithoutVat * 0.12;
+                            const totalWithVat = amountWithoutVat + vatAmount;
+                            const estimatedKpn = amountWithoutVat * 0.20;
+
+                            return (
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.03)', paddingBottom: '0.75rem' }}>
+                                  <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem' }}>Облагаемый оборот (без НДС):</span>
+                                  <span style={{ fontWeight: '800', color: '#fff' }}>{amountWithoutVat.toLocaleString('ru-RU')} ₸</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.03)', paddingBottom: '0.75rem' }}>
+                                  <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem' }}>НДС (12%):</span>
+                                  <span style={{ fontWeight: '800', color: '#ec4899' }}>{vatAmount.toLocaleString('ru-RU')} ₸</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.03)', paddingBottom: '0.75rem' }}>
+                                  <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem' }}>Всего к оплате (с НДС):</span>
+                                  <span style={{ fontWeight: '900', color: '#00ff41', fontSize: '1.1rem' }}>{totalWithVat.toLocaleString('ru-RU')} ₸</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.03)', paddingBottom: '0.75rem' }}>
+                                  <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem' }}>Ориентировочный КПН (20%):</span>
+                                  <span style={{ fontWeight: '800', color: '#3b82f6' }}>{estimatedKpn.toLocaleString('ru-RU')} ₸</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.03)', paddingBottom: '0.75rem' }}>
+                                  <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem' }}>Налоговый период (Квартал):</span>
+                                  <span style={{ fontWeight: '800', color: '#f59e0b' }}>{quarter}-й квартал</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.03)', paddingBottom: '0.75rem' }}>
+                                  <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem' }}>Срок сдачи Декларации (Ф.300.00):</span>
+                                  <span style={{ fontWeight: '800', color: '#fff' }}>до {vatDeadline}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                  <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem' }}>Срок выписки ЭСФ (esf.gov.kz):</span>
+                                  <span style={{ fontWeight: '800', color: '#fff' }}>до {esfDeadline}</span>
+                                </div>
+                              </div>
+                            );
+                          } catch (err) {
+                            return <p style={{ color: 'rgba(255,255,255,0.3)' }}>Введите корректную дату и цену для расчета.</p>;
+                          }
+                        })()}
+                      </div>
+
+                      {/* Download Section */}
+                      <div style={{ background: '#0f0f15', border: '1px solid #1f1f2e', borderRadius: '24px', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                        <h3 style={{ fontSize: '1.2rem', fontWeight: '800', color: '#fff', margin: 0 }}>
+                          Выгрузка документов
+                        </h3>
+
+                        {accResult ? (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <div style={{ color: '#00ff41', background: 'rgba(0,255,65,0.06)', border: '1px solid rgba(0,255,65,0.2)', padding: '1rem', borderRadius: '12px', fontSize: '0.9rem', fontWeight: '700' }}>
+                              ✓ Документы успешно сформированы!
+                            </div>
+
+                            <a 
+                              href={`/api/crm/accounting/download?file=${encodeURIComponent(accResult.pdf)}`}
+                              download
+                              style={{
+                                background: 'rgba(0, 255, 65, 0.08)',
+                                border: '1px solid rgba(0, 255, 65, 0.3)',
+                                borderRadius: '12px',
+                                color: '#00ff41',
+                                padding: '1rem',
+                                fontWeight: '800',
+                                textDecoration: 'none',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '0.75rem',
+                                transition: '0.2s'
+                              }}
+                              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(0, 255, 65, 0.15)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(0, 255, 65, 0.08)'; }}
+                            >
+                              <Download size={18} />
+                              Скачать Чек и Акт (PDF)
+                            </a>
+
+                            <a 
+                              href={`/api/crm/accounting/download?file=${encodeURIComponent(accResult.csv)}`}
+                              download
+                              style={{
+                                background: 'rgba(255, 255, 255, 0.04)',
+                                border: '1px solid rgba(255, 255, 255, 0.1)',
+                                borderRadius: '12px',
+                                color: '#fff',
+                                padding: '1rem',
+                                fontWeight: '800',
+                                textDecoration: 'none',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '0.75rem',
+                                transition: '0.2s'
+                              }}
+                              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)'; }}
+                            >
+                              <Download size={18} />
+                              Экспорт в 1С (CSV)
+                            </a>
+                          </div>
+                        ) : (
+                          <div style={{ padding: '2rem 1rem', textAlign: 'center', color: 'rgba(255,255,255,0.3)', border: '1px dashed #1f1f2e', borderRadius: '16px' }}>
+                            Заполните форму слева и нажмите «Сгенерировать», чтобы подготовить файлы для скачивания.
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 

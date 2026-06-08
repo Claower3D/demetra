@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -692,6 +693,97 @@ func main() {
 		}
 
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	})
+
+	http.HandleFunc("/api/crm/accounting/generate", func(w http.ResponseWriter, r *http.Request) {
+		setupCORS(w, r)
+		if r.Method == http.MethodOptions {
+			return
+		}
+		if r.Method != http.MethodPost {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, "Failed to read body", http.StatusBadRequest)
+			return
+		}
+
+		// Validate JSON
+		var input struct {
+			OrderNumber string `json:"order_number"`
+			Date        string `json:"date"`
+		}
+		if err := json.Unmarshal(body, &input); err != nil {
+			http.Error(w, "Invalid JSON input", http.StatusBadRequest)
+			return
+		}
+
+		if input.OrderNumber == "" || input.Date == "" {
+			http.Error(w, "order_number and date are required", http.StatusBadRequest)
+			return
+		}
+
+		// Run generate_pdf.py
+		cmd := exec.Command("python", "generate_pdf.py", string(body))
+		output, err := cmd.CombinedOutput()
+		if err != nil {
+			log.Printf("Python script error: %v, output: %s", err, string(output))
+			http.Error(w, fmt.Sprintf("Failed to generate documents: %v. Output: %s", err, string(output)), http.StatusInternalServerError)
+			return
+		}
+
+		pdfFile := fmt.Sprintf("antygravity_order_%s_%s.pdf", input.OrderNumber, input.Date)
+		csvFile := fmt.Sprintf("antygravity_order_%s_%s_tax.csv", input.OrderNumber, input.Date)
+
+		response := map[string]interface{}{
+			"success": true,
+			"pdf":     pdfFile,
+			"csv":     csvFile,
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	})
+
+	http.HandleFunc("/api/crm/accounting/download", func(w http.ResponseWriter, r *http.Request) {
+		setupCORS(w, r)
+		if r.Method == http.MethodOptions {
+			return
+		}
+
+		fileName := r.URL.Query().Get("file")
+		if fileName == "" {
+			http.Error(w, "Missing file parameter", http.StatusBadRequest)
+			return
+		}
+
+		// Sanitize file name to prevent directory traversal
+		if strings.Contains(fileName, "..") || strings.Contains(fileName, "/") || strings.Contains(fileName, "\\") {
+			http.Error(w, "Access denied", http.StatusForbidden)
+			return
+		}
+
+		if !strings.HasPrefix(fileName, "antygravity_order_") || (!strings.HasSuffix(fileName, ".pdf") && !strings.HasSuffix(fileName, ".csv")) {
+			http.Error(w, "Invalid file name", http.StatusBadRequest)
+			return
+		}
+
+		filePath := fileName
+		if _, err := os.Stat(filePath); os.IsNotExist(err) {
+			http.Error(w, "File not found", http.StatusNotFound)
+			return
+		}
+
+		w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", fileName))
+		if strings.HasSuffix(fileName, ".pdf") {
+			w.Header().Set("Content-Type", "application/pdf")
+		} else {
+			w.Header().Set("Content-Type", "text/csv; charset=utf-8")
+		}
+		http.ServeFile(w, r, filePath)
 	})
 
 	// Serve Static Frontend Files (SPA Fallback)

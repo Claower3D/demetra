@@ -444,16 +444,25 @@ def generate_order_pdf(order_data):
     
     return pdf_filename, csv_filename
 
+import sys
 if __name__ == "__main__":
-    # Test JSON structure
-    test_json = {
-        "order_number": "001",
-        "date": "2025-06-09",
-        "client_name": "ТОО Ромашка",
-        "client_bin": "123456789012",
-        "service": "Услуги флоатинга",
-        "quantity": 1,
-        "price_without_vat": 50000,
-        "payment_method": "безналичные"
-    }
-    generate_order_pdf(test_json)
+    if len(sys.argv) > 1:
+        try:
+            input_json = json.loads(sys.argv[1])
+            generate_order_pdf(input_json)
+        except Exception as e:
+            print(f"Error parsing sys.argv[1] JSON: {e}")
+            sys.exit(1)
+    else:
+        # Test JSON structure
+        test_json = {
+            "order_number": "001",
+            "date": "2025-06-09",
+            "client_name": "ТОО Ромашка",
+            "client_bin": "123456789012",
+            "service": "Услуги флоатинга",
+            "quantity": 1,
+            "price_without_vat": 50000,
+            "payment_method": "безналичные"
+        }
+        generate_order_pdf(test_json)
