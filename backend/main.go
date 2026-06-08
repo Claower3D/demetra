@@ -50,6 +50,11 @@ type CRMChat struct {
 	Messages    []ChatMessage `json:"messages"`
 }
 
+type CRMRolePermissions struct {
+	Role        string   `json:"role"`
+	AllowedTabs []string `json:"allowed_tabs"`
+}
+
 var (
 	fileMutex sync.Mutex
 )
@@ -234,6 +239,18 @@ func initCRMData(dataDir string) {
 		}
 		data, _ := json.MarshalIndent(defaultChats, "", "  ")
 		os.WriteFile(chatsFile, data, 0644)
+	}
+
+	permissionsFile := filepath.Join(dataDir, "crm_permissions.json")
+	if _, err := os.Stat(permissionsFile); os.IsNotExist(err) {
+		defaultPermissions := []CRMRolePermissions{
+			{Role: "admin", AllowedTabs: []string{"analytics", "leads", "clients", "chats", "users"}},
+			{Role: "manager", AllowedTabs: []string{"analytics", "leads", "clients", "chats"}},
+			{Role: "specialist", AllowedTabs: []string{"leads", "chats"}},
+			{Role: "auditor", AllowedTabs: []string{"analytics", "leads"}},
+		}
+		data, _ := json.MarshalIndent(defaultPermissions, "", "  ")
+		os.WriteFile(permissionsFile, data, 0644)
 	}
 }
 
@@ -606,6 +623,45 @@ func main() {
 		}
 
 		filePath := filepath.Join(dataDir, "crm_chats.json")
+
+		fileMutex.Lock()
+		defer fileMutex.Unlock()
+
+		if r.Method == http.MethodGet {
+			if _, err := os.Stat(filePath); os.IsNotExist(err) {
+				w.Header().Set("Content-Type", "application/json")
+				w.Write([]byte("[]"))
+				return
+			}
+			http.ServeFile(w, r, filePath)
+			return
+		}
+
+		if r.Method == http.MethodPost {
+			body, err := io.ReadAll(r.Body)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			if err := os.WriteFile(filePath, body, 0644); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.Write([]byte(`{"success":true}`))
+			return
+		}
+
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	})
+
+	http.HandleFunc("/api/crm/permissions", func(w http.ResponseWriter, r *http.Request) {
+		setupCORS(w, r)
+		if r.Method == http.MethodOptions {
+			return
+		}
+
+		filePath := filepath.Join(dataDir, "crm_permissions.json")
 
 		fileMutex.Lock()
 		defer fileMutex.Unlock()

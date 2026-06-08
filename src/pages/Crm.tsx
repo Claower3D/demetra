@@ -15,7 +15,7 @@ interface Lead {
   phone: string;
   email: string;
   message: string;
-  status: 'new' | 'processing' | 'completed' | 'rejected';
+  status: 'new' | 'processing' | 'dozhim' | 'manager_op' | 'rop' | 'financier' | 'completed' | 'rejected';
   created_at: string;
   amount: number;
   source: string;
@@ -47,6 +47,11 @@ interface CRMChat {
   messages: ChatMessage[];
 }
 
+export interface CRMRolePermission {
+  role: 'admin' | 'manager' | 'specialist' | 'auditor';
+  allowed_tabs: ('analytics' | 'leads' | 'clients' | 'chats' | 'users')[];
+}
+
 export default function Crm() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     return sessionStorage.getItem('demetra_crm_auth') === 'true';
@@ -59,8 +64,13 @@ export default function Crm() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [users, setUsers] = useState<CRMUser[]>([]);
   const [chats, setChats] = useState<CRMChat[]>([]);
+  const [permissions, setPermissions] = useState<CRMRolePermission[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+
+  // View States
+  const [viewMode, setViewMode] = useState<'table' | 'kanban'>('kanban');
+  const [usersSubTab, setUsersSubTab] = useState<'employees' | 'permissions'>('employees');
 
   // Filter States
   const [searchQuery, setSearchQuery] = useState('');
@@ -78,14 +88,22 @@ export default function Crm() {
   const [chatMessageInput, setChatMessageInput] = useState('');
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // Current logged in user mock
-  const [currentUser, setCurrentUser] = useState<CRMUser>({
-    id: 'user_1',
-    name: 'Администратор',
-    role: 'admin',
-    status: 'active',
-    email: 'admin@demetra.kz',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'
+  // Current logged in user
+  const [currentUser, setCurrentUser] = useState<CRMUser>(() => {
+    const saved = localStorage.getItem('demetra_crm_current_user');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {}
+    }
+    return {
+      id: 'user_1',
+      name: 'Администратор',
+      role: 'admin',
+      status: 'active',
+      email: 'admin@demetra.kz',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'
+    };
   });
 
   // Password validation
@@ -130,6 +148,12 @@ export default function Crm() {
         if (chatsData && chatsData.length > 0 && !activeChatId) {
           setActiveChatId(chatsData[0].id);
         }
+      }
+
+      const permissionsRes = await fetch('/api/crm/permissions');
+      if (permissionsRes.ok) {
+        const permissionsData = await permissionsRes.json();
+        setPermissions(permissionsData || []);
       }
     } catch (err) {
       console.warn('Backend API not responding, using localStorage or mock data', err);
@@ -269,6 +293,20 @@ export default function Crm() {
         setActiveChatId(mockChats[0].id);
       }
     }
+
+    const savedPermissions = localStorage.getItem('demetra_mock_permissions');
+    if (savedPermissions) {
+      setPermissions(JSON.parse(savedPermissions));
+    } else {
+      const mockPermissions: CRMRolePermission[] = [
+        { role: 'admin', allowed_tabs: ['analytics', 'leads', 'clients', 'chats', 'users'] },
+        { role: 'manager', allowed_tabs: ['analytics', 'leads', 'clients', 'chats'] },
+        { role: 'specialist', allowed_tabs: ['leads', 'chats'] },
+        { role: 'auditor', allowed_tabs: ['analytics', 'leads'] }
+      ];
+      setPermissions(mockPermissions);
+      localStorage.setItem('demetra_mock_permissions', JSON.stringify(mockPermissions));
+    }
   };
 
   useEffect(() => {
@@ -327,8 +365,28 @@ export default function Crm() {
     }
   };
 
+  const savePermissionsData = async (updatedPermissions: CRMRolePermission[]) => {
+    setPermissions(updatedPermissions);
+    localStorage.setItem('demetra_mock_permissions', JSON.stringify(updatedPermissions));
+    try {
+      await fetch('/api/crm/permissions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedPermissions)
+      });
+    } catch (e) {
+      console.warn("Backend save failed, saved to local state only.");
+    }
+  };
+
   // Lead status updates
-  const handleUpdateLeadStatus = (leadId: string, status: 'new' | 'processing' | 'completed' | 'rejected', amount?: number, comments?: string, assignedTo?: string) => {
+  const handleUpdateLeadStatus = (
+    leadId: string, 
+    status: 'new' | 'processing' | 'dozhim' | 'manager_op' | 'rop' | 'financier' | 'completed' | 'rejected', 
+    amount?: number, 
+    comments?: string, 
+    assignedTo?: string
+  ) => {
     const updated = leads.map(l => {
       if (l.id === leadId) {
         return {
@@ -349,6 +407,25 @@ export default function Crm() {
     if (window.confirm('Вы действительно хотите удалить эту заявку?')) {
       const updated = leads.filter(l => l.id !== leadId);
       saveLeadsData(updated);
+    }
+  };
+
+  const handleDragStart = (e: React.DragEvent, leadId: string) => {
+    e.dataTransfer.setData('text/plain', leadId);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e: React.DragEvent, stageId: any) => {
+    e.preventDefault();
+    const leadId = e.dataTransfer.getData('text/plain');
+    if (leadId) {
+      const targetLead = leads.find(l => l.id === leadId);
+      if (targetLead) {
+        handleUpdateLeadStatus(leadId, stageId, targetLead.amount, targetLead.comments, targetLead.assigned_to);
+      }
     }
   };
 
@@ -762,11 +839,51 @@ export default function Crm() {
         </div>
 
         {/* Current user summary */}
-        <div style={{ padding: '1.5rem 2rem', borderBottom: '1px solid #1f1f2e', display: 'flex', alignItems: 'center', gap: '1rem', background: 'rgba(0,0,0,0.15)' }}>
-          <img src={currentUser.avatar} alt="avatar" style={{ width: '42px', height: '42px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #00ff41' }} />
-          <div>
-            <div style={{ fontSize: '0.85rem', fontWeight: '800', color: '#fff' }}>{currentUser.name}</div>
-            <div style={{ fontSize: '0.7rem', color: '#00ff41', fontWeight: '900', textTransform: 'uppercase' }}>{currentUser.role}</div>
+        <div style={{ padding: '1.5rem 2rem', borderBottom: '1px solid #1f1f2e', display: 'flex', flexDirection: 'column', gap: '1rem', background: 'rgba(0,0,0,0.15)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <img src={currentUser.avatar} alt="avatar" style={{ width: '42px', height: '42px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #00ff41' }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: '0.85rem', fontWeight: '800', color: '#fff' }}>{currentUser.name}</div>
+              <div style={{ fontSize: '0.75rem', color: '#00ff41', fontWeight: '900', textTransform: 'uppercase' }}>{currentUser.role}</div>
+            </div>
+          </div>
+          
+          {/* Quick role switcher */}
+          <div style={{ display: 'grid', gap: '0.35rem' }}>
+            <label style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Тестирование роли:</label>
+            <select
+              value={currentUser.id}
+              onChange={(e) => {
+                const selected = users.find(u => u.id === e.target.value);
+                if (selected) {
+                  setCurrentUser(selected);
+                  localStorage.setItem('demetra_crm_current_user', JSON.stringify(selected));
+                  // switch to first allowed tab
+                  const rolePerm = permissions.find(p => p.role === selected.role);
+                  if (rolePerm && rolePerm.allowed_tabs.length > 0) {
+                    if (!rolePerm.allowed_tabs.includes(activeSection as any)) {
+                      setActiveSection(rolePerm.allowed_tabs[0] as any);
+                    }
+                  }
+                }
+              }}
+              style={{
+                background: 'rgba(0,0,0,0.3)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                color: '#fff',
+                fontSize: '0.75rem',
+                padding: '0.4rem',
+                borderRadius: '6px',
+                outline: 'none',
+                cursor: 'pointer'
+              }}
+            >
+              {users.map(u => (
+                <option key={u.id} value={u.id} style={{ background: '#0f0f15', color: '#fff' }}>
+                  {u.name} ({u.role})
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -778,7 +895,10 @@ export default function Crm() {
             { id: 'clients', label: 'Управление клиентами', icon: <Users size={18} /> },
             { id: 'chats', label: 'История переписки', icon: <MessageSquare size={18} />, badge: chats.length },
             { id: 'users', label: 'Настройка пользователей', icon: <Shield size={18} /> }
-          ].map(item => (
+          ].filter(item => {
+            const allowedTabs = permissions.find(p => p.role === currentUser.role)?.allowed_tabs || ['analytics', 'leads', 'clients', 'chats', 'users'];
+            return allowedTabs.includes(item.id as any);
+          }).map(item => (
             <button
               key={item.id}
               onClick={() => setActiveSection(item.id as any)}
@@ -1212,9 +1332,13 @@ export default function Crm() {
                       >
                         <option value="all">Все статусы</option>
                         <option value="new">Новые</option>
-                        <option value="processing">В обработке</option>
-                        <option value="completed">Выполнены</option>
-                        <option value="rejected">Отклонены</option>
+                        <option value="processing">В работе</option>
+                        <option value="dozhim">Дожим</option>
+                        <option value="manager_op">У менеджера ОП</option>
+                        <option value="rop">РОП</option>
+                        <option value="financier">Финансист</option>
+                        <option value="completed">Успешно</option>
+                        <option value="rejected">Отказ / Завершено</option>
                       </select>
                     </div>
 
@@ -1240,126 +1364,374 @@ export default function Crm() {
                         ))}
                       </select>
                     </div>
-                  </div>
 
-                  {/* LEADS TABLE */}
-                  <div style={{ background: '#0f0f15', border: '1px solid #1f1f2e', borderRadius: '20px', overflow: 'hidden' }}>
-                    <div style={{ overflowX: 'auto' }}>
-                      <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
-                        <thead>
-                          <tr style={{ borderBottom: '1px solid #1f1f2e', color: 'rgba(255,255,255,0.4)', fontWeight: '800' }}>
-                            <th style={{ padding: '1.25rem 2rem' }}>Клиент</th>
-                            <th style={{ padding: '1.25rem 1rem' }}>Дата обращения</th>
-                            <th style={{ padding: '1.25rem 1rem' }}>Источник</th>
-                            <th style={{ padding: '1.25rem 1rem' }}>Сумма сделки</th>
-                            <th style={{ padding: '1.25rem 1rem' }}>Ответственный</th>
-                            <th style={{ padding: '1.25rem 1rem' }}>Статус</th>
-                            <th style={{ padding: '1.25rem 2rem', textAlign: 'right' }}>Действия</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {filteredLeads.length === 0 ? (
-                            <tr>
-                              <td colSpan={7} style={{ padding: '4rem 2rem', textAlign: 'center', color: 'rgba(255,255,255,0.3)' }}>
-                                Заявки, соответствующие критериям поиска, не найдены.
-                              </td>
-                            </tr>
-                          ) : (
-                            filteredLeads.map(lead => (
-                              <tr key={lead.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.02)', background: 'transparent', transition: '0.2s' }}>
-                                <td style={{ padding: '1.5rem 2rem' }}>
-                                  <div style={{ fontWeight: '800', color: '#fff', fontSize: '1rem', marginBottom: '0.25rem' }}>{lead.name}</div>
-                                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>
-                                    <span>📞 {lead.phone || 'Не указан'}</span>
-                                    <span>✉️ {lead.email || 'Не указана'}</span>
-                                  </div>
-                                </td>
-                                <td style={{ padding: '1.5rem 1rem', color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem' }}>
-                                  {new Date(lead.created_at).toLocaleString('ru-RU')}
-                                </td>
-                                <td style={{ padding: '1.5rem 1rem' }}>
-                                  <span style={{ 
-                                    background: 'rgba(255,255,255,0.05)', 
-                                    border: '1px solid rgba(255,255,255,0.08)',
-                                    color: 'rgba(255,255,255,0.8)', 
-                                    fontSize: '0.7rem', 
-                                    padding: '0.2rem 0.5rem', 
-                                    borderRadius: '6px',
-                                    fontWeight: '800'
-                                  }}>
-                                    {lead.source}
-                                  </span>
-                                </td>
-                                <td style={{ padding: '1.5rem 1rem', fontWeight: '900', color: lead.amount > 0 ? '#00ff41' : 'rgba(255,255,255,0.4)', fontSize: '1rem' }}>
-                                  {lead.amount > 0 ? `${lead.amount.toLocaleString('ru-RU')} ₸` : '—'}
-                                </td>
-                                <td style={{ padding: '1.5rem 1rem', color: 'rgba(255,255,255,0.8)', fontWeight: '700' }}>
-                                  {lead.assigned_to}
-                                </td>
-                                <td style={{ padding: '1.5rem 1rem' }}>
-                                  <span style={{ 
-                                    background: lead.status === 'new' ? 'rgba(255, 75, 75, 0.08)' : 
-                                                lead.status === 'processing' ? 'rgba(0, 191, 255, 0.08)' : 
-                                                lead.status === 'completed' ? 'rgba(0, 255, 65, 0.08)' : 'rgba(255,255,255,0.04)',
-                                    border: `1px solid ${
-                                      lead.status === 'new' ? 'rgba(255, 75, 75, 0.3)' : 
-                                      lead.status === 'processing' ? 'rgba(0, 191, 255, 0.3)' : 
-                                      lead.status === 'completed' ? 'rgba(0, 255, 65, 0.3)' : 'rgba(255,255,255,0.1)'
-                                    }`,
-                                    color: lead.status === 'new' ? '#ff4b4b' : 
-                                           lead.status === 'processing' ? '#00bfff' : 
-                                           lead.status === 'completed' ? '#00ff41' : 'rgba(255,255,255,0.5)',
-                                    fontSize: '0.75rem', 
-                                    padding: '0.25rem 0.6rem', 
-                                    borderRadius: '6px',
-                                    fontWeight: '900',
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.05em'
-                                  }}>
-                                    {lead.status === 'new' ? 'Новая' : 
-                                     lead.status === 'processing' ? 'В обработке' : 
-                                     lead.status === 'completed' ? 'Выполнена' : 'Отклонена'}
-                                  </span>
-                                </td>
-                                <td style={{ padding: '1.5rem 2rem', textAlign: 'right' }}>
-                                  <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                                    <button 
-                                      onClick={() => { setSelectedLead(lead); setIsEditModalOpen(true); }}
-                                      style={{ 
-                                        background: 'rgba(255,255,255,0.03)', 
-                                        border: '1px solid rgba(255,255,255,0.05)',
-                                        color: '#fff', 
-                                        padding: '0.5rem', 
-                                        borderRadius: '8px', 
-                                        cursor: 'pointer' 
-                                      }}
-                                      title="Редактировать статус"
-                                    >
-                                      <Edit3 size={15} />
-                                    </button>
-                                    <button 
-                                      onClick={() => handleDeleteLead(lead.id)}
-                                      style={{ 
-                                        background: 'rgba(255, 75, 75, 0.05)', 
-                                        border: '1px solid rgba(255, 75, 75, 0.15)',
-                                        color: '#ff4b4b', 
-                                        padding: '0.5rem', 
-                                        borderRadius: '8px', 
-                                        cursor: 'pointer' 
-                                      }}
-                                      title="Удалить"
-                                    >
-                                      <Trash2 size={15} />
-                                    </button>
-                                  </div>
-                                </td>
-                              </tr>
-                            ))
-                          )}
-                        </tbody>
-                      </table>
+                    {/* View Switcher */}
+                    <div style={{ display: 'flex', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', padding: '0.2rem', marginLeft: 'auto' }}>
+                      <button
+                        onClick={() => setViewMode('kanban')}
+                        style={{
+                          background: viewMode === 'kanban' ? 'rgba(0, 255, 65, 0.08)' : 'transparent',
+                          color: viewMode === 'kanban' ? '#00ff41' : 'rgba(255,255,255,0.5)',
+                          border: 'none',
+                          padding: '0.65rem 1rem',
+                          borderRadius: '8px',
+                          fontWeight: '800',
+                          fontSize: '0.8rem',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.35rem'
+                        }}
+                      >
+                        <Play size={14} style={{ transform: 'rotate(-90deg)' }} /> Канбан
+                      </button>
+                      <button
+                        onClick={() => setViewMode('table')}
+                        style={{
+                          background: viewMode === 'table' ? 'rgba(0, 255, 65, 0.08)' : 'transparent',
+                          color: viewMode === 'table' ? '#00ff41' : 'rgba(255,255,255,0.5)',
+                          border: 'none',
+                          padding: '0.65rem 1rem',
+                          borderRadius: '8px',
+                          fontWeight: '800',
+                          fontSize: '0.8rem',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.35rem'
+                        }}
+                      >
+                        <FileText size={14} /> Таблица
+                      </button>
                     </div>
                   </div>
+
+                  {/* LEADS LIST / KANBAN */}
+                  {viewMode === 'table' ? (
+                    <div style={{ background: '#0f0f15', border: '1px solid #1f1f2e', borderRadius: '20px', overflow: 'hidden' }}>
+                      <div style={{ overflowX: 'auto' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
+                          <thead>
+                            <tr style={{ borderBottom: '1px solid #1f1f2e', color: 'rgba(255,255,255,0.4)', fontWeight: '800' }}>
+                              <th style={{ padding: '1.25rem 2rem' }}>Клиент</th>
+                              <th style={{ padding: '1.25rem 1rem' }}>Дата обращения</th>
+                              <th style={{ padding: '1.25rem 1rem' }}>Источник</th>
+                              <th style={{ padding: '1.25rem 1rem' }}>Сумма сделки</th>
+                              <th style={{ padding: '1.25rem 1rem' }}>Ответственный</th>
+                              <th style={{ padding: '1.25rem 1rem' }}>Статус</th>
+                              <th style={{ padding: '1.25rem 2rem', textAlign: 'right' }}>Действия</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {filteredLeads.length === 0 ? (
+                              <tr>
+                                <td colSpan={7} style={{ padding: '4rem 2rem', textAlign: 'center', color: 'rgba(255,255,255,0.3)' }}>
+                                  Заявки, соответствующие критериям поиска, не найдены.
+                                </td>
+                              </tr>
+                            ) : (
+                              filteredLeads.map(lead => (
+                                <tr key={lead.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.02)', background: 'transparent', transition: '0.2s' }}>
+                                  <td style={{ padding: '1.5rem 2rem' }}>
+                                    <div style={{ fontWeight: '800', color: '#fff', fontSize: '1rem', marginBottom: '0.25rem' }}>{lead.name}</div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>
+                                      <span>📞 {lead.phone || 'Не указан'}</span>
+                                      <span>✉️ {lead.email || 'Не указана'}</span>
+                                    </div>
+                                  </td>
+                                  <td style={{ padding: '1.5rem 1rem', color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem' }}>
+                                    {new Date(lead.created_at).toLocaleString('ru-RU')}
+                                  </td>
+                                  <td style={{ padding: '1.5rem 1rem' }}>
+                                    <span style={{ 
+                                      background: 'rgba(255,255,255,0.05)', 
+                                      border: '1px solid rgba(255,255,255,0.08)',
+                                      color: 'rgba(255,255,255,0.8)', 
+                                      fontSize: '0.7rem', 
+                                      padding: '0.2rem 0.5rem', 
+                                      borderRadius: '6px',
+                                      fontWeight: '800'
+                                    }}>
+                                      {lead.source}
+                                    </span>
+                                  </td>
+                                  <td style={{ padding: '1.5rem 1rem', fontWeight: '900', color: lead.amount > 0 ? '#00ff41' : 'rgba(255,255,255,0.4)', fontSize: '1rem' }}>
+                                    {lead.amount > 0 ? `${lead.amount.toLocaleString('ru-RU')} ₸` : '—'}
+                                  </td>
+                                  <td style={{ padding: '1.5rem 1rem', color: 'rgba(255,255,255,0.8)', fontWeight: '700' }}>
+                                    {lead.assigned_to}
+                                  </td>
+                                  <td style={{ padding: '1.5rem 1rem' }}>
+                                    <span style={{ 
+                                      background: lead.status === 'new' ? 'rgba(255, 75, 75, 0.08)' : 
+                                                  lead.status === 'processing' ? 'rgba(0, 191, 255, 0.08)' : 
+                                                  lead.status === 'dozhim' ? 'rgba(245, 158, 11, 0.08)' : 
+                                                  lead.status === 'manager_op' ? 'rgba(99, 102, 241, 0.08)' : 
+                                                  lead.status === 'rop' ? 'rgba(139, 92, 246, 0.08)' : 
+                                                  lead.status === 'financier' ? 'rgba(6, 182, 212, 0.08)' : 
+                                                  lead.status === 'completed' ? 'rgba(0, 255, 65, 0.08)' : 'rgba(255, 75, 75, 0.08)',
+                                      border: `1px solid ${
+                                        lead.status === 'new' ? 'rgba(255, 75, 75, 0.3)' : 
+                                        lead.status === 'processing' ? 'rgba(0, 191, 255, 0.3)' : 
+                                        lead.status === 'dozhim' ? 'rgba(245, 158, 11, 0.3)' : 
+                                        lead.status === 'manager_op' ? 'rgba(99, 102, 241, 0.3)' : 
+                                        lead.status === 'rop' ? 'rgba(139, 92, 246, 0.3)' : 
+                                        lead.status === 'financier' ? 'rgba(6, 182, 212, 0.3)' : 
+                                        lead.status === 'completed' ? 'rgba(0, 255, 65, 0.3)' : 'rgba(255, 75, 75, 0.3)'
+                                      }`,
+                                      color: lead.status === 'new' ? '#ff4b4b' : 
+                                             lead.status === 'processing' ? '#00bfff' : 
+                                             lead.status === 'dozhim' ? '#f59e0b' : 
+                                             lead.status === 'manager_op' ? '#6366f1' : 
+                                             lead.status === 'rop' ? '#8b5cf6' : 
+                                             lead.status === 'financier' ? '#06b6d4' : 
+                                             lead.status === 'completed' ? '#00ff41' : '#ff4b4b',
+                                      fontSize: '0.75rem', 
+                                      padding: '0.25rem 0.6rem', 
+                                      borderRadius: '6px',
+                                      fontWeight: '900',
+                                      textTransform: 'uppercase',
+                                      letterSpacing: '0.05em'
+                                    }}>
+                                      {lead.status === 'new' ? 'Новая' : 
+                                       lead.status === 'processing' ? 'В работе' : 
+                                       lead.status === 'dozhim' ? 'Дожим' : 
+                                       lead.status === 'manager_op' ? 'Менеджер ОП' : 
+                                       lead.status === 'rop' ? 'РОП' : 
+                                       lead.status === 'financier' ? 'Финансист' : 
+                                       lead.status === 'completed' ? 'Выполнена' : 'Отклонена'}
+                                    </span>
+                                  </td>
+                                  <td style={{ padding: '1.5rem 2rem', textAlign: 'right' }}>
+                                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                                      <button 
+                                        onClick={() => { setSelectedLead(lead); setIsEditModalOpen(true); }}
+                                        style={{ 
+                                          background: 'rgba(255,255,255,0.03)', 
+                                          border: '1px solid rgba(255,255,255,0.05)',
+                                          color: '#fff', 
+                                          padding: '0.5rem', 
+                                          borderRadius: '8px', 
+                                          cursor: 'pointer' 
+                                        }}
+                                        title="Редактировать статус"
+                                      >
+                                        <Edit3 size={15} />
+                                      </button>
+                                      <button 
+                                        onClick={() => handleDeleteLead(lead.id)}
+                                        style={{ 
+                                          background: 'rgba(255, 75, 75, 0.05)', 
+                                          border: '1px solid rgba(255, 75, 75, 0.15)',
+                                          color: '#ff4b4b', 
+                                          padding: '0.5rem', 
+                                          borderRadius: '8px', 
+                                          cursor: 'pointer' 
+                                        }}
+                                        title="Удалить"
+                                      >
+                                        <Trash2 size={15} />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  ) : (
+                    /* KANBAN BOARD VIEW */
+                    <div style={{ 
+                      display: 'flex', 
+                      gap: '1rem', 
+                      overflowX: 'auto', 
+                      paddingBottom: '1.5rem',
+                      minHeight: '650px',
+                      scrollbarWidth: 'thin'
+                    }}>
+                      {[
+                        { id: 'new', title: 'Новые', color: '#ff4b4b', bg: 'rgba(255, 75, 75, 0.08)', border: 'rgba(255, 75, 75, 0.2)' },
+                        { id: 'processing', title: 'В работе', color: '#00bfff', bg: 'rgba(0, 191, 255, 0.08)', border: 'rgba(0, 191, 255, 0.2)' },
+                        { id: 'dozhim', title: 'Дожим', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.08)', border: 'rgba(245, 158, 11, 0.2)' },
+                        { id: 'manager_op', title: 'Менеджер ОП', color: '#6366f1', bg: 'rgba(99, 102, 241, 0.08)', border: 'rgba(99, 102, 241, 0.2)' },
+                        { id: 'rop', title: 'РОП', color: '#8b5cf6', bg: 'rgba(139, 92, 246, 0.08)', border: 'rgba(139, 92, 246, 0.2)' },
+                        { id: 'financier', title: 'Финансист', color: '#06b6d4', bg: 'rgba(6, 182, 212, 0.08)', border: 'rgba(6, 182, 212, 0.2)' },
+                        { id: 'completed', title: 'Успешно', color: '#00ff41', bg: 'rgba(0, 255, 65, 0.08)', border: 'rgba(0, 255, 65, 0.2)' },
+                        { id: 'rejected', title: 'Отказ', color: '#ff4b4b', bg: 'rgba(255, 75, 75, 0.08)', border: 'rgba(255, 75, 75, 0.2)' }
+                      ].map(stage => {
+                        const stageLeads = filteredLeads.filter(l => l.status === stage.id);
+                        return (
+                          <div 
+                            key={stage.id}
+                            onDragOver={handleDragOver}
+                            onDrop={(e) => handleDrop(e, stage.id as any)}
+                            style={{
+                              flex: '0 0 290px',
+                              background: '#0f0f15',
+                              border: '1px solid #1f1f2e',
+                              borderRadius: '16px',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              padding: '1.25rem 1rem',
+                              boxSizing: 'border-box'
+                            }}
+                          >
+                            {/* Column Header */}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                              <span style={{ fontSize: '0.85rem', fontWeight: '900', color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: stage.color }} />
+                                {stage.title}
+                              </span>
+                              <span style={{ 
+                                background: stage.bg, 
+                                border: `1px solid ${stage.border}`, 
+                                color: stage.color, 
+                                fontSize: '0.7rem', 
+                                padding: '0.15rem 0.4rem', 
+                                borderRadius: '6px', 
+                                fontWeight: '900' 
+                              }}>
+                                {stageLeads.length}
+                              </span>
+                            </div>
+
+                            {/* Column Body */}
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', flex: 1, minHeight: '450px' }}>
+                              {stageLeads.length === 0 ? (
+                                <div style={{ 
+                                  height: '100%', 
+                                  display: 'flex', 
+                                  alignItems: 'center', 
+                                  justifyContent: 'center', 
+                                  border: '2px dashed rgba(255,255,255,0.02)', 
+                                  borderRadius: '12px', 
+                                  color: 'rgba(255,255,255,0.15)',
+                                  fontSize: '0.75rem',
+                                  textAlign: 'center',
+                                  padding: '2rem 1rem'
+                                }}>
+                                  Перетащите заявку сюда
+                                </div>
+                              ) : (
+                                stageLeads.map(lead => (
+                                  <div
+                                    key={lead.id}
+                                    draggable
+                                    onDragStart={(e) => handleDragStart(e, lead.id)}
+                                    style={{
+                                      background: '#14141f',
+                                      border: '1px solid rgba(255,255,255,0.03)',
+                                      borderRadius: '12px',
+                                      padding: '1rem',
+                                      cursor: 'grab',
+                                      display: 'flex',
+                                      flexDirection: 'column',
+                                      gap: '0.65rem',
+                                      transition: 'border-color 0.2s',
+                                      position: 'relative'
+                                    }}
+                                    onMouseEnter={(e) => e.currentTarget.style.borderColor = stage.color}
+                                    onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.03)'}
+                                  >
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                      <span style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)', fontFamily: 'monospace' }}>
+                                        #{lead.id.split('_')[1] || lead.id.slice(-4)}
+                                      </span>
+                                      <span style={{ 
+                                        background: 'rgba(255,255,255,0.03)', 
+                                        color: 'rgba(255,255,255,0.5)', 
+                                        fontSize: '0.6rem', 
+                                        padding: '0.1rem 0.35rem', 
+                                        borderRadius: '4px',
+                                        fontWeight: '700'
+                                      }}>
+                                        {lead.source}
+                                      </span>
+                                    </div>
+
+                                    <div style={{ fontWeight: '800', fontSize: '0.85rem', color: '#fff' }}>
+                                      {lead.name}
+                                    </div>
+
+                                    {lead.message && (
+                                      <div style={{ 
+                                        fontSize: '0.75rem', 
+                                        color: 'rgba(255,255,255,0.4)', 
+                                        lineHeight: '1.3',
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: 2,
+                                        WebkitBoxOrient: 'vertical',
+                                        overflow: 'hidden'
+                                      }}>
+                                        {lead.message}
+                                      </div>
+                                    )}
+
+                                    <div style={{ display: 'grid', gap: '0.15rem', fontSize: '0.7rem', color: 'rgba(255,255,255,0.35)' }}>
+                                      <span>📞 {lead.phone}</span>
+                                      <span>👤 {lead.assigned_to}</span>
+                                    </div>
+
+                                    <div style={{ 
+                                      display: 'flex', 
+                                      justifyContent: 'space-between', 
+                                      alignItems: 'center', 
+                                      borderTop: '1px solid rgba(255,255,255,0.03)', 
+                                      paddingTop: '0.5rem',
+                                      marginTop: '0.25rem'
+                                    }}>
+                                      <span style={{ 
+                                        fontWeight: '900', 
+                                        color: lead.amount > 0 ? '#00ff41' : 'rgba(255,255,255,0.2)', 
+                                        fontSize: '0.85rem' 
+                                      }}>
+                                        {lead.amount > 0 ? `${lead.amount.toLocaleString('ru-RU')} ₸` : '—'}
+                                      </span>
+
+                                      <div style={{ display: 'flex', gap: '0.25rem' }}>
+                                        <button 
+                                          onClick={() => { setSelectedLead(lead); setIsEditModalOpen(true); }}
+                                          style={{ 
+                                            background: 'rgba(255,255,255,0.03)', 
+                                            border: 'none',
+                                            color: 'rgba(255,255,255,0.6)', 
+                                            padding: '0.35rem', 
+                                            borderRadius: '6px', 
+                                            cursor: 'pointer',
+                                            display: 'flex',
+                                            alignItems: 'center'
+                                          }}
+                                        >
+                                          <Edit3 size={12} />
+                                        </button>
+                                        <button 
+                                          onClick={() => handleDeleteLead(lead.id)}
+                                          style={{ 
+                                            background: 'rgba(255,75,75,0.05)', 
+                                            border: 'none',
+                                            color: '#ff4b4b', 
+                                            padding: '0.35rem', 
+                                            borderRadius: '6px', 
+                                            cursor: 'pointer',
+                                            display: 'flex',
+                                            alignItems: 'center'
+                                          }}
+                                        >
+                                          <Trash2 size={12} />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -1654,150 +2026,266 @@ export default function Crm() {
                     )}
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '2rem', alignItems: 'start' }}>
-                    {/* Users List */}
-                    <div style={{ background: '#0f0f15', border: '1px solid #1f1f2e', borderRadius: '20px', overflow: 'hidden' }}>
-                      <div style={{ padding: '2rem', borderBottom: '1px solid #1f1f2e' }}>
-                        <h4 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '800' }}>Сотрудники компании ({users.length})</h4>
-                      </div>
-                      <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        {users.map(u => (
-                          <div 
-                            key={u.id}
-                            style={{ 
-                              padding: '1.5rem 2rem', 
-                              borderBottom: '1px solid rgba(255,255,255,0.02)',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'space-between'
-                            }}
-                          >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                              <img src={u.avatar} alt="avatar" style={{ width: '45px', height: '45px', borderRadius: '50%', objectFit: 'cover' }} />
-                              <div>
-                                <div style={{ fontWeight: '800', fontSize: '1rem', color: '#fff' }}>{u.name}</div>
-                                <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)' }}>{u.email}</div>
-                              </div>
-                            </div>
+                  {/* Users Section Navigation */}
+                  <div style={{ display: 'flex', gap: '1rem', borderBottom: '1px solid #1f1f2e', marginBottom: '2rem', paddingBottom: '0.2rem' }}>
+                    <button
+                      onClick={() => setUsersSubTab('employees')}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        borderBottom: usersSubTab === 'employees' ? '2px solid #00ff41' : '2px solid transparent',
+                        color: usersSubTab === 'employees' ? '#00ff41' : 'rgba(255,255,255,0.4)',
+                        padding: '0.75rem 1rem',
+                        fontWeight: '800',
+                        fontSize: '0.85rem',
+                        cursor: 'pointer',
+                        transition: '0.2s'
+                      }}
+                    >
+                      Сотрудники
+                    </button>
+                    <button
+                      onClick={() => setUsersSubTab('permissions')}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        borderBottom: usersSubTab === 'permissions' ? '2px solid #00ff41' : '2px solid transparent',
+                        color: usersSubTab === 'permissions' ? '#00ff41' : 'rgba(255,255,255,0.4)',
+                        padding: '0.75rem 1rem',
+                        fontWeight: '800',
+                        fontSize: '0.85rem',
+                        cursor: 'pointer',
+                        transition: '0.2s'
+                      }}
+                    >
+                      Настройка прав и вкладок
+                    </button>
+                  </div>
 
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                              {/* Role Selector */}
-                              <div>
-                                <select
-                                  value={u.role}
+                  {usersSubTab === 'employees' ? (
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '2rem', alignItems: 'start' }}>
+                      {/* Users List */}
+                      <div style={{ background: '#0f0f15', border: '1px solid #1f1f2e', borderRadius: '20px', overflow: 'hidden' }}>
+                        <div style={{ padding: '2rem', borderBottom: '1px solid #1f1f2e' }}>
+                          <h4 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '800' }}>Сотрудники компании ({users.length})</h4>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          {users.map(u => (
+                            <div 
+                              key={u.id}
+                              style={{ 
+                                padding: '1.5rem 2rem', 
+                                borderBottom: '1px solid rgba(255,255,255,0.02)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between'
+                              }}
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <img src={u.avatar} alt="avatar" style={{ width: '45px', height: '45px', borderRadius: '50%', objectFit: 'cover' }} />
+                                <div>
+                                  <div style={{ fontWeight: '800', fontSize: '1rem', color: '#fff' }}>{u.name}</div>
+                                  <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)' }}>{u.email}</div>
+                                </div>
+                              </div>
+
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                                {/* Role Selector */}
+                                <div>
+                                  <select
+                                    value={u.role}
+                                    disabled={currentUser.role !== 'admin' || u.id === currentUser.id}
+                                    onChange={(e) => handleUpdateUserRole(u.id, e.target.value as any)}
+                                    style={{
+                                      background: 'rgba(0,0,0,0.3)',
+                                      border: '1px solid rgba(255,255,255,0.08)',
+                                      borderRadius: '8px',
+                                      padding: '0.5rem 1rem',
+                                      color: '#fff',
+                                      fontWeight: '700',
+                                      fontSize: '0.8rem',
+                                      outline: 'none',
+                                      cursor: currentUser.role === 'admin' && u.id !== currentUser.id ? 'pointer' : 'not-allowed'
+                                    }}
+                                  >
+                                    <option value="admin">Администратор</option>
+                                    <option value="manager">Менеджер</option>
+                                    <option value="specialist">Специалист</option>
+                                    <option value="auditor">Аудитор</option>
+                                  </select>
+                                </div>
+
+                                {/* Status indicator */}
+                                <button
+                                  onClick={() => handleToggleUserStatus(u.id)}
                                   disabled={currentUser.role !== 'admin' || u.id === currentUser.id}
-                                  onChange={(e) => handleUpdateUserRole(u.id, e.target.value as any)}
                                   style={{
-                                    background: 'rgba(0,0,0,0.3)',
-                                    border: '1px solid rgba(255,255,255,0.08)',
-                                    borderRadius: '8px',
-                                    padding: '0.5rem 1rem',
-                                    color: '#fff',
-                                    fontWeight: '700',
-                                    fontSize: '0.8rem',
-                                    outline: 'none',
-                                    cursor: currentUser.role === 'admin' && u.id !== currentUser.id ? 'pointer' : 'not-allowed'
+                                    background: 'none',
+                                    border: 'none',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem',
+                                    cursor: currentUser.role === 'admin' && u.id !== currentUser.id ? 'pointer' : 'not-allowed',
+                                    color: u.status === 'active' ? '#00ff41' : 'rgba(255,255,255,0.3)',
+                                    fontWeight: '800',
+                                    fontSize: '0.8rem'
                                   }}
                                 >
-                                  <option value="admin">Администратор</option>
-                                  <option value="manager">Менеджер</option>
-                                  <option value="specialist">Специалист</option>
-                                  <option value="auditor">Аудитор</option>
-                                </select>
+                                  <span style={{ 
+                                    width: '8px', 
+                                    height: '8px', 
+                                    borderRadius: '50%', 
+                                    background: u.status === 'active' ? '#00ff41' : 'rgba(255,255,255,0.3)',
+                                    boxShadow: u.status === 'active' ? '0 0 10px #00ff41' : 'none'
+                                  }} />
+                                  {u.status === 'active' ? 'Активен' : 'Заблокирован'}
+                                </button>
                               </div>
-
-                              {/* Status indicator */}
-                              <button
-                                onClick={() => handleToggleUserStatus(u.id)}
-                                disabled={currentUser.role !== 'admin' || u.id === currentUser.id}
-                                style={{
-                                  background: 'none',
-                                  border: 'none',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '0.5rem',
-                                  cursor: currentUser.role === 'admin' && u.id !== currentUser.id ? 'pointer' : 'not-allowed',
-                                  color: u.status === 'active' ? '#00ff41' : 'rgba(255,255,255,0.3)',
-                                  fontWeight: '800',
-                                  fontSize: '0.8rem'
-                                }}
-                              >
-                                <span style={{ 
-                                  width: '8px', 
-                                  height: '8px', 
-                                  borderRadius: '50%', 
-                                  background: u.status === 'active' ? '#00ff41' : 'rgba(255,255,255,0.3)',
-                                  boxShadow: u.status === 'active' ? '0 0 10px #00ff41' : 'none'
-                                }} />
-                                {u.status === 'active' ? 'Активен' : 'Заблокирован'}
-                              </button>
                             </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Add User form card */}
+                      <div style={{ background: '#0f0f15', border: '1px solid #1f1f2e', borderRadius: '20px', padding: '2rem' }}>
+                        <h4 style={{ margin: '0 0 1.5rem', fontSize: '1.1rem', fontWeight: '800' }}>Зарегистрировать сотрудника</h4>
+                        
+                        <form onSubmit={handleAddCrmUser} style={{ display: 'grid', gap: '1.25rem' }}>
+                          <div style={{ display: 'grid', gap: '0.4rem' }}>
+                            <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>ФИО сотрудника</label>
+                            <input 
+                              type="text" 
+                              name="name" 
+                              placeholder="Иван Петров" 
+                              required
+                              disabled={currentUser.role !== 'admin'}
+                              style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none' }} 
+                            />
                           </div>
-                        ))}
+                          <div style={{ display: 'grid', gap: '0.4rem' }}>
+                            <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Email адрес</label>
+                            <input 
+                              type="email" 
+                              name="email" 
+                              placeholder="petrov@demetra.kz" 
+                              required
+                              disabled={currentUser.role !== 'admin'}
+                              style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none' }} 
+                            />
+                          </div>
+                          <div style={{ display: 'grid', gap: '0.4rem' }}>
+                            <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Должность / Роль</label>
+                            <select 
+                              name="role" 
+                              disabled={currentUser.role !== 'admin'}
+                              style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none', cursor: 'pointer' }}
+                            >
+                              <option value="specialist">Специалист</option>
+                              <option value="manager">Менеджер</option>
+                              <option value="admin">Администратор</option>
+                              <option value="auditor">Аудитор</option>
+                            </select>
+                          </div>
+
+                          <button 
+                            type="submit" 
+                            disabled={currentUser.role !== 'admin'}
+                            style={{ 
+                              background: currentUser.role === 'admin' ? '#00ff41' : 'rgba(255,255,255,0.05)', 
+                              color: currentUser.role === 'admin' ? '#000' : 'rgba(255,255,255,0.3)', 
+                              border: 'none', 
+                              padding: '1rem', 
+                              borderRadius: '8px', 
+                              fontWeight: '900', 
+                              cursor: currentUser.role === 'admin' ? 'pointer' : 'not-allowed',
+                              marginTop: '0.5rem',
+                              transition: '0.2s'
+                            }}
+                          >
+                            Создать аккаунт
+                          </button>
+                        </form>
                       </div>
                     </div>
-
-                    {/* Add User form card */}
+                  ) : (
+                    /* Role permissions matrix */
                     <div style={{ background: '#0f0f15', border: '1px solid #1f1f2e', borderRadius: '20px', padding: '2rem' }}>
-                      <h4 style={{ margin: '0 0 1.5rem', fontSize: '1.1rem', fontWeight: '800' }}>Зарегистрировать сотрудника</h4>
+                      <h4 style={{ margin: '0 0 1rem', fontSize: '1.2rem', fontWeight: '800' }}>Матрица доступа к разделам CRM</h4>
+                      <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', marginBottom: '2rem' }}>
+                        Отметьте разделы, которые должны отображаться в боковом меню для каждой роли. Изменения сохраняются автоматически.
+                      </p>
                       
-                      <form onSubmit={handleAddCrmUser} style={{ display: 'grid', gap: '1.25rem' }}>
-                        <div style={{ display: 'grid', gap: '0.4rem' }}>
-                          <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>ФИО сотрудника</label>
-                          <input 
-                            type="text" 
-                            name="name" 
-                            placeholder="Иван Петров" 
-                            required
-                            disabled={currentUser.role !== 'admin'}
-                            style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none' }} 
-                          />
-                        </div>
-                        <div style={{ display: 'grid', gap: '0.4rem' }}>
-                          <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Email адрес</label>
-                          <input 
-                            type="email" 
-                            name="email" 
-                            placeholder="petrov@demetra.kz" 
-                            required
-                            disabled={currentUser.role !== 'admin'}
-                            style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none' }} 
-                          />
-                        </div>
-                        <div style={{ display: 'grid', gap: '0.4rem' }}>
-                          <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Должность / Роль</label>
-                          <select 
-                            name="role" 
-                            disabled={currentUser.role !== 'admin'}
-                            style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none', cursor: 'pointer' }}
-                          >
-                            <option value="specialist">Специалист</option>
-                            <option value="manager">Менеджер</option>
-                            <option value="admin">Администратор</option>
-                            <option value="auditor">Аудитор</option>
-                          </select>
-                        </div>
-
-                        <button 
-                          type="submit" 
-                          disabled={currentUser.role !== 'admin'}
-                          style={{ 
-                            background: currentUser.role === 'admin' ? '#00ff41' : 'rgba(255,255,255,0.05)', 
-                            color: currentUser.role === 'admin' ? '#000' : 'rgba(255,255,255,0.3)', 
-                            border: 'none', 
-                            padding: '1rem', 
-                            borderRadius: '8px', 
-                            fontWeight: '900', 
-                            cursor: currentUser.role === 'admin' ? 'pointer' : 'not-allowed',
-                            marginTop: '0.5rem',
-                            transition: '0.2s'
-                          }}
-                        >
-                          Создать аккаунт
-                        </button>
-                      </form>
+                      <div style={{ overflowX: 'auto' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
+                          <thead>
+                            <tr style={{ borderBottom: '1px solid #1f1f2e', color: 'rgba(255,255,255,0.4)', fontWeight: '800' }}>
+                              <th style={{ padding: '1.25rem 2rem' }}>Раздел меню</th>
+                              {['admin', 'manager', 'specialist', 'auditor'].map(r => (
+                                <th key={r} style={{ padding: '1.25rem 1rem', textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em' }}>
+                                  {r === 'admin' ? 'Администратор' :
+                                   r === 'manager' ? 'Менеджер' :
+                                   r === 'specialist' ? 'Специалист' : 'Аудитор'}
+                                </th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {[
+                              { id: 'analytics', label: '📊 Аналитика и статистика' },
+                              { id: 'leads', label: '📋 Список заявок / заказов' },
+                              { id: 'clients', label: '👤 Управление клиентами' },
+                              { id: 'chats', label: '💬 История переписки' },
+                              { id: 'users', label: '🔐 Настройка пользователей (права)' }
+                            ].map(tab => (
+                              <tr key={tab.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.02)' }}>
+                                <td style={{ padding: '1.5rem 2rem', fontWeight: '800', color: '#fff' }}>{tab.label}</td>
+                                {['admin', 'manager', 'specialist', 'auditor'].map(role => {
+                                  const rolePerm = permissions.find(p => p.role === role);
+                                  const isChecked = rolePerm ? rolePerm.allowed_tabs.includes(tab.id as any) : false;
+                                  const isDisabled = currentUser.role !== 'admin'; // only admins can change permissions
+                                  
+                                  return (
+                                    <td key={role} style={{ padding: '1.5rem 1rem' }}>
+                                      <input 
+                                        type="checkbox"
+                                        checked={isChecked}
+                                        disabled={isDisabled}
+                                        onChange={(e) => {
+                                          if (currentUser.role !== 'admin') return;
+                                          // Update permissions
+                                          const updatedPerms = permissions.map(p => {
+                                            if (p.role === role) {
+                                              let newTabs = [...p.allowed_tabs];
+                                              if (e.target.checked) {
+                                                if (!newTabs.includes(tab.id as any)) {
+                                                  newTabs.push(tab.id as any);
+                                                }
+                                              } else {
+                                                newTabs = newTabs.filter(t => t !== tab.id);
+                                              }
+                                              return { ...p, allowed_tabs: newTabs };
+                                            }
+                                            return p;
+                                          });
+                                          savePermissionsData(updatedPerms);
+                                        }}
+                                        style={{ 
+                                          width: '18px', 
+                                          height: '18px', 
+                                          cursor: isDisabled ? 'not-allowed' : 'pointer',
+                                          accentColor: '#00ff41'
+                                        }}
+                                      />
+                                    </td>
+                                  );
+                                })}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               )}
             </motion.div>
@@ -1877,9 +2365,13 @@ export default function Crm() {
                         style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none', cursor: 'pointer' }}
                       >
                         <option value="new">Новая</option>
-                        <option value="processing">В обработке</option>
-                        <option value="completed">Выполнена</option>
-                        <option value="rejected">Отклонена</option>
+                        <option value="processing">В работе</option>
+                        <option value="dozhim">Дожим</option>
+                        <option value="manager_op">Менеджер ОП</option>
+                        <option value="rop">РОП</option>
+                        <option value="financier">Финансист</option>
+                        <option value="completed">Выполнена успешно</option>
+                        <option value="rejected">Отклонена / Отказ</option>
                       </select>
                     </div>
 
