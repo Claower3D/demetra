@@ -223,7 +223,14 @@ export default function Admin() {
 
   const { lang, setLang, t } = useLang();
 
-  const [activeTab, setActiveTab] = useState('dashboard'); // Default to Dashboard home
+  const [activeTab, setActiveTab] = useState(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get('tab');
+      if (tabParam) return tabParam;
+    } catch {}
+    return 'dashboard';
+  }); // Default to Dashboard home or URL param
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
 

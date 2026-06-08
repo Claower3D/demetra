@@ -5,7 +5,8 @@ import {
   Search, Plus, Trash2, Edit3, CheckCircle2, 
   X, LogOut, ArrowRight, Download, DollarSign, 
   TrendingUp, RefreshCw, Send, User, ShieldAlert,
-  Phone, Mail, Calendar, FileText, Check, AlertCircle, Play
+  Phone, Mail, Calendar, FileText, Check, AlertCircle, Play,
+  LayoutDashboard, Package, Truck, Globe, Settings, Image as ImageIcon
 } from 'lucide-react';
 
 // CRM Lead interface matching Go backend
@@ -49,7 +50,7 @@ interface CRMChat {
 
 export interface CRMRolePermission {
   role: 'admin' | 'manager' | 'specialist' | 'auditor';
-  allowed_tabs: ('analytics' | 'leads' | 'clients' | 'chats' | 'users')[];
+  allowed_tabs: ('dashboard' | 'analytics' | 'leads' | 'clients' | 'chats' | 'users')[];
 }
 
 export default function Crm() {
@@ -58,7 +59,16 @@ export default function Crm() {
   });
   const [passwordInput, setPasswordInput] = useState('');
   const [authError, setAuthError] = useState('');
-  const [activeSection, setActiveSection] = useState<'analytics' | 'leads' | 'clients' | 'chats' | 'users'>('analytics');
+  const [activeSection, setActiveSection] = useState<'dashboard' | 'analytics' | 'leads' | 'clients' | 'chats' | 'users'>(() => {
+    const saved = localStorage.getItem('demetra_crm_current_user');
+    if (saved) {
+      try {
+        const u = JSON.parse(saved);
+        return u.role === 'admin' ? 'dashboard' : 'analytics';
+      } catch (e) {}
+    }
+    return 'dashboard';
+  });
   
   // Data States
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -796,6 +806,31 @@ export default function Crm() {
 
   const uniqueSources = Array.from(new Set(leads.map(l => l.source)));
 
+  // Counts for Admin Hub dashboard
+  const productCount = (() => {
+    try {
+      const saved = localStorage.getItem('demetra_products');
+      if (saved) return JSON.parse(saved).length;
+    } catch {}
+    return 5;
+  })();
+
+  const serviceCount = (() => {
+    try {
+      const saved = localStorage.getItem('demetra_services');
+      if (saved) return JSON.parse(saved).length;
+    } catch {}
+    return 4;
+  })();
+
+  const pageCount = (() => {
+    try {
+      const saved = localStorage.getItem('demetra_pages_list');
+      if (saved) return JSON.parse(saved).length;
+    } catch {}
+    return 7;
+  })();
+
   return (
     <div style={{ 
       minHeight: '100vh', 
@@ -890,13 +925,17 @@ export default function Crm() {
         {/* Menu Items */}
         <nav style={{ padding: '2rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
           {[
+            { id: 'dashboard', label: 'Главная панель', icon: <LayoutDashboard size={18} /> },
             { id: 'analytics', label: 'Аналитика и статистика', icon: <BarChart3 size={18} /> },
             { id: 'leads', label: 'Список заявок / заказов', icon: <FileText size={18} />, badge: leads.filter(l => l.status === 'new').length },
             { id: 'clients', label: 'Управление клиентами', icon: <Users size={18} /> },
             { id: 'chats', label: 'История переписки', icon: <MessageSquare size={18} />, badge: chats.length },
             { id: 'users', label: 'Настройка пользователей', icon: <Shield size={18} /> }
           ].filter(item => {
-            const allowedTabs = permissions.find(p => p.role === currentUser.role)?.allowed_tabs || ['analytics', 'leads', 'clients', 'chats', 'users'];
+            const allowedTabs = permissions.find(p => p.role === currentUser.role)?.allowed_tabs || [];
+            if (item.id === 'dashboard') {
+              return currentUser.role === 'admin';
+            }
             return allowedTabs.includes(item.id as any);
           }).map(item => (
             <button
@@ -1004,6 +1043,217 @@ export default function Crm() {
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.25 }}
             >
+              {/* DASHBOARD SECTION */}
+              {activeSection === 'dashboard' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
+                  {/* Header */}
+                  <div style={{ borderBottom: '1px solid #1f1f2e', paddingBottom: '2rem' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#00ff41', fontWeight: '900', letterSpacing: '0.3em', marginBottom: '0.75rem', textTransform: 'uppercase' }}>
+                      Главная панель
+                    </div>
+                    <h1 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.8rem)', fontWeight: '900', color: '#fff', lineHeight: 1.1, margin: 0 }}>
+                      ВЫБЕРИТЕ РАЗДЕЛ ДЛЯ УПРАВЛЕНИЯ
+                    </h1>
+                    <p style={{ color: 'rgba(255,255,255,0.4)', marginTop: '0.75rem', fontSize: '1rem', margin: 0 }}>
+                      Нажмите на плитку чтобы открыть нужный раздел администрирования.
+                    </p>
+                  </div>
+
+                  {/* Tile Grid */}
+                  <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', 
+                    gap: '1.5rem' 
+                  }}>
+                    {[
+                      {
+                        id: 'products',
+                        icon: <Package size={36} />,
+                        accent: '#00ff41',
+                        label: 'Продукция',
+                        sublabel: 'Каталог товаров',
+                        count: productCount,
+                        countLabel: 'позиций',
+                        desc: 'Добавляйте, редактируйте и удаляйте товары. Назначайте категории и фото.',
+                        action: 'Управление →',
+                        target: '/admin?tab=products'
+                      },
+                      {
+                        id: 'services',
+                        icon: <Truck size={36} />,
+                        accent: '#3b82f6',
+                        label: 'Услуги',
+                        sublabel: 'Список услуг',
+                        count: serviceCount,
+                        countLabel: 'услуг',
+                        desc: 'Управляйте описанием услуг, изображениями, видео и переводами.',
+                        action: 'Управление →',
+                        target: '/admin?tab=services'
+                      },
+                      {
+                        id: 'builder',
+                        icon: <LayoutDashboard size={36} />,
+                        accent: '#a855f7',
+                        label: 'Visual Builder',
+                        sublabel: 'Конструктор страниц',
+                        count: pageCount,
+                        countLabel: 'страниц',
+                        desc: 'Перетаскивайте блоки, добавляйте медиа и настраивайте каждую страницу сайта.',
+                        action: 'Открыть Builder →',
+                        target: '/admin?tab=builder'
+                      },
+                      {
+                        id: 'content',
+                        icon: <Globe size={36} />,
+                        accent: '#f59e0b',
+                        label: 'Контент',
+                        sublabel: 'Тексты и переводы',
+                        count: 3,
+                        countLabel: 'языка',
+                        desc: 'Редактируйте все тексты сайта на русском, казахском и английском языках.',
+                        action: 'Редактировать →',
+                        target: '/admin?tab=content'
+                      },
+                      {
+                        id: 'pages',
+                        icon: <ImageIcon size={36} />,
+                        accent: '#ec4899',
+                        label: 'Страницы',
+                        sublabel: 'Структура сайта',
+                        count: pageCount,
+                        countLabel: 'страниц',
+                        desc: 'Управляйте порядком блоков, скрывайте секции и настраивайте мета-данные.',
+                        action: 'Управление →',
+                        target: '/admin?tab=pages'
+                      },
+                      {
+                        id: 'settings',
+                        icon: <Settings size={36} />,
+                        accent: '#6b7280',
+                        label: 'Настройки',
+                        sublabel: 'Глобальные параметры',
+                        count: null,
+                        countLabel: '',
+                        desc: 'Название компании, цвета, логотип, контактная информация и SEO.',
+                        action: 'Настроить →',
+                        target: '/admin?tab=settings'
+                      },
+                      {
+                        id: 'assistant',
+                        icon: <MessageSquare size={36} />,
+                        accent: '#22d3ee',
+                        label: 'DEMETRA_ASSISTANT',
+                        sublabel: 'Настройки чат-бота',
+                        count: null,
+                        countLabel: '',
+                        desc: 'Приветствие, FAQ, авто-ответы, телефон поддержки и имя ассистента.',
+                        action: 'Настроить ассистента →',
+                        target: '/admin?tab=assistant'
+                      }
+                    ].map((tile) => (
+                      <a
+                        key={tile.id}
+                        href={tile.target}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          textDecoration: 'none',
+                          background: '#0f0f15',
+                          border: '1px solid #1f1f2e',
+                          borderRadius: '24px',
+                          padding: '2.5rem 2rem',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '1.25rem',
+                          textAlign: 'left',
+                          cursor: 'pointer',
+                          transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                          boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+                          position: 'relative',
+                          overflow: 'hidden',
+                          color: '#fff'
+                        }}
+                        onMouseEnter={(e) => {
+                          const el = e.currentTarget;
+                          el.style.borderColor = tile.accent;
+                          el.style.transform = 'translateY(-4px)';
+                          el.style.boxShadow = `0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px ${tile.accent}22`;
+                          el.style.background = '#13131c';
+                        }}
+                        onMouseLeave={(e) => {
+                          const el = e.currentTarget;
+                          el.style.borderColor = '#1f1f2e';
+                          el.style.transform = 'translateY(0)';
+                          el.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+                          el.style.background = '#0f0f15';
+                        }}
+                      >
+                        {/* Glow accent top bar */}
+                        <div style={{
+                          position: 'absolute', top: 0, left: 0, right: 0, height: '3px',
+                          background: `linear-gradient(90deg, transparent, ${tile.accent}, transparent)`,
+                          opacity: 0.6
+                        }} />
+
+                        {/* Icon + Count row */}
+                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                          <div style={{
+                            padding: '1rem',
+                            background: `${tile.accent}18`,
+                            borderRadius: '16px',
+                            color: tile.accent,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            border: `1px solid ${tile.accent}22`
+                          }}>
+                            {tile.icon}
+                          </div>
+                          {tile.count !== null && (
+                            <div style={{ textAlign: 'right' }}>
+                              <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#fff', lineHeight: 1 }}>
+                                {tile.count}
+                              </div>
+                              <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', fontWeight: '700', letterSpacing: '0.05em', marginTop: '0.15rem' }}>
+                                {tile.countLabel.toUpperCase()}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Label */}
+                        <div>
+                          <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', fontWeight: '800', letterSpacing: '0.15em', marginBottom: '0.35rem' }}>
+                            {tile.sublabel.toUpperCase()}
+                          </div>
+                          <div style={{ fontSize: '1.4rem', fontWeight: '900', color: '#fff' }}>
+                            {tile.label}
+                          </div>
+                        </div>
+
+                        {/* Description */}
+                        <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)', margin: 0, lineHeight: 1.5 }}>
+                          {tile.desc}
+                        </p>
+
+                        {/* Action Link */}
+                        <div style={{ 
+                          marginTop: 'auto', 
+                          fontSize: '0.85rem', 
+                          fontWeight: '800', 
+                          color: tile.accent, 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: '0.25rem' 
+                        }}>
+                          {tile.action}
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* ANALYTICS SECTION */}
               {activeSection === 'analytics' && (
                 <div>
