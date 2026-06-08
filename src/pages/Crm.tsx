@@ -5,7 +5,7 @@ import {
   Search, Plus, Trash2, Edit3, CheckCircle2,
   X, LogOut, ArrowRight, Download, DollarSign,
   TrendingUp, RefreshCw, Send, User, ShieldAlert,
-  Phone, Mail, Calendar, FileText, Check, AlertCircle, Play,
+  Phone, Mail, Calendar, FileText, Check, AlertCircle, Play, Mic, Paperclip,
   LayoutDashboard, Package, Truck, Globe, Settings, Image as ImageIcon, Menu
 } from 'lucide-react';
 import Admin from './Admin';
@@ -104,6 +104,13 @@ interface ChatMessage {
   text: string;
   timestamp: string;
   channel?: 'chat' | 'whatsapp' | 'telegram' | 'mailru' | 'gmail';
+  isVoice?: boolean;
+  voiceDuration?: string;
+  attachment?: {
+    name: string;
+    size: string;
+    type: string;
+  } | null;
 }
 
 interface CRMChat {
@@ -267,6 +274,31 @@ export default function Crm() {
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [selectedChatChannel, setSelectedChatChannel] = useState<'whatsapp' | 'telegram' | 'mailru' | 'gmail'>('whatsapp');
   const [chatMessageInput, setChatMessageInput] = useState('');
+  const [attachedFile, setAttachedFile] = useState<{ name: string; size: string; type: string } | null>(null);
+  const [isRecordingVoice, setIsRecordingVoice] = useState(false);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
+
+  useEffect(() => {
+    setAttachedFile(null);
+    setIsRecordingVoice(false);
+    setRecordingSeconds(0);
+  }, [activeChatId, selectedChatChannel]);
+
+  useEffect(() => {
+    let interval: any = null;
+    if (isRecordingVoice) {
+      setRecordingSeconds(0);
+      interval = setInterval(() => {
+        setRecordingSeconds(prev => prev + 1);
+      }, 1000);
+    } else {
+      setRecordingSeconds(0);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isRecordingVoice]);
+
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   // Current logged in user
@@ -720,16 +752,22 @@ export default function Crm() {
   };
 
   // Message Send in Chat
-  const handleSendMessage = () => {
-    if (!chatMessageInput.trim() || !activeChatId) return;
+  const handleSendMessage = (customMsg?: Partial<ChatMessage>) => {
+    if (!activeChatId) return;
+
+    const text = customMsg ? customMsg.text || '' : chatMessageInput;
+    if (!text.trim() && !attachedFile && !customMsg?.isVoice) return;
 
     const updatedChats = chats.map(c => {
       if (c.id === activeChatId) {
         const userMsg: ChatMessage = {
           sender: 'operator',
-          text: chatMessageInput,
+          text: text,
           timestamp: new Date().toISOString(),
-          channel: selectedChatChannel
+          channel: selectedChatChannel,
+          isVoice: customMsg?.isVoice || false,
+          voiceDuration: customMsg?.voiceDuration,
+          attachment: customMsg?.attachment || (attachedFile ? { ...attachedFile } : null)
         };
 
         const replyTrigger = setTimeout(() => {
@@ -746,6 +784,7 @@ export default function Crm() {
 
     saveChatsData(updatedChats);
     setChatMessageInput('');
+    setAttachedFile(null);
   };
 
   // Simulate client replies for immersive UI
@@ -2613,12 +2652,112 @@ export default function Crm() {
                                         {selectedChatChannel === 'mailru' && <MailRuIcon size={10} />}
                                         <span>{isClient ? 'Клиент' : 'Оператор'} ({selectedChatChannel})</span>
                                       </div>
-                                      <div style={{ marginBottom: '0.25rem', whiteSpace: 'pre-line' }}>{msg.text}</div>
+                                      
+                                      {/* Voice Message Bubble */}
+                                      {msg.isVoice ? (
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.25rem 0', minWidth: '180px' }}>
+                                          <button style={{
+                                            width: '28px',
+                                            height: '28px',
+                                            borderRadius: '50%',
+                                            background: channelColor,
+                                            color: '#000',
+                                            border: 'none',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            cursor: 'pointer'
+                                          }}>
+                                            <Play size={12} fill="#000" />
+                                          </button>
+                                          {/* Waveform simulation */}
+                                          <div style={{ display: 'flex', alignItems: 'center', gap: '2px', flex: 1, height: '20px' }}>
+                                            {[4, 12, 8, 14, 6, 16, 10, 12, 8, 14, 6, 12, 8, 10, 4].map((h, idx) => (
+                                              <span
+                                                key={idx}
+                                                style={{
+                                                  width: '2px',
+                                                  height: `${h}px`,
+                                                  background: 'rgba(255,255,255,0.4)',
+                                                  borderRadius: '1px'
+                                                }}
+                                              />
+                                            ))}
+                                          </div>
+                                          <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.6)', fontWeight: '700' }}>
+                                            {msg.voiceDuration || '0:05'}
+                                          </span>
+                                        </div>
+                                      ) : (
+                                        <>
+                                          {/* Text message content */}
+                                          {msg.text && <div style={{ marginBottom: '0.25rem', whiteSpace: 'pre-line' }}>{msg.text}</div>}
+                                          
+                                          {/* File / Media Attachment */}
+                                          {msg.attachment && (() => {
+                                            const isImage = msg.attachment.type.startsWith('image/') || 
+                                                            ['.png', '.jpg', '.jpeg', '.gif'].some(ext => msg.attachment!.name.toLowerCase().endsWith(ext));
+                                            if (isImage) {
+                                              return (
+                                                <div style={{ marginTop: '0.5rem', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)' }}>
+                                                  <div style={{ padding: '0.5rem 0.75rem', fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                    <span>📷 {msg.attachment.name}</span>
+                                                    <span>{msg.attachment.size}</span>
+                                                  </div>
+                                                  <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', background: '#09090d', maxHeight: '180px', overflow: 'hidden' }}>
+                                                    <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                                                      <ImageIcon size={32} style={{ color: channelColor }} />
+                                                      <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)' }}>Изображение ({msg.attachment.size})</span>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              );
+                                            }
+                                            
+                                            return (
+                                              <div style={{
+                                                marginTop: '0.5rem',
+                                                background: 'rgba(0,0,0,0.25)',
+                                                border: '1px solid rgba(255,255,255,0.08)',
+                                                borderRadius: '12px',
+                                                padding: '0.75rem 1rem',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '0.75rem',
+                                                cursor: 'pointer'
+                                              }}>
+                                                <div style={{
+                                                  width: '36px',
+                                                  height: '36px',
+                                                  borderRadius: '8px',
+                                                  background: 'rgba(255,255,255,0.05)',
+                                                  display: 'flex',
+                                                  alignItems: 'center',
+                                                  justifyContent: 'center',
+                                                  color: channelColor
+                                                }}>
+                                                  <FileText size={18} />
+                                                </div>
+                                                <div style={{ flex: 1, minWidth: 0 }}>
+                                                  <div style={{ fontSize: '0.8rem', fontWeight: '700', color: '#fff', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                                                    {msg.attachment.name}
+                                                  </div>
+                                                  <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)' }}>
+                                                    {msg.attachment.size}
+                                                  </div>
+                                                </div>
+                                                <Download size={14} style={{ color: 'rgba(255,255,255,0.4)' }} />
+                                              </div>
+                                            );
+                                          })()}
+                                        </>
+                                      )}
+                                      
                                       <div style={{
                                         fontSize: '0.65rem',
                                         color: 'rgba(255,255,255,0.3)',
                                         textAlign: 'right',
-                                        marginTop: '0.25rem'
+                                        marginTop: '0.4rem'
                                       }}>
                                         {new Date(msg.timestamp).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
                                       </div>
@@ -2630,55 +2769,264 @@ export default function Crm() {
                             <div ref={chatEndRef} />
                           </div>
 
+                          {/* Hidden File Input */}
+                          <input
+                            type="file"
+                            id="crm-file-upload-input"
+                            style={{ display: 'none' }}
+                            onChange={(e) => {
+                              if (e.target.files && e.target.files[0]) {
+                                const file = e.target.files[0];
+                                const sizeStr = file.size > 1024 * 1024
+                                  ? `${(file.size / (1024 * 1024)).toFixed(1)} MB`
+                                  : `${(file.size / 1024).toFixed(0)} KB`;
+                                setAttachedFile({
+                                  name: file.name,
+                                  size: sizeStr,
+                                  type: file.type
+                                });
+                              }
+                            }}
+                          />
+
+                          {/* Selected file preview */}
+                          {attachedFile && (
+                            <div style={{
+                              background: 'rgba(0, 255, 65, 0.06)',
+                              border: '1px solid rgba(0, 255, 65, 0.15)',
+                              borderRadius: '12px',
+                              padding: '0.75rem 1rem',
+                              margin: '0 2rem 1rem',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                            }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0 }}>
+                                <FileText size={16} style={{ color: '#00ff41' }} />
+                                <span style={{ fontSize: '0.8rem', color: '#fff', fontWeight: '700', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                                  {attachedFile.name}
+                                </span>
+                                <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)' }}>
+                                  ({attachedFile.size})
+                                </span>
+                              </div>
+                              <button
+                                onClick={() => setAttachedFile(null)}
+                                style={{
+                                  background: 'none',
+                                  border: 'none',
+                                  color: 'rgba(255,255,255,0.4)',
+                                  cursor: 'pointer',
+                                  padding: '0.2rem',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  transition: 'color 0.2s'
+                                }}
+                              >
+                                <X size={14} />
+                              </button>
+                            </div>
+                          )}
+
                           {/* Message Input Box */}
                           <div style={{ padding: '1.5rem 2rem', borderTop: '1px solid #1f1f2e', background: 'rgba(0,0,0,0.25)', display: 'flex', gap: '1rem' }}>
-                            <input
-                              type="text"
-                              placeholder={
-                                selectedChatChannel === 'whatsapp' ? 'Напишите сообщение в WhatsApp...' :
-                                selectedChatChannel === 'telegram' ? 'Напишите сообщение в Telegram...' :
-                                selectedChatChannel === 'gmail' ? 'Отправьте письмо через Google Mail...' :
-                                'Отправьте письмо через Mail.ru...'
-                              }
-                              value={chatMessageInput}
-                              onChange={(e) => setChatMessageInput(e.target.value)}
-                              onKeyDown={(e) => { if (e.key === 'Enter') handleSendMessage(); }}
-                              style={{
-                                flex: 1,
-                                background: 'rgba(0,0,0,0.4)',
-                                border: `1px solid ${
-                                  selectedChatChannel === 'whatsapp' ? 'rgba(37, 211, 102, 0.2)' :
-                                  selectedChatChannel === 'telegram' ? 'rgba(0, 136, 204, 0.2)' :
-                                  selectedChatChannel === 'gmail' ? 'rgba(234, 67, 53, 0.2)' :
-                                  'rgba(22, 141, 226, 0.2)'
-                                }`,
-                                borderRadius: '12px',
-                                padding: '1rem',
-                                color: '#fff',
-                                outline: 'none'
-                              }}
-                            />
-                            <button
-                              onClick={handleSendMessage}
-                              style={{
-                                background: 
-                                  selectedChatChannel === 'whatsapp' ? '#25D366' :
-                                  selectedChatChannel === 'telegram' ? '#0088cc' :
-                                  selectedChatChannel === 'gmail' ? '#EA4335' :
-                                  '#168de2',
-                                color: selectedChatChannel === 'telegram' || selectedChatChannel === 'mailru' ? '#fff' : '#000',
-                                border: 'none',
-                                borderRadius: '12px',
-                                width: '50px',
+                            {isRecordingVoice ? (
+                              <div style={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                justifyContent: 'center',
-                                cursor: 'pointer',
-                                transition: '0.2s'
-                              }}
-                            >
-                              <Send size={18} />
-                            </button>
+                                justifyContent: 'space-between',
+                                gap: '1rem',
+                                background: 'rgba(234, 67, 53, 0.08)',
+                                border: '1px solid rgba(234, 67, 53, 0.3)',
+                                borderRadius: '12px',
+                                padding: '0.6rem 1.2rem',
+                                flex: 1,
+                                height: '46px',
+                                boxSizing: 'border-box'
+                              }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                  <span style={{
+                                    width: '8px',
+                                    height: '8px',
+                                    borderRadius: '50%',
+                                    background: '#ff4d4d',
+                                    display: 'inline-block'
+                                  }} />
+                                  <span style={{ fontSize: '0.85rem', color: '#ff4d4d', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                    Запись ГС...
+                                  </span>
+                                  <span style={{ fontSize: '0.9rem', color: '#fff', fontWeight: '800', fontFamily: 'monospace' }}>
+                                    {`0:${recordingSeconds.toString().padStart(2, '0')}`}
+                                  </span>
+                                </div>
+                                
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '3px', flex: 1, justifyContent: 'center' }}>
+                                  {[4, 14, 8, 18, 6, 22, 10, 14, 8, 18, 6, 14, 8, 10, 4].map((h, idx) => (
+                                    <span
+                                      key={idx}
+                                      style={{
+                                        width: '3px',
+                                        height: `${h}px`,
+                                        background: '#ff4d4d',
+                                        borderRadius: '1.5px'
+                                      }}
+                                    />
+                                  ))}
+                                </div>
+
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                  <button
+                                    onClick={() => {
+                                      setIsRecordingVoice(false);
+                                      setRecordingSeconds(0);
+                                    }}
+                                    style={{
+                                      background: 'rgba(255,255,255,0.05)',
+                                      border: 'none',
+                                      borderRadius: '8px',
+                                      padding: '0.35rem 0.6rem',
+                                      color: 'rgba(255,255,255,0.6)',
+                                      fontSize: '0.75rem',
+                                      cursor: 'pointer',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '0.25rem',
+                                      transition: '0.2s'
+                                    }}
+                                  >
+                                    <Trash2 size={12} /> Отмена
+                                  </button>
+
+                                  <button
+                                    onClick={() => {
+                                      const dur = `0:${recordingSeconds.toString().padStart(2, '0')}`;
+                                      handleSendMessage({
+                                        isVoice: true,
+                                        voiceDuration: dur,
+                                        text: 'Голосовое сообщение'
+                                      });
+                                      setIsRecordingVoice(false);
+                                      setRecordingSeconds(0);
+                                    }}
+                                    style={{
+                                      background: '#00ff41',
+                                      color: '#000',
+                                      border: 'none',
+                                      borderRadius: '8px',
+                                      padding: '0.35rem 0.6rem',
+                                      fontSize: '0.75rem',
+                                      fontWeight: '800',
+                                      cursor: 'pointer',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '0.25rem',
+                                      transition: '0.2s'
+                                    }}
+                                  >
+                                    <Check size={12} /> Отправить
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div style={{ display: 'flex', gap: '1rem', width: '100%', alignItems: 'center' }}>
+                                {/* Attach File Button */}
+                                <button
+                                  onClick={() => document.getElementById('crm-file-upload-input')?.click()}
+                                  title="Прикрепить файл с ПК (Фото, Видео, Документы)"
+                                  style={{
+                                    background: 'rgba(255,255,255,0.03)',
+                                    border: '1px solid rgba(255,255,255,0.08)',
+                                    borderRadius: '12px',
+                                    width: '46px',
+                                    height: '46px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    cursor: 'pointer',
+                                    color: 'rgba(255,255,255,0.6)',
+                                    transition: 'all 0.2s'
+                                  }}
+                                >
+                                  <Paperclip size={18} />
+                                </button>
+
+                                {/* Record Voice Button */}
+                                <button
+                                  onClick={() => setIsRecordingVoice(true)}
+                                  title="Записать голосовое сообщение"
+                                  style={{
+                                    background: 'rgba(255,255,255,0.03)',
+                                    border: '1px solid rgba(255,255,255,0.08)',
+                                    borderRadius: '12px',
+                                    width: '46px',
+                                    height: '46px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    cursor: 'pointer',
+                                    color: 'rgba(255,255,255,0.6)',
+                                    transition: 'all 0.2s'
+                                  }}
+                                >
+                                  <Mic size={18} />
+                                </button>
+
+                                {/* Text Input */}
+                                <input
+                                  type="text"
+                                  placeholder={
+                                    selectedChatChannel === 'whatsapp' ? 'Напишите сообщение в WhatsApp...' :
+                                    selectedChatChannel === 'telegram' ? 'Напишите сообщение в Telegram...' :
+                                    selectedChatChannel === 'gmail' ? 'Отправьте письмо через Google Mail...' :
+                                    'Отправьте письмо через Mail.ru...'
+                                  }
+                                  value={chatMessageInput}
+                                  onChange={(e) => setChatMessageInput(e.target.value)}
+                                  onKeyDown={(e) => { if (e.key === 'Enter') handleSendMessage(); }}
+                                  style={{
+                                    flex: 1,
+                                    background: 'rgba(0,0,0,0.4)',
+                                    border: `1px solid ${
+                                      selectedChatChannel === 'whatsapp' ? 'rgba(37, 211, 102, 0.2)' :
+                                      selectedChatChannel === 'telegram' ? 'rgba(0, 136, 204, 0.2)' :
+                                      selectedChatChannel === 'gmail' ? 'rgba(234, 67, 53, 0.2)' :
+                                      'rgba(22, 141, 226, 0.2)'
+                                    }`,
+                                    borderRadius: '12px',
+                                    padding: '0.8rem 1rem',
+                                    color: '#fff',
+                                    outline: 'none',
+                                    height: '46px',
+                                    boxSizing: 'border-box'
+                                  }}
+                                />
+
+                                {/* Send Button */}
+                                <button
+                                  onClick={() => handleSendMessage()}
+                                  style={{
+                                    background: 
+                                      selectedChatChannel === 'whatsapp' ? '#25D366' :
+                                      selectedChatChannel === 'telegram' ? '#0088cc' :
+                                      selectedChatChannel === 'gmail' ? '#EA4335' :
+                                      '#168de2',
+                                    color: selectedChatChannel === 'telegram' || selectedChatChannel === 'mailru' ? '#fff' : '#000',
+                                    border: 'none',
+                                    borderRadius: '12px',
+                                    width: '46px',
+                                    height: '46px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    cursor: 'pointer',
+                                    transition: '0.2s'
+                                  }}
+                                >
+                                  <Send size={18} />
+                                </button>
+                              </div>
+                            )}
                           </div>
                         </>
                       ) : (
