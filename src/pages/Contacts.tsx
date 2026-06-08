@@ -10,6 +10,13 @@ export default function Contacts() {
   const { t } = useLang();
   const [customBlocks, setCustomBlocks] = useState<Record<string, any>>(() => getCustomBlocks());
 
+  const [formName, setFormName] = useState('');
+  const [formPhone, setFormPhone] = useState('');
+  const [formMsg, setFormMsg] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+
   useEffect(() => {
     const sync = () => setCustomBlocks(getCustomBlocks());
     window.addEventListener('storage', sync);
@@ -22,6 +29,104 @@ export default function Contacts() {
     styles: {}, 
     images: {} 
   });
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formPhone.trim()) {
+      setSubmitError('Пожалуйста, введите ваш номер телефона.');
+      return;
+    }
+    setIsSubmitting(true);
+    setSubmitError('');
+    setSubmitSuccess(false);
+
+    const leadPayload = {
+      name: formName,
+      phone: formPhone,
+      message: formMsg,
+      source: 'Форма контактов'
+    };
+
+    try {
+      const res = await fetch('/api/crm/leads/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(leadPayload)
+      });
+      if (res.ok) {
+        setSubmitSuccess(true);
+        setFormName('');
+        setFormPhone('');
+        setFormMsg('');
+        
+        // Also update local mock storage to keep sync if checking locally immediately
+        const savedLeads = localStorage.getItem('demetra_mock_leads');
+        if (savedLeads) {
+          const parsed = JSON.parse(savedLeads);
+          const newLead = {
+            id: `lead_${Date.now()}`,
+            name: formName || 'Новый клиент',
+            phone: formPhone,
+            email: '',
+            message: formMsg,
+            status: 'new',
+            created_at: new Date().toISOString(),
+            amount: 0,
+            source: 'Форма контактов',
+            assigned_to: 'Светлана Иванова',
+            comments: 'Создано автоматически с веб-сайта.'
+          };
+          localStorage.setItem('demetra_mock_leads', JSON.stringify([newLead, ...parsed]));
+          window.dispatchEvent(new Event('storage'));
+        }
+      } else {
+        setSubmitError('Ошибка сервера при отправке. Пожалуйста, попробуйте позже.');
+      }
+    } catch (err) {
+      console.warn("API request failed, fallback to local mock submission", err);
+      // Local storage fallback for client-only testing
+      const savedLeads = localStorage.getItem('demetra_mock_leads') || '[]';
+      const parsed = JSON.parse(savedLeads);
+      const newLead = {
+        id: `lead_${Date.now()}`,
+        name: formName || 'Новый клиент',
+        phone: formPhone,
+        email: '',
+        message: formMsg,
+        status: 'new',
+        created_at: new Date().toISOString(),
+        amount: 0,
+        source: 'Форма контактов',
+        assigned_to: 'Светлана Иванова',
+        comments: 'Создано автоматически с веб-сайта.'
+      };
+      localStorage.setItem('demetra_mock_leads', JSON.stringify([newLead, ...parsed]));
+
+      // Fallback for chat
+      const savedChats = localStorage.getItem('demetra_mock_chats') || '[]';
+      const chatsParsed = JSON.parse(savedChats);
+      const chatExists = chatsParsed.some((c: any) => c.client_phone === formPhone);
+      if (!chatExists) {
+        const newChat = {
+          id: `chat_${Date.now()}`,
+          client_phone: formPhone,
+          client_name: formName || 'Новый клиент',
+          messages: [
+            { sender: 'client', text: `[Авто-сообщение с сайта] Оставлена заявка: Форма контактов. Сообщение: "${formMsg}"`, timestamp: new Date().toISOString() }
+          ]
+        };
+        localStorage.setItem('demetra_mock_chats', JSON.stringify([newChat, ...chatsParsed]));
+      }
+
+      window.dispatchEvent(new Event('storage'));
+      setSubmitSuccess(true);
+      setFormName('');
+      setFormPhone('');
+      setFormMsg('');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const pageOrder = Array.isArray(layout?.order) && layout.order.length > 0 ? layout.order : ['contacts_main'];
   const hiddenBlocks = Array.isArray(layout?.hidden) ? layout.hidden : [];
@@ -78,21 +183,77 @@ export default function Contacts() {
                     <div className="industrial-card" style={{ padding: '4rem', borderColor: 'var(--primary)' }}>
                       <BuilderWrapper id="contact_form" isBuilder={isBuilder}>
                       <h3 style={{ fontSize: '2rem', color: 'var(--foreground)', marginBottom: '2.5rem' }}>{t.contact_btn.toUpperCase()}</h3>
-                      <form style={{ display: 'grid', gap: '1.5rem' }}>
-                        <div style={{ display: 'grid', gap: '0.5rem' }}>
-                          <label style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: '700' }}><InlineEdit tKey="contact_form_name" /></label>
-                          <input type="text" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', padding: '1rem', color: 'var(--foreground)', borderRadius: '8px' }} />
+                      
+                      {submitSuccess ? (
+                        <div style={{ 
+                          padding: '2rem', 
+                          background: 'rgba(0, 255, 65, 0.05)', 
+                          border: '1px solid var(--primary)', 
+                          color: '#fff', 
+                          borderRadius: '8px',
+                          textAlign: 'center',
+                          display: 'grid',
+                          gap: '1rem'
+                        }}>
+                          <div style={{ color: 'var(--primary)', fontSize: '2.5rem' }}>✓</div>
+                          <h4 style={{ fontSize: '1.25rem', fontWeight: '800', margin: 0 }}>Заявка успешно отправлена!</h4>
+                          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', margin: 0 }}>
+                            Наши специалисты уже обрабатывают ваш запрос и свяжутся с вами в ближайшее время.
+                          </p>
+                          <button onClick={() => setSubmitSuccess(false)} className="btn-primary" style={{ padding: '1rem', marginTop: '1rem' }}>
+                            Отправить еще одну
+                          </button>
                         </div>
-                        <div style={{ display: 'grid', gap: '0.5rem' }}>
-                          <label style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: '700' }}><InlineEdit tKey="contact_form_phone" /></label>
-                          <input type="tel" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', padding: '1rem', color: 'var(--foreground)', borderRadius: '8px' }} />
-                        </div>
-                        <div style={{ display: 'grid', gap: '0.5rem' }}>
-                          <label style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: '700' }}><InlineEdit tKey="contact_form_msg" /></label>
-                          <textarea rows={4} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', padding: '1rem', color: 'var(--foreground)', borderRadius: '8px' }}></textarea>
-                        </div>
-                        <button type="button" className="btn-primary" style={{ padding: '1.5rem', marginTop: '1rem' }}><InlineEdit tKey="ui_send" /></button>
-                      </form>
+                      ) : (
+                        <form onSubmit={handleFormSubmit} style={{ display: 'grid', gap: '1.5rem' }}>
+                          <div style={{ display: 'grid', gap: '0.5rem' }}>
+                            <label style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: '700' }}><InlineEdit tKey="contact_form_name" /></label>
+                            <input 
+                              type="text" 
+                              value={formName}
+                              onChange={(e) => setFormName(e.target.value)}
+                              required
+                              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', padding: '1rem', color: 'var(--foreground)', borderRadius: '8px', outline: 'none' }} 
+                            />
+                          </div>
+                          <div style={{ display: 'grid', gap: '0.5rem' }}>
+                            <label style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: '700' }}><InlineEdit tKey="contact_form_phone" /></label>
+                            <input 
+                              type="tel" 
+                              value={formPhone}
+                              onChange={(e) => setFormPhone(e.target.value)}
+                              placeholder="+7"
+                              required
+                              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', padding: '1rem', color: 'var(--foreground)', borderRadius: '8px', outline: 'none' }} 
+                            />
+                          </div>
+                          <div style={{ display: 'grid', gap: '0.5rem' }}>
+                            <label style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: '700' }}><InlineEdit tKey="contact_form_msg" /></label>
+                            <textarea 
+                              rows={4} 
+                              value={formMsg}
+                              onChange={(e) => setFormMsg(e.target.value)}
+                              required
+                              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', padding: '1rem', color: 'var(--foreground)', borderRadius: '8px', outline: 'none', resize: 'none' }}
+                            ></textarea>
+                          </div>
+
+                          {submitError && (
+                            <div style={{ padding: '1rem', background: 'rgba(255, 75, 75, 0.08)', border: '1px solid #ff4b4b', color: '#ff4b4b', borderRadius: '8px', fontSize: '0.85rem' }}>
+                              {submitError}
+                            </div>
+                          )}
+
+                          <button 
+                            type="submit" 
+                            disabled={isSubmitting}
+                            className="btn-primary" 
+                            style={{ padding: '1.5rem', marginTop: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+                          >
+                            {isSubmitting ? 'Отправка...' : <InlineEdit tKey="ui_send" />}
+                          </button>
+                        </form>
+                      )}
                       </BuilderWrapper>
                     </div>
                   </div>

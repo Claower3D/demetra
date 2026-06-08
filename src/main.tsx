@@ -41,9 +41,7 @@ console.error = (...args) => {
 
 try {
   root.render(
-    <StrictMode>
-      <App />
-    </StrictMode>,
+    <App />
   );
 } catch (e) {
   logErrorToServer('root_render_error', e instanceof Error ? e.message : String(e), e instanceof Error ? e.stack : undefined);

@@ -15,6 +15,7 @@ import Pay from './pages/Pay';
 import Partner from './pages/Partner';
 import Reviews from './pages/Reviews';
 import Admin from './pages/Admin';
+import Crm from './pages/Crm';
 import './index.css';
 
 import { useState, useEffect } from 'react';
@@ -210,6 +211,7 @@ function RouteLogger() {
                 })}
               </Route>
               <Route path="/admin" element={<Admin />} />
+              <Route path="/crm" element={<Crm />} />
             </Routes>
           </BrowserRouter>
         </LangProvider>
