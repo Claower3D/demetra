@@ -6,7 +6,7 @@ import {
   X, LogOut, ArrowRight, Download, DollarSign, 
   TrendingUp, RefreshCw, Send, User, ShieldAlert,
   Phone, Mail, Calendar, FileText, Check, AlertCircle, Play,
-  LayoutDashboard, Package, Truck, Globe, Settings, Image as ImageIcon
+  LayoutDashboard, Package, Truck, Globe, Settings, Image as ImageIcon, Menu
 } from 'lucide-react';
 
 // CRM Lead interface matching Go backend
@@ -81,6 +81,20 @@ export default function Crm() {
   // View States
   const [viewMode, setViewMode] = useState<'table' | 'kanban'>('kanban');
   const [usersSubTab, setUsersSubTab] = useState<'employees' | 'permissions'>('employees');
+
+  // Responsive States
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    setIsSidebarOpen(windowWidth >= 1024);
+  }, [windowWidth]);
 
   // Filter States
   const [searchQuery, setSearchQuery] = useState('');
@@ -839,6 +853,62 @@ export default function Crm() {
       display: 'flex',
       fontFamily: 'Inter, system-ui, sans-serif'
     }}>
+      {/* Mobile Sidebar Backdrop */}
+      {windowWidth < 1024 && isSidebarOpen && (
+        <div 
+          onClick={() => setIsSidebarOpen(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.5)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 999
+          }}
+        />
+      )}
+
+      {/* Mobile Top Header */}
+      {windowWidth < 1024 && (
+        <header style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '60px',
+          background: '#0f0f15',
+          borderBottom: '1px solid #1f1f2e',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0 1.5rem',
+          zIndex: 900
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: '#fff',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '0.25rem'
+              }}
+            >
+              <Menu size={24} />
+            </button>
+            <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: '900', letterSpacing: '-0.02em' }}>
+              DEMETRA <span style={{ color: '#00ff41' }}>CRM</span>
+            </h4>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <img src={currentUser.avatar} alt="avatar" style={{ width: '30px', height: '30px', borderRadius: '50%', border: '1.5px solid #00ff41', objectFit: 'cover' }} />
+          </div>
+        </header>
+      )}
+
       {/* Sidebar Navigation */}
       <aside style={{ 
         width: '280px', 
@@ -848,29 +918,49 @@ export default function Crm() {
         flexDirection: 'column',
         position: 'fixed',
         height: '100vh',
-        zIndex: 100
+        zIndex: 1000,
+        left: isSidebarOpen ? 0 : '-280px',
+        transition: 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
       }}>
         {/* Brand */}
-        <div style={{ padding: '2rem', borderBottom: '1px solid #1f1f2e', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div style={{ 
-            width: '40px', 
-            height: '40px', 
-            borderRadius: '12px', 
-            background: 'rgba(0, 255, 65, 0.05)',
-            border: '1px solid #00ff41',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#00ff41'
-          }}>
-            <Shield size={20} />
+        <div style={{ padding: '2rem', borderBottom: '1px solid #1f1f2e', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div style={{ 
+              width: '40px', 
+              height: '40px', 
+              borderRadius: '12px', 
+              background: 'rgba(0, 255, 65, 0.05)',
+              border: '1px solid #00ff41',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#00ff41'
+            }}>
+              <Shield size={20} />
+            </div>
+            <div>
+              <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '900', letterSpacing: '-0.02em' }}>
+                DEMETRA <span style={{ color: '#00ff41' }}>CRM</span>
+              </h4>
+              <div style={{ fontSize: '0.6rem', color: '#00ff41', fontWeight: '800', letterSpacing: '0.15em' }}>PRO EDITION</div>
+            </div>
           </div>
-          <div>
-            <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '900', letterSpacing: '-0.02em' }}>
-              DEMETRA <span style={{ color: '#00ff41' }}>CRM</span>
-            </h4>
-            <div style={{ fontSize: '0.6rem', color: '#00ff41', fontWeight: '800', letterSpacing: '0.15em' }}>PRO EDITION</div>
-          </div>
+          {windowWidth < 1024 && (
+            <button 
+              onClick={() => setIsSidebarOpen(false)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'rgba(255,255,255,0.4)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <X size={20} />
+            </button>
+          )}
         </div>
 
         {/* Current user summary */}
@@ -1024,8 +1114,9 @@ export default function Crm() {
       {/* Main Content Area */}
       <main style={{ 
         flex: 1, 
-        marginLeft: '280px',
-        padding: '3rem 4rem',
+        marginLeft: windowWidth >= 1024 ? '280px' : 0,
+        padding: windowWidth >= 1024 ? '3rem 4rem' : '1.5rem 1rem',
+        paddingTop: windowWidth >= 1024 ? '3rem' : '5rem',
         minHeight: '100vh',
         boxSizing: 'border-box'
       }}>
@@ -1793,14 +1884,17 @@ export default function Crm() {
                     </div>
                   ) : (
                     /* KANBAN BOARD VIEW */
-                    <div style={{ 
-                      display: 'flex', 
-                      gap: '1rem', 
-                      overflowX: 'auto', 
-                      paddingBottom: '1.5rem',
-                      minHeight: '650px',
-                      scrollbarWidth: 'thin'
-                    }}>
+                    <div 
+                      className="kanban-board-container"
+                      style={{ 
+                        display: 'flex', 
+                        gap: '1rem', 
+                        overflowX: 'auto', 
+                        paddingBottom: '1.5rem',
+                        minHeight: '650px',
+                        scrollbarWidth: 'thin'
+                      }}
+                    >
                       {[
                         { id: 'new', title: 'Новые', color: '#ff4b4b', bg: 'rgba(255, 75, 75, 0.08)', border: 'rgba(255, 75, 75, 0.2)' },
                         { id: 'processing', title: 'В работе', color: '#00bfff', bg: 'rgba(0, 191, 255, 0.08)', border: 'rgba(0, 191, 255, 0.2)' },

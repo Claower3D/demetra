@@ -1083,3 +1083,32 @@ body.builder-mode .builder-text-hoverable:hover::after {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* Custom scrollbar for Kanban board columns and other overflow containers */
+.kanban-board-container {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 1.5rem;
+  min-height: 650px;
+}
+
+.kanban-board-container::-webkit-scrollbar {
+  height: 10px;
+}
+
+.kanban-board-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 5px;
+}
+
+.kanban-board-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 65, 0.25);
+  border-radius: 5px;
+  border: 1px solid rgba(0, 255, 65, 0.1);
+  transition: background 0.3s;
+}
+
+.kanban-board-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 255, 65, 0.55);
+}
