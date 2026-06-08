@@ -182,6 +182,8 @@ export default function Crm() {
   // Modal / Form States
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [addCategory, setAddCategory] = useState(catalogCategories[0]);
+  const [addProduct, setAddProduct] = useState((catalogProducts[catalogCategories[0]] || [])[0] || '');
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
 
   // Local edit states for the extended lead edit modal
@@ -611,6 +613,12 @@ export default function Crm() {
   const handleAddLeadSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString().slice(0, 5);
+    const initialLog = `[${timeStr}] Система: Заявка успешно зарегистрирована вручную. Менеджер: ${formData.get('assigned_to') || 'Администратор'}.`;
+    const userComments = formData.get('comments') as string || '';
+    const finalComments = userComments ? `${initialLog}\n[Заметка оператора]: ${userComments}` : initialLog;
+
     const newLead: Lead = {
       id: `lead_${Date.now()}`,
       name: formData.get('name') as string || 'Новый клиент',
@@ -618,11 +626,16 @@ export default function Crm() {
       email: formData.get('email') as string || '',
       message: formData.get('message') as string || '',
       status: 'new',
-      created_at: new Date().toISOString(),
+      created_at: now.toISOString(),
+      updated_at: now.toISOString(),
       amount: parseFloat(formData.get('amount') as string) || 0,
       source: formData.get('source') as string || 'Ручной ввод',
-      assigned_to: formData.get('assigned_to') as string || 'Светлана Иванова',
-      comments: formData.get('comments') as string || '',
+      assigned_to: formData.get('assigned_to') as string || 'Администратор',
+      comments: finalComments,
+      city: formData.get('city') as string || 'Астана',
+      category: addCategory,
+      product: addProduct,
+      address: formData.get('address') as string || ''
     };
 
     const updated = [newLead, ...leads];
@@ -4083,13 +4096,15 @@ export default function Crm() {
                 border: '1px solid rgba(0, 255, 65, 0.15)',
                 borderRadius: '24px',
                 width: '100%',
-                maxWidth: '550px',
+                maxWidth: '680px',
                 padding: '2.5rem',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.8)'
+                boxShadow: '0 20px 60px rgba(0,0,0,0.8)',
+                maxHeight: '90vh',
+                overflowY: 'auto'
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: '900' }}>Регистрация нового обращения</h3>
+                <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Регистрация нового обращения</h3>
                 <button onClick={() => setIsAddModalOpen(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer' }}><X size={20} /></button>
               </div>
 
@@ -4105,12 +4120,23 @@ export default function Crm() {
                     <input type="text" name="phone" required placeholder="+7" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none' }} />
                   </div>
                   <div style={{ display: 'grid', gap: '0.4rem' }}>
-                    <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Email</label>
-                    <input type="email" name="email" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none' }} />
+                    <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Город</label>
+                    <select name="city" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none', cursor: 'pointer' }}>
+                      <option value="Астана">Астана</option>
+                      <option value="Алматы">Алматы</option>
+                      <option value="Караганда">Караганда</option>
+                      <option value="Шымкент">Шымкент</option>
+                      <option value="Атырау">Атырау</option>
+                      <option value="Усть-Каменогорск">Усть-Каменогорск</option>
+                    </select>
                   </div>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div style={{ display: 'grid', gap: '0.4rem' }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Email</label>
+                    <input type="email" name="email" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none' }} />
+                  </div>
                   <div style={{ display: 'grid', gap: '0.4rem' }}>
                     <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Канал / Источник</label>
                     <select name="source" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none', cursor: 'pointer' }}>
@@ -4120,19 +4146,60 @@ export default function Crm() {
                       <option value="Прямой запрос">Прямой запрос</option>
                     </select>
                   </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div style={{ display: 'grid', gap: '0.4rem' }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Направление (Категория)</label>
+                    <select 
+                      value={addCategory} 
+                      onChange={(e) => {
+                        const cat = e.target.value;
+                        setAddCategory(cat);
+                        const products = catalogProducts[cat] || [];
+                        if (products.length > 0) {
+                          setAddProduct(products[0]);
+                        }
+                      }}
+                      style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none', cursor: 'pointer' }}
+                    >
+                      {catalogCategories.map(c => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div style={{ display: 'grid', gap: '0.4rem' }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Услуга / Товар</label>
+                    <select 
+                      value={addProduct} 
+                      onChange={(e) => setAddProduct(e.target.value)}
+                      style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none', cursor: 'pointer' }}
+                    >
+                      {(catalogProducts[addCategory] || []).map(p => (
+                        <option key={p} value={p}>{p}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div style={{ display: 'grid', gap: '0.4rem' }}>
                     <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Сумма сделки (₸)</label>
                     <input type="number" name="amount" defaultValue={0} style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none' }} />
                   </div>
+                  <div style={{ display: 'grid', gap: '0.4rem' }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Назначить менеджера</label>
+                    <select name="assigned_to" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none', cursor: 'pointer' }}>
+                      {users.map(u => (
+                        <option key={u.id} value={u.name}>{u.name}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div style={{ display: 'grid', gap: '0.4rem' }}>
-                  <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Назначить менеджера</label>
-                  <select name="assigned_to" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none', cursor: 'pointer' }}>
-                    {users.map(u => (
-                      <option key={u.id} value={u.name}>{u.name}</option>
-                    ))}
-                  </select>
+                  <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Точный адрес (Улица, дом, квартира)</label>
+                  <input type="text" name="address" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none' }} />
                 </div>
 
                 <div style={{ display: 'grid', gap: '0.4rem' }}>
@@ -4155,7 +4222,9 @@ export default function Crm() {
                     borderRadius: '12px', 
                     fontWeight: '900', 
                     cursor: 'pointer',
-                    marginTop: '0.5rem'
+                    marginTop: '0.5rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em'
                   }}
                 >
                   Создать заявку
