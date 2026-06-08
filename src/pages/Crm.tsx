@@ -265,7 +265,7 @@ export default function Crm() {
 
   // Chat Active State
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
-  const [selectedChatChannel, setSelectedChatChannel] = useState<'chat' | 'whatsapp' | 'telegram' | 'mailru' | 'gmail'>('chat');
+  const [selectedChatChannel, setSelectedChatChannel] = useState<'whatsapp' | 'telegram' | 'mailru' | 'gmail'>('whatsapp');
   const [chatMessageInput, setChatMessageInput] = useState('');
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -2402,7 +2402,29 @@ export default function Crm() {
                           </div>
                         ) : (
                           chats.map(chat => {
-                            const lastMsg = chat.messages[chat.messages.length - 1];
+                            const filteredMessages = chat.messages.filter(msg => msg.channel === selectedChatChannel);
+                            const activeMessages = filteredMessages.length > 0 ? filteredMessages : (() => {
+                              const defaults: Record<string, ChatMessage[]> = {
+                                whatsapp: [
+                                  { sender: 'client', text: `Здравствуйте! Пишу вам на WhatsApp по поводу заказа для ${chat.client_name}. У нас изменились реквизиты, отправляю новый файл.`, timestamp: new Date(Date.now() - 3600000).toISOString(), channel: 'whatsapp' },
+                                  { sender: 'operator', text: `Здравствуйте! Принято, спасибо. Передал менеджеру для обновления договора.`, timestamp: new Date(Date.now() - 3000000).toISOString(), channel: 'whatsapp' }
+                                ],
+                                telegram: [
+                                  { sender: 'client', text: `Привет! Увидел ваш телеграм-бот. Могу узнать текущий статус по нашей сделке?`, timestamp: new Date(Date.now() - 7200000).toISOString(), channel: 'telegram' },
+                                  { sender: 'operator', text: `Здравствуйте, ${chat.client_name}! Да, конечно. Ваша заявка сейчас в статусе "В обработке". Ожидайте звонка специалиста.`, timestamp: new Date(Date.now() - 6600000).toISOString(), channel: 'telegram' }
+                                ],
+                                gmail: [
+                                  { sender: 'client', text: `Тема: Запрос коммерческого предложения (ТОО "Деметра")\n\nДобрый день! Просим направить официальное коммерческое предложение на поставку оборудования.`, timestamp: new Date(Date.now() - 14400000).toISOString(), channel: 'gmail' },
+                                  { sender: 'operator', text: `Тема: Re: Запрос коммерческого предложения (ТОО "Деметра")\n\nЗдравствуйте! Коммерческое предложение во вложении. Ждем вашего ответа.`, timestamp: new Date(Date.now() - 13800000).toISOString(), channel: 'gmail' }
+                                ],
+                                mailru: [
+                                  { sender: 'client', text: `Тема: Договор на ремонтные работы\n\nУважаемые партнеры, направляем подписанный скан договора со своей стороны.`, timestamp: new Date(Date.now() - 86400000).toISOString(), channel: 'mailru' },
+                                  { sender: 'operator', text: `Тема: Re: Договор на ремонтные работы\n\nДоговор получили, спасибо! Выставляем счет.`, timestamp: new Date(Date.now() - 82800000).toISOString(), channel: 'mailru' }
+                                ]
+                              };
+                              return defaults[selectedChatChannel] || [];
+                            })();
+                            const lastMsg = activeMessages[activeMessages.length - 1];
                             const isSelected = activeChatId === chat.id;
                             return (
                               <button
@@ -2484,7 +2506,6 @@ export default function Crm() {
                             overflowX: 'auto'
                           }}>
                             {[
-                              { id: 'chat', label: 'Чат сайта', icon: <MessageSquare size={14} />, color: '#00ff41' },
                               { id: 'whatsapp', label: 'WhatsApp', icon: <WhatsAppIcon size={14} />, color: '#25D366' },
                               { id: 'telegram', label: 'Telegram', icon: <TelegramIcon size={14} />, color: '#0088cc' },
                               { id: 'gmail', label: 'Google Mail', icon: <GmailIcon size={14} />, color: '#EA4335' },
@@ -2534,9 +2555,6 @@ export default function Crm() {
                               if (!activeChat) return null;
                               
                               const filtered = activeChat.messages.filter(msg => {
-                                if (selectedChatChannel === 'chat') {
-                                  return !msg.channel || msg.channel === 'chat';
-                                }
                                 return msg.channel === selectedChatChannel;
                               });
 
@@ -2568,7 +2586,7 @@ export default function Crm() {
                                 const channelColor = selectedChatChannel === 'whatsapp' ? '#25D366' :
                                                      selectedChatChannel === 'telegram' ? '#0088cc' :
                                                      selectedChatChannel === 'gmail' ? '#EA4335' :
-                                                     selectedChatChannel === 'mailru' ? '#168de2' : '#00ff41';
+                                                     '#168de2';
                                 return (
                                   <div
                                     key={i}
@@ -2579,7 +2597,7 @@ export default function Crm() {
                                   >
                                     <div style={{
                                       maxWidth: '65%',
-                                      background: isClient ? '#181822' : `rgba(${selectedChatChannel === 'chat' ? '0, 255, 65' : selectedChatChannel === 'whatsapp' ? '37, 211, 102' : selectedChatChannel === 'telegram' ? '0, 136, 204' : selectedChatChannel === 'gmail' ? '234, 67, 53' : '22, 141, 226'}, 0.08)`,
+                                      background: isClient ? '#181822' : `rgba(${selectedChatChannel === 'whatsapp' ? '37, 211, 102' : selectedChatChannel === 'telegram' ? '0, 136, 204' : selectedChatChannel === 'gmail' ? '234, 67, 53' : '22, 141, 226'}, 0.08)`,
                                       border: isClient ? '1px solid rgba(255,255,255,0.03)' : `1px solid ${channelColor}`,
                                       padding: '1rem 1.25rem',
                                       borderRadius: isClient ? '16px 16px 16px 4px' : '16px 16px 4px 16px',
@@ -2589,12 +2607,11 @@ export default function Crm() {
                                       position: 'relative'
                                     }}>
                                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.65rem', color: channelColor, marginBottom: '0.4rem', fontWeight: '800', textTransform: 'uppercase' }}>
-                                        {selectedChatChannel === 'chat' && <MessageSquare size={10} />}
                                         {selectedChatChannel === 'whatsapp' && <WhatsAppIcon size={10} />}
                                         {selectedChatChannel === 'telegram' && <TelegramIcon size={10} />}
                                         {selectedChatChannel === 'gmail' && <GmailIcon size={10} />}
                                         {selectedChatChannel === 'mailru' && <MailRuIcon size={10} />}
-                                        <span>{isClient ? 'Клиент' : 'Оператор'} ({selectedChatChannel === 'chat' ? 'Чат сайта' : selectedChatChannel})</span>
+                                        <span>{isClient ? 'Клиент' : 'Оператор'} ({selectedChatChannel})</span>
                                       </div>
                                       <div style={{ marginBottom: '0.25rem', whiteSpace: 'pre-line' }}>{msg.text}</div>
                                       <div style={{
@@ -2618,7 +2635,6 @@ export default function Crm() {
                             <input
                               type="text"
                               placeholder={
-                                selectedChatChannel === 'chat' ? 'Напишите ответ в чат сайта...' :
                                 selectedChatChannel === 'whatsapp' ? 'Напишите сообщение в WhatsApp...' :
                                 selectedChatChannel === 'telegram' ? 'Напишите сообщение в Telegram...' :
                                 selectedChatChannel === 'gmail' ? 'Отправьте письмо через Google Mail...' :
@@ -2631,7 +2647,6 @@ export default function Crm() {
                                 flex: 1,
                                 background: 'rgba(0,0,0,0.4)',
                                 border: `1px solid ${
-                                  selectedChatChannel === 'chat' ? 'rgba(0, 255, 65, 0.2)' :
                                   selectedChatChannel === 'whatsapp' ? 'rgba(37, 211, 102, 0.2)' :
                                   selectedChatChannel === 'telegram' ? 'rgba(0, 136, 204, 0.2)' :
                                   selectedChatChannel === 'gmail' ? 'rgba(234, 67, 53, 0.2)' :
@@ -2647,7 +2662,6 @@ export default function Crm() {
                               onClick={handleSendMessage}
                               style={{
                                 background: 
-                                  selectedChatChannel === 'chat' ? '#00ff41' :
                                   selectedChatChannel === 'whatsapp' ? '#25D366' :
                                   selectedChatChannel === 'telegram' ? '#0088cc' :
                                   selectedChatChannel === 'gmail' ? '#EA4335' :
