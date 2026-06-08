@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Users, BarChart3, MessageSquare, Shield, 
-  Search, Plus, Trash2, Edit3, CheckCircle2, 
-  X, LogOut, ArrowRight, Download, DollarSign, 
+import {
+  Users, BarChart3, MessageSquare, Shield,
+  Search, Plus, Trash2, Edit3, CheckCircle2,
+  X, LogOut, ArrowRight, Download, DollarSign,
   TrendingUp, RefreshCw, Send, User, ShieldAlert,
   Phone, Mail, Calendar, FileText, Check, AlertCircle, Play,
   LayoutDashboard, Package, Truck, Globe, Settings, Image as ImageIcon, Menu
@@ -103,6 +103,7 @@ interface ChatMessage {
   sender: 'client' | 'operator';
   text: string;
   timestamp: string;
+  channel?: 'chat' | 'whatsapp' | 'telegram' | 'mailru' | 'gmail';
 }
 
 interface CRMChat {
@@ -117,6 +118,32 @@ export interface CRMRolePermission {
   allowed_tabs: ('dashboard' | 'analytics' | 'leads' | 'clients' | 'chats' | 'users' | 'accounting' | 'products' | 'services' | 'builder' | 'content' | 'pages' | 'settings' | 'assistant')[];
 }
 
+const WhatsAppIcon = ({ size = 16, color = '#25D366' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={color} style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.73-1.45L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.403.002 9.803-4.389 9.805-9.788.002-2.615-1.012-5.074-2.859-6.923C16.375 2.043 13.92 1.028 11.3 1.028 5.902 1.028 1.5 5.418 1.498 10.817c-.001 1.514.404 2.992 1.172 4.304l-.994 3.63 3.747-.98c1.3.722 2.66 1.116 3.224 1.116z" />
+  </svg>
+);
+
+const TelegramIcon = ({ size = 16, color = '#0088cc' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={color} style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+    <path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.18l-1.92 9.07c-.14.65-.53.81-1.08.5l-2.92-2.15-1.41 1.36c-.16.16-.29.29-.59.29l.21-2.97 5.41-4.89c.23-.21-.05-.32-.36-.12L8.2 13.78l-2.88-.9c-.63-.2-1.04-.63.04-.88l11.23-4.33c.52-.19.97.12.97.51z" />
+  </svg>
+);
+
+const GmailIcon = ({ size = 16, color = '#EA4335' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+    <polyline points="22,6 12,13 2,6" />
+  </svg>
+);
+
+const MailRuIcon = ({ size = 16, color = '#168de2' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 8v8M8 12h8" />
+  </svg>
+);
+
 export default function Crm() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     return sessionStorage.getItem('demetra_crm_auth') === 'true';
@@ -129,11 +156,11 @@ export default function Crm() {
       try {
         const u = JSON.parse(saved);
         return u.role === 'admin' ? 'dashboard' : 'analytics';
-      } catch (e) {}
+      } catch (e) { }
     }
     return 'dashboard';
   });
-  
+
   // Data States
   const [leads, setLeads] = useState<Lead[]>([]);
   const [users, setUsers] = useState<CRMUser[]>([]);
@@ -235,9 +262,10 @@ export default function Crm() {
       setIsRejecting(false);
     }
   }, [selectedLead]);
-  
+
   // Chat Active State
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
+  const [selectedChatChannel, setSelectedChatChannel] = useState<'chat' | 'whatsapp' | 'telegram' | 'mailru' | 'gmail'>('chat');
   const [chatMessageInput, setChatMessageInput] = useState('');
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -247,7 +275,7 @@ export default function Crm() {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch (e) {}
+      } catch (e) { }
     }
     return {
       id: 'user_1',
@@ -548,10 +576,10 @@ export default function Crm() {
 
   // Lead status updates
   const handleUpdateLeadStatus = (
-    leadId: string, 
-    status: 'new' | 'processing' | 'dozhim' | 'manager_op' | 'rop' | 'financier' | 'completed' | 'rejected', 
-    amount?: number, 
-    comments?: string, 
+    leadId: string,
+    status: 'new' | 'processing' | 'dozhim' | 'manager_op' | 'rop' | 'financier' | 'completed' | 'rejected',
+    amount?: number,
+    comments?: string,
     assignedTo?: string
   ) => {
     const updated = leads.map(l => {
@@ -700,11 +728,12 @@ export default function Crm() {
         const userMsg: ChatMessage = {
           sender: 'operator',
           text: chatMessageInput,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
+          channel: selectedChatChannel
         };
 
         const replyTrigger = setTimeout(() => {
-          simulateClientReply(c.id, c.client_name);
+          simulateClientReply(c.id, c.client_name, selectedChatChannel);
         }, 1500);
 
         return {
@@ -720,16 +749,43 @@ export default function Crm() {
   };
 
   // Simulate client replies for immersive UI
-  const simulateClientReply = (chatId: string, clientName: string) => {
-    const replies = [
-      "Хорошо, спасибо большое! Жду коммерческое предложение на почту.",
-      "Понял вас, сейчас отправлю чертежи и размеры на ваш email.",
-      "Отличная новость! Согласуем договор и готовы оплатить счет.",
-      "Спасибо, Ербол связывался со мной. Мы уже обсуждаем детали монтажа конвейерной ленты.",
-      "Подскажите, а возможна оплата в рассрочку для юрлиц?",
-      "Принято. Мы подготовим площадку к приезду вашей бригады вулканизаторщиков."
-    ];
-    const randomReply = replies[Math.floor(Math.random() * replies.length)];
+  const simulateClientReply = (chatId: string, clientName: string, channel: 'chat' | 'whatsapp' | 'telegram' | 'mailru' | 'gmail') => {
+    const replies = {
+      chat: [
+        "Хорошо, спасибо большое! Жду коммерческое предложение на почту.",
+        "Понял вас, сейчас отправлю чертежи и размеры на ваш email.",
+        "Отличная новость! Согласуем договор и готовы оплатить счет.",
+        "Спасибо за оперативность! Ждем.",
+        "Отличный сервис!"
+      ],
+      whatsapp: [
+        "Да, спасибо! Всё получил в WhatsApp.",
+        "Отлично, сейчас посмотрю.",
+        "Договорились, спасибо за оперативность!",
+        "Хорошо, напишу сюда как оплатим."
+      ],
+      telegram: [
+        "Супер, спасибо за инфо в телеграме!",
+        "Ок, сейчас перешлю коллегам.",
+        "Отличный сервис!",
+        "Спасибо, Ербол уже связался со мной."
+      ],
+      gmail: [
+        "Благодарю за письмо. Информацию приняли в работу.",
+        "Спасибо, счет оплатим сегодня во второй половине дня.",
+        "Документы получили, спасибо! Направили на подпись директору.",
+        "С уважением, Илья Соколов."
+      ],
+      mailru: [
+        "Спасибо за быстрый ответ на почту!",
+        "Договор согласовали, отправляем в бухгалтерию.",
+        "Всё в порядке, спасибо за оперативную поставку!",
+        "Подписанный скан во вложении."
+      ]
+    };
+    
+    const channelReplies = replies[channel] || replies.chat;
+    const randomReply = channelReplies[Math.floor(Math.random() * channelReplies.length)];
 
     setChats(prevChats => {
       const updated = prevChats.map(c => {
@@ -741,14 +797,15 @@ export default function Crm() {
               {
                 sender: 'client' as const,
                 text: randomReply,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
+                channel: channel
               }
             ]
           };
         }
         return c;
       });
-      localStorage.setItem('demetra_mock_chats', JSON.stringify(updated));
+      saveChatsData(updated);
       return updated;
     });
   };
@@ -819,9 +876,9 @@ export default function Crm() {
       l.comments.replace(/\n/g, ' ')
     ]);
 
-    const csvContent = "data:text/csv;charset=utf-8,\uFEFF" 
+    const csvContent = "data:text/csv;charset=utf-8,\uFEFF"
       + [headers.join(';'), ...rows.map(e => e.join(';'))].join('\n');
-    
+
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
@@ -837,7 +894,7 @@ export default function Crm() {
     const completedLeads = leads.filter(l => l.status === 'completed');
     const totalRevenue = completedLeads.reduce((acc, curr) => acc + curr.amount, 0);
     const conversion = totalCount > 0 ? Math.round((completedLeads.length / totalCount) * 100) : 0;
-    
+
     const newCount = leads.filter(l => l.status === 'new').length;
     const processingCount = leads.filter(l => l.status === 'processing').length;
     const activeCount = newCount + processingCount;
@@ -856,11 +913,11 @@ export default function Crm() {
   // Custom visual components for styling
   if (!isAuthenticated) {
     return (
-      <div style={{ 
-        minHeight: '100vh', 
-        background: 'radial-gradient(circle at center, #0a0a0f 0%, #030305 100%)', 
-        display: 'flex', 
-        alignItems: 'center', 
+      <div style={{
+        minHeight: '100vh',
+        background: 'radial-gradient(circle at center, #0a0a0f 0%, #030305 100%)',
+        display: 'flex',
+        alignItems: 'center',
         justifyContent: 'center',
         fontFamily: 'Inter, system-ui, sans-serif',
         color: '#ffffff',
@@ -869,7 +926,7 @@ export default function Crm() {
         {/* Sleek industrial background grid lines */}
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0, 255, 65, 0.02) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 255, 65, 0.02) 1px, transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none' }} />
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -887,11 +944,11 @@ export default function Crm() {
           }}
         >
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-            <div style={{ 
-              width: '70px', 
-              height: '70px', 
-              borderRadius: '20px', 
-              background: 'rgba(0, 255, 65, 0.07)', 
+            <div style={{
+              width: '70px',
+              height: '70px',
+              borderRadius: '20px',
+              background: 'rgba(0, 255, 65, 0.07)',
               border: '1px solid rgba(0, 255, 65, 0.3)',
               display: 'flex',
               alignItems: 'center',
@@ -915,7 +972,7 @@ export default function Crm() {
               <label style={{ fontSize: '0.75rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#00ff41' }}>
                 Пароль администратора
               </label>
-              <input 
+              <input
                 type="password"
                 placeholder="••••••••"
                 value={passwordInput}
@@ -943,7 +1000,7 @@ export default function Crm() {
               </div>
             )}
 
-            <button 
+            <button
               type="submit"
               style={{
                 background: '#00ff41',
@@ -978,9 +1035,9 @@ export default function Crm() {
 
   // Active leads helper filters
   const filteredLeads = leads.filter(l => {
-    const matchesSearch = l.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          l.phone.includes(searchQuery) ||
-                          l.message.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = l.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      l.phone.includes(searchQuery) ||
+      l.message.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === 'all' ? true : l.status === statusFilter;
     const matchesSource = sourceFilter === 'all' ? true : l.source === sourceFilter;
     return matchesSearch && matchesStatus && matchesSource;
@@ -993,7 +1050,7 @@ export default function Crm() {
     try {
       const saved = localStorage.getItem('demetra_products');
       if (saved) return JSON.parse(saved).length;
-    } catch {}
+    } catch { }
     return 5;
   })();
 
@@ -1001,7 +1058,7 @@ export default function Crm() {
     try {
       const saved = localStorage.getItem('demetra_services');
       if (saved) return JSON.parse(saved).length;
-    } catch {}
+    } catch { }
     return 4;
   })();
 
@@ -1009,21 +1066,21 @@ export default function Crm() {
     try {
       const saved = localStorage.getItem('demetra_pages_list');
       if (saved) return JSON.parse(saved).length;
-    } catch {}
+    } catch { }
     return 7;
   })();
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      background: '#070709', 
+    <div style={{
+      minHeight: '100vh',
+      background: '#070709',
       color: '#ffffff',
       display: 'flex',
       fontFamily: 'Inter, system-ui, sans-serif'
     }}>
       {/* Mobile Sidebar Backdrop */}
       {windowWidth < 1024 && isSidebarOpen && (
-        <div 
+        <div
           onClick={() => setIsSidebarOpen(false)}
           style={{
             position: 'fixed',
@@ -1078,9 +1135,9 @@ export default function Crm() {
       )}
 
       {/* Sidebar Navigation */}
-      <aside style={{ 
-        width: '280px', 
-        background: '#0f0f15', 
+      <aside style={{
+        width: '280px',
+        background: '#0f0f15',
         borderRight: '1px solid #1f1f2e',
         display: 'flex',
         flexDirection: 'column',
@@ -1093,10 +1150,10 @@ export default function Crm() {
         {/* Brand */}
         <div style={{ padding: '2rem', borderBottom: '1px solid #1f1f2e', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <div style={{ 
-              width: '40px', 
-              height: '40px', 
-              borderRadius: '12px', 
+            <div style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '12px',
               background: 'rgba(0, 255, 65, 0.05)',
               border: '1px solid #00ff41',
               display: 'flex',
@@ -1114,7 +1171,7 @@ export default function Crm() {
             </div>
           </div>
           {windowWidth < 1024 && (
-            <button 
+            <button
               onClick={() => setIsSidebarOpen(false)}
               style={{
                 background: 'transparent',
@@ -1140,7 +1197,7 @@ export default function Crm() {
               <div style={{ fontSize: '0.75rem', color: '#00ff41', fontWeight: '900', textTransform: 'uppercase' }}>{currentUser.role}</div>
             </div>
           </div>
-          
+
           {/* Quick role switcher */}
           <div style={{ display: 'grid', gap: '0.35rem' }}>
             <label style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Тестирование роли:</label>
@@ -1223,7 +1280,7 @@ export default function Crm() {
                 <span>{item.label}</span>
               </div>
               {item.badge && item.badge > 0 ? (
-                <span style={{ 
+                <span style={{
                   background: item.id === 'leads' ? '#ff4b4b' : '#00ff41',
                   color: item.id === 'leads' ? '#fff' : '#000',
                   fontSize: '0.7rem',
@@ -1241,15 +1298,15 @@ export default function Crm() {
         {/* Footer controls */}
         <div style={{ padding: '2rem 1.5rem', borderTop: '1px solid #1f1f2e', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <button 
-              onClick={() => { setRefreshing(true); fetchData(); }} 
-              style={{ 
-                flex: 1, 
-                background: 'rgba(255,255,255,0.03)', 
+            <button
+              onClick={() => { setRefreshing(true); fetchData(); }}
+              style={{
+                flex: 1,
+                background: 'rgba(255,255,255,0.03)',
                 border: '1px solid rgba(255,255,255,0.05)',
-                borderRadius: '8px', 
-                color: '#fff', 
-                padding: '0.75rem', 
+                borderRadius: '8px',
+                color: '#fff',
+                padding: '0.75rem',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -1259,14 +1316,14 @@ export default function Crm() {
             >
               <RefreshCw size={14} className={refreshing ? 'animate-spin' : ''} /> Обновить
             </button>
-            <button 
+            <button
               onClick={handleLogout}
-              style={{ 
-                background: 'rgba(255, 75, 75, 0.08)', 
+              style={{
+                background: 'rgba(255, 75, 75, 0.08)',
                 border: '1px solid rgba(255, 75, 75, 0.2)',
-                borderRadius: '8px', 
-                color: '#ff4b4b', 
-                padding: '0.75rem 1rem', 
+                borderRadius: '8px',
+                color: '#ff4b4b',
+                padding: '0.75rem 1rem',
                 cursor: 'pointer'
               }}
               title="Выйти"
@@ -1281,8 +1338,8 @@ export default function Crm() {
       </aside>
 
       {/* Main Content Area */}
-      <main style={{ 
-        flex: 1, 
+      <main style={{
+        flex: 1,
         marginLeft: windowWidth >= 1024 ? '280px' : 0,
         padding: windowWidth >= 1024 ? '3rem 4rem' : '1.5rem 1rem',
         paddingTop: windowWidth >= 1024 ? '3rem' : '5rem',
@@ -1321,10 +1378,10 @@ export default function Crm() {
                   </div>
 
                   {/* Tile Grid */}
-                  <div style={{ 
-                    display: 'grid', 
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', 
-                    gap: '1.5rem' 
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+                    gap: '1.5rem'
                   }}>
                     {[
                       {
@@ -1477,14 +1534,14 @@ export default function Crm() {
                         </p>
 
                         {/* Action Link */}
-                        <div style={{ 
-                          marginTop: 'auto', 
-                          fontSize: '0.85rem', 
-                          fontWeight: '800', 
-                          color: tile.accent, 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          gap: '0.25rem' 
+                        <div style={{
+                          marginTop: 'auto',
+                          fontSize: '0.85rem',
+                          fontWeight: '800',
+                          color: tile.accent,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.25rem'
                         }}>
                           {tile.action}
                         </div>
@@ -1608,13 +1665,13 @@ export default function Crm() {
                           <line x1="0" y1="40" x2="600" y2="40" stroke="#1f1f2e" strokeWidth="1" strokeDasharray="5,5" />
                           <line x1="0" y1="90" x2="600" y2="90" stroke="#1f1f2e" strokeWidth="1" strokeDasharray="5,5" />
                           <line x1="0" y1="140" x2="600" y2="140" stroke="#1f1f2e" strokeWidth="1" strokeDasharray="5,5" />
-                          
+
                           {/* Fill Area */}
                           <path d="M 0 170 C 60 160, 120 120, 180 140 C 240 100, 300 80, 360 95 C 420 50, 480 30, 600 25 L 600 200 L 0 200 Z" fill="url(#chartGlow)" />
-                          
+
                           {/* Line */}
                           <path d="M 0 170 C 60 160, 120 120, 180 140 C 240 100, 300 80, 360 95 C 420 50, 480 30, 600 25" fill="none" stroke="#00ff41" strokeWidth="4" />
-                          
+
                           {/* Data points */}
                           <circle cx="180" cy="140" r="6" fill="#00ff41" stroke="#0f0f15" strokeWidth="2" />
                           <circle cx="360" cy="95" r="6" fill="#00ff41" stroke="#0f0f15" strokeWidth="2" />
@@ -1662,7 +1719,7 @@ export default function Crm() {
                   <div style={{ background: '#0f0f15', border: '1px solid #1f1f2e', borderRadius: '20px', padding: '2.5rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                       <h4 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '800' }}>Последние необработанные заявки</h4>
-                      <button 
+                      <button
                         onClick={() => setActiveSection('leads')}
                         style={{ background: 'none', border: 'none', color: '#00ff41', fontWeight: '800', fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
                       >
@@ -1676,12 +1733,12 @@ export default function Crm() {
                     ) : (
                       <div style={{ display: 'grid', gap: '1rem' }}>
                         {leads.filter(l => l.status === 'new').slice(0, 3).map(lead => (
-                          <div 
-                            key={lead.id} 
-                            style={{ 
-                              background: 'rgba(0,0,0,0.2)', 
-                              border: '1px solid rgba(255,255,255,0.03)', 
-                              borderRadius: '12px', 
+                          <div
+                            key={lead.id}
+                            style={{
+                              background: 'rgba(0,0,0,0.2)',
+                              border: '1px solid rgba(255,255,255,0.03)',
+                              borderRadius: '12px',
                               padding: '1.5rem',
                               display: 'flex',
                               justifyContent: 'space-between',
@@ -1732,7 +1789,7 @@ export default function Crm() {
                     </div>
 
                     <div style={{ display: 'flex', gap: '1rem' }}>
-                      <button 
+                      <button
                         onClick={exportToCSV}
                         style={{
                           background: 'rgba(255,255,255,0.03)',
@@ -1750,7 +1807,7 @@ export default function Crm() {
                       >
                         <Download size={16} /> Экспорт CSV
                       </button>
-                      <button 
+                      <button
                         onClick={() => setIsAddModalOpen(true)}
                         style={{
                           background: '#00ff41',
@@ -1772,12 +1829,12 @@ export default function Crm() {
                   </div>
 
                   {/* FILTERS TOOLBAR */}
-                  <div style={{ 
-                    background: '#0f0f15', 
-                    border: '1px solid #1f1f2e', 
-                    borderRadius: '16px', 
-                    padding: '1.5rem', 
-                    display: 'flex', 
+                  <div style={{
+                    background: '#0f0f15',
+                    border: '1px solid #1f1f2e',
+                    borderRadius: '16px',
+                    padding: '1.5rem',
+                    display: 'flex',
                     flexWrap: 'wrap',
                     gap: '1.5rem',
                     alignItems: 'center',
@@ -1786,8 +1843,8 @@ export default function Crm() {
                     {/* Search */}
                     <div style={{ flex: 1, minWidth: '240px', position: 'relative' }}>
                       <Search size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.3)' }} />
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         placeholder="Поиск по имени, телефону, тексту..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -1807,7 +1864,7 @@ export default function Crm() {
                     {/* Status filter */}
                     <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                       <span style={{ fontSize: '0.8rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Статус:</span>
-                      <select 
+                      <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
                         style={{
@@ -1835,7 +1892,7 @@ export default function Crm() {
                     {/* Source filter */}
                     <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                       <span style={{ fontSize: '0.8rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Источник:</span>
-                      <select 
+                      <select
                         value={sourceFilter}
                         onChange={(e) => setSourceFilter(e.target.value)}
                         style={{
@@ -1933,12 +1990,12 @@ export default function Crm() {
                                     {new Date(lead.created_at).toLocaleString('ru-RU')}
                                   </td>
                                   <td style={{ padding: '1.5rem 1rem' }}>
-                                    <span style={{ 
-                                      background: 'rgba(255,255,255,0.05)', 
+                                    <span style={{
+                                      background: 'rgba(255,255,255,0.05)',
                                       border: '1px solid rgba(255,255,255,0.08)',
-                                      color: 'rgba(255,255,255,0.8)', 
-                                      fontSize: '0.7rem', 
-                                      padding: '0.2rem 0.5rem', 
+                                      color: 'rgba(255,255,255,0.8)',
+                                      fontSize: '0.7rem',
+                                      padding: '0.2rem 0.5rem',
                                       borderRadius: '6px',
                                       fontWeight: '800'
                                     }}>
@@ -1952,71 +2009,70 @@ export default function Crm() {
                                     {lead.assigned_to}
                                   </td>
                                   <td style={{ padding: '1.5rem 1rem' }}>
-                                    <span style={{ 
-                                      background: lead.status === 'new' ? 'rgba(255, 75, 75, 0.08)' : 
-                                                  lead.status === 'processing' ? 'rgba(0, 191, 255, 0.08)' : 
-                                                  lead.status === 'dozhim' ? 'rgba(245, 158, 11, 0.08)' : 
-                                                  lead.status === 'manager_op' ? 'rgba(99, 102, 241, 0.08)' : 
-                                                  lead.status === 'rop' ? 'rgba(139, 92, 246, 0.08)' : 
-                                                  lead.status === 'financier' ? 'rgba(6, 182, 212, 0.08)' : 
+                                    <span style={{
+                                      background: lead.status === 'new' ? 'rgba(255, 75, 75, 0.08)' :
+                                        lead.status === 'processing' ? 'rgba(0, 191, 255, 0.08)' :
+                                          lead.status === 'dozhim' ? 'rgba(245, 158, 11, 0.08)' :
+                                            lead.status === 'manager_op' ? 'rgba(99, 102, 241, 0.08)' :
+                                              lead.status === 'rop' ? 'rgba(139, 92, 246, 0.08)' :
+                                                lead.status === 'financier' ? 'rgba(6, 182, 212, 0.08)' :
                                                   lead.status === 'completed' ? 'rgba(0, 255, 65, 0.08)' : 'rgba(255, 75, 75, 0.08)',
-                                      border: `1px solid ${
-                                        lead.status === 'new' ? 'rgba(255, 75, 75, 0.3)' : 
-                                        lead.status === 'processing' ? 'rgba(0, 191, 255, 0.3)' : 
-                                        lead.status === 'dozhim' ? 'rgba(245, 158, 11, 0.3)' : 
-                                        lead.status === 'manager_op' ? 'rgba(99, 102, 241, 0.3)' : 
-                                        lead.status === 'rop' ? 'rgba(139, 92, 246, 0.3)' : 
-                                        lead.status === 'financier' ? 'rgba(6, 182, 212, 0.3)' : 
-                                        lead.status === 'completed' ? 'rgba(0, 255, 65, 0.3)' : 'rgba(255, 75, 75, 0.3)'
-                                      }`,
-                                      color: lead.status === 'new' ? '#ff4b4b' : 
-                                             lead.status === 'processing' ? '#00bfff' : 
-                                             lead.status === 'dozhim' ? '#f59e0b' : 
-                                             lead.status === 'manager_op' ? '#6366f1' : 
-                                             lead.status === 'rop' ? '#8b5cf6' : 
-                                             lead.status === 'financier' ? '#06b6d4' : 
-                                             lead.status === 'completed' ? '#00ff41' : '#ff4b4b',
-                                      fontSize: '0.75rem', 
-                                      padding: '0.25rem 0.6rem', 
+                                      border: `1px solid ${lead.status === 'new' ? 'rgba(255, 75, 75, 0.3)' :
+                                          lead.status === 'processing' ? 'rgba(0, 191, 255, 0.3)' :
+                                            lead.status === 'dozhim' ? 'rgba(245, 158, 11, 0.3)' :
+                                              lead.status === 'manager_op' ? 'rgba(99, 102, 241, 0.3)' :
+                                                lead.status === 'rop' ? 'rgba(139, 92, 246, 0.3)' :
+                                                  lead.status === 'financier' ? 'rgba(6, 182, 212, 0.3)' :
+                                                    lead.status === 'completed' ? 'rgba(0, 255, 65, 0.3)' : 'rgba(255, 75, 75, 0.3)'
+                                        }`,
+                                      color: lead.status === 'new' ? '#ff4b4b' :
+                                        lead.status === 'processing' ? '#00bfff' :
+                                          lead.status === 'dozhim' ? '#f59e0b' :
+                                            lead.status === 'manager_op' ? '#6366f1' :
+                                              lead.status === 'rop' ? '#8b5cf6' :
+                                                lead.status === 'financier' ? '#06b6d4' :
+                                                  lead.status === 'completed' ? '#00ff41' : '#ff4b4b',
+                                      fontSize: '0.75rem',
+                                      padding: '0.25rem 0.6rem',
                                       borderRadius: '6px',
                                       fontWeight: '900',
                                       textTransform: 'uppercase',
                                       letterSpacing: '0.05em'
                                     }}>
-                                      {lead.status === 'new' ? 'Новая' : 
-                                       lead.status === 'processing' ? 'В работе' : 
-                                       lead.status === 'dozhim' ? 'Дожим' : 
-                                       lead.status === 'manager_op' ? 'Менеджер ОП' : 
-                                       lead.status === 'rop' ? 'РОП' : 
-                                       lead.status === 'financier' ? 'Финансист' : 
-                                       lead.status === 'completed' ? 'Выполнена' : 'Отклонена'}
+                                      {lead.status === 'new' ? 'Новая' :
+                                        lead.status === 'processing' ? 'В работе' :
+                                          lead.status === 'dozhim' ? 'Дожим' :
+                                            lead.status === 'manager_op' ? 'Менеджер ОП' :
+                                              lead.status === 'rop' ? 'РОП' :
+                                                lead.status === 'financier' ? 'Финансист' :
+                                                  lead.status === 'completed' ? 'Выполнена' : 'Отклонена'}
                                     </span>
                                   </td>
                                   <td style={{ padding: '1.5rem 2rem', textAlign: 'right' }}>
                                     <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                                      <button 
+                                      <button
                                         onClick={() => { setSelectedLead(lead); setIsEditModalOpen(true); }}
-                                        style={{ 
-                                          background: 'rgba(255,255,255,0.03)', 
+                                        style={{
+                                          background: 'rgba(255,255,255,0.03)',
                                           border: '1px solid rgba(255,255,255,0.05)',
-                                          color: '#fff', 
-                                          padding: '0.5rem', 
-                                          borderRadius: '8px', 
-                                          cursor: 'pointer' 
+                                          color: '#fff',
+                                          padding: '0.5rem',
+                                          borderRadius: '8px',
+                                          cursor: 'pointer'
                                         }}
                                         title="Редактировать статус"
                                       >
                                         <Edit3 size={15} />
                                       </button>
-                                      <button 
+                                      <button
                                         onClick={() => handleDeleteLead(lead.id)}
-                                        style={{ 
-                                          background: 'rgba(255, 75, 75, 0.05)', 
+                                        style={{
+                                          background: 'rgba(255, 75, 75, 0.05)',
                                           border: '1px solid rgba(255, 75, 75, 0.15)',
-                                          color: '#ff4b4b', 
-                                          padding: '0.5rem', 
-                                          borderRadius: '8px', 
-                                          cursor: 'pointer' 
+                                          color: '#ff4b4b',
+                                          padding: '0.5rem',
+                                          borderRadius: '8px',
+                                          cursor: 'pointer'
                                         }}
                                         title="Удалить"
                                       >
@@ -2033,12 +2089,12 @@ export default function Crm() {
                     </div>
                   ) : (
                     /* KANBAN BOARD VIEW */
-                    <div 
+                    <div
                       className="kanban-board-container"
-                      style={{ 
-                        display: 'flex', 
-                        gap: '1rem', 
-                        overflowX: 'auto', 
+                      style={{
+                        display: 'flex',
+                        gap: '1rem',
+                        overflowX: 'auto',
                         paddingBottom: '1.5rem',
                         minHeight: '650px',
                         scrollbarWidth: 'thin',
@@ -2059,7 +2115,7 @@ export default function Crm() {
                       ].map(stage => {
                         const stageLeads = filteredLeads.filter(l => l.status === stage.id);
                         return (
-                          <div 
+                          <div
                             key={stage.id}
                             onDragOver={handleDragOver}
                             onDrop={(e) => handleDrop(e, stage.id as any)}
@@ -2080,14 +2136,14 @@ export default function Crm() {
                                 <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: stage.color }} />
                                 {stage.title}
                               </span>
-                              <span style={{ 
-                                background: stage.bg, 
-                                border: `1px solid ${stage.border}`, 
-                                color: stage.color, 
-                                fontSize: '0.7rem', 
-                                padding: '0.15rem 0.4rem', 
-                                borderRadius: '6px', 
-                                fontWeight: '900' 
+                              <span style={{
+                                background: stage.bg,
+                                border: `1px solid ${stage.border}`,
+                                color: stage.color,
+                                fontSize: '0.7rem',
+                                padding: '0.15rem 0.4rem',
+                                borderRadius: '6px',
+                                fontWeight: '900'
                               }}>
                                 {stageLeads.length}
                               </span>
@@ -2096,13 +2152,13 @@ export default function Crm() {
                             {/* Column Body */}
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', flex: 1, minHeight: '450px' }}>
                               {stageLeads.length === 0 ? (
-                                <div style={{ 
-                                  height: '100%', 
-                                  display: 'flex', 
-                                  alignItems: 'center', 
-                                  justifyContent: 'center', 
-                                  border: '2px dashed rgba(255,255,255,0.02)', 
-                                  borderRadius: '12px', 
+                                <div style={{
+                                  height: '100%',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  border: '2px dashed rgba(255,255,255,0.02)',
+                                  borderRadius: '12px',
                                   color: 'rgba(255,255,255,0.15)',
                                   fontSize: '0.75rem',
                                   textAlign: 'center',
@@ -2135,11 +2191,11 @@ export default function Crm() {
                                       <span style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)', fontFamily: 'monospace' }}>
                                         #{lead.id.split('_')[1] || lead.id.slice(-4)}
                                       </span>
-                                      <span style={{ 
-                                        background: 'rgba(255,255,255,0.03)', 
-                                        color: 'rgba(255,255,255,0.5)', 
-                                        fontSize: '0.6rem', 
-                                        padding: '0.1rem 0.35rem', 
+                                      <span style={{
+                                        background: 'rgba(255,255,255,0.03)',
+                                        color: 'rgba(255,255,255,0.5)',
+                                        fontSize: '0.6rem',
+                                        padding: '0.1rem 0.35rem',
                                         borderRadius: '4px',
                                         fontWeight: '700'
                                       }}>
@@ -2152,9 +2208,9 @@ export default function Crm() {
                                     </div>
 
                                     {lead.message && (
-                                      <div style={{ 
-                                        fontSize: '0.75rem', 
-                                        color: 'rgba(255,255,255,0.4)', 
+                                      <div style={{
+                                        fontSize: '0.75rem',
+                                        color: 'rgba(255,255,255,0.4)',
                                         lineHeight: '1.3',
                                         display: '-webkit-box',
                                         WebkitLineClamp: 2,
@@ -2170,31 +2226,31 @@ export default function Crm() {
                                       <span>👤 {lead.assigned_to}</span>
                                     </div>
 
-                                    <div style={{ 
-                                      display: 'flex', 
-                                      justifyContent: 'space-between', 
-                                      alignItems: 'center', 
-                                      borderTop: '1px solid rgba(255,255,255,0.03)', 
+                                    <div style={{
+                                      display: 'flex',
+                                      justifyContent: 'space-between',
+                                      alignItems: 'center',
+                                      borderTop: '1px solid rgba(255,255,255,0.03)',
                                       paddingTop: '0.5rem',
                                       marginTop: '0.25rem'
                                     }}>
-                                      <span style={{ 
-                                        fontWeight: '900', 
-                                        color: lead.amount > 0 ? '#00ff41' : 'rgba(255,255,255,0.2)', 
-                                        fontSize: '0.85rem' 
+                                      <span style={{
+                                        fontWeight: '900',
+                                        color: lead.amount > 0 ? '#00ff41' : 'rgba(255,255,255,0.2)',
+                                        fontSize: '0.85rem'
                                       }}>
                                         {lead.amount > 0 ? `${lead.amount.toLocaleString('ru-RU')} ₸` : '—'}
                                       </span>
 
                                       <div style={{ display: 'flex', gap: '0.25rem' }}>
-                                        <button 
+                                        <button
                                           onClick={() => { setSelectedLead(lead); setIsEditModalOpen(true); }}
-                                          style={{ 
-                                            background: 'rgba(255,255,255,0.03)', 
+                                          style={{
+                                            background: 'rgba(255,255,255,0.03)',
                                             border: 'none',
-                                            color: 'rgba(255,255,255,0.6)', 
-                                            padding: '0.35rem', 
-                                            borderRadius: '6px', 
+                                            color: 'rgba(255,255,255,0.6)',
+                                            padding: '0.35rem',
+                                            borderRadius: '6px',
                                             cursor: 'pointer',
                                             display: 'flex',
                                             alignItems: 'center'
@@ -2202,14 +2258,14 @@ export default function Crm() {
                                         >
                                           <Edit3 size={12} />
                                         </button>
-                                        <button 
+                                        <button
                                           onClick={() => handleDeleteLead(lead.id)}
-                                          style={{ 
-                                            background: 'rgba(255,75,75,0.05)', 
+                                          style={{
+                                            background: 'rgba(255,75,75,0.05)',
                                             border: 'none',
-                                            color: '#ff4b4b', 
-                                            padding: '0.35rem', 
-                                            borderRadius: '6px', 
+                                            color: '#ff4b4b',
+                                            padding: '0.35rem',
+                                            borderRadius: '6px',
                                             cursor: 'pointer',
                                             display: 'flex',
                                             alignItems: 'center'
@@ -2269,17 +2325,16 @@ export default function Crm() {
                                 <td style={{ padding: '1.5rem 1rem', textAlign: 'center', fontWeight: '800', color: '#00ff41' }}>{client.totalOrders}</td>
                                 <td style={{ padding: '1.5rem 1rem', fontWeight: '900', color: '#fff' }}>{client.totalSpent.toLocaleString('ru-RU')} ₸</td>
                                 <td style={{ padding: '1.5rem 1rem' }}>
-                                  <span style={{ 
-                                    background: client.status === 'V.I.P.' ? 'rgba(168, 85, 247, 0.08)' : 
-                                                client.status === 'Постоянный' ? 'rgba(0, 255, 65, 0.08)' : 'rgba(255,255,255,0.04)',
-                                    border: `1px solid ${
-                                      client.status === 'V.I.P.' ? 'rgba(168, 85, 247, 0.3)' : 
-                                      client.status === 'Постоянный' ? 'rgba(0, 255, 65, 0.3)' : 'rgba(255,255,255,0.1)'
-                                    }`,
-                                    color: client.status === 'V.I.P.' ? '#a855f7' : 
-                                           client.status === 'Постоянный' ? '#00ff41' : 'rgba(255,255,255,0.6)',
-                                    fontSize: '0.7rem', 
-                                    padding: '0.2rem 0.5rem', 
+                                  <span style={{
+                                    background: client.status === 'V.I.P.' ? 'rgba(168, 85, 247, 0.08)' :
+                                      client.status === 'Постоянный' ? 'rgba(0, 255, 65, 0.08)' : 'rgba(255,255,255,0.04)',
+                                    border: `1px solid ${client.status === 'V.I.P.' ? 'rgba(168, 85, 247, 0.3)' :
+                                        client.status === 'Постоянный' ? 'rgba(0, 255, 65, 0.3)' : 'rgba(255,255,255,0.1)'
+                                      }`,
+                                    color: client.status === 'V.I.P.' ? '#a855f7' :
+                                      client.status === 'Постоянный' ? '#00ff41' : 'rgba(255,255,255,0.6)',
+                                    fontSize: '0.7rem',
+                                    padding: '0.2rem 0.5rem',
                                     borderRadius: '4px',
                                     fontWeight: '900',
                                     textTransform: 'uppercase'
@@ -2308,12 +2363,12 @@ export default function Crm() {
                     <p style={{ color: 'rgba(255,255,255,0.5)', margin: 0 }}>Интерактивный центр поддержки клиентов. Ответы дублируются клиенту в чат на сайте.</p>
                   </div>
 
-                  <div style={{ 
-                    display: 'grid', 
-                    gridTemplateColumns: '320px 1fr', 
-                    height: '600px', 
-                    background: '#0f0f15', 
-                    border: '1px solid #1f1f2e', 
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '320px 1fr',
+                    height: '600px',
+                    background: '#0f0f15',
+                    border: '1px solid #1f1f2e',
                     borderRadius: '24px',
                     overflow: 'hidden'
                   }}>
@@ -2323,19 +2378,19 @@ export default function Crm() {
                         <h4 style={{ margin: '0 0 1rem', fontSize: '1rem', fontWeight: '800' }}>Диалоги ({chats.length})</h4>
                         <div style={{ position: 'relative' }}>
                           <Search size={14} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.3)' }} />
-                          <input 
-                            type="text" 
-                            placeholder="Поиск диалога..." 
-                            style={{ 
-                              width: '100%', 
-                              background: 'rgba(0,0,0,0.25)', 
-                              border: '1px solid rgba(255,255,255,0.05)', 
-                              borderRadius: '8px', 
-                              padding: '0.5rem 0.5rem 0.5rem 2rem', 
-                              color: '#fff', 
+                          <input
+                            type="text"
+                            placeholder="Поиск диалога..."
+                            style={{
+                              width: '100%',
+                              background: 'rgba(0,0,0,0.25)',
+                              border: '1px solid rgba(255,255,255,0.05)',
+                              borderRadius: '8px',
+                              padding: '0.5rem 0.5rem 0.5rem 2rem',
+                              color: '#fff',
                               fontSize: '0.8rem',
-                              outline: 'none' 
-                            }} 
+                              outline: 'none'
+                            }}
                           />
                         </div>
                       </div>
@@ -2369,14 +2424,14 @@ export default function Crm() {
                                 onMouseEnter={(e) => { if (!isSelected) e.currentTarget.style.background = 'rgba(255,255,255,0.01)'; }}
                                 onMouseLeave={(e) => { if (!isSelected) e.currentTarget.style.background = 'transparent'; }}
                               >
-                                <div style={{ 
-                                  width: '38px', 
-                                  height: '38px', 
-                                  borderRadius: '50%', 
-                                  background: 'rgba(0,255,65,0.05)', 
+                                <div style={{
+                                  width: '38px',
+                                  height: '38px',
+                                  borderRadius: '50%',
+                                  background: 'rgba(0,255,65,0.05)',
                                   border: `1px solid ${isSelected ? '#00ff41' : 'rgba(255,255,255,0.1)'}`,
-                                  display: 'flex', 
-                                  alignItems: 'center', 
+                                  display: 'flex',
+                                  alignItems: 'center',
                                   justifyContent: 'center',
                                   color: '#00ff41',
                                   fontWeight: '900',
@@ -2419,68 +2474,185 @@ export default function Crm() {
                             </div>
                           ))}
 
-                          {/* Message List */}
-                          <div style={{ flex: 1, padding: '2rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            {chats.filter(c => c.id === activeChatId)[0]?.messages.map((msg, i) => {
-                              const isClient = msg.sender === 'client';
+                          {/* Integration Channels Selection tabs */}
+                          <div style={{
+                            display: 'flex',
+                            gap: '0.5rem',
+                            padding: '0.75rem 2rem',
+                            borderBottom: '1px solid #1f1f2e',
+                            background: 'rgba(0,0,0,0.1)',
+                            overflowX: 'auto'
+                          }}>
+                            {[
+                              { id: 'chat', label: 'Чат сайта', icon: <MessageSquare size={14} />, color: '#00ff41' },
+                              { id: 'whatsapp', label: 'WhatsApp', icon: <WhatsAppIcon size={14} />, color: '#25D366' },
+                              { id: 'telegram', label: 'Telegram', icon: <TelegramIcon size={14} />, color: '#0088cc' },
+                              { id: 'gmail', label: 'Google Mail', icon: <GmailIcon size={14} />, color: '#EA4335' },
+                              { id: 'mailru', label: 'Mail.ru', icon: <MailRuIcon size={14} />, color: '#168de2' }
+                            ].map(ch => {
+                              const isActive = selectedChatChannel === ch.id;
                               return (
-                                <div 
-                                  key={i} 
-                                  style={{ 
-                                    display: 'flex', 
-                                    justifyContent: isClient ? 'flex-start' : 'flex-end' 
+                                <button
+                                  key={ch.id}
+                                  onClick={() => setSelectedChatChannel(ch.id as any)}
+                                  style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.4rem',
+                                    padding: '0.4rem 0.8rem',
+                                    borderRadius: '20px',
+                                    border: isActive ? `1px solid ${ch.color}` : '1px solid rgba(255,255,255,0.05)',
+                                    background: isActive ? `rgba(${ch.id === 'chat' ? '0, 255, 65' : ch.id === 'whatsapp' ? '37, 211, 102' : ch.id === 'telegram' ? '0, 136, 204' : ch.id === 'gmail' ? '234, 67, 53' : '22, 141, 226'}, 0.08)` : 'rgba(0,0,0,0.2)',
+                                    color: isActive ? '#fff' : 'rgba(255,255,255,0.6)',
+                                    fontSize: '0.75rem',
+                                    fontWeight: '800',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s',
+                                    whiteSpace: 'nowrap'
                                   }}
                                 >
-                                  <div style={{ 
-                                    maxWidth: '65%',
-                                    background: isClient ? '#181822' : 'rgba(0, 255, 65, 0.08)',
-                                    border: isClient ? '1px solid rgba(255,255,255,0.03)' : '1px solid rgba(0, 255, 65, 0.2)',
-                                    padding: '1rem 1.25rem',
-                                    borderRadius: isClient ? '16px 16px 16px 4px' : '16px 16px 4px 16px',
-                                    color: '#fff',
-                                    fontSize: '0.85rem',
-                                    lineHeight: '1.5',
-                                    position: 'relative'
-                                  }}>
-                                    <div style={{ marginBottom: '0.25rem' }}>{msg.text}</div>
-                                    <div style={{ 
-                                      fontSize: '0.65rem', 
-                                      color: 'rgba(255,255,255,0.3)', 
-                                      textAlign: 'right',
-                                      marginTop: '0.25rem'
-                                    }}>
-                                      {new Date(msg.timestamp).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
-                                    </div>
-                                  </div>
-                                </div>
+                                  {ch.icon}
+                                  <span>{ch.label}</span>
+                                  {isActive && (
+                                    <span style={{
+                                      width: '6px',
+                                      height: '6px',
+                                      borderRadius: '50%',
+                                      background: ch.color,
+                                      display: 'inline-block'
+                                    }} />
+                                  )}
+                                </button>
                               );
                             })}
+                          </div>
+
+                          {/* Message List */}
+                          <div style={{ flex: 1, padding: '2rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            {(() => {
+                              const activeChat = chats.find(c => c.id === activeChatId);
+                              if (!activeChat) return null;
+                              
+                              const filtered = activeChat.messages.filter(msg => {
+                                if (selectedChatChannel === 'chat') {
+                                  return !msg.channel || msg.channel === 'chat';
+                                }
+                                return msg.channel === selectedChatChannel;
+                              });
+
+                              // If empty, return fallback mock messages to demonstrate integration
+                              const displayMsgs = filtered.length > 0 ? filtered : (() => {
+                                const defaults: Record<string, ChatMessage[]> = {
+                                  whatsapp: [
+                                    { sender: 'client', text: `Здравствуйте! Пишу вам на WhatsApp по поводу заказа для ${activeChat.client_name}. У нас изменились реквизиты, отправляю новый файл.`, timestamp: new Date(Date.now() - 3600000).toISOString(), channel: 'whatsapp' },
+                                    { sender: 'operator', text: `Здравствуйте! Принято, спасибо. Передал менеджеру для обновления договора.`, timestamp: new Date(Date.now() - 3000000).toISOString(), channel: 'whatsapp' }
+                                  ],
+                                  telegram: [
+                                    { sender: 'client', text: `Привет! Увидел ваш телеграм-бот. Могу узнать текущий статус по нашей сделке?`, timestamp: new Date(Date.now() - 7200000).toISOString(), channel: 'telegram' },
+                                    { sender: 'operator', text: `Здравствуйте, ${activeChat.client_name}! Да, конечно. Ваша заявка сейчас в статусе "В обработке". Ожидайте звонка специалиста.`, timestamp: new Date(Date.now() - 6600000).toISOString(), channel: 'telegram' }
+                                  ],
+                                  gmail: [
+                                    { sender: 'client', text: `Тема: Запрос коммерческого предложения (ТОО "Деметра")\n\nДобрый день! Просим направить официальное коммерческое предложение на поставку оборудования.`, timestamp: new Date(Date.now() - 14400000).toISOString(), channel: 'gmail' },
+                                    { sender: 'operator', text: `Тема: Re: Запрос коммерческого предложения (ТОО "Деметра")\n\nЗдравствуйте! Коммерческое предложение во вложении. Ждем вашего ответа.`, timestamp: new Date(Date.now() - 13800000).toISOString(), channel: 'gmail' }
+                                  ],
+                                  mailru: [
+                                    { sender: 'client', text: `Тема: Договор на ремонтные работы\n\nУважаемые партнеры, направляем подписанный скан договора со своей стороны.`, timestamp: new Date(Date.now() - 86400000).toISOString(), channel: 'mailru' },
+                                    { sender: 'operator', text: `Тема: Re: Договор на ремонтные работы\n\nДоговор получили, спасибо! Выставляем счет.`, timestamp: new Date(Date.now() - 82800000).toISOString(), channel: 'mailru' }
+                                  ]
+                                };
+                                return defaults[selectedChatChannel] || [];
+                              })();
+
+                              return displayMsgs.map((msg, i) => {
+                                const isClient = msg.sender === 'client';
+                                const channelColor = selectedChatChannel === 'whatsapp' ? '#25D366' :
+                                                     selectedChatChannel === 'telegram' ? '#0088cc' :
+                                                     selectedChatChannel === 'gmail' ? '#EA4335' :
+                                                     selectedChatChannel === 'mailru' ? '#168de2' : '#00ff41';
+                                return (
+                                  <div
+                                    key={i}
+                                    style={{
+                                      display: 'flex',
+                                      justifyContent: isClient ? 'flex-start' : 'flex-end'
+                                    }}
+                                  >
+                                    <div style={{
+                                      maxWidth: '65%',
+                                      background: isClient ? '#181822' : `rgba(${selectedChatChannel === 'chat' ? '0, 255, 65' : selectedChatChannel === 'whatsapp' ? '37, 211, 102' : selectedChatChannel === 'telegram' ? '0, 136, 204' : selectedChatChannel === 'gmail' ? '234, 67, 53' : '22, 141, 226'}, 0.08)`,
+                                      border: isClient ? '1px solid rgba(255,255,255,0.03)' : `1px solid ${channelColor}`,
+                                      padding: '1rem 1.25rem',
+                                      borderRadius: isClient ? '16px 16px 16px 4px' : '16px 16px 4px 16px',
+                                      color: '#fff',
+                                      fontSize: '0.85rem',
+                                      lineHeight: '1.5',
+                                      position: 'relative'
+                                    }}>
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.65rem', color: channelColor, marginBottom: '0.4rem', fontWeight: '800', textTransform: 'uppercase' }}>
+                                        {selectedChatChannel === 'chat' && <MessageSquare size={10} />}
+                                        {selectedChatChannel === 'whatsapp' && <WhatsAppIcon size={10} />}
+                                        {selectedChatChannel === 'telegram' && <TelegramIcon size={10} />}
+                                        {selectedChatChannel === 'gmail' && <GmailIcon size={10} />}
+                                        {selectedChatChannel === 'mailru' && <MailRuIcon size={10} />}
+                                        <span>{isClient ? 'Клиент' : 'Оператор'} ({selectedChatChannel === 'chat' ? 'Чат сайта' : selectedChatChannel})</span>
+                                      </div>
+                                      <div style={{ marginBottom: '0.25rem', whiteSpace: 'pre-line' }}>{msg.text}</div>
+                                      <div style={{
+                                        fontSize: '0.65rem',
+                                        color: 'rgba(255,255,255,0.3)',
+                                        textAlign: 'right',
+                                        marginTop: '0.25rem'
+                                      }}>
+                                        {new Date(msg.timestamp).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              });
+                            })()}
                             <div ref={chatEndRef} />
                           </div>
 
                           {/* Message Input Box */}
                           <div style={{ padding: '1.5rem 2rem', borderTop: '1px solid #1f1f2e', background: 'rgba(0,0,0,0.25)', display: 'flex', gap: '1rem' }}>
-                            <input 
-                              type="text" 
-                              placeholder="Напишите ответ..."
+                            <input
+                              type="text"
+                              placeholder={
+                                selectedChatChannel === 'chat' ? 'Напишите ответ в чат сайта...' :
+                                selectedChatChannel === 'whatsapp' ? 'Напишите сообщение в WhatsApp...' :
+                                selectedChatChannel === 'telegram' ? 'Напишите сообщение в Telegram...' :
+                                selectedChatChannel === 'gmail' ? 'Отправьте письмо через Google Mail...' :
+                                'Отправьте письмо через Mail.ru...'
+                              }
                               value={chatMessageInput}
                               onChange={(e) => setChatMessageInput(e.target.value)}
                               onKeyDown={(e) => { if (e.key === 'Enter') handleSendMessage(); }}
                               style={{
                                 flex: 1,
                                 background: 'rgba(0,0,0,0.4)',
-                                border: '1px solid rgba(255,255,255,0.08)',
+                                border: `1px solid ${
+                                  selectedChatChannel === 'chat' ? 'rgba(0, 255, 65, 0.2)' :
+                                  selectedChatChannel === 'whatsapp' ? 'rgba(37, 211, 102, 0.2)' :
+                                  selectedChatChannel === 'telegram' ? 'rgba(0, 136, 204, 0.2)' :
+                                  selectedChatChannel === 'gmail' ? 'rgba(234, 67, 53, 0.2)' :
+                                  'rgba(22, 141, 226, 0.2)'
+                                }`,
                                 borderRadius: '12px',
                                 padding: '1rem',
                                 color: '#fff',
                                 outline: 'none'
                               }}
                             />
-                            <button 
+                            <button
                               onClick={handleSendMessage}
                               style={{
-                                background: '#00ff41',
-                                color: '#000',
+                                background: 
+                                  selectedChatChannel === 'chat' ? '#00ff41' :
+                                  selectedChatChannel === 'whatsapp' ? '#25D366' :
+                                  selectedChatChannel === 'telegram' ? '#0088cc' :
+                                  selectedChatChannel === 'gmail' ? '#EA4335' :
+                                  '#168de2',
+                                color: selectedChatChannel === 'telegram' || selectedChatChannel === 'mailru' ? '#fff' : '#000',
                                 border: 'none',
                                 borderRadius: '12px',
                                 width: '50px',
@@ -2567,10 +2739,10 @@ export default function Crm() {
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                           {users.map(u => (
-                            <div 
+                            <div
                               key={u.id}
-                              style={{ 
-                                padding: '1.5rem 2rem', 
+                              style={{
+                                padding: '1.5rem 2rem',
                                 borderBottom: '1px solid rgba(255,255,255,0.02)',
                                 display: 'flex',
                                 alignItems: 'center',
@@ -2627,10 +2799,10 @@ export default function Crm() {
                                     fontSize: '0.8rem'
                                   }}
                                 >
-                                  <span style={{ 
-                                    width: '8px', 
-                                    height: '8px', 
-                                    borderRadius: '50%', 
+                                  <span style={{
+                                    width: '8px',
+                                    height: '8px',
+                                    borderRadius: '50%',
                                     background: u.status === 'active' ? '#00ff41' : 'rgba(255,255,255,0.3)',
                                     boxShadow: u.status === 'active' ? '0 0 10px #00ff41' : 'none'
                                   }} />
@@ -2645,34 +2817,34 @@ export default function Crm() {
                       {/* Add User form card */}
                       <div style={{ background: '#0f0f15', border: '1px solid #1f1f2e', borderRadius: '20px', padding: '2rem' }}>
                         <h4 style={{ margin: '0 0 1.5rem', fontSize: '1.1rem', fontWeight: '800' }}>Зарегистрировать сотрудника</h4>
-                        
+
                         <form onSubmit={handleAddCrmUser} style={{ display: 'grid', gap: '1.25rem' }}>
                           <div style={{ display: 'grid', gap: '0.4rem' }}>
                             <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>ФИО сотрудника</label>
-                            <input 
-                              type="text" 
-                              name="name" 
-                              placeholder="Иван Петров" 
+                            <input
+                              type="text"
+                              name="name"
+                              placeholder="Иван Петров"
                               required
                               disabled={currentUser.role !== 'admin'}
-                              style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none' }} 
+                              style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none' }}
                             />
                           </div>
                           <div style={{ display: 'grid', gap: '0.4rem' }}>
                             <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Email адрес</label>
-                            <input 
-                              type="email" 
-                              name="email" 
-                              placeholder="petrov@demetra.kz" 
+                            <input
+                              type="email"
+                              name="email"
+                              placeholder="petrov@demetra.kz"
                               required
                               disabled={currentUser.role !== 'admin'}
-                              style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none' }} 
+                              style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none' }}
                             />
                           </div>
                           <div style={{ display: 'grid', gap: '0.4rem' }}>
                             <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Должность / Роль</label>
-                            <select 
-                              name="role" 
+                            <select
+                              name="role"
                               disabled={currentUser.role !== 'admin'}
                               style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none', cursor: 'pointer' }}
                             >
@@ -2683,16 +2855,16 @@ export default function Crm() {
                             </select>
                           </div>
 
-                          <button 
-                            type="submit" 
+                          <button
+                            type="submit"
                             disabled={currentUser.role !== 'admin'}
-                            style={{ 
-                              background: currentUser.role === 'admin' ? '#00ff41' : 'rgba(255,255,255,0.05)', 
-                              color: currentUser.role === 'admin' ? '#000' : 'rgba(255,255,255,0.3)', 
-                              border: 'none', 
-                              padding: '1rem', 
-                              borderRadius: '8px', 
-                              fontWeight: '900', 
+                            style={{
+                              background: currentUser.role === 'admin' ? '#00ff41' : 'rgba(255,255,255,0.05)',
+                              color: currentUser.role === 'admin' ? '#000' : 'rgba(255,255,255,0.3)',
+                              border: 'none',
+                              padding: '1rem',
+                              borderRadius: '8px',
+                              fontWeight: '900',
                               cursor: currentUser.role === 'admin' ? 'pointer' : 'not-allowed',
                               marginTop: '0.5rem',
                               transition: '0.2s'
@@ -2710,7 +2882,7 @@ export default function Crm() {
                       <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', marginBottom: '2rem' }}>
                         Отметьте разделы, которые должны отображаться в боковом меню для каждой роли. Изменения сохраняются автоматически.
                       </p>
-                      
+
                       <div style={{ overflowX: 'auto' }}>
                         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
                           <thead>
@@ -2719,8 +2891,8 @@ export default function Crm() {
                               {['admin', 'manager', 'specialist', 'auditor'].map(r => (
                                 <th key={r} style={{ padding: '1.25rem 1rem', textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em' }}>
                                   {r === 'admin' ? 'Администратор' :
-                                   r === 'manager' ? 'Менеджер' :
-                                   r === 'specialist' ? 'Специалист' : 'Аудитор'}
+                                    r === 'manager' ? 'Менеджер' :
+                                      r === 'specialist' ? 'Специалист' : 'Аудитор'}
                                 </th>
                               ))}
                             </tr>
@@ -2739,10 +2911,10 @@ export default function Crm() {
                                   const rolePerm = permissions.find(p => p.role === role);
                                   const isChecked = rolePerm ? rolePerm.allowed_tabs.includes(tab.id as any) : false;
                                   const isDisabled = currentUser.role !== 'admin'; // only admins can change permissions
-                                  
+
                                   return (
                                     <td key={role} style={{ padding: '1.5rem 1rem' }}>
-                                      <input 
+                                      <input
                                         type="checkbox"
                                         checked={isChecked}
                                         disabled={isDisabled}
@@ -2765,9 +2937,9 @@ export default function Crm() {
                                           });
                                           savePermissionsData(updatedPerms);
                                         }}
-                                        style={{ 
-                                          width: '18px', 
-                                          height: '18px', 
+                                        style={{
+                                          width: '18px',
+                                          height: '18px',
                                           cursor: isDisabled ? 'not-allowed' : 'pointer',
                                           accentColor: '#00ff41'
                                         }}
@@ -2810,18 +2982,18 @@ export default function Crm() {
                             <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.5rem', fontWeight: '700' }}>
                               Заполнить на основе завершенной сделки CRM:
                             </label>
-                            <select 
+                            <select
                               onChange={(e) => {
                                 const lead = leads.find(l => l.id === e.target.value);
                                 if (!lead) return;
                                 setAccClientName(lead.name);
                                 setAccService(lead.message ? lead.message.slice(0, 80) : 'Услуги и поставка оборудования');
-                                
+
                                 const totalAmount = lead.amount || 0;
                                 const priceWithoutVat = Math.round(totalAmount / 1.12);
                                 setAccPriceWithoutVat(priceWithoutVat);
                                 setAccQuantity(1);
-                                
+
                                 try {
                                   const dateStr = new Date(lead.created_at).toISOString().split('T')[0];
                                   setAccDate(dateStr);
@@ -2843,7 +3015,7 @@ export default function Crm() {
                         );
                       })()}
 
-                      <form 
+                      <form
                         onSubmit={async (e) => {
                           e.preventDefault();
                           setAccLoading(true);
@@ -2860,7 +3032,7 @@ export default function Crm() {
                               price_without_vat: accPriceWithoutVat,
                               payment_method: accPaymentMethod
                             };
-                            
+
                             const res = await fetch('/api/crm/accounting/generate', {
                               method: 'POST',
                               headers: {
@@ -2868,12 +3040,12 @@ export default function Crm() {
                               },
                               body: JSON.stringify(payload)
                             });
-                            
+
                             if (!res.ok) {
                               const txt = await res.text();
                               throw new Error(txt || 'Ошибка при генерации файлов');
                             }
-                            
+
                             const data = await res.json();
                             if (data.success) {
                               setAccResult({ pdf: data.pdf, csv: data.csv });
@@ -2891,9 +3063,9 @@ export default function Crm() {
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '1rem' }}>
                           <div>
                             <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.35rem', fontWeight: '700' }}>Номер заказа (№)</label>
-                            <input 
-                              type="text" 
-                              value={accOrderNumber} 
+                            <input
+                              type="text"
+                              value={accOrderNumber}
                               onChange={(e) => setAccOrderNumber(e.target.value)}
                               required
                               style={{ width: '100%', background: '#070709', border: '1px solid #1f1f2e', borderRadius: '8px', color: '#fff', padding: '0.75rem', boxSizing: 'border-box' }}
@@ -2901,9 +3073,9 @@ export default function Crm() {
                           </div>
                           <div>
                             <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.35rem', fontWeight: '700' }}>Дата совершения оборота</label>
-                            <input 
-                              type="date" 
-                              value={accDate} 
+                            <input
+                              type="date"
+                              value={accDate}
                               onChange={(e) => setAccDate(e.target.value)}
                               required
                               style={{ width: '100%', background: '#070709', border: '1px solid #1f1f2e', borderRadius: '8px', color: '#fff', padding: '0.75rem', boxSizing: 'border-box' }}
@@ -2913,9 +3085,9 @@ export default function Crm() {
 
                         <div>
                           <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.35rem', fontWeight: '700' }}>Наименование клиента (ФИО / ТОО)</label>
-                          <input 
-                            type="text" 
-                            value={accClientName} 
+                          <input
+                            type="text"
+                            value={accClientName}
                             onChange={(e) => setAccClientName(e.target.value)}
                             placeholder="ТОО Компания"
                             required
@@ -2925,9 +3097,9 @@ export default function Crm() {
 
                         <div>
                           <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.35rem', fontWeight: '700' }}>БИН / ИИН клиента (12 цифр)</label>
-                          <input 
-                            type="text" 
-                            value={accClientBin} 
+                          <input
+                            type="text"
+                            value={accClientBin}
                             onChange={(e) => setAccClientBin(e.target.value)}
                             placeholder="123456789012"
                             required
@@ -2938,9 +3110,9 @@ export default function Crm() {
 
                         <div>
                           <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.35rem', fontWeight: '700' }}>Описание услуги или товара</label>
-                          <input 
-                            type="text" 
-                            value={accService} 
+                          <input
+                            type="text"
+                            value={accService}
                             onChange={(e) => setAccService(e.target.value)}
                             placeholder="Услуги стыковки резинотканевой ленты"
                             required
@@ -2951,9 +3123,9 @@ export default function Crm() {
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '1rem' }}>
                           <div>
                             <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.35rem', fontWeight: '700' }}>Количество</label>
-                            <input 
-                              type="number" 
-                              value={accQuantity} 
+                            <input
+                              type="number"
+                              value={accQuantity}
                               onChange={(e) => setAccQuantity(parseInt(e.target.value) || 1)}
                               min={1}
                               required
@@ -2962,9 +3134,9 @@ export default function Crm() {
                           </div>
                           <div>
                             <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.35rem', fontWeight: '700' }}>Цена без НДС (₸)</label>
-                            <input 
-                              type="number" 
-                              value={accPriceWithoutVat} 
+                            <input
+                              type="number"
+                              value={accPriceWithoutVat}
                               onChange={(e) => setAccPriceWithoutVat(parseInt(e.target.value) || 0)}
                               min={0}
                               required
@@ -2975,8 +3147,8 @@ export default function Crm() {
 
                         <div>
                           <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.35rem', fontWeight: '700' }}>Способ оплаты</label>
-                          <select 
-                            value={accPaymentMethod} 
+                          <select
+                            value={accPaymentMethod}
                             onChange={(e) => setAccPaymentMethod(e.target.value)}
                             style={{ width: '100%', background: '#070709', border: '1px solid #1f1f2e', borderRadius: '8px', color: '#fff', padding: '0.75rem', outline: 'none' }}
                           >
@@ -2986,8 +3158,8 @@ export default function Crm() {
                           </select>
                         </div>
 
-                        <button 
-                          type="submit" 
+                        <button
+                          type="submit"
                           disabled={accLoading}
                           style={{
                             background: '#ec4899',
@@ -3044,16 +3216,16 @@ export default function Crm() {
                             const year = dt.getFullYear();
                             const month = dt.getMonth() + 1;
                             const quarter = Math.floor((month - 1) / 3) + 1;
-                            
+
                             let vatDeadline = '';
                             if (quarter === 1) vatDeadline = `15.05.${year}`;
                             else if (quarter === 2) vatDeadline = `15.08.${year}`;
                             else if (quarter === 3) vatDeadline = `15.11.${year}`;
                             else vatDeadline = `15.02.${year + 1}`;
-                            
+
                             const esfDate = new Date(dt.getTime() + 15 * 24 * 60 * 60 * 1000);
                             const esfDeadline = `${String(esfDate.getDate()).padStart(2, '0')}.${String(esfDate.getMonth() + 1).padStart(2, '0')}.${esfDate.getFullYear()}`;
-                            
+
                             const amountWithoutVat = accQuantity * accPriceWithoutVat;
                             const vatAmount = amountWithoutVat * 0.12;
                             const totalWithVat = amountWithoutVat + vatAmount;
@@ -3109,7 +3281,7 @@ export default function Crm() {
                               ✓ Документы успешно сформированы!
                             </div>
 
-                            <a 
+                            <a
                               href={`/api/crm/accounting/download?file=${encodeURIComponent(accResult.pdf)}`}
                               download
                               style={{
@@ -3133,7 +3305,7 @@ export default function Crm() {
                               Скачать Чек и Акт (PDF)
                             </a>
 
-                            <a 
+                            <a
                               href={`/api/crm/accounting/download?file=${encodeURIComponent(accResult.csv)}`}
                               download
                               style={{
@@ -3180,10 +3352,10 @@ export default function Crm() {
       {/* EDIT MODAL */}
       <AnimatePresence>
         {isEditModalOpen && selectedLead && (
-          <motion.div 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            exit={{ opacity: 0 }} 
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             style={{
               position: 'fixed',
               inset: 0,
@@ -3196,10 +3368,10 @@ export default function Crm() {
               padding: '1rem'
             }}
           >
-            <motion.div 
-              initial={{ scale: 0.95, y: 15 }} 
-              animate={{ scale: 1, y: 0 }} 
-              exit={{ scale: 0.95, y: 15 }} 
+            <motion.div
+              initial={{ scale: 0.95, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 15 }}
               style={{
                 background: '#0f0f15',
                 border: '1px solid rgba(0, 255, 65, 0.15)',
@@ -3228,7 +3400,7 @@ export default function Crm() {
                     Карточка сделки № {selectedLead.id.split('_')[1] || selectedLead.id}
                   </h3>
                   {/* Shift Mode Toggle */}
-                  <button 
+                  <button
                     onClick={() => setIsShiftEnded(!isShiftEnded)}
                     style={{
                       background: isShiftEnded ? 'rgba(239, 68, 68, 0.1)' : 'rgba(0, 255, 65, 0.1)',
@@ -3390,7 +3562,7 @@ export default function Crm() {
                             return;
                           }
                           setEditStatus('rejected');
-                          setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] Отказ по сделке. Причина: ${editRejectionReason}`);
+                          setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0, 5)}] Отказ по сделке. Причина: ${editRejectionReason}`);
                           setIsRejecting(false);
                         }}
                         style={{
@@ -3432,7 +3604,7 @@ export default function Crm() {
                           onClick={() => {
                             setEditStatus('processing');
                             setEditAssignedTo(currentUser.name);
-                            setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] ${currentUser.name} принял заявку в работу.`);
+                            setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0, 5)}] ${currentUser.name} принял заявку в работу.`);
                           }}
                           style={{
                             background: '#00ff41',
@@ -3462,7 +3634,7 @@ export default function Crm() {
                             <button
                               onClick={() => {
                                 setEditStatus('manager_op');
-                                setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] Заявка передана в отдел Менеджера ОП.`);
+                                setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0, 5)}] Заявка передана в отдел Менеджера ОП.`);
                               }}
                               style={{
                                 background: 'rgba(59, 130, 246, 0.1)',
@@ -3479,53 +3651,135 @@ export default function Crm() {
                             </button>
                           )}
 
-                      {editStatus !== 'rop' && (
-                        <button
-                          onClick={() => {
-                            setEditStatus('rop');
-                            setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] Заявка передана РОПу.`);
-                          }}
-                          style={{
-                            background: 'rgba(139, 92, 246, 0.1)',
-                            border: '1px solid rgba(139, 92, 246, 0.3)',
-                            borderRadius: '8px',
-                            color: '#8b5cf6',
-                            padding: '0.4rem 0.8rem',
-                            fontWeight: '800',
-                            fontSize: '0.75rem',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          РОПу
-                        </button>
+                          {editStatus !== 'rop' && (
+                            <button
+                              onClick={() => {
+                                setEditStatus('rop');
+                                setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0, 5)}] Заявка передана РОПу.`);
+                              }}
+                              style={{
+                                background: 'rgba(139, 92, 246, 0.1)',
+                                border: '1px solid rgba(139, 92, 246, 0.3)',
+                                borderRadius: '8px',
+                                color: '#8b5cf6',
+                                padding: '0.4rem 0.8rem',
+                                fontWeight: '800',
+                                fontSize: '0.75rem',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              РОПу
+                            </button>
+                          )}
+
+                          {editStatus !== 'financier' && (
+                            <button
+                              onClick={() => {
+                                setEditStatus('financier');
+                                setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0, 5)}] Заявка передана Финансисту.`);
+                              }}
+                              style={{
+                                background: 'rgba(245, 158, 11, 0.1)',
+                                border: '1px solid rgba(245, 158, 11, 0.3)',
+                                borderRadius: '8px',
+                                color: '#f59e0b',
+                                padding: '0.4rem 0.8rem',
+                                fontWeight: '800',
+                                fontSize: '0.75rem',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              Финансисту
+                            </button>
+                          )}
+
+                          {editStatus !== 'dozhim' && (
+                            <button
+                              onClick={() => {
+                                setEditStatus('dozhim');
+                                setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0, 5)}] Заявка отправлена в Дожим.`);
+                              }}
+                              style={{
+                                background: 'rgba(255, 255, 255, 0.05)',
+                                border: '1px solid rgba(255, 255, 255, 0.1)',
+                                borderRadius: '8px',
+                                color: '#fff',
+                                padding: '0.4rem 0.8rem',
+                                fontWeight: '800',
+                                fontSize: '0.75rem',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              В Дожим
+                            </button>
+                          )}
+
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', padding: '0.2rem 0.5rem' }}>
+                            <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', fontWeight: '800' }}>ОТВ:</span>
+                            <select
+                              value={editAssignedTo}
+                              onChange={(e) => {
+                                const prev = editAssignedTo;
+                                const next = e.target.value;
+                                setEditAssignedTo(next);
+                                setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0, 5)}] Ответственный изменен с ${prev || 'нет'} на ${next}.`);
+                              }}
+                              style={{ background: 'none', border: 'none', color: '#fff', fontSize: '0.75rem', fontWeight: '800', outline: 'none', cursor: 'pointer', padding: '0.2rem' }}
+                            >
+                              <option value="">Не назначен</option>
+                              {users.map(u => (
+                                <option key={u.id} value={u.name}>{u.name}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div style={{ width: '1px', height: '20px', background: 'rgba(255,255,255,0.1)' }} />
+
+                          <button
+                            onClick={() => {
+                              setEditStatus('completed');
+                              setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0, 5)}] Сделка успешно завершена!`);
+                            }}
+                            style={{
+                              background: 'rgba(0, 255, 65, 0.1)',
+                              border: '1px solid rgba(0, 255, 65, 0.3)',
+                              borderRadius: '8px',
+                              color: '#00ff41',
+                              padding: '0.4rem 0.8rem',
+                              fontWeight: '800',
+                              fontSize: '0.75rem',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            Успешно
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              setEditStatus('rejected');
+                              setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0, 5)}] Отказ по сделке.`);
+                            }}
+                            style={{
+                              background: 'rgba(239, 68, 68, 0.1)',
+                              border: '1px solid rgba(239, 68, 68, 0.3)',
+                              borderRadius: '8px',
+                              color: '#ef4444',
+                              padding: '0.4rem 0.8rem',
+                              fontWeight: '800',
+                              fontSize: '0.75rem',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            Отказ
+                          </button>
+                        </>
                       )}
 
-                      {editStatus !== 'financier' && (
+                      {(editStatus === 'completed' || editStatus === 'rejected') && (
                         <button
                           onClick={() => {
-                            setEditStatus('financier');
-                            setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] Заявка передана Финансисту.`);
-                          }}
-                          style={{
-                            background: 'rgba(245, 158, 11, 0.1)',
-                            border: '1px solid rgba(245, 158, 11, 0.3)',
-                            borderRadius: '8px',
-                            color: '#f59e0b',
-                            padding: '0.4rem 0.8rem',
-                            fontWeight: '800',
-                            fontSize: '0.75rem',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          Финансисту
-                        </button>
-                      )}
-
-                      {editStatus !== 'dozhim' && (
-                        <button
-                          onClick={() => {
-                            setEditStatus('dozhim');
-                            setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] Заявка отправлена в Дожим.`);
+                            setEditStatus('processing');
+                            setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0, 5)}] Сделка возвращена в работу.`);
                           }}
                           style={{
                             background: 'rgba(255, 255, 255, 0.05)',
@@ -3538,95 +3792,13 @@ export default function Crm() {
                             cursor: 'pointer'
                           }}
                         >
-                          В Дожим
+                          Вернуть в работу
                         </button>
                       )}
-
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', padding: '0.2rem 0.5rem' }}>
-                        <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', fontWeight: '800' }}>ОТВ:</span>
-                        <select
-                          value={editAssignedTo}
-                          onChange={(e) => {
-                            const prev = editAssignedTo;
-                            const next = e.target.value;
-                            setEditAssignedTo(next);
-                            setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] Ответственный изменен с ${prev || 'нет'} на ${next}.`);
-                          }}
-                          style={{ background: 'none', border: 'none', color: '#fff', fontSize: '0.75rem', fontWeight: '800', outline: 'none', cursor: 'pointer', padding: '0.2rem' }}
-                        >
-                          <option value="">Не назначен</option>
-                          {users.map(u => (
-                            <option key={u.id} value={u.name}>{u.name}</option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div style={{ width: '1px', height: '20px', background: 'rgba(255,255,255,0.1)' }} />
-
-                      <button
-                        onClick={() => {
-                          setEditStatus('completed');
-                          setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] Сделка успешно завершена!`);
-                        }}
-                        style={{
-                          background: 'rgba(0, 255, 65, 0.1)',
-                          border: '1px solid rgba(0, 255, 65, 0.3)',
-                          borderRadius: '8px',
-                          color: '#00ff41',
-                          padding: '0.4rem 0.8rem',
-                          fontWeight: '800',
-                          fontSize: '0.75rem',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Успешно
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          setEditStatus('rejected');
-                          setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] Отказ по сделке.`);
-                        }}
-                        style={{
-                          background: 'rgba(239, 68, 68, 0.1)',
-                          border: '1px solid rgba(239, 68, 68, 0.3)',
-                          borderRadius: '8px',
-                          color: '#ef4444',
-                          padding: '0.4rem 0.8rem',
-                          fontWeight: '800',
-                          fontSize: '0.75rem',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Отказ
-                      </button>
                     </>
                   )}
-
-                  {(editStatus === 'completed' || editStatus === 'rejected') && (
-                    <button
-                      onClick={() => {
-                        setEditStatus('processing');
-                        setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] Сделка возвращена в работу.`);
-                      }}
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        borderRadius: '8px',
-                        color: '#fff',
-                        padding: '0.4rem 0.8rem',
-                        fontWeight: '800',
-                        fontSize: '0.75rem',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      Вернуть в работу
-                    </button>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
+                </div>
+              </div>
 
               {/* Scrollable Layout Body */}
               <div style={{
@@ -3643,8 +3815,8 @@ export default function Crm() {
                     <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '0.5rem', fontWeight: '800', textTransform: 'uppercase' }}>
                       Имя клиента
                     </label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={editName}
                       disabled={isShiftEnded}
                       onChange={(e) => setEditName(e.target.value)}
@@ -3659,15 +3831,15 @@ export default function Crm() {
                         Телефон
                       </label>
                       <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <input 
-                          type="text" 
+                        <input
+                          type="text"
                           value={editPhone}
                           disabled={isShiftEnded}
                           onChange={(e) => setEditPhone(e.target.value)}
                           required
                           style={{ flex: 1, background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', color: '#fff', padding: '0.75rem', boxSizing: 'border-box' }}
                         />
-                        <button 
+                        <button
                           type="button"
                           onClick={() => {
                             navigator.clipboard.writeText(editPhone);
@@ -3693,7 +3865,7 @@ export default function Crm() {
                       <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '0.5rem', fontWeight: '800', textTransform: 'uppercase' }}>
                         Город
                       </label>
-                      <select 
+                      <select
                         value={editCity}
                         disabled={isShiftEnded}
                         onChange={(e) => setEditCity(e.target.value)}
@@ -3714,7 +3886,7 @@ export default function Crm() {
                       <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '0.5rem', fontWeight: '800', textTransform: 'uppercase' }}>
                         Направление (Категория)
                       </label>
-                      <select 
+                      <select
                         value={editCategory}
                         disabled={isShiftEnded}
                         onChange={(e) => {
@@ -3737,7 +3909,7 @@ export default function Crm() {
                       <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '0.5rem', fontWeight: '800', textTransform: 'uppercase' }}>
                         Услуга / Товар
                       </label>
-                      <select 
+                      <select
                         value={editProduct}
                         disabled={isShiftEnded}
                         onChange={(e) => setEditProduct(e.target.value)}
@@ -3754,8 +3926,8 @@ export default function Crm() {
                     <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '0.5rem', fontWeight: '800', textTransform: 'uppercase' }}>
                       Точный адрес (Улица, Дом, Квартира)
                     </label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={editAddress}
                       disabled={isShiftEnded}
                       onChange={(e) => setEditAddress(e.target.value)}
@@ -3768,7 +3940,7 @@ export default function Crm() {
                     <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '0.5rem', fontWeight: '800', textTransform: 'uppercase' }}>
                       Особые комментарии (Причина обращения)
                     </label>
-                    <textarea 
+                    <textarea
                       value={editComments}
                       disabled={isShiftEnded}
                       onChange={(e) => setEditComments(e.target.value)}
@@ -3784,7 +3956,7 @@ export default function Crm() {
                     </label>
                     <div style={{ padding: '1.25rem', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '12px', background: 'rgba(0,0,0,0.2)', textAlign: 'center' }}>
                       <span style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.4)', display: 'block', marginBottom: '0.5rem' }}>Нет прикрепленных файлов</span>
-                      <button 
+                      <button
                         type="button"
                         disabled={isShiftEnded}
                         onClick={() => alert('Функция загрузки файлов доступна в полной версии.')}
@@ -3866,7 +4038,7 @@ export default function Crm() {
                             <div style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>{title}</div>
                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.25rem' }}>
                               {isEditable && setter ? (
-                                <input 
+                                <input
                                   type="number"
                                   value={value || 0}
                                   disabled={isShiftEnded}
@@ -3900,19 +4072,19 @@ export default function Crm() {
                           {renderFinancialCard('Цена продажи', editPrice, true, 'rgba(0, 255, 65, 0.04)', 'rgba(0, 255, 65, 0.2)', '#00ff41', setEditPrice, 'итого клиенту')}
                           {renderFinancialCard('Очищенная сумма', netAmount, false, 'rgba(59, 130, 246, 0.04)', 'rgba(59, 130, 246, 0.2)', '#3b82f6', undefined, 'после налогов/комиссий')}
                           {renderFinancialCard('Себестоимость', editCostPrice, true, 'rgba(255, 255, 255, 0.02)', 'rgba(255, 255, 255, 0.1)', '#fff', setEditCostPrice, 'базовая себестоимость')}
-                          
+
                           {renderFinancialCard('Доп. расход', editExtraExpense, true, 'rgba(245, 158, 11, 0.04)', 'rgba(245, 158, 11, 0.2)', '#f59e0b', setEditExtraExpense, 'в себестоимости, без наценки')}
                           {renderFinancialCard('Комиссия мастеру', editMasterCommission, true, 'rgba(245, 158, 11, 0.04)', 'rgba(245, 158, 11, 0.2)', '#f59e0b', setEditMasterCommission, 'доля/выплата мастеру')}
                           {renderFinancialCard('Прибыль очищенная', netProfit, false, 'rgba(0, 255, 65, 0.04)', 'rgba(0, 255, 65, 0.2)', '#00ff41', undefined, 'после С/С, мастера и банка')}
-                          
+
                           {renderFinancialCard('Налоги всего', vat, false, 'rgba(239, 68, 68, 0.04)', 'rgba(239, 68, 68, 0.2)', '#ef4444', undefined, 'налог + налог с НДС')}
                           {renderFinancialCard('НДС (12%)', vat, false, 'rgba(139, 92, 246, 0.04)', 'rgba(139, 92, 246, 0.2)', '#8b5cf6', undefined, '12% при оплате с НДС')}
                           {renderFinancialCard('Комиссия банка', editBankCommission, true, 'rgba(255, 255, 255, 0.02)', 'rgba(255, 255, 255, 0.1)', '#fff', setEditBankCommission, 'если есть комиссии')}
-                          
+
                           {renderFinancialCard('Комиссия рассрочки', editInstallmentCommission, true, 'rgba(255, 255, 255, 0.02)', 'rgba(255, 255, 255, 0.1)', '#fff', setEditInstallmentCommission, 'процент рассрочки')}
                           {renderFinancialCard('Предоплата', editPrepayment, true, 'rgba(59, 130, 246, 0.04)', 'rgba(59, 130, 246, 0.2)', '#3b82f6', setEditPrepayment, 'первый платеж')}
                           {renderFinancialCard('Промежуточная', editIntermediatePayment, true, 'rgba(59, 130, 246, 0.04)', 'rgba(59, 130, 246, 0.2)', '#3b82f6', setEditIntermediatePayment, 'средний платеж')}
-                          
+
                           {renderFinancialCard('Остаток', rest, false, 'rgba(59, 130, 246, 0.04)', 'rgba(59, 130, 246, 0.2)', '#3b82f6', undefined, 'к оплате позже')}
                         </div>
                       );
@@ -3959,8 +4131,8 @@ export default function Crm() {
 
                     {/* Chat input box */}
                     <div style={{ display: 'flex', gap: '0.5rem', marginTop: 'auto' }}>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         placeholder={isShiftEnded ? 'Комментарии заблокированы (Смена окончена)' : 'Напишите комментарий к заявке...'}
                         disabled={isShiftEnded}
                         value={newChatComment}
@@ -3976,7 +4148,7 @@ export default function Crm() {
                           fontSize: '0.85rem'
                         }}
                       />
-                      <button 
+                      <button
                         type="button"
                         disabled={isShiftEnded || !newChatComment}
                         onClick={() => {
@@ -4009,7 +4181,7 @@ export default function Crm() {
                 borderTop: '1px solid rgba(255, 255, 255, 0.05)',
                 background: 'rgba(255, 255, 255, 0.01)'
               }}>
-                <button 
+                <button
                   onClick={() => setIsEditModalOpen(false)}
                   style={{
                     background: 'none',
@@ -4023,7 +4195,7 @@ export default function Crm() {
                 >
                   Отмена
                 </button>
-                <button 
+                <button
                   disabled={isShiftEnded}
                   onClick={() => {
                     handleUpdateLead(selectedLead.id, {
@@ -4071,10 +4243,10 @@ export default function Crm() {
       {/* ADD LEAD MODAL */}
       <AnimatePresence>
         {isAddModalOpen && (
-          <motion.div 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            exit={{ opacity: 0 }} 
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             style={{
               position: 'fixed',
               inset: 0,
@@ -4087,10 +4259,10 @@ export default function Crm() {
               padding: '2rem'
             }}
           >
-            <motion.div 
-              initial={{ scale: 0.95, y: 15 }} 
-              animate={{ scale: 1, y: 0 }} 
-              exit={{ scale: 0.95, y: 15 }} 
+            <motion.div
+              initial={{ scale: 0.95, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 15 }}
               style={{
                 background: '#0f0f15',
                 border: '1px solid rgba(0, 255, 65, 0.15)',
@@ -4151,8 +4323,8 @@ export default function Crm() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div style={{ display: 'grid', gap: '0.4rem' }}>
                     <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Направление (Категория)</label>
-                    <select 
-                      value={addCategory} 
+                    <select
+                      value={addCategory}
                       onChange={(e) => {
                         const cat = e.target.value;
                         setAddCategory(cat);
@@ -4170,8 +4342,8 @@ export default function Crm() {
                   </div>
                   <div style={{ display: 'grid', gap: '0.4rem' }}>
                     <label style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Услуга / Товар</label>
-                    <select 
-                      value={addProduct} 
+                    <select
+                      value={addProduct}
                       onChange={(e) => setAddProduct(e.target.value)}
                       style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none', cursor: 'pointer' }}
                     >
@@ -4212,15 +4384,15 @@ export default function Crm() {
                   <textarea name="comments" rows={2} style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.75rem', borderRadius: '8px', color: '#fff', outline: 'none', resize: 'none' }} />
                 </div>
 
-                <button 
-                  type="submit" 
-                  style={{ 
-                    background: '#00ff41', 
-                    color: '#000', 
-                    border: 'none', 
-                    padding: '1rem', 
-                    borderRadius: '12px', 
-                    fontWeight: '900', 
+                <button
+                  type="submit"
+                  style={{
+                    background: '#00ff41',
+                    color: '#000',
+                    border: 'none',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    fontWeight: '900',
                     cursor: 'pointer',
                     marginTop: '0.5rem',
                     textTransform: 'uppercase',
