@@ -1017,13 +1017,6 @@ export default function Crm() {
         <nav style={{ padding: '2rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1, overflowY: 'auto' }}>
           {[
             { id: 'dashboard', label: 'Главная панель', icon: <LayoutDashboard size={18} /> },
-            { id: 'products', label: 'Продукция', icon: <Package size={18} />, isSubItem: true },
-            { id: 'services', label: 'Услуги', icon: <Truck size={18} />, isSubItem: true },
-            { id: 'builder', label: 'Visual Builder', icon: <LayoutDashboard size={18} />, isSubItem: true },
-            { id: 'content', label: 'Контент', icon: <Globe size={18} />, isSubItem: true },
-            { id: 'pages', label: 'Страницы', icon: <ImageIcon size={18} />, isSubItem: true },
-            { id: 'settings', label: 'Настройки', icon: <Settings size={18} />, isSubItem: true },
-            { id: 'assistant', label: 'Ассистент ИИ', icon: <MessageSquare size={18} />, isSubItem: true },
             { id: 'analytics', label: 'Аналитика и статистика', icon: <BarChart3 size={18} /> },
             { id: 'leads', label: 'Список заявок / заказов', icon: <FileText size={18} />, badge: leads.filter(l => l.status === 'new').length },
             { id: 'clients', label: 'Управление клиентами', icon: <Users size={18} /> },
@@ -1032,9 +1025,6 @@ export default function Crm() {
           ].filter(item => {
             const allowedTabs = permissions.find(p => p.role === currentUser.role)?.allowed_tabs || [];
             if (item.id === 'dashboard') {
-              return currentUser.role === 'admin';
-            }
-            if (item.isSubItem) {
               return currentUser.role === 'admin';
             }
             return allowedTabs.includes(item.id as any);
@@ -1046,16 +1036,15 @@ export default function Crm() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: item.isSubItem ? '0.65rem 1.25rem 0.65rem 2.5rem' : '1rem 1.25rem',
-                borderRadius: item.isSubItem ? '0 12px 12px 0' : '12px',
+                padding: '1rem 1.25rem',
+                borderRadius: '12px',
                 border: 'none',
-                borderLeft: item.isSubItem ? (activeSection === item.id ? '2px solid #00ff41' : '1px solid rgba(255,255,255,0.08)') : 'none',
                 background: activeSection === item.id ? 'rgba(0, 255, 65, 0.06)' : 'transparent',
                 color: activeSection === item.id ? '#00ff41' : 'rgba(255,255,255,0.6)',
                 cursor: 'pointer',
                 textAlign: 'left',
-                fontWeight: item.isSubItem ? '600' : '700',
-                fontSize: item.isSubItem ? '0.85rem' : '0.9rem',
+                fontWeight: '700',
+                fontSize: '0.9rem',
                 transition: '0.2s'
               }}
               onMouseEnter={(e) => { if (activeSection !== item.id) { e.currentTarget.style.color = '#fff'; e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; } }}
@@ -2644,7 +2633,7 @@ export default function Crm() {
 
               {/* ADMIN SUB-SECTIONS (INLINE MODE) */}
               {['products', 'services', 'builder', 'content', 'pages', 'settings', 'assistant'].includes(activeSection) && (
-                <Admin inlineMode={true} activeTab={activeSection} />
+                <Admin inlineMode={true} activeTab={activeSection} onBack={() => setActiveSection('dashboard')} />
               )}
             </motion.div>
           </AnimatePresence>

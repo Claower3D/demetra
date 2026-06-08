@@ -211,7 +211,7 @@ export const defaultDataMap: Record<string, any> = {
 
 import HomeContent from './Home';
 
-export default function Admin({ inlineMode = false, activeTab: propActiveTab }: { inlineMode?: boolean; activeTab?: string } = {}) {
+export default function Admin({ inlineMode = false, activeTab: propActiveTab, onBack }: { inlineMode?: boolean; activeTab?: string; onBack?: () => void } = {}) {
   const [adminTheme, setAdminTheme] = useState(() => {
     try {
       const saved = localStorage.getItem('demetra_admin_theme');
@@ -524,12 +524,38 @@ export default function Admin({ inlineMode = false, activeTab: propActiveTab }: 
         </AnimatePresence>
 
         {activeTab !== 'builder' && (
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '1px solid #27272a', paddingBottom: '1.5rem' }}>
-            <div>
-              <h2 style={{ fontSize: '2rem', fontWeight: '900', color: '#fff', margin: 0 }}>
-                {tabs.find(t_item => t_item.id === activeTab)?.label.toUpperCase()}
-              </h2>
-              <p style={{ color: '#a1a1aa', fontSize: '0.85rem', margin: '0.5rem 0 0' }}>{t.admin_desc}</p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '1px solid #27272a', paddingBottom: '1.5rem', gap: '1rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+              {onBack && (
+                <button 
+                  onClick={onBack}
+                  style={{
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    color: '#00ff41',
+                    padding: '0.75rem 1.25rem',
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    fontSize: '0.85rem',
+                    fontWeight: '800',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    transition: 'all 0.2s',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.transform = 'translateX(-2px)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.transform = 'translateX(0)'; }}
+                >
+                  <ArrowLeft size={16} /> На главную
+                </button>
+              )}
+              <div>
+                <h2 style={{ fontSize: '2rem', fontWeight: '900', color: '#fff', margin: 0 }}>
+                  {tabs.find(t_item => t_item.id === activeTab)?.label.toUpperCase()}
+                </h2>
+                <p style={{ color: '#a1a1aa', fontSize: '0.85rem', margin: '0.5rem 0 0' }}>{t.admin_desc}</p>
+              </div>
             </div>
             <button 
               onClick={handleSave} 
@@ -564,18 +590,48 @@ export default function Admin({ inlineMode = false, activeTab: propActiveTab }: 
             transition={{ duration: 0.2 }}
           >
             {activeTab === 'builder' ? (
-              <TildaEditor 
-                pages={pages} 
-                pageLayouts={pageLayouts} 
-                setPageLayouts={setPageLayouts} 
-                allTranslations={allTranslations} 
-                updateTranslation={updateTranslation} 
-                currentLang={effectiveLang} 
-                handleSave={handleSave} 
-                isSidebarOpen={true} 
-                adminTheme={adminTheme} 
-                setAdminTheme={setAdminTheme} 
-              />
+              <div style={{ position: 'relative' }}>
+                {onBack && (
+                  <button 
+                    onClick={onBack}
+                    style={{
+                      position: 'fixed',
+                      top: '1rem',
+                      right: '2rem',
+                      zIndex: 999999,
+                      background: '#111115',
+                      border: '2px solid #00ff41',
+                      color: '#00ff41',
+                      padding: '0.75rem 1.5rem',
+                      borderRadius: '12px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      fontWeight: '900',
+                      fontSize: '0.85rem',
+                      boxShadow: '0 10px 30px rgba(0,255,65,0.25)',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = '#00ff41'; e.currentTarget.style.color = '#000'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = '#111115'; e.currentTarget.style.color = '#00ff41'; }}
+                  >
+                    <ArrowLeft size={16} /> ВЫЙТИ В CRM
+                  </button>
+                )}
+                <TildaEditor 
+                  pages={pages} 
+                  pageLayouts={pageLayouts} 
+                  setPageLayouts={setPageLayouts} 
+                  allTranslations={allTranslations} 
+                  updateTranslation={updateTranslation} 
+                  currentLang={effectiveLang} 
+                  handleSave={handleSave} 
+                  isSidebarOpen={true} 
+                  adminTheme={adminTheme} 
+                  setAdminTheme={setAdminTheme} 
+                />
+              </div>
             ) : (
               <div>
                 {activeTab === 'pages' && <PagesManager pages={pages} setPages={setPages} pageLayouts={pageLayouts} setPageLayouts={setPageLayouts} t={t} lang={effectiveLang} />}
