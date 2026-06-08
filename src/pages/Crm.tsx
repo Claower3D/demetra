@@ -200,6 +200,8 @@ export default function Crm() {
   const [editIntermediatePayment, setEditIntermediatePayment] = useState(0);
   const [isShiftEnded, setIsShiftEnded] = useState(false);
   const [newChatComment, setNewChatComment] = useState('');
+  const [editStatus, setEditStatus] = useState<Lead['status']>('new');
+  const [editAssignedTo, setEditAssignedTo] = useState('');
 
   useEffect(() => {
     if (selectedLead) {
@@ -221,6 +223,8 @@ export default function Crm() {
       setEditIntermediatePayment(selectedLead.intermediate_payment || 0);
       setIsShiftEnded(selectedLead.is_shift_ended || false);
       setNewChatComment('');
+      setEditStatus(selectedLead.status || 'new');
+      setEditAssignedTo(selectedLead.assigned_to || '');
     }
   }, [selectedLead]);
   
@@ -3237,6 +3241,302 @@ export default function Crm() {
                 </button>
               </div>
 
+              {/* WORKFLOW PROGRESS & ACTIONS BAR */}
+              <div style={{
+                background: 'rgba(255, 255, 255, 0.02)',
+                borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                padding: '1.25rem 2rem',
+                display: 'flex',
+                flexDirection: windowWidth >= 1024 ? 'row' : 'column',
+                justifyContent: 'space-between',
+                alignItems: windowWidth >= 1024 ? 'center' : 'stretch',
+                gap: '1.5rem'
+              }}>
+                {/* 1. Progress Steps Tracker */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
+                  {(() => {
+                    const stages: { key: Lead['status'] | 'finished'; label: string }[] = [
+                      { key: 'new', label: 'Новая' },
+                      { key: 'processing', label: 'В работе' },
+                      { key: 'dozhim', label: 'Дожим' },
+                      { key: 'manager_op', label: 'Менеджер ОП' },
+                      { key: 'rop', label: 'РОП' },
+                      { key: 'financier', label: 'Финансист' },
+                      { key: 'finished', label: 'Завершено' }
+                    ];
+
+                    const currentIdx = stages.findIndex(s => {
+                      if (s.key === 'finished') {
+                        return editStatus === 'completed' || editStatus === 'rejected';
+                      }
+                      return s.key === editStatus;
+                    });
+
+                    return stages.map((stage, idx) => {
+                      const isActive = idx === currentIdx;
+                      const isPast = idx < currentIdx;
+                      let color = 'rgba(255, 255, 255, 0.3)';
+                      let border = '1px solid rgba(255, 255, 255, 0.1)';
+                      let bg = 'transparent';
+
+                      if (isActive) {
+                        if (editStatus === 'completed') {
+                          color = '#00ff41';
+                          border = '1px solid #00ff41';
+                          bg = 'rgba(0, 255, 65, 0.1)';
+                        } else if (editStatus === 'rejected') {
+                          color = '#ef4444';
+                          border = '1px solid #ef4444';
+                          bg = 'rgba(239, 68, 68, 0.1)';
+                        } else {
+                          color = '#3b82f6';
+                          border = '1px solid #3b82f6';
+                          bg = 'rgba(59, 130, 246, 0.15)';
+                        }
+                      } else if (isPast) {
+                        color = 'rgba(0, 255, 65, 0.8)';
+                      }
+
+                      return (
+                        <React.Fragment key={stage.key}>
+                          <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.4rem',
+                            padding: '0.35rem 0.75rem',
+                            borderRadius: '30px',
+                            background: bg,
+                            border: border,
+                            color: color,
+                            fontSize: '0.75rem',
+                            fontWeight: '800',
+                            transition: '0.2s'
+                          }}>
+                            {isPast && <Check size={12} />}
+                            {stage.label}
+                          </div>
+                          {idx < stages.length - 1 && (
+                            <div style={{
+                              width: '15px',
+                              height: '1px',
+                              background: idx < currentIdx ? 'rgba(0, 255, 65, 0.4)' : 'rgba(255, 255, 255, 0.1)'
+                            }} />
+                          )}
+                        </React.Fragment>
+                      );
+                    });
+                  })()}
+                </div>
+
+                {/* 2. Action Controls */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  flexWrap: 'wrap',
+                  opacity: isShiftEnded ? 0.4 : 1,
+                  pointerEvents: isShiftEnded ? 'none' : 'auto'
+                }}>
+                  {/* Transition actions */}
+                  {editStatus === 'new' && (
+                    <button
+                      onClick={() => {
+                        setEditStatus('processing');
+                        setEditAssignedTo(currentUser.name);
+                        setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] ${currentUser.name} принял заявку в работу.`);
+                      }}
+                      style={{
+                        background: '#00ff41',
+                        border: 'none',
+                        borderRadius: '8px',
+                        color: '#000',
+                        padding: '0.5rem 1rem',
+                        fontWeight: '900',
+                        fontSize: '0.8rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.35rem'
+                      }}
+                    >
+                      <CheckCircle2 size={14} /> Принять в работу
+                    </button>
+                  )}
+
+                  {editStatus !== 'completed' && editStatus !== 'rejected' && (
+                    <>
+                      <span style={{ fontSize: '0.75rem', fontWeight: '800', color: 'rgba(255, 255, 255, 0.4)', textTransform: 'uppercase' }}>
+                        Передать:
+                      </span>
+
+                      {editStatus !== 'manager_op' && (
+                        <button
+                          onClick={() => {
+                            setEditStatus('manager_op');
+                            setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] Заявка передана в отдел Менеджера ОП.`);
+                          }}
+                          style={{
+                            background: 'rgba(59, 130, 246, 0.1)',
+                            border: '1px solid rgba(59, 130, 246, 0.3)',
+                            borderRadius: '8px',
+                            color: '#3b82f6',
+                            padding: '0.4rem 0.8rem',
+                            fontWeight: '800',
+                            fontSize: '0.75rem',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Менеджеру ОП
+                        </button>
+                      )}
+
+                      {editStatus !== 'rop' && (
+                        <button
+                          onClick={() => {
+                            setEditStatus('rop');
+                            setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] Заявка передана РОПу.`);
+                          }}
+                          style={{
+                            background: 'rgba(139, 92, 246, 0.1)',
+                            border: '1px solid rgba(139, 92, 246, 0.3)',
+                            borderRadius: '8px',
+                            color: '#8b5cf6',
+                            padding: '0.4rem 0.8rem',
+                            fontWeight: '800',
+                            fontSize: '0.75rem',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          РОПу
+                        </button>
+                      )}
+
+                      {editStatus !== 'financier' && (
+                        <button
+                          onClick={() => {
+                            setEditStatus('financier');
+                            setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] Заявка передана Финансисту.`);
+                          }}
+                          style={{
+                            background: 'rgba(245, 158, 11, 0.1)',
+                            border: '1px solid rgba(245, 158, 11, 0.3)',
+                            borderRadius: '8px',
+                            color: '#f59e0b',
+                            padding: '0.4rem 0.8rem',
+                            fontWeight: '800',
+                            fontSize: '0.75rem',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Финансисту
+                        </button>
+                      )}
+
+                      {editStatus !== 'dozhim' && (
+                        <button
+                          onClick={() => {
+                            setEditStatus('dozhim');
+                            setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] Заявка отправлена в Дожим.`);
+                          }}
+                          style={{
+                            background: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                            borderRadius: '8px',
+                            color: '#fff',
+                            padding: '0.4rem 0.8rem',
+                            fontWeight: '800',
+                            fontSize: '0.75rem',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          В Дожим
+                        </button>
+                      )}
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', padding: '0.2rem 0.5rem' }}>
+                        <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', fontWeight: '800' }}>ОТВ:</span>
+                        <select
+                          value={editAssignedTo}
+                          onChange={(e) => {
+                            const prev = editAssignedTo;
+                            const next = e.target.value;
+                            setEditAssignedTo(next);
+                            setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] Ответственный изменен с ${prev || 'нет'} на ${next}.`);
+                          }}
+                          style={{ background: 'none', border: 'none', color: '#fff', fontSize: '0.75rem', fontWeight: '800', outline: 'none', cursor: 'pointer', padding: '0.2rem' }}
+                        >
+                          <option value="">Не назначен</option>
+                          {users.map(u => (
+                            <option key={u.id} value={u.name}>{u.name}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div style={{ width: '1px', height: '20px', background: 'rgba(255,255,255,0.1)' }} />
+
+                      <button
+                        onClick={() => {
+                          setEditStatus('completed');
+                          setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] Сделка успешно завершена!`);
+                        }}
+                        style={{
+                          background: 'rgba(0, 255, 65, 0.1)',
+                          border: '1px solid rgba(0, 255, 65, 0.3)',
+                          borderRadius: '8px',
+                          color: '#00ff41',
+                          padding: '0.4rem 0.8rem',
+                          fontWeight: '800',
+                          fontSize: '0.75rem',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Успешно
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setEditStatus('rejected');
+                          setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] Отказ по сделке.`);
+                        }}
+                        style={{
+                          background: 'rgba(239, 68, 68, 0.1)',
+                          border: '1px solid rgba(239, 68, 68, 0.3)',
+                          borderRadius: '8px',
+                          color: '#ef4444',
+                          padding: '0.4rem 0.8rem',
+                          fontWeight: '800',
+                          fontSize: '0.75rem',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Отказ
+                      </button>
+                    </>
+                  )}
+
+                  {(editStatus === 'completed' || editStatus === 'rejected') && (
+                    <button
+                      onClick={() => {
+                        setEditStatus('processing');
+                        setEditComments(editComments + (editComments ? '\n' : '') + `[${new Date().toLocaleTimeString().slice(0,5)}] Сделка возвращена в работу.`);
+                      }}
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        borderRadius: '8px',
+                        color: '#fff',
+                        padding: '0.4rem 0.8rem',
+                        fontWeight: '800',
+                        fontSize: '0.75rem',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Вернуть в работу
+                    </button>
+                  )}
+                </div>
+              </div>
+
               {/* Scrollable Layout Body */}
               <div style={{
                 display: 'grid',
@@ -3651,7 +3951,9 @@ export default function Crm() {
                       installment_commission: editInstallmentCommission,
                       prepayment: editPrepayment,
                       intermediate_payment: editIntermediatePayment,
-                      is_shift_ended: isShiftEnded
+                      is_shift_ended: isShiftEnded,
+                      status: editStatus,
+                      assigned_to: editAssignedTo
                     });
                   }}
                   style={{
