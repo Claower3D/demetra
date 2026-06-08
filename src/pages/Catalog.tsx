@@ -9,6 +9,7 @@ import { useBuilderLayout } from '../hooks/useBuilderLayout';
 import CustomBlock, { getCustomBlocks } from '../components/CustomBlock';
 
 export default function Catalog() {
+  console.error("RENDERING_CATALOG_COMPONENT");
   const { lang, t } = useLang();
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
