@@ -211,7 +211,7 @@ export const defaultDataMap: Record<string, any> = {
 
 import HomeContent from './Home';
 
-export default function Admin() {
+export default function Admin({ inlineMode = false, activeTab: propActiveTab }: { inlineMode?: boolean; activeTab?: string } = {}) {
   const [adminTheme, setAdminTheme] = useState(() => {
     try {
       const saved = localStorage.getItem('demetra_admin_theme');
@@ -224,6 +224,7 @@ export default function Admin() {
   const { lang, setLang, t } = useLang();
 
   const [activeTab, setActiveTab] = useState(() => {
+    if (propActiveTab) return propActiveTab;
     try {
       const params = new URLSearchParams(window.location.search);
       const tabParam = params.get('tab');
@@ -231,6 +232,12 @@ export default function Admin() {
     } catch {}
     return 'dashboard';
   }); // Default to Dashboard home or URL param
+
+  useEffect(() => {
+    if (propActiveTab) {
+      setActiveTab(propActiveTab);
+    }
+  }, [propActiveTab]);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
 
@@ -478,6 +485,112 @@ export default function Admin() {
   const sidebarWidth = isSidebarOpen ? '280px' : '0px';
 
   const effectiveLang = (['ru', 'kk', 'en'].includes(lang)) ? lang : 'ru';
+
+  if (inlineMode) {
+    return (
+      <div style={{ position: 'relative', fontFamily: 'Inter, system-ui, sans-serif' }}>
+        <style>{`
+          :root {
+            --admin-accent: ${adminTheme.color};
+            --admin-accent-rgb: ${adminTheme.rgb};
+          }
+        `}</style>
+        
+        <AnimatePresence>
+          {showSaveToast && (
+            <motion.div 
+              initial={{ opacity: 0, y: 50 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              exit={{ opacity: 0, y: 50 }} 
+              style={{ 
+                position: 'fixed', 
+                bottom: '2rem', 
+                right: '2rem', 
+                background: 'var(--admin-accent)', 
+                color: '#000', 
+                padding: '1rem 2rem', 
+                borderRadius: '12px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '0.75rem', 
+                fontWeight: '900', 
+                zIndex: 1000000, 
+                boxShadow: '0 10px 40px rgba(var(--admin-accent-rgb), 0.4)' 
+              }}
+            >
+              <CheckCircle2 size={20} /> {t.admin_save || 'SAVED'}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {activeTab !== 'builder' && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '1px solid #27272a', paddingBottom: '1.5rem' }}>
+            <div>
+              <h2 style={{ fontSize: '2rem', fontWeight: '900', color: '#fff', margin: 0 }}>
+                {tabs.find(t_item => t_item.id === activeTab)?.label.toUpperCase()}
+              </h2>
+              <p style={{ color: '#a1a1aa', fontSize: '0.85rem', margin: '0.5rem 0 0' }}>{t.admin_desc}</p>
+            </div>
+            <button 
+              onClick={handleSave} 
+              style={{ 
+                background: 'var(--admin-accent)', 
+                color: '#000', 
+                border: 'none', 
+                padding: '1rem 2.5rem', 
+                borderRadius: '12px', 
+                fontWeight: '900', 
+                cursor: 'pointer', 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '0.75rem', 
+                boxShadow: '0 0 30px rgba(var(--admin-accent-rgb), 0.2)',
+                transition: 'transform 0.2s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+            >
+              <Save size={18} /> {t.admin_save || 'Сохранить изменения'}
+            </button>
+          </div>
+        )}
+
+        <AnimatePresence mode="wait">
+          <motion.div 
+            key={activeTab} 
+            initial={{ opacity: 0, y: 15 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            exit={{ opacity: 0, y: -15 }} 
+            transition={{ duration: 0.2 }}
+          >
+            {activeTab === 'builder' ? (
+              <TildaEditor 
+                pages={pages} 
+                pageLayouts={pageLayouts} 
+                setPageLayouts={setPageLayouts} 
+                allTranslations={allTranslations} 
+                updateTranslation={updateTranslation} 
+                currentLang={effectiveLang} 
+                handleSave={handleSave} 
+                isSidebarOpen={true} 
+                adminTheme={adminTheme} 
+                setAdminTheme={setAdminTheme} 
+              />
+            ) : (
+              <div>
+                {activeTab === 'pages' && <PagesManager pages={pages} setPages={setPages} pageLayouts={pageLayouts} setPageLayouts={setPageLayouts} t={t} lang={effectiveLang} />}
+                {activeTab === 'content' && <PageEditor allTranslations={allTranslations} updateTranslation={updateTranslation} currentLang={effectiveLang} windowWidth={windowWidth} t={t} />}
+                {activeTab === 'products' && <ProductManager products={products} setProducts={setProducts} currentLang={effectiveLang} categories={categories} setCategories={setCategories} windowWidth={windowWidth} />}
+                {activeTab === 'services' && <ServicesManager services={services} setServices={setServices} currentLang={effectiveLang} windowWidth={windowWidth} />}
+                {activeTab === 'settings' && <GlobalSettings allTranslations={allTranslations} updateTranslation={updateTranslation} currentLang={effectiveLang} windowWidth={windowWidth} />}
+                {activeTab === 'assistant' && <AssistantSettings windowWidth={windowWidth} />}
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    );
+  }
 
   return (
 
